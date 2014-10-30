@@ -1,0 +1,203 @@
+p = defn _model_9_genes_tic
+
+var g6, p1, p2, p3, 
+        p4, p5, p6, p7, 
+        p8, p9, pro1, pro2, 
+        pro3, pro4, pro5, pro6, 
+        pro7, pro8, pro9, rbs1, 
+        rbs2, rbs3, rbs4, rbs5, 
+        rbs6, rbs7, rbs8, rbs9, 
+        v1_mrna, v2_mrna, v3_mrna, v4_mrna, 
+        v5_mrna, v6_mrna, v7_mrna, v8_mrna, 
+        v9_mrna;
+ext as1, as2, as3, as5, 
+        as6, as7, as9, g1, 
+        g2, g3, g4, g5, 
+        g7, g8, g9, rs1a, 
+        rs1b, rs2, rs3, rs7, 
+        rs8, __src__, __waste__;
+
+as9 = (1+pow(p6/r11_Kd,r11_h)-1)/(1+pow(p6/r11_Kd,r11_h));
+g1 = (1+pow(p1/r1_Kd,r1_h)-1)/(1+pow(p1/r1_Kd,r1_h))*(1/(1+pow(p2/r4_Kd,r4_h))*1/(1+pow(p6/r8_Kd,r8_h)));
+g2 = (1+pow(p1/r2_Kd,r2_h)-1)/(1+pow(p1/r2_Kd,r2_h))*(1/(1+pow(p3/r3_Kd,r3_h)));
+g3 = (1+pow(p4/r5_Kd,r5_h)-1)/(1+pow(p4/r5_Kd,r5_h))*(1/(1+pow(p5/r7_Kd,r7_h)));
+g4 = (1+pow(p9/r9_Kd,r9_h)-1)/(1+pow(p9/r9_Kd,r9_h));
+g5 = (1+pow(p8/r13_Kd,r13_h)-1)/(1+pow(p8/r13_Kd,r13_h));
+g7 = (1+pow(p6/r12_Kd,r12_h)-1)/(1+pow(p6/r12_Kd,r12_h))*(1/(1+pow(p7/r6_Kd,r6_h)));
+g8 = 1/(1+pow(p9/r10_Kd,r10_h));
+g9 = (1+pow(p6/r11_Kd,r11_h)-1)/(1+pow(p6/r11_Kd,r11_h));
+rs1a = 1/(1+pow(p2/r4_Kd,r4_h));
+rs1b = 1/(1+pow(p6/r8_Kd,r8_h));
+rs2 = 1/(1+pow(p3/r3_Kd,r3_h));
+rs3 = 1/(1+pow(p5/r7_Kd,r7_h));
+rs7 = 1/(1+pow(p7/r6_Kd,r6_h));
+rs8 = 1/(1+pow(p9/r10_Kd,r10_h));
+as1 = (1+pow(p1/r1_Kd,r1_h)-1)/(1+pow(p1/r1_Kd,r1_h));
+as2 = (1+pow(p1/r2_Kd,r2_h)-1)/(1+pow(p1/r2_Kd,r2_h));
+as3 = (1+pow(p4/r5_Kd,r5_h)-1)/(1+pow(p4/r5_Kd,r5_h));
+as5 = (1+pow(p8/r13_Kd,r13_h)-1)/(1+pow(p8/r13_Kd,r13_h));
+as6 = (1+pow(p9/r9_Kd,r9_h)-1)/(1+pow(p9/r9_Kd,r9_h));
+as7 = (1+pow(p6/r12_Kd,r12_h)-1)/(1+pow(p6/r12_Kd,r12_h));
+
+v9_v1: $__src__ -> v9_mrna; pro8_strength*g8;
+v9_v2: v9_mrna -> $__waste__; v9_mrna_degradation_rate*v9_mrna;
+v9_v3: $__src__ -> p9; rbs9_strength*v9_mrna;
+v9_v4: p9 -> $__waste__; p9_degradation_rate*p9;
+v8_v1: $__src__ -> v8_mrna; pro9_strength*g7;
+v8_v2: v8_mrna -> $__waste__; v8_mrna_degradation_rate*v8_mrna;
+v8_v3: $__src__ -> p8; rbs7_strength*v8_mrna;
+v8_v4: p8 -> $__waste__; p8_degradation_rate*p8;
+v7_v1: $__src__ -> v7_mrna; pro7_strength*g9;
+v7_v2: v7_mrna -> $__waste__; v7_mrna_degradation_rate*v7_mrna;
+v7_v3: $__src__ -> p7; rbs8_strength*v7_mrna;
+v7_v4: p7 -> $__waste__; p7_degradation_rate*p7;
+v6_v1: $__src__ -> v6_mrna; pro6_strength*g6;
+v6_v2: v6_mrna -> $__waste__; v6_mrna_degradation_rate*v6_mrna;
+v6_v3: $__src__ -> p6; rbs6_strength*v6_mrna;
+v6_v4: p6 -> $__waste__; p6_degradation_rate*p6;
+v5_v1: $__src__ -> v5_mrna; pro5_strength*g5;
+v5_v2: v5_mrna -> $__waste__; v5_mrna_degradation_rate*v5_mrna;
+v5_v3: $__src__ -> p5; rbs5_strength*v5_mrna;
+v5_v4: p5 -> $__waste__; p5_degradation_rate*p5;
+v4_v1: $__src__ -> v4_mrna; pro4_strength*g4;
+v4_v2: v4_mrna -> $__waste__; v4_mrna_degradation_rate*v4_mrna;
+v4_v3: $__src__ -> p4; rbs4_strength*v4_mrna;
+v4_v4: p4 -> $__waste__; p4_degradation_rate*p4;
+v3_v1: $__src__ -> v3_mrna; pro3_strength*g3;
+v3_v2: v3_mrna -> $__waste__; v3_mrna_degradation_rate*v3_mrna;
+v3_v3: $__src__ -> p3; rbs3_strength*v3_mrna;
+v3_v4: p3 -> $__waste__; p3_degradation_rate*p3;
+v2_v1: $__src__ -> v2_mrna; pro2_strength*g2;
+v2_v2: v2_mrna -> $__waste__; v2_mrna_degradation_rate*v2_mrna;
+v2_v3: $__src__ -> p2; rbs2_strength*v2_mrna;
+v2_v4: p2 -> $__waste__; p2_degradation_rate*p2;
+v1_v1: $__src__ -> v1_mrna; pro1_strength*g1;
+v1_v2: v1_mrna -> $__waste__; v1_mrna_degradation_rate*v1_mrna;
+v1_v3: $__src__ -> p1; rbs1_strength*v1_mrna;
+v1_v4: p1 -> $__waste__; p1_degradation_rate*p1;
+
+
+end;
+
+p.as1 = 1;
+p.as2 = 1;
+p.as3 = 1;
+p.as5 = 1;
+p.as6 = 1;
+p.as7 = 1;
+p.as9 = 1;
+p.g1 = 1;
+p.g2 = 1;
+p.g3 = 1;
+p.g4 = 1;
+p.g5 = 1;
+p.g7 = 1;
+p.g8 = 1;
+p.g9 = 1;
+p.rs1a = 1;
+p.rs1b = 1;
+p.rs2 = 1;
+p.rs3 = 1;
+p.rs7 = 1;
+p.rs8 = 1;
+p.__src__ = 0;
+p.__waste__ = 0;
+p.g6 = 1;
+p.p1 = 1;
+p.p2 = 1;
+p.p3 = 1;
+p.p4 = 1;
+p.p5 = 1;
+p.p6 = 1;
+p.p7 = 1;
+p.p8 = 1;
+p.p9 = 1;
+p.pro1 = 1;
+p.pro2 = 1;
+p.pro3 = 1;
+p.pro4 = 1;
+p.pro5 = 1;
+p.pro6 = 1;
+p.pro7 = 1;
+p.pro8 = 1;
+p.pro9 = 1;
+p.rbs1 = 1;
+p.rbs2 = 1;
+p.rbs3 = 1;
+p.rbs4 = 1;
+p.rbs5 = 1;
+p.rbs6 = 1;
+p.rbs7 = 1;
+p.rbs8 = 1;
+p.rbs9 = 1;
+p.v1_mrna = 0;
+p.v2_mrna = 0;
+p.v3_mrna = 0;
+p.v4_mrna = 0;
+p.v5_mrna = 0;
+p.v6_mrna = 0;
+p.v7_mrna = 0;
+p.v8_mrna = 0;
+p.v9_mrna = 0;
+p.r11_Kd = 1;
+p.r11_h = 1;
+p.r1_Kd = 1;
+p.r1_h = 1;
+p.r4_Kd = 1;
+p.r4_h = 1;
+p.r8_Kd = 1;
+p.r8_h = 1;
+p.r2_Kd = 1;
+p.r2_h = 1;
+p.r3_Kd = 1;
+p.r3_h = 1;
+p.r5_Kd = 1;
+p.r5_h = 1;
+p.r7_Kd = 1;
+p.r7_h = 1;
+p.r9_Kd = 1;
+p.r9_h = 1;
+p.r13_Kd = 1;
+p.r13_h = 1;
+p.r12_Kd = 1;
+p.r12_h = 1;
+p.r6_Kd = 1;
+p.r6_h = 1;
+p.r10_Kd = 1;
+p.r10_h = 1;
+p.pro8_strength = 1;
+p.v9_mrna_degradation_rate = 1;
+p.rbs9_strength = 1;
+p.p9_degradation_rate = 1;
+p.pro9_strength = 1;
+p.v8_mrna_degradation_rate = 1;
+p.rbs7_strength = 1;
+p.p8_degradation_rate = 1;
+p.pro7_strength = 1;
+p.v7_mrna_degradation_rate = 1;
+p.rbs8_strength = 1;
+p.p7_degradation_rate = 1;
+p.pro6_strength = 1;
+p.v6_mrna_degradation_rate = 1;
+p.rbs6_strength = 1;
+p.p6_degradation_rate = 1;
+p.pro5_strength = 1;
+p.v5_mrna_degradation_rate = 1;
+p.rbs5_strength = 1;
+p.p5_degradation_rate = 1;
+p.pro4_strength = 1;
+p.v4_mrna_degradation_rate = 1;
+p.rbs4_strength = 1;
+p.p4_degradation_rate = 1;
+p.pro3_strength = 1;
+p.v3_mrna_degradation_rate = 1;
+p.rbs3_strength = 1;
+p.p3_degradation_rate = 1;
+p.pro2_strength = 1;
+p.v2_mrna_degradation_rate = 1;
+p.rbs2_strength = 1;
+p.p2_degradation_rate = 1;
+p.pro1_strength = 1;
+p.v1_mrna_degradation_rate = 1;
+p.rbs1_strength = 1;
+p.p1_degradation_rate = 1;

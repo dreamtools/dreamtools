@@ -1,0 +1,105 @@
+p = defn subchallenge2_missing_connections
+
+vol compartment;
+var p1, p2, p3, p4, 
+        p5, p6, p11, p7, 
+        p8, p9, p10;
+ext X, __src__, __waste__;
+
+$X -> p1; p1_synthesis_rate*pow(X/r1_Kd,r1_h)/(1+pow(X/r1_Kd,r1_h));
+p1 -> $__waste__; p1_degradation_rate*p1;
+$__src__ -> p2; p2_synthesis_rate*pow(p1/r2_Kd,r2_h)/(1+pow(p1/r2_Kd,r2_h))/(1+pow(p6/r5_Kd,r5_h));
+p2 -> $__waste__; p2_degradation_rate*p2;
+$__src__ -> p3; p3_synthesis_rate_1*pow(p2/r4_Kd,r4_h)/(1+pow(p2/r4_Kd,r4_h))+p3_synthesis_rate_2*pow(p1/r3_Kd,r3_h)/(1+pow(p1/r3_Kd,r3_h));
+p3 -> $__waste__; p3_degradation_rate*p3;
+p3 -> p4; p4_synthesis_rate_1*p3;
+$__src__ -> p4; p4_synthesis_rate_2/(1+pow(p7/r8_Kd,r8_h));
+p4 -> $__waste__; p4_degradation_rate*p4;
+$__src__ -> p5; r6_basal+p5_synthesis_rate_1*pow(p4/r6_Kd,r6_h)/(1+pow(p4/r6_Kd,r6_h))+p5_synthesis_rate_3*pow(p5/r7_Kd,r7_h)/(1+pow(p5/r7_Kd,r7_h))+p5_synthesis_rate_2;
+p5 -> $__waste__; p5_degradation_rate*p5;
+$__src__ -> p6; p6_synthesis_rate;
+p6 -> $__waste__; p6_degradation_rate*p6;
+$__src__ -> p11; r11_basal+p11_synthesis_rate_1*pow(p5/r11_Kd,r11_h)/(1+pow(p5/r11_Kd,r11_h));
+p11 -> $__waste__; p11_degradation_rate*p11;
+$__src__ -> p7; p7_synthesis_rate*(r11_basal+p11_synthesis_rate_1*pow(p5/r11_Kd,r11_h)/(1+pow(p5/r11_Kd,r11_h)));
+p7 -> $__waste__; p7_degradation_rate*p7;
+$__src__ -> p8; p8_synthesis_rate/(1+pow(p7/r14_Kd,r14_h));
+p8 -> $__waste__; p8_degradation_rate*p8;
+$__src__ -> p9; p9_synthesis_rate*pow(p8/r15_Kd,r15_h)/(1+pow(p8/r15_Kd,r15_h));
+p9 -> $__waste__; p9_degradation_rate*p9;
+$__src__ -> p10; p10_synthesis_rate/(1+pow(p9/r16_Kd,r16_h))/(1+pow(p7/r13_Kd,r13_h));
+p10 -> $__waste__; p10_degradation_rate*p10;
+
+
+end;
+
+p.compartment = 1;
+p.X = 1;
+p.__src__ = 1;
+p.__waste__ = 1;
+p.p1 = 1;
+p.p2 = 1;
+p.p3 = 1;
+p.p4 = 1;
+p.p5 = 1;
+p.p6 = 1;
+p.p7 = 1;
+p.p8 = 1;
+p.p9 = 1;
+p.p10 = 1;
+p.p11 = 1;
+
+p.p1_synthesis_rate = 1;
+p.r1_Kd = 1;
+p.r1_h = 1;
+p.p1_degradation_rate = 1;
+p.p2_synthesis_rate = 1;
+p.r2_Kd = 1;
+p.r2_h = 1;
+p.r5_Kd = 1;
+p.r5_h = 1;
+p.p2_degradation_rate = 1;
+p.p3_synthesis_rate_1 = 1;
+p.r4_Kd = 1;
+p.r4_h = 1;
+p.p3_synthesis_rate_2 = 1;
+p.r3_Kd = 1;
+p.r3_h = 1;
+p.p3_degradation_rate = 1;
+p.p4_synthesis_rate_1 = 1;
+p.p4_synthesis_rate_2 = 1;
+p.r8_Kd = 1;
+p.r8_h = 1;
+p.p4_degradation_rate = 1;
+p.r6_basal = 1;
+p.p5_synthesis_rate_1 = 1;
+p.r6_Kd = 1;
+p.r6_h = 1;
+p.p5_synthesis_rate_3 = 1;
+p.r7_Kd = 1;
+p.r7_h = 1;
+p.p5_synthesis_rate_2 = 1;
+p.p5_degradation_rate = 1;
+p.p6_synthesis_rate = 1;
+p.p6_degradation_rate = 1;
+p.r11_basal = 1;
+p.p11_synthesis_rate_1 = 1;
+p.r11_Kd = 1;
+p.r11_h = 1;
+p.p11_degradation_rate = 1;
+p.p7_synthesis_rate = 1;
+p.p7_degradation_rate = 1;
+p.p8_synthesis_rate = 1;
+p.r14_Kd = 1;
+p.r14_h = 1;
+p.p8_degradation_rate = 1;
+p.p9_synthesis_rate = 1;
+p.r15_Kd = 1;
+p.r15_h = 1;
+p.p9_degradation_rate = 1;
+p.p10_synthesis_rate = 1;
+p.r16_Kd = 1;
+p.r16_h = 1;
+p.r13_Kd = 1;
+p.r13_h = 1;
+p.p10_degradation_rate = 1;
