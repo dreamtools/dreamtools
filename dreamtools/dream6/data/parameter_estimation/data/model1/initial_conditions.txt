@@ -1,0 +1,12 @@
+p1	1
+p2	1
+p3	1
+p4	1
+p5	1
+p6	1
+pp1_mrna	0
+pp2_mrna	0
+pp3_mrna	0
+pp4_mrna	0
+pp5_mrna	0
+pp6_mrna	0
