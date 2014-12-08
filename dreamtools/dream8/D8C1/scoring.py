@@ -110,7 +110,7 @@ class HPNScoring(Login, ZIP):
 
     def __init__(self, verbose=True, client=None):
         super(HPNScoring, self).__init__(client=client)
-        self._path2data = os.path.split(__file__)[0]
+        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
 
         #: List of valid cell lines (e.g, BT20)
@@ -352,7 +352,6 @@ class HPNScoringNetworkBase(HPNScoring):
         edges = [x[1] for x in data]
         scores = [x[4] for x in data]
         return node1, node2, edges, scores
-
 
 
 class HPNScoringNetwork(HPNScoringNetworkBase):
@@ -2303,7 +2302,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
     def _get_mean_and_sigma_null_parameters(self):
         """Retrieve mean and sigma for 32 combi from a null AUC distribution"""
         filename = 'sc2b_null_mu_sigma.dat'
-        filename = os.sep.join(["data", filename])
+        filename = os.sep.join([self._path2data, "data", filename])
         print filename
         # a dict contain dict (phospho) of dict (phospho) of dict (mu,sigma)
         mu_sigma = pickle.load(open(filename, "r"))
