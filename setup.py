@@ -12,6 +12,15 @@ _MICRO               = 2
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
+
+## compile cython code
+def post_process():
+    cwd = os.getcwd()
+    os.chdir('dreamtools/dream8/D8C1')
+    os.system('python setup.py build_ext --inplace')
+    os.chdir(cwd)
+
+
 metainfo = {
     'authors': {
         'Cokelaer':('Thomas Cokelaer','cokelaer@gmail.com'),
@@ -67,10 +76,19 @@ setup(
     #packages = ['biokit'],
     #package_dir  = package_dir,
 
+    include_package_data = True,
+    # (you can provide an exclusion dictionary named exclude_package_data to remove parasites).
+    # alternatively to global inclusion, list the file to include   
+    package_data = {'' : ['*.txt', '*.so', '*.zip', '*.csv', '*.ini'],},
+
+
     # distutils in rtools.package
     #install_requires = [ 'pandas', 'bioservices', 'colormap>=0.9.3'],
-    install_requires = [],
+    install_requires = ['numpy', 'matplotlib', 'pandas', 'appdirs', 'easydev', 'synapseclient'],
 
     )
 
 
+
+# cython modules
+post_process()

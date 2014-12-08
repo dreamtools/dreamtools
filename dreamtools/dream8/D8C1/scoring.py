@@ -208,8 +208,7 @@ class HPNScoring(ZIP):
 
     def load_species(self):
         """Loads names of the expected phospho names for each cell line from the synapse files provided to the users"""
-        filename = self.client.get(self.experimental_data_synapseId,
-                                   downloadFile=True, ifcollision="keep.local")['path']
+        from dreamtools.dream8.D8C1 import experimental_filename as filename
 
         z = zipfile.ZipFile(filename)
         self.species = {}
@@ -226,25 +225,9 @@ class HPNScoringNetworkBase(HPNScoring):
     test_synapse_id = "syn1971273"
     true_synapse_id = "syn1971278"
 
-    def __init__(self, filename=None, true_desc_filename=None, verbose=True):
+    def __init__(self, filename=None, verbose=True):
         super(HPNScoringNetworkBase, self).__init__(verbose=verbose)
-
-        if filename == None:
-            try:
-                self.filename = self.client.get(self.test_synapse_id,
-                        downloadFile=True, ifcollision="keep.local")['path']
-            except:
-                print("Could not fetch the true descendant file from synapse")
-        else:
-            self.filename = filename
-
-        # get the true descendants
-        if true_desc_filename == None:
-            self.true_desc_filename = self.client.get(self.true_synapse_id,
-                    downloadFile=True, ifcollision="keep.local")['path']
-        else:
-            self.true_desc_filename = true_desc_filename
-
+        self.filename = filename
         self.load_species()
 
     def _validate_eda(self, filename):
@@ -253,22 +236,7 @@ class HPNScoringNetworkBase(HPNScoring):
         f = self.zip_data.open(filename)
         reader = csv.reader(f)
         reader.next() # skip the header
-        #rawdata = [row for row in reader]
         f.close()
-        # too strict
-        """for i, row in enumerate(rawdata):
-            if row[0].count("=") != 1:
-                self.error(" * file %s, line %s ill-formed: expected one and only one = sign in %s" %(filename, i+1, row[0]))
-            lhs, rhs = row[0].split("=")
-            lhs = lhs.split()
-            rhs = rhs.strip()
-            if len(lhs)!=3:
-                print lhs, len(lhs)
-                self.error(" * lhs in file %s, line %s is ill-formed :%s" %(filename, i+1, row[0]))
-            if len(rhs)==0:
-                print rhs, len(rhs)
-                self.error(" * in file %s, line %s missing RHS after = sign :%s" %(filename, i+1, row[0]))
-        """
         if self.verbose: print("ok")
 
     def _validate_sif(self, filename):
@@ -338,13 +306,6 @@ class HPNScoringNetworkBase(HPNScoring):
             datum = datum.split()
             if len(datum) == 5:
                 data.append(datum)
-            #elif len(datum) == 3:
-            #    try:
-            #        lhs, rhs = datum[2].split("=")
-            #        datum = datum[0:2] + [lhs]  + ["="] + [float(rhs)]
-            #        data.append(datum)
-            #    except:
-            #        ValueError("EDA file (%s) should be made of 5 columns" % filename)
             else:
                 ValueError("EDA file (%s) should be made of 5 columns" % filename)
         node1 = [x[0] for x in data]
@@ -403,14 +364,13 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
     true_synapse_id = "syn1971278"
 
     def __init__(self, filename=None, verbose=False,
-            client=None, skip_true=False):
+            skip_true=False):
         """
 
         :param str filename:
 
         """
-        super(HPNScoringNetwork, self).__init__(filename,
-            verbose=verbose, client=client)
+        super(HPNScoringNetwork, self).__init__(filename, verbose=verbose)
         self._init()
         self.load_submission(self.filename)
         self.robustness_testing = False
@@ -556,7 +516,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         :meth:`compute_all_aucs` or .
 
 
-            >>> s = scoring.HPNScoringNetwork(filename, client=s.client)
+            >>> s = scoring.HPNScoringNetwork(filename)
             >>> s.compute_all_aucs()
             >>> auc = s.get_auc_final_scoring()
 
@@ -1177,9 +1137,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         return mean, sigma
 
 
-
-
-
 class HPNScoringNetwork_ranking(HPNScoring):
     """This class is used to compute the ranks of the different participants
     based on an average rank over the 32 combinaisons of cell line and ligands.
@@ -1213,8 +1170,8 @@ class HPNScoringNetwork_ranking(HPNScoring):
 
 
     """
-    def __init__(self, client=None):
-        super(HPNScoringNetwork_ranking, self).__init__(client=client)
+    def __init__(self):
+        super(HPNScoringNetwork_ranking, self).__init__()
         self.aucs = []
         self.participants = []
 
@@ -1379,8 +1336,8 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
     """
     test_synapse_id = "syn1973430"
     true_synapse_id = "syn1976597"
-    def __init__(self, filename=None, verbose=False, client=None):
-        super(HPNScoringNetworkInsilico, self).__init__(filename, client=client)
+    def __init__(self, filename=None, verbose=False):
+        super(HPNScoringNetworkInsilico, self).__init__(filename)
 
         try:
             self.loadZIPFile(self.filename)
@@ -1532,7 +1489,6 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
             pylab.title("AUCs null distribution")
             pylab.savefig("SC1B_auprs_null_distribution.png")
 
-
     def get_zscore(self):
         """Returns scores for the current submission
 
@@ -1573,27 +1529,19 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
 
 
 class HPNScoringPredictionBase(HPNScoring):
-    def __init__(self, filename=None, client=None, verbose=False):
-        super(HPNScoringPredictionBase, self).__init__(client=client, verbose=verbose)
-
-        if filename == None:
-            try:
-                self.filename = self.client.get(self.test_synapse_id, downloadFile=True)['path']
-            except:
-                print("Could not fetch the true descendant file from synapse")
-        else:
-            self.filename = filename
-
+    def __init__(self, filename=None, verbose=False):
+        super(HPNScoringPredictionBase, self).__init__(verbose=verbose)
         self.times = [0,5,15,30,60,120,240]
         self.load_species()
+        self.filename = filename
 
 
 class HPNScoringPrediction(HPNScoringPredictionBase):
     test_synapse_id = "syn2000886"
     true_synapse_id = "syn2009136"   # for now it is local in the SC2A file. Could use
                            # theMIDAS as well
-    def __init__(self, filename=None, verbose=False, client=None):
-        super(HPNScoringPrediction, self).__init__(filename, client=client)
+    def __init__(self, filename=None, verbose=False):
+        super(HPNScoringPrediction, self).__init__(filename)
         self.loadZIPFile(self.filename)
 
         filename = os.sep.join([self._path2data, "goldstandard", "TruePrediction.zip"])
@@ -1988,10 +1936,11 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
     test_synapse_id =  "syn2009175"
     true_synapse_id = "syn2143242"
 
-    def __init__(self, filename=None, client=None,verbose=False):
-        super(HPNScoringPredictionInsilico, self).__init__(filename, client=client)
+    def __init__(self, filename=None, verbose=False):
+        super(HPNScoringPredictionInsilico, self).__init__(filename)
         filename = os.sep.join([self._path2data, "goldstandard", "TruePredictionInsilico.zip"])
         self.true_desc_filename = filename
+
 
         #self.loadZIPFile(self.filename)
         self.valid_cellLines = [""]
@@ -2000,10 +1949,10 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         self.inhibitors = ["AB%s"%x for x in range(1,21)]
         self.phosphos = ["AB%s"%x for x in range(1,21)]
 
-        try:
-            self.get_user_prediction()
-        except:
-            print("could not read user prediction")
+        #try:
+        self.get_user_prediction()
+        #except:
+        #    print("could not read user prediction")
 
         self.get_true_prediction()
 
@@ -2378,8 +2327,8 @@ class HPNScoringPrediction_ranking(HPNScoring):
     HPNScoringPrediction.compute_all_rmse()
 
     """
-    def __init__(self, client=None):
-        super(HPNScoringPrediction_ranking, self).__init__(client=client)
+    def __init__(self):
+        super(HPNScoringPrediction_ranking, self).__init__()
         self.valid_cellLines = ['UACC812', 'MCF7', 'BT549', 'BT20']
         self.rmse = []
         self.participants = []
@@ -2560,8 +2509,8 @@ class HPNScoringPredictionInsilico_ranking(HPNScoring):
     HPNScoringPrediction.compute_all_rmse()
 
     """
-    def __init__(self, client=None):
-        super(HPNScoringPredictionInsilico_ranking, self).__init__(client=client)
+    def __init__(self):
+        super(HPNScoringPredictionInsilico_ranking, self).__init__()
         self.times = [0, 1,2,4,6,10,15,30,60,120]
         self.inhibitors = ["AB%s"%x for x in range(1,21)]
         self.phosphos = ["AB%s"%x for x in range(1,21)]
@@ -2712,13 +2661,13 @@ class HPNScoringPredictionInsilico_ranking(HPNScoring):
                     zscores[c][p] = np.nan
         return zscores
 
-def sc2a_null(N=100, client=None, tag=""):
-    s = HPNScoringPrediction(client=client)
+def sc2a_null(N=100, tag=""):
+    s = HPNScoringPrediction()
     res = s.get_null(N, tag=tag)
     return res
 
-def sc2b_null(N=100, client=None):
-    s = HPNScoringPredictionInsilico(client=client)
+def sc2b_null(N=100):
+    s = HPNScoringPredictionInsilico()
     res = s.get_null(N)
     return res
 

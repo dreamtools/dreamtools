@@ -46,7 +46,7 @@ class SubmissionTools(Login):
         h = HPN.Admin()
         submissions = h.get_submissions_network( status="all")
 
-        subs = hpn.SubmissionTools(client=h.client)
+        subs = hpn.SubmissionTools()
         submissions = subs.attach_status_to_submissions(submissions)
         submissions = subs.attach_week_to_submissions(submissions)
 
@@ -263,7 +263,7 @@ class SC1ASubmissions(SubmissionTools):
         self.submissions = submissions
 
     def _get_ranking(self):
-        ranking = scoring.HPNScoringNetwork_ranking(client=self.client)
+        ranking = scoring.HPNScoringNetwork_ranking()
         for i,sub in enumerate(self.submissions):
             auc = json.loads(sub['substatus']['report'])
             ranking.add_auc(auc, sub['submitterAlias'] +"_"+ str(i))
@@ -466,10 +466,10 @@ class SC1Aggregate(Login):
             self.load()
 
     def load(self):
-        self.subs_sc1a = SC1ASubmissions(client=self.client)
+        self.subs_sc1a = SC1ASubmissions()
         self.subs_sc1a.load_submissions()
         self.sc1a = self.subs_sc1a.summary_final()
-        self.subs_sc1b = SC1BSubmissions(client=self.client)
+        self.subs_sc1b = SC1BSubmissions()
         self.subs_sc1b.load_submissions()
         self.sc1b = self.subs_sc1b.summary_final()
 
@@ -570,12 +570,12 @@ class SC2ASubmissions(SubmissionTools):
     def _get_ranking(self):
         print("Getting ranking")
         import json
-        ranking = scoring.HPNScoringPrediction_ranking(client=self.client)
+        ranking = scoring.HPNScoringPrediction_ranking()
         for i,sub in enumerate(self.submissions):
             rmse = json.loads(sub['substatus']['report'])
             filename = self.client.getSubmission(sub, downloadFile=True, ifcollision="keep.local")['filePath']
             print(i, filename)
-            s = scoring.HPNScoringPrediction(filename, client=self.client)
+            s = scoring.HPNScoringPrediction(filename)
             s.compute_all_rmse()
             rmse = copy.deepcopy(s.rmse)
 
@@ -584,7 +584,6 @@ class SC2ASubmissions(SubmissionTools):
 
     def get_final_pvalue(self, submission):
         from scipy import stats
-        from numpy import log
         # get all zscores
         zz = submission['zscores']
         zscores = [zz[k1][k2] for k1 in zz.keys() for k2 in zz[k1].keys()]
@@ -593,7 +592,7 @@ class SC2ASubmissions(SubmissionTools):
 
         # zscores are one-sided (could negative) so multiply by 1
         sided = 1
-        total_score = sum([-2 * log(stats.norm.sf(x) * sided) for x in zscores])
+        total_score = sum([-2 * np.log(stats.norm.sf(x) * sided) for x in zscores])
         # this is a fisher method to combine the 32 scores.
         # chi2 survival for dof=64 and x=100 is 0.002686
         pvalue = stats.chi2.sf(total_score, dof)
@@ -711,11 +710,11 @@ class SC2BSubmissions(SubmissionTools):
 
     def _get_ranking(self):
         import json
-        ranking = scoring.HPNScoringPredictionInsilico_ranking(client=self.client)
+        ranking = scoring.HPNScoringPredictionInsilico_ranking()
         for i,sub in enumerate(self.submissions):
             rmse = json.loads(sub['substatus']['report'])
             filename = self.client.getSubmission(sub, downloadFile=True, ifcollision="keep.local")['filePath']
-            s = scoring.HPNScoringPredictionInsilico(filename, client=self.client)
+            s = scoring.HPNScoringPredictionInsilico(filename)
             s.compute_all_rmse()
             rmse = copy.deepcopy(s.rmse)
             ranking.add_rmse(rmse, sub['submitterAlias'] +"_"+ str(i))
@@ -768,16 +767,16 @@ class SC2BSubmissions(SubmissionTools):
 
 class SC2Aggregate(Login):
 
-    def __init__(self, client=None, load=True):
-        super(SC2Aggregate, self).__init__(client=client)
+    def __init__(self, load=True):
+        super(SC2Aggregate, self).__init__()
         if load:
             self.load()
 
     def load(self):
-        self.subs_sc1a = SC2ASubmissions(client=self.client)
+        self.subs_sc1a = SC2ASubmissions()
         self.subs_sc1a.load_submissions()
         self.sc1a = self.subs_sc1a.summary_final()
-        self.subs_sc1b = SC2BSubmissions(client=self.client)
+        self.subs_sc1b = SC2BSubmissions()
         self.subs_sc1b.load_submissions()
         self.sc1b = self.subs_sc1b.summary_final()
 

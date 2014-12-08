@@ -13,9 +13,9 @@ except:
 def create_dreamtools_config_directories(maindir, subdirectories):
     import os
     cfg = configuration.user_config_dir
-    print("Creating directories in %s for %s" % (cfg, maindir) )
     path = cfg + os.sep + 'data' + os.sep + maindir
     if os.path.isdir(path) is False:
+        print("Creating directories in %s for %s" % (cfg, maindir) )
         os.mkdir(path)
     for directory in subdirectories:
         subdir = path + os.sep +directory

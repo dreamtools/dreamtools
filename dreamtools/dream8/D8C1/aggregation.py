@@ -26,7 +26,7 @@ import pandas as pd
 
 import submissions
 from dreamtools import Login
-from dreamtools.core.tools import ZIP
+from dreamtools.core.ziptools import ZIP
 
 from scoring import HPNScoringPrediction
 from scoring import HPNScoringPredictionInsilico
@@ -463,7 +463,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
             aggregate = copy.deepcopy(self._individuals[index])
         else:
             filename = self.df.ix[index].filename
-            aggregate = HPNScoringNetwork(filename=filename, client=self.client)
+            aggregate = HPNScoringNetwork(filename=filename)
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -485,7 +485,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
                 else:
                     filename =self.df.ix[sub].filename
                     individual = HPNScoringNetwork(filename=filename,
-                        client=self.client)
+                        )
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.edge_scores.keys():
                     for l in aggregate.edge_scores[c].keys():
@@ -540,8 +540,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
                 pass
             else:
                 filename = self.df.ix[sub].filename
-                individual = HPNScoringNetwork(filename=filename,
-                    client=self.client)
+                individual = HPNScoringNetwork(filename=filename)
                 self._individuals[sub] = copy.deepcopy(individual)
 
         print("Extracting the edge ranks")
@@ -574,10 +573,6 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
                 ss.edge_scores[c][l] = edge_scores[c][l].copy()
         ss.compute_all_aucs()
         return ss.get_auc_final_scoring(), ss
-
-
-
-
 
 
 class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
@@ -634,7 +629,7 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
             aggregate = copy.deepcopy(self._individuals[index])
         else:
             filename = self.df.ix[index].filename
-            aggregate = HPNScoringNetworkInsilico(filename=filename, client=self.client)
+            aggregate = HPNScoringNetworkInsilico(filename=filename)
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -651,8 +646,7 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
                     individual = copy.deepcopy(self._individuals[sub])
                 else:
                     filename =self.df.ix[sub].filename
-                    individual = HPNScoringNetworkInsilico(filename=filename,
-                        client=self.client)
+                    individual = HPNScoringNetworkInsilico(filename=filename)
                     self._individuals[sub] = copy.deepcopy(individual)
                 user_graph.append(individual.user_graph)
         if self.mode == "mean":
@@ -665,7 +659,6 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
         # nothing special is done here. This is just for
         #the plot_aggr_best_score in sc1a and sc1b to be identical
         return aggr.get_auc()
-
 
 
 
@@ -720,7 +713,7 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
             aggregate = copy.deepcopy(self._individuals[index])
         else:
             filename = self.df.ix[index].filename
-            aggregate = HPNScoringPrediction(filename=filename, client=self.client)
+            aggregate = HPNScoringPrediction(filename=filename)
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -744,8 +737,7 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
                     individual = copy.deepcopy(self._individuals[sub])
                 else:
                     filename = self.df.ix[sub].filename
-                    individual = HPNScoringPrediction(filename=filename,
-                        client=self.client)
+                    individual = HPNScoringPrediction(filename=filename)
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.user_prediction.keys():
                     for l in aggregate.user_prediction[c].keys():
@@ -770,8 +762,6 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
     def _get_mean_rmse(self, data):
         d = data
         return np.nanmean([d[k1][k2] for k1 in d.keys() for k2 in d[k1].keys()])
-
-
 
 
 
@@ -802,10 +792,7 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
     def __init__(self,  client=None, directory="hpndream8_downloads/sc2b"):
         """
 
-
-
         :param client: an existing synapse client
-
 
         """
         super(SC2B_aggregation, self).__init__(name="SC2B", client=client)
@@ -823,7 +810,7 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
             aggregate = copy.deepcopy(self._individuals[index])
         else:
             filename = self.df.ix[index].filename
-            aggregate = HPNScoringPredictionInsilico(filename=filename, client=self.client)
+            aggregate = HPNScoringPredictionInsilico(filename=filename)
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -847,8 +834,7 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
                     individual = copy.deepcopy(self._individuals[sub])
                 else:
                     filename = self.df.ix[sub].filename
-                    individual = HPNScoringPredictionInsilico(filename=filename,
-                        client=self.client)
+                    individual = HPNScoringPredictionInsilico(filename=filename)
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.user_prediction.keys():
                     for l in aggregate.user_prediction[c].keys():
@@ -922,8 +908,7 @@ submissions.  Found %s" % len(filenames))
         for filename in filenames:
             team_name = self.mapping[filename.split("/")[2]]
             individual = HPNScoringNetwork(filename=filename,
-                    true_desc_filename=true_desc_filename,
-                    client=self.client, skip_true=True)
+                    skip_true=True)
             self.edge_scores[team_name] = individual.edge_scores.copy()
         print("all edge scores available in edge_scores dictionary")
         self.species = individual.species.copy()
@@ -1072,8 +1057,7 @@ submissions.  Found %s" % len(filenames))
         for filename in filenames:
             team_name = self.mapping[filename.split("/")[2]]
             individual = HPNScoringNetworkInsilico(filename=filename,
-                    goldstandard=true_desc_filename,
-                    client=self.client)
+                    goldstandard=true_desc_filename) 
             self.user_graphs[team_name] = individual.user_graph.copy()
         print("all edge scores available in user_graph dictionary")
 

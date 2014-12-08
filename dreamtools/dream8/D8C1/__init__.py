@@ -10,10 +10,10 @@ metadata = {
     'sc1b': {},
     'sc2a': {},
     'sc2b': {},
-
-
-
         }
+
+
+
 import commons
 
 import scoring
@@ -26,6 +26,12 @@ from hpn import *
 import submissions
 
 
+import os
+from dreamtools import configuration as cfg
+# SC1A network
+experimental_data_synapseId = "syn1920412"
+experimental_filename = cfg.user_config_dir + os.sep  + 'dream8' 
+experimental_filename += os.sep + 'D8C1' + os.sep + 'experimental.zip'
 
 
 
