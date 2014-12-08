@@ -23,23 +23,22 @@ Here is the procedure to get the ROC or RMSE::
 
 
     from dreamtools.dream8.D8C1 import scoring
-    sc1a = scoring.HP
 
-    s = scoring.HPNScoringNetwork(sc1a_submissions.zip)
-    s.compute_all_aucs()
-    s.get_auc_final_scoring()
+    sc1a = scoring.HPNScoringNetwork(sc1a_submissions.zip)
+    sc1a.compute_all_aucs()
+    sc1a.get_auc_final_scoring()
 
-    s = scoring.HPNScoringNetworkInsilico(sc1b_submissions.zip)
-    s.compute_score()
-    s.auc
+    sc1b = scoring.HPNScoringNetworkInsilico(sc1b_submissions.zip)
+    sc1b.compute_score()
+    sc1b.auc
 
-    s = scoring.HPNScoringPrediction(sc2a_submissions.zip)
-    s.compute_all_rmse()
-    s.get_mean_rmse()
+    sc2a = scoring.HPNScoringPrediction(sc2a_submissions.zip)
+    sc2a.compute_all_rmse()
+    sc2a.get_mean_rmse()
 
-    s = scoring.HPNScoringPredictionInsilico(sc2b_submissions.zip)
-    s.compute_all_rmse()
-    s.get_mean_rmse()
+    sc2b = scoring.HPNScoringPredictionInsilico(sc2b_submissions.zip)
+    sc2b.compute_all_rmse()
+    sc2b.get_mean_rmse()
 
 
 
