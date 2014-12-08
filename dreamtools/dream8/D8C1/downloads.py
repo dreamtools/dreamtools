@@ -20,9 +20,10 @@
 """
 import os
 from dreamtools.dream8.D8C1 import submissions
+from dreamtools.core.sageutils import Login
 
 
-class SubmissionsDownloader(object):
+class SubmissionsDownloader(Login):
     """Tool to download all official submissions from synapse (zipped files).
 
     ::
@@ -33,7 +34,8 @@ class SubmissionsDownloader(object):
 
 
     """
-    def __init__(self, directory="hpndream8_downloads"):
+    def __init__(self, directory="hpndream8_downloads", client=None):
+        super(SubmissionsDownloader, self).__init__(client=client)
         self.directory = directory
 
     def _get_location(self, this):
@@ -63,7 +65,7 @@ class SubmissionsDownloader(object):
     def download_all_sc1b_final_submissions(self):
         """Download all submissions from the SC1B subchallenge
 
-        There is as duplicated filename here. This commandfails::
+        There is a duplicated filename here. This command fails::
 
             easydev.swapdict([(x['submitterAlias'],
                     json.loads(x['entityBundleJSON'])['fileHandles'][0]['fileName'])
@@ -97,4 +99,7 @@ class SubmissionsDownloader(object):
             print "downloading %s/%s"  % (i+1, len(s.submissions))
 
 
+    def download_experimental(self):
+        from dreamtools import configuration as cfg
+        self.client.get("syn1920412", downloadLocation=cfg.user_config_dir)
 

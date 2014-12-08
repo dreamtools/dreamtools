@@ -70,7 +70,7 @@ class ScoringError(Exception):
         return repr("ScoringError(HPN-DREAM8): %s " % self.value )
 
 
-class HPNScoring(Login, ZIP):
+class HPNScoring(ZIP):
     """Base class common to all scoring classes
 
     The HPN challenges use data from 32 types of combinaison of cell lines (4) and
@@ -108,8 +108,8 @@ class HPNScoring(Login, ZIP):
     """
     experimental_data_synapseId = "syn1920412"
 
-    def __init__(self, verbose=True, client=None):
-        super(HPNScoring, self).__init__(client=client)
+    def __init__(self, verbose=True):
+        super(HPNScoring, self).__init__()
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
 
@@ -208,7 +208,8 @@ class HPNScoring(Login, ZIP):
 
     def load_species(self):
         """Loads names of the expected phospho names for each cell line from the synapse files provided to the users"""
-        filename = self.client.get(self.experimental_data_synapseId, downloadFile=True, ifcollision="keep.local")['path']
+        filename = self.client.get(self.experimental_data_synapseId,
+                                   downloadFile=True, ifcollision="keep.local")['path']
 
         z = zipfile.ZipFile(filename)
         self.species = {}
@@ -225,9 +226,8 @@ class HPNScoringNetworkBase(HPNScoring):
     test_synapse_id = "syn1971273"
     true_synapse_id = "syn1971278"
 
-    def __init__(self, filename=None, true_desc_filename=None, verbose=True,
-            client=None):
-        super(HPNScoringNetworkBase, self).__init__(verbose=verbose, client=client)
+    def __init__(self, filename=None, true_desc_filename=None, verbose=True):
+        super(HPNScoringNetworkBase, self).__init__(verbose=verbose)
 
         if filename == None:
             try:
@@ -1827,7 +1827,6 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
             RMSE = np.sqrt(RMSE)
         else:
             RMSE = np.nan
-
         return RMSE
 
     def compute_all_rmse(self):

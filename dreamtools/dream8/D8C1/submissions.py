@@ -181,47 +181,6 @@ class SubmissionTools(Login):
     def get_unique_submitters(self):
         return list(set([x['userId'] for x in self.submissions]))
 
-    def plot_all_scored_submissions_per_week(self, fontsize=16):
-        from pylab import bar, title, grid, xlabel, ylabel
-        weeks = {}
-        for this in self.submissions:
-            if this['week'] not in weeks.keys():
-                weeks[this['week']] = 1
-            else:
-                weeks[this['week']] += 1
-        bar(weeks.keys(), weeks.values())
-        title("Scored submissions per weeks in %s" % self.name,
-                fontsize=fontsize)
-        grid(True)
-        xlabel("week", fontsize=fontsize)
-        ylabel("# of submissions", fontsize=fontsize)
-
-    def plot_participation_over_weeks(self, fontsize=16, maxweeks=None,
-        origin="lower", aspect="auto"):
-        """plot an image showing in a week/participant plane when participants
-        actually submitted.
-        """
-        from pylab import imshow, gray, clf, xlabel, ylabel, title
-        if maxweeks==None:
-            maxweeks = max([x['week'] for x in self.submissions]) + 1
-        submitters = self.get_unique_submitters()
-        Np = len(submitters)
-        data = np.zeros((maxweeks, Np))
-        for this in self.submissions:
-            i = submitters.index(this['userId'])
-            j = this['week']
-            if j<maxweeks:
-                data[j,i] += 1
-        clf
-        imshow(1-data, interpolation="none", vmin=0, vmax=1, aspect=aspect,
-                origin=origin);
-        gray()
-        xlabel("Participants (%s)" % Np, fontsize=fontsize)
-        ylabel("Weeks", fontsize=fontsize)
-        title("Participation over the weeks of each participant in %s" %
-                self.name, fontsize=fontsize)
-
-
 
 class SC1ASubmissions(SubmissionTools):
     """Retrieve SCORED submissions and attach all relevant information
@@ -266,7 +225,7 @@ class SC1ASubmissions(SubmissionTools):
         print("attaching submissions")
         self.submissions = self.attach_status_to_submissions(self.submissions)
 
-        print("remove soem users")
+        print("remove some users")
         self.remove_users()
 
         print("attaching scores and compute final ranking")
@@ -346,11 +305,8 @@ class SC1ASubmissions(SubmissionTools):
             data[name]['zscores'] = s['zscores']
             data[name]['mean_zscore'] = s['zscore']
             data[name]['aucs'] = s['aucs']
-
             data[name]['mean_rank'] = s['ranking']
-
             data[name]['mean_aucs'] = s['mean_aucs']
-
             data[name]['ranks'] = s['ranks']
 
             if filename:
@@ -359,39 +315,6 @@ class SC1ASubmissions(SubmissionTools):
                 fh.close()
 
         return data
-
-    def plot_score_versus_week(self, min_zscore=2, fontsize=16):
-        for submitter in self.get_unique_submitters():
-            data = [(x['week'], x['ranking'], x['zscore']) for x in
-                    self.submissions if  x['submitterAlias'] == submitter]
-            weeks = [x[0] for x in data]
-            #ranks = [x[1] for x in data]
-            zscores = [x[2] for x in data]
-            if max(zscores)> min_zscore:
-                plot(weeks, zscores, label=submitter)
-        pylab.clf()
-        pylab.legend(loc="upper left")
-        pylab.xlabel("eeks", fontsize=fontsize)
-        pylab.ylabel("zscore", fontsize=fontsize)
-        pylab.title("Score evolution over weeks for teams who crossed zscore=%s" %
-                min_zscore, fontsize=fontsize)
-
-    def get_final_pvalue(self, submission):
-        from scipy import stats
-        from numpy import log
-        # get all zscores
-        zz = submission['zscores']
-        zscores = [zz[k1][k2] for k1 in zz.keys() for k2 in zz[k1].keys()]
-        dof = len(zscores) * 2
-        assert dof == 60
-
-        # zscores are one-sided (could negative) so multiply by 1
-        sided = 1
-        total_score = sum([-2 * log(stats.norm.sf(x) * sided) for x in zscores])
-        # this is a fisher method to combine the 32 scores.
-        # chi2 survival for dof=64 and x=100 is 0.002686
-        pvalue = stats.chi2.sf(total_score, dof)
-        return pvalue
 
     def summary_final(self, show="all"):
         print("Remove 3 combi of cell line/ligands before printing")
@@ -404,7 +327,7 @@ class SC1ASubmissions(SubmissionTools):
         res = {}
         for count, i in enumerate(ranks):
             sub = self.submissions[i]
-            pvalue = self.get_final_pvalue(sub)
+            pvalue = 0
             if sub['submitterAlias'] == "ChaosLab":
                 sub['submitterAlias'] = "FreiburgBiossX"
             data = (count+1, sub['submitterAlias'], sub['userId'],
@@ -508,30 +431,6 @@ class SC1BSubmissions(SubmissionTools):
                 fh.close()
         return data
 
-    def plot_score_versus_week(self, min_zscore=2, fontsize=16):
-        for submitter in self.get_unique_submitters():
-            data = [(x['week'], x['ranking'], x['zscore']) for x in
-                    self.submissions if  x['submitterAlias'] == submitter]
-            weeks = [x[0] for x in data]
-            #ranks = [x[1] for x in data]
-            zscores = [x[2] for x in data]
-            if max(zscores)> min_zscore:
-                plot(weeks, zscores, label=submitter)
-        pylab.clf()
-        pylab.legend(loc="upper left")
-        pylab.xlabel("weeks", fontsize=fontsize)
-        pylab.ylabel("zscore", fontsize=fontsize)
-        pylab.title("Score evolution over weeks for teams who crossed zscore=%s" %
-                min_zscore, fontsize=fontsize)
-
-    def get_final_pvalue(self, submission):
-        from scipy import stats
-        zz = submission['zscore']
-        # zscores are one-sided (could negative) so multiply by 1
-        sided = 1
-        pvalue = stats.norm.sf(zz) * sided
-        return pvalue
-
     def summary_final(self):
 
         header = ("Final rank", "Team name", "userID", "synapse ID", "entityID" , "AUC", "zscore", "p-value")
@@ -541,7 +440,7 @@ class SC1BSubmissions(SubmissionTools):
         results = {}
         for count, i in enumerate(ranks):
             sub = self.submissions[i]
-            pvalue = self.get_final_pvalue(sub)
+            pvalue = 0
             if sub['submitterAlias'] == "ChaosLab":
                 sub['submitterAlias'] = "FreiburgBiossX"
 
@@ -728,7 +627,6 @@ class SC2ASubmissions(SubmissionTools):
     def summary_final(self):
         ranks = np.argsort([sub['ranking'] for sub in self.submissions])
 
-
         header = ("| Final rank| Team name | Team Id | Synapse ID |  Entity ID | mean RMSE  | mean Rank | mean zscore |")
         print(header)
         print("|--------|--------|----------|-------|----|---------------|")
@@ -756,7 +654,6 @@ class SC2ASubmissions(SubmissionTools):
                 json.dump(data, fh)
                 fh.close()
         return data
-
 
 
 class SC2BSubmissions(SubmissionTools):
