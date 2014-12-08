@@ -13,17 +13,13 @@
 #  website: http://github.com/dreamtools
 #
 ##############################################################################
-"""Module to download final submissions
+"""Module to download final submissions for admin usage only
 
 :status: FINAL
 
 """
 import os
 from dreamtools.dream8.D8C1 import submissions
-import pandas as pd
-from easydev import get_share_file as gsf
-from dreamtools.core.sageutils import Login
-from  synapseclient import exceptions
 
 
 class SubmissionsDownloader(object):
@@ -99,138 +95,6 @@ class SubmissionsDownloader(object):
             s.client.downloadSubmissionAndFilename(sub, downloadFile=True,
                     downloadLocation=self._get_location("sc2b"))
             print "downloading %s/%s"  % (i+1, len(s.submissions))
-
-
-
-class SurveyInfo(Login):
-    """
-
-    Need access to a file called sc1a_survey.xlsx that contains list
-    of synapse id of the writeups plus more info.
-
-    :meth:`download_writeup` downlads all writeups and prints
-    informative messages.
-
-
-    :STATUS: used only once to get the writeups. Worked.
-
-    """
-    def __init__(self, filename="sc1a_survey_info.csv",client=None):
-        super(SurveyInfo, self).__init__(client=client)
-
-        # survey is extracted from
-        # https://docs.google.com/spreadsheet/ccc?key=0AjRfQOSvR8KqdGJwSnhmTEhkZkJjbkJJU293aklEcUE&usp=drive_web#gid=3
-
-        if os.path.isfile(filename) == False:
-            # try with gsf
-            filename = gsf("dreamtools", "data/dream8hpn", filename)
-
-        self.df = pd.read_csv(filename, nrows=78)
-
-        columns = list(self.df.columns)
-
-        columns[2] = "synapseId"
-        columns[11] = "pkn_synapseId"
-        self.df.columns = columns
-
-    def _get_team_names(self):
-        return self.df['Team name']
-    teamNames = property(_get_team_names)
-
-    #def _get_writeup_ids(self):
-    #    return self.df['writeup_synapseId']
-    #writeup_ids = property(_get_writeup_ids)
-
-    def _get_pkn_ids(self):
-        return self.df['pkn_synapseId']
-    pkn_ids = property(_get_pkn_ids)
-
-    def _download_writeups(self):
-        """obsolet
-        Download all writeups
-
-        """
-
-        self.writeups = {}
-        print("Fetching information")
-        for i , id_ in enumerate(self.writeup_ids):
-            try:
-                entity = self.client.getEntity(id_)
-                print(self.teamNames[i] + " ok")
-                self.writeups[self.teamNames[i]] = entity
-            except exceptions.SynapseHTTPError, e:
-                if "lacks read access to" in e.message:
-
-                    print("{} Permission Issue {}".format(self.teamNames[i], id_))
-                else:
-                    print self.teamNames[i],
-                    print e.message + "\n"
-
-            except Exception,e:
-                print self.teamNames[i],
-                print e.message + "\n"
-
-        print("Downloading")
-        if os.path.isdir("sc1a_writeups") ==  False:
-            os.mkdir("sc1a_writeups")
-
-        for key in self.writeups.keys():
-            try:
-                print("{} {}".format(key, self.writeups[key]['id']))
-                self.client.get(self.writeups[key]['id'], version=None,
-                            downloadLocation="sc1a_writeups")
-            except:
-                print("Could not download {}".format(key) )
-
-    def download_pkns(self, location="sc1a_pkns"):
-        """Downloads all PKNs
-
-        """
-        self.pkns = {}
-        print("Fetching information")
-        for i , id_ in enumerate(self.pkn_ids):
-            try:
-                id_ = id_.split(":")[-1]
-            except:
-                print("No valid id provided")
-                continue
-            if id_.startswith("syn") == False:
-                print("No valid id provided")
-                continue
-            print(id_),
-            if pd.isnull(id_) != True:
-                try:
-                    entity = self.client.getEntity(id_)
-                    print(self.teamNames[i] + " ok")
-                    self.pkns[self.teamNames[i]] = entity
-                except exceptions.SynapseHTTPError, e:
-                    if "lacks read access to" in e.message:
-                        print("{} Permission Issue {}".format(self.teamNames[i], id_))
-                    else:
-                        print self.teamNames[i],
-                        print e.message + "\n"
-
-                except Exception,e:
-                    print self.teamNames[i],
-                    print e.message + "\n"
-            else:
-                print(self.teamNames[i] + " no id provided")
-
-        print("\nDownloading")
-        if os.path.isdir(location) ==  False:
-            os.mkdir(location)
-
-        for key in self.pkns.keys():
-            try:
-                print("{} {}".format(key, self.pkns[key]['id']))
-                self.client.get(self.pkns[key]['id'], version=None,
-                            downloadLocation=location)
-            except:
-                print("Could not download {}".format(key) )
-
-
-
-
 
 
 
