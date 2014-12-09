@@ -69,7 +69,6 @@ import dateutil.parser
 from dateutil.relativedelta import *
 from dateutil import tz
 
-import logging
 
 from dreamtools.core.sageutils import Login
 from dreamtools.core.ziptools import ZIP
@@ -430,7 +429,6 @@ class HPNAdmin(HPN):
         N = len(self.get_submissions_prediction_insilico(status="INVALID"))
         print("There are %s INVALID submissions in SC2B.\n" % N)
 
-
     def update_submission_status(self, submission, scoring, production=False):
         """Update the status of a submission given Scoring instance
 
@@ -622,15 +620,12 @@ class HPNAdmin(HPN):
             leaderboard.extend(week_submissions)
         return leaderboard
 
-
     def _clean_multiple_accounts(self, submissions):
         # known users who have different accounts:
         for sub in submissions:
             if sub['userId'] == '422256':
                 sub['userId'] = '1991105'
         return submissions
-
-
 
     def _select_submissions_mode1(self, submissions):
         """keeps only latest scored, latest invalid and open submissions

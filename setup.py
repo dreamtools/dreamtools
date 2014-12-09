@@ -84,7 +84,9 @@ setup(
 
     # distutils in rtools.package
     #install_requires = [ 'pandas', 'bioservices', 'colormap>=0.9.3'],
-    install_requires = ['numpy', 'matplotlib', 'pandas', 'appdirs', 'easydev', 'synapseclient'],
+    install_requires = ['numpy', 'matplotlib', 'pandas', 'appdirs', 'easydev',
+        'synapseclient',
+        'tabulate'],
 
     )
 

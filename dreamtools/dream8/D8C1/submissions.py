@@ -154,7 +154,6 @@ class SubmissionTools(Login):
             if d <= dstart:
                 result = 0
 
-#         print d, result
         return result
 
     def attach_status_to_submissions(self, submissions):
@@ -313,7 +312,6 @@ class SC1ASubmissions(SubmissionTools):
                 fh = open(filename, "w")
                 json.dump(data, fh)
                 fh.close()
-
         return data
 
     def summary_final(self, show="all"):
@@ -335,7 +333,7 @@ class SC1ASubmissions(SubmissionTools):
                 sub['mean_aucs'],sub['ranking'], pvalue)
             print("|%12s | %20s | %12s |%12s| %12s | %10.6s |%12.6s|%s|" % data)
             res[sub['submitterAlias']] = count+1
-            results[count] = data[:]
+            results[sub['submitterAlias']] = data[:]
         return results
 
 
@@ -453,17 +451,12 @@ class SC1BSubmissions(SubmissionTools):
         return results
 
 
-
 class SC1Aggregate(Login):
-    """This is not aggregation but combimaison of SC1A and B
+    """This is not aggregation but combimaison of SC1A and B"""
 
-
-    """
-
-    def __init__(self, client=None, load=True):
+    def __init__(self, client=None):
         super(SC1Aggregate, self).__init__(client=client)
-        if load:
-            self.load()
+        self.load()
 
     def load(self):
         self.subs_sc1a = SC1ASubmissions()
@@ -493,7 +486,7 @@ class SC1Aggregate(Login):
                 mynan = np.nan
                 xb = mynan
                 results[name]['sc1b'] =mynan
-            print name, xa, xb, (xa+xb)/2.
+            print name, xa, xb
             results[name]['aggregate_score'] = (xa+xb)/2.
         return results
 

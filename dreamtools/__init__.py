@@ -2,18 +2,13 @@ from .core.sageutils import Login
 from .core import settings
 import os
 configuration = settings.DreamToolsConfig()
-
-try:
-    os.mkdir(configuration.user_config_dir + os.sep + "data")
-except:
-    pass
-
+dreampath = configuration.user_config_dir
 
 
 def create_dreamtools_config_directories(maindir, subdirectories):
     import os
     cfg = configuration.user_config_dir
-    path = cfg + os.sep + 'data' + os.sep + maindir
+    path = cfg + os.sep + maindir
     if os.path.isdir(path) is False:
         print("Creating directories in %s for %s" % (cfg, maindir) )
         os.mkdir(path)

@@ -34,9 +34,9 @@ from scoring import HPNScoringNetwork
 from scoring import HPNScoringNetworkInsilico
 import commons
 
+from dreamtools.dream8.D8C1 import d8c1path
 
-__all__ = ["AggregationTools",
-    "SC2AggregationPlotting", "SC2A_aggregation", "SC2B_aggregation",
+__all__ = ["SC2AggregationPlotting", "SC2A_aggregation", "SC2B_aggregation",
     "SC1AggregationPlotting", "SC1A_aggregation", "SC1B_aggregation"]
 
 
@@ -172,7 +172,6 @@ class AggregationTools(Login):
         return df
 
 
-
 class SC1AggregationPlotting(object):
     """ABC class plotting common to SC2A_aggregation and SC2B_aggregation."""
 
@@ -221,14 +220,11 @@ class SC1AggregationPlotting(object):
         iauc = [self.df.ix[x].mean_auc for x in range(0,M)]
 
         pylab.clf()
-
-
         pylab.plot(range(1,M+1), iauc, marker+color, markersize=markersize,
                    label="AUC (individual submissions)")
         pylab.plot(span, mean_aucs, 'x-',
                    label="{} aggregation (over first N submissions)".format(self.mode))
         pylab.grid(True)
-
 
         pylab.xlabel("N", fontsize=20)
         pylab.ylabel("AUC", fontsize=20)
@@ -237,7 +233,6 @@ class SC1AggregationPlotting(object):
         pylab.axis([0.5, M+1, yr[0]-0.05, yr[1]+0.05])
         pylab.ylim([0.35, 0.86])
         pylab.legend(loc="lower left")
-
 
 
     def plot_aggr_random(self, N=5, Nmax=10,
@@ -322,7 +317,6 @@ class SC2AggregationPlotting(object):
         .. seealso:: :class:`SC2A_aggregation`
 
         """
-
         assert N>=2
         mean_rmses = []
 
@@ -333,7 +327,6 @@ class SC2AggregationPlotting(object):
             rmse = self._get_mean_rmse(aggr.rmse)
             mean_rmses.append(rmse)
             print i, rmse
-
 
         iauc = [self.df.ix[x].mean_rmse for x in range(0,N)]
 
@@ -351,12 +344,10 @@ class SC2AggregationPlotting(object):
         #pylab.axis([1, , start+N+1, yr[0],yr[1]])
         pylab.legend(loc="upper left")
 
-
     def plot_aggr_random(self, N=5, Nmax=14):
         """plots aggregation using N random submissions
 
         .. seealso:: :class:`SC2A_aggregation`
-
 
         """
         #start = 0
@@ -394,7 +385,6 @@ class SC2AggregationPlotting(object):
         pylab.legend(loc="upper left")
 
 
-
 class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
     """Investigating the aggregation over several teams.
 
@@ -429,9 +419,8 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
 
     """
     valid_ligands_final = commons.valid_ligands_final
-    def __init__(self, best=2, client=None, directory="hpndream8_downloads/sc1a"):
+    def __init__(self, best=2, client=None):
         """
-
 
         :param best:
         :param client: an existing synapse client
@@ -448,7 +437,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
         self.endweek = 9
 
         self._individuals = {}
-        self.directory = directory
+        self.directory = os.sep.join([d8c1path, 'submissions', 'sc1a'])
 
         if os.path.isfile("sc1a_aggregation_data.pkl"):
             self.df = pd.read_pickle("sc1a_aggregation_data.pkl")
@@ -598,7 +587,7 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
         SC1B aggregation of random submissions
 
     """
-    def __init__(self, best=2, client=None, directory="hpndream8_downloads/sc1b"):
+    def __init__(self, best=2, client=None):
         """
 
 
@@ -615,7 +604,9 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
         self.best = 2
 
         self._individuals = {}
-        self.directory = directory
+
+        self.directory = os.sep.join([self.config, 'dream8', 'submissions', 'sc1b'])
+
         if os.path.isfile("sc1b_aggregation_data.pkl"):
             self.df = pd.read_pickle("sc1b_aggregation_data.pkl")
         else:
@@ -686,9 +677,8 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
         SC2A aggregation of random submissions
 
     """
-    def __init__(self, client=None, directory="hpndream8_downloads/sc2a"):
+    def __init__(self, client=None):
         """
-
 
         :param best:
         :param client: an existing synapse client
@@ -700,7 +690,8 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
 
 
         self._individuals = {}
-        self.directory = directory
+
+        self.directory = os.sep.join([self.config, 'dream8', 'submissions', 'sc2a'])
         if os.path.isfile("sc2a_aggregation_data.pkl"):
             self.df = pd.read_pickle("sc2a_aggregation_data.pkl")
         else:
@@ -789,7 +780,7 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
         SC2B aggregation of random submissions
 
     """
-    def __init__(self,  client=None, directory="hpndream8_downloads/sc2b"):
+    def __init__(self,  client=None):
         """
 
         :param client: an existing synapse client
@@ -797,7 +788,8 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
         """
         super(SC2B_aggregation, self).__init__(name="SC2B", client=client)
         self._individuals = {}
-        self.directory = directory
+        self.directory = os.sep.join([self.config, 'dream8', 'submissions', 'sc2b'])
+
         if os.path.isfile("sc2b_aggregation_data.pkl"):
             self.df = pd.read_pickle("sc2b_aggregation_data.pkl")
         else:
@@ -825,8 +817,6 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
             for l in aggregate.user_prediction[c].keys():
                 for k in aggregate.user_prediction[c][l].keys():
                     values[c][l][k] = [aggregate.user_prediction[c][l][k]]
-
-
 
         if len(subs)>1:
             for sub in subs[1:]:
@@ -867,16 +857,16 @@ class GenerateSC1AMatrixForMatlabAggregation(Login, ZIP):
     """
 
     This class expects to find the 74 zipped submissions in
-    hpndream8_downloads/sc1a directory. If you don't have this directory, please
+    submission/sc1a directory. If you don't have this directory, please
     use :class:`dreamtools.dream8hpn.downloads.SubmissionsDownloader` class.
 
 
-
     """
-    def __init__(self, directory="hpndream8_downloads/sc1a", client=None,
-                 edge_scores={}, species={}):
+    def __init__(self, client=None, edge_scores={}, species={}):
         super(GenerateSC1AMatrixForMatlabAggregation, self).__init__(client=client)
-        self.directory = directory
+
+        self.directory = os.sep.join([d8c1path, 'submissions', 'sc1a'])
+
         self.edge_scores = edge_scores.copy()
         self.species = species.copy()
         self._set_mapping()
@@ -887,12 +877,9 @@ class GenerateSC1AMatrixForMatlabAggregation(Login, ZIP):
         self.cellLines = ["BT20", "BT549", "MCF7", "UACC812"]
         self.stimuli = ['IGF1', 'PBS', 'Serum', 'NRG1', 'Insulin', 'HGF', 'EGF', 'FGF1']
 
-
     def loaddata(self):
         """Team name in the filename are not alwasy the official team names as
         they appear on synapse.
-
-
 
         """
         if os.path.exists(self.directory)==False:
@@ -903,7 +890,7 @@ class GenerateSC1AMatrixForMatlabAggregation(Login, ZIP):
 submissions.  Found %s" % len(filenames))
 
 
-        true_desc_filename = gsf("dreamtools", "data/dream8hpn", "TrueDescVectors.zip")
+        true_desc_filename = os.sep.join([d8c1path, 'gs', 'TrueDescVectors.zip'])
 
         for filename in filenames:
             team_name = self.mapping[filename.split("/")[2]]
@@ -1033,9 +1020,9 @@ class GenerateSC1BMatrixForMatlabAggregation(Login, ZIP):
 
 
     """
-    def __init__(self, directory="hpndream8_downloads/sc1b", client=None):
+    def __init__(self,  client=None):
         super(GenerateSC1BMatrixForMatlabAggregation, self).__init__(client=client)
-        self.directory = directory
+        self.directory = os.sep.join([d8c1path, 'submissions', 'sc1b'])
         self._set_mapping()
         self.user_graphs = {}
 
@@ -1051,13 +1038,12 @@ class GenerateSC1BMatrixForMatlabAggregation(Login, ZIP):
             raise ValueError("Expected 65 submissions in SC1A final \
 submissions.  Found %s" % len(filenames))
 
-
-        true_desc_filename = gsf("dreamtools", "data/dream8hpn", "TrueGraph.csv")
+        true_desc_filename = os.sep.join([d8c1path, "gs", "TrueGraph.csv"])
 
         for filename in filenames:
             team_name = self.mapping[filename.split("/")[2]]
             individual = HPNScoringNetworkInsilico(filename=filename,
-                    goldstandard=true_desc_filename) 
+                    goldstandard=true_desc_filename)
             self.user_graphs[team_name] = individual.user_graph.copy()
         print("all edge scores available in user_graph dictionary")
 
@@ -1233,7 +1219,8 @@ def sc1a_check_edge_scores_range(directory="hpndream8_downloads"):
     import glob
     import pandas as pd
     from dreamtools import scoring
-    filenames = glob.glob(directory+"/sc1a/*zip")
+
+    filenames = glob.glob(os.sep.join([d8c1path, "submissions", "sc1a", "*zip"]))
     client = None
     for filename in filenames:
         print("#################")
@@ -1250,7 +1237,7 @@ def sc1a_check_edge_scores_range(directory="hpndream8_downloads"):
             print("---------- max in %s %s" %(item, p[item].max().max()))
 
 
-def sc1b_check_edge_scores_range(directory="hpndream8_downloads"):
+def sc1b_check_edge_scores_range():
     """
 
     load all submissions from sc1a and check that values are >0.
@@ -1262,7 +1249,7 @@ def sc1b_check_edge_scores_range(directory="hpndream8_downloads"):
     import glob
     import pandas as pd
     from dreamtools import scoring
-    filenames = glob.glob(directory+"/sc1b/*zip")
+    filenames = glob.glob(os.sep.join([d8c1path , 'submissions', "sc1b", "*zip"]))
     client = None
     for filename in filenames:
         print("#################")

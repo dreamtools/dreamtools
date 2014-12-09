@@ -13,25 +13,20 @@ metadata = {
         }
 
 
-
 import commons
-
 import scoring
 from scoring import *
-
 import hpn
 from hpn import *
-
-
 import submissions
 
-
 import os
-from dreamtools import configuration as cfg
+from dreamtools import dreampath
+d8c1path = os.sep.join([dreampath, 'dream8', 'D8C1'])
+
 # SC1A network
 experimental_data_synapseId = "syn1920412"
-experimental_filename = cfg.user_config_dir + os.sep  + 'dream8' 
-experimental_filename += os.sep + 'D8C1' + os.sep + 'experimental.zip'
+experimental_filename = d8c1path + os.sep + 'experimental.zip'
 
 
 

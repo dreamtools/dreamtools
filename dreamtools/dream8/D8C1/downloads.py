@@ -34,12 +34,14 @@ class SubmissionsDownloader(Login):
 
 
     """
-    def __init__(self, directory="hpndream8_downloads", client=None):
+    def __init__(self,  client=None):
         super(SubmissionsDownloader, self).__init__(client=client)
-        self.directory = directory
+        from dreamtools import configuration as cfg
+        mainpath = cfg.user_config_dir
+        self.directory = os.sep.join([mainpath, "dream8", "D8C1", "submissions"])
 
     def _get_location(self, this):
-        path = "/".join([".", self.directory, this])
+        path = self.directory + os.sep + this
         if os.path.exists(self.directory) == False:
             os.mkdir(self.directory)
         if os.path.exists(path) == False:
@@ -100,15 +102,18 @@ class SubmissionsDownloader(Login):
 
 
 class GSDownloader(Login):
-    
-    """Factory to download gold standard files"""
+    """Factory to download gold standard files
+
+    """
     def __init__(self, client=None):
         super(GSDownloader, self).__init__(client=client)
+        from dreamtools import configuration as cfg
+        mainpath = cfg.user_config_dir
+        self.directory = os.sep.join([mainpath, "dream8", "D8C1"])
+
 
     def download_experimental(self):
-        from dreamtools import configuration as cfg
-        self.client.get("syn1920412", downloadLocation=cfg.user_config_dir + os.sep
-                + 'dream8' + os.sep + 'D8C1')
+        self.client.get("syn1920412", downloadLocation=self.directory)
 
 
 

@@ -39,7 +39,6 @@ import csv
 import tempfile
 import os
 import copy
-import json
 import pickle
 import zipfile
 
@@ -50,7 +49,6 @@ from easydev import get_share_file as gsf
 from dreamtools.core import rocs
 
 import cython_scoring
-from dreamtools.core.sageutils import Login
 from dreamtools.core.ziptools import ZIP
 from dreamtools.core.rocs import ROC
 #from dreamtools.dream8 import D8C1 as d8c1
@@ -89,29 +87,18 @@ class HPNScoring(ZIP):
         are indeed sorted alphabetically following hhe same order as in the
         original CSV files containing the data sets.
 
-    In addition, it the :attr:`score` and :attr:`status` attributes can be used
-    to store the score computed by :meth:`compute_score` and status returned.
-    The status can be one of SCORED, INVALID, OPEN, as expected by the synapse
-    framework.
+    In addition, it the :attr:`score` attributes can be used
+    to store the score computed by :meth:`compute_score` .
 
     All classes that need to compute scores require a data file
     submitted by a participant. We enforce the usage of ZIP file, which can
     be loaded by using :meth:`loadZIPFile`.
 
-    This class also provides a mechanism to keep track of the status. If an
-    exception is raised with :meth:`error` then the status is automatically set
-    to "INVALID" and score is set to 1. By default, :attr:`exception` is None.
-    IF an exception is raised, exception is not None anymore, which can be caught by
-    to fill synapse leaderboards.
-
-
     """
-    experimental_data_synapseId = "syn1920412"
 
     def __init__(self, verbose=True):
         super(HPNScoring, self).__init__()
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
-
 
         #: List of valid cell lines (e.g, BT20)
         self.valid_cellLines =  ["MCF7", "UACC812", "BT549", "BT20"]
@@ -136,7 +123,6 @@ class HPNScoring(ZIP):
             'BT20':['TAZ_pS89', 'FOXO3a_pS318_S321'],
             'BT549':['TAZ_pS89'],
             'UACC812':['TAZ_pS89']
-
             }
 
         # We need to retrieve list of phosphos as coded in the experimental data sets .
@@ -144,23 +130,7 @@ class HPNScoring(ZIP):
         self.ligands_names_steven = ['Serum', 'PBS', 'EGF', 'Insulin', 'FGF1', 'HGF', 'NRG1', 'IGF1']
 
         self._score = None
-        self._status = None
-        self._exception = None
         self.verbose = verbose
-        self.report = ""
-
-    def validation(self):
-        raise NotImplementedError
-
-    def compute_score(self):
-        """Must be implemented within you class
-
-        This method should set the :attr:`status` and :attr:`score` attributes.
-
-        .. note:: the score must be between 0 and 1.
-
-        """
-        raise NotImplementedError
 
     def _get_score(self):
         return self._score
@@ -170,46 +140,22 @@ class HPNScoring(ZIP):
     score = property(_get_score, _set_score,
         doc="R/W attribute to store the score (in [0,1] only)")
 
-    def _get_status(self):
-        return self._status
-    def _set_status(self, value):
-        if value not in ["SCORED", "INVALID", "OPEN", "UNKNOWN", "RECEIVED"]:
-            raise ValueError
-        self._status = value
-    status = property(_get_status, _set_status,
-        doc="R/W attribute to store the status of the score computation")
-
-    def _get_exception(self):
-        return self._exception
-    def _set_exception(self, exception):
-        if isinstance(exception, ScoringError) == False:
-            raise TypeError
-        self._exception = exception
-        self.status = "INVALID"
-        self.score = 1
-    exception = property(_get_exception, _set_exception,
-        doc="R/W attribute to store exception")
-
     def error(self, message):
         """If you want to raise an error, use this method.
 
         It raises a ScoringException and set the :attr:`exception`
         attribute. The message is stored in exception.value
-        If called, the :attr:`status` is set to "INVALID" and
+        If called, the :attr:`
+        ` is set to "INVALID" and
         the score is set to 1 (worst score).
 
         """
         print("ERROR:"+ message)
-        if self.exception == None:
-            self.exception = ScoringError(message)
-        else:
-            exception = ScoringError(message)
-            self.exception.value += "\n\n" +  exception.value
+        ScoringError(message)
 
     def load_species(self):
         """Loads names of the expected phospho names for each cell line from the synapse files provided to the users"""
         from dreamtools.dream8.D8C1 import experimental_filename as filename
-
         z = zipfile.ZipFile(filename)
         self.species = {}
         for cell in self.valid_cellLines:
@@ -241,7 +187,6 @@ class HPNScoringNetworkBase(HPNScoring):
 
     def _validate_sif(self, filename):
         """See validate() for details
-        populates status is there is a caught error
 
         """
         from cno.core import CNOGraph
@@ -267,11 +212,6 @@ class HPNScoringNetworkBase(HPNScoring):
             self.error("  * Could not read the SIF file content (%s)" % filename)
         finally:
             os.remove(f.name)
-
-        if self.exception:
-            print("Invalid data sets. score not computed")
-            return
-        #self.score = 1
 
     def _str_cleanup(self, text):
         # required to cleanup some submissions
@@ -325,9 +265,10 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         s = HPNScoringNetwork("TeamName-Network.zip")
         # or later
         s = HPNScoringNetwork("TeamName-Network.zip")
-        s.loadZIPFile("TeamName-Network.zip")
+        s.loadZIPFile("TeamNeame-Network.zip")
 
         s.compute_aucs()
+        s.get_auc_final_scoring() # as in the challenge ignoring some regimes
 
 
 
@@ -357,14 +298,11 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
     constructor via :meth:`load_true_descendants_from_zip`, which can be called at
     any time.
 
-
-
     """
     test_synapse_id = "syn1971273"
     true_synapse_id = "syn1971278"
 
-    def __init__(self, filename=None, verbose=False,
-            skip_true=False):
+    def __init__(self, filename=None, verbose=False):
         """
 
         :param str filename:
@@ -372,7 +310,8 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         """
         super(HPNScoringNetwork, self).__init__(filename, verbose=verbose)
         self._init()
-        self.load_submission(self.filename)
+        if filename:
+            self.load_submission(self.filename)
         self.robustness_testing = False
         self.masking = 0.1
 
@@ -391,7 +330,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         self.aupr = dict([(x,{}) for x in self.valid_cellLines])
 
     def edge_score_to_eda_files(self, teamname):
-
         directory = teamname
         try:os.mkdir(directory)
         except:pass
@@ -498,15 +436,10 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         # First let us load all EDA edge scores into 32 matrices in edge_scores
         # together with the correponsind species
 
-        try:
-            self.compute_all_aucs()
-        except:
-            pass
+        self.compute_all_aucs()
 
-        if self.status == None and len(self.auc['BT20']):
+        if len(self.auc['BT20']):
             self.score = self.get_average_auc()
-            self.report = json.dumps(self.auc)
-            self.status = "SCORED"
 
     def get_auc_final_scoring(self):
         """This function returns the mean AUC using only official ligands as
@@ -529,7 +462,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             for k2 in self.auc[k1].keys() if  k2 in ligands[k1]])
         return auc
 
-
     def _load_true_descendants_from_zip(self):
         """Reads true descendants provided by Steven 27 June 2013
 
@@ -545,10 +477,8 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         zipdata = zipfile.ZipFile(filename)
         print("Loading all true descendants data set (%s)" % filename)
 
-
         for filename in zipdata.namelist():
             try:
-
                 teamName, cellLine, ligand = os.path.splitext(filename)[0].split("_")
                 data = zipdata.open(filename).next()
                 data = [int(x) if x!="NaN" else None for x in data.strip().split(',')]
@@ -666,7 +596,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
                 if "RB_" in y:
                     y = y.replace("RB_", "Rb_")
 
-
                 try:
                     i = species.index(x)
                 except:
@@ -683,15 +612,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         M = self.edge_scores[cellLine][ligand].max()
         if M>1:
             self.edge_scores[cellLine][ligand] /= float(M)
-
-        # does not seem to have an effect on aggregation
-        """import numpy as np
-        if len(np.unique(self.edge_scores[cellLine][ligand])) == 2:
-            print("uUNWEIGHTED!!!!!!!!!")
-            # assuming it is 0 and 1
-            self.edge_scores[cellLine][ligand] /= 2.
-        """
-        if self.verbose: print("ok")
 
     def compute_all_descendant_matrices(self):
         """Compute all descendancy matrices
@@ -729,7 +649,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         classes = self._get_classes(cellLine, ligand)
         classes = [x for x in classes if x!=None]
 
-
         sorted_indices = np.argsort(1-scores)
         sorted_scores = [scores[i] for i in sorted_indices]
         sorted_classes = [classes[i] for i in sorted_indices]
@@ -755,7 +674,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             else:
                 Fmeasure = np.nan
 
-
             roc["threshold"].append(threshold)
             roc["FP"].append(FP)
             roc["TP"].append(TP)
@@ -767,7 +685,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             roc['Fmeasure'].append(Fmeasure)
 
         return roc
-
 
     def _compute_fpr_tpr(self, FP, TP, N, P):
         roc = {"fpr":[], "tpr":[], "FP":[], "TP":[]}
@@ -790,7 +707,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         # remove the None otherwise classes and scores are different
         classes = [x for x in self.true_descendants[cellLine][ligand] if x!=None]
 
-
         if self.robustness_testing:
             N = len(scores)
             from random import sample
@@ -798,7 +714,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             scores = np.array([s for i,s in enumerate(scores) if i in
                 indices])
             classes = [s for i,s in enumerate(classes) if i in indices]
-
 
         assert len(scores) ==  len(classes)
         sorted_indices = np.argsort(1-scores)
@@ -923,15 +838,8 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         .. seealso:: :meth:`load_all_eda_files_from_zip`,
             :meth:`compute_all_descendant_matrices`
         """
-        try:
-            self.validation()
-        except Exception:
-            if self.exception == None:
-                self.error("Unknown error while calling validation()")
-            return
-        if self.exception:
-            print(self.exception.value)
-            return
+        self.validation()
+
 
         #if len(self.descendancy_matrices['BT20'])==0:
         self.compute_all_descendant_matrices()
@@ -950,7 +858,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
                 self.roc[c][l] = roc.copy()
                 aupr = self.compute_aupr(roc)
                 self.aupr[c][l] = aupr
-
 
     def compute_all_metrics(self):
         for c in self.valid_cellLines:
@@ -974,7 +881,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         """Returns mean of all AUCs"""
         values = self.get_aucs()
         return np.mean(values)
-
 
     def plot_roc(self, cellLine, ligand, hold=False):
         """Plots a psecific  ROC curve"""
@@ -1050,7 +956,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             aucs.append(auc)
             auprs.append(aupr)
         return rocs, aucs, auprs
-
 
     def plot_all_rocs(self, cellLines=None):
         """Plots all 32 ROC once scores/rocs have been computed
@@ -1141,7 +1046,6 @@ class HPNScoringNetwork_ranking(HPNScoring):
     """This class is used to compute the ranks of the different participants
     based on an average rank over the 32 combinaisons of cell line and ligands.
 
-
     ::
 
         s = HPNScoringNetwork(filename="file1zip")
@@ -1157,17 +1061,13 @@ class HPNScoringNetwork_ranking(HPNScoring):
             for l in s.valid_ligands:
                 auc2[c][l] = numpy.random.uniform(0.5,0.7)
 
-
         sall.add_auc(s2.auc, "team2")
         sall.get_ranking()
         {'team1': 1.96875, 'team2': 1.03125}
 
-
     This class is independent of HPNSCoringNetwork.
     However, it takes as input the returned values of
     HPNScoringNetwork.compute_all_auc()
-
-
 
     """
     def __init__(self):
@@ -1239,7 +1139,6 @@ class HPNScoringNetwork_ranking(HPNScoring):
 
                 # need to append all participants that are invalid with same
                 # rank that is maxRank
-
                 if invalid:
                     ranks[c][l] = [list(indices).index(i)+1 for i in range(0,len(indices))]
                     # reset all final values to max rank
@@ -1345,7 +1244,6 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
             print e
             # it not read permission loadZIP and get_eda will fail,
             self.error("Could not read the data (invalid ZIP ?)")
-            self.status = "INVALID"
 
         try:
             self.user_graph = self._get_participant_eda()
@@ -1353,7 +1251,6 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
             print e
             # it not read permission loadZIP and get_eda will fail,
             self.error("Could not compute EDA")
-            self.status = "INVALID"
         self.true_graph = self._load_true_graph_from_zip()
 
     def _load_true_graph_from_zip(self):
@@ -1560,13 +1457,8 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         self.rmse = {}
         self.get_true_prediction()
 
-        try:
-            self.get_user_prediction()
-        except Exception, e:
-            if self.exception == None:
-                self.error("Could not get user prediction (unknown reason)" +
-                        e.message)
-                self.status = "UNKNOWN"
+        self.get_user_prediction()
+
 
     def get_user_prediction(self):
         """
@@ -2046,9 +1938,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         return results
 
     def read_prediction_insilico(self, filename):
-        """Reads true predcition from the 20 CSV files
-
-        """
+        """Reads true predcition from the 20 CSV files"""
         results = {}
         zipdata = zipfile.ZipFile(filename)
 
@@ -2081,8 +1971,6 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
             if len(stimuli) != 8:
                 self.error("Number of expected stimuli (8) is incorrect (Found %s in %s)  " %(len(stimuli), filename))
                 continue
-
-
             for s in stimuli:
                 if s not in self.stimuli:
                     self.error("found incorrect stimuli (%s) in %s" % (s, filename))
@@ -2293,7 +2181,6 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         d = self.rmse
         return np.mean([d[k1][k2] for k1 in d.keys() for k2 in d[k1].keys() if
             np.isnan(d[k1][k2])==False])
-
 
 
 class HPNScoringPrediction_ranking(HPNScoring):
@@ -2661,10 +2548,12 @@ class HPNScoringPredictionInsilico_ranking(HPNScoring):
                     zscores[c][p] = np.nan
         return zscores
 
+
 def sc2a_null(N=100, tag=""):
     s = HPNScoringPrediction()
     res = s.get_null(N, tag=tag)
     return res
+
 
 def sc2b_null(N=100):
     s = HPNScoringPredictionInsilico()
