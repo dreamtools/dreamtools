@@ -144,7 +144,7 @@ class AggregationTools(Login):
             #df['zscores'] = [this['zscores'] for this in subs]
 
         get_filename = lambda sub: json.loads(sub['entityBundleJSON'])['fileHandles'][0]['fileName']
-        df['filename'] = [self.directory+os.sep+get_filename(this) for this in subs]
+        df['filename'] = [d8c1path+os.sep+get_filename(this) for this in subs]
 
         if self.name == "SC1A" or self.name == "SC2A":
             df.sort(columns="mean_rank", inplace=True)
@@ -590,7 +590,6 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
     def __init__(self, best=2, client=None):
         """
 
-
         :param best:
         :param client: an existing synapse client
         :param submissions: list of submissions already downloaded. Otherwise
@@ -598,14 +597,13 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
         :param startweek: default is begining of the challenge (week 1)
         :param endweek: default is end of the challenge (week 9)
 
-
         """
         super(SC1B_aggregation, self).__init__(name="SC1B", client=client)
         self.best = 2
 
         self._individuals = {}
 
-        self.directory = os.sep.join([self.config, 'dream8', 'submissions', 'sc1b'])
+        self.directory = os.sep.join([d8c1path, 'submissions', 'sc1b'])
 
         if os.path.isfile("sc1b_aggregation_data.pkl"):
             self.df = pd.read_pickle("sc1b_aggregation_data.pkl")
@@ -613,7 +611,6 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
             print("File sc1b_aggregaton_data.pkl not found. Generating it. Please be patient")
             self.df = self._load_submissions_from_synapse()
             self.df.to_pickle("sc1b_aggregation_data.pkl")
-
 
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
@@ -691,7 +688,7 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
 
         self._individuals = {}
 
-        self.directory = os.sep.join([self.config, 'dream8', 'submissions', 'sc2a'])
+        self.directory = os.sep.join([d8c1path, 'submissions', 'sc2a'])
         if os.path.isfile("sc2a_aggregation_data.pkl"):
             self.df = pd.read_pickle("sc2a_aggregation_data.pkl")
         else:
@@ -788,7 +785,7 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
         """
         super(SC2B_aggregation, self).__init__(name="SC2B", client=client)
         self._individuals = {}
-        self.directory = os.sep.join([self.config, 'dream8', 'submissions', 'sc2b'])
+        self.directory = os.sep.join([d8c1path, 'submissions', 'sc2b'])
 
         if os.path.isfile("sc2b_aggregation_data.pkl"):
             self.df = pd.read_pickle("sc2b_aggregation_data.pkl")
@@ -1047,7 +1044,6 @@ submissions.  Found %s" % len(filenames))
             self.user_graphs[team_name] = individual.user_graph.copy()
         print("all edge scores available in user_graph dictionary")
 
-
     def create_single_dataframe(self, data):
 
         labels = ["AB"+str(i) for i in range(1,21)]
@@ -1056,7 +1052,6 @@ submissions.  Found %s" % len(filenames))
         df = pd.DataFrame(data.flatten(),
                 index=indices)
         return df
-
 
     def save_all_network(self, threshold=0.5):
         filename = "sc1b_user_graph_threshold_%s_agg.csv" % (str(threshold).replace(".", "dot"))
