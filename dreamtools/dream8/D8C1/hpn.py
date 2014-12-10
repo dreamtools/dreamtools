@@ -16,44 +16,10 @@
 ##############################################################################
 """Module to manage and test the HPN leaderboards
 
-First as admin, you should create an evaluation an open it::
-
-    from dreamtools.dream8.hpn import hpn
-    e = hpn.HPNAdmin()
-    # if not created, you can create one
-    e.createEvaluation(title="HPN")
-    e.setEvaluationStatus("OPEN")
-
-Then, as a user, you should create a project, update file and submit them::
-
-    p = hpn.HPNProject("1876322")
-    p.join() # need to be done only once
-    p.uploadFile(filename) # must be done only once
-    # or update
-    p.updateFile(filename) # must use uploadfile first
-    # to check the files and their identifier open the project in z web, click
-    # on the file to submit and check its identifier
-    h.client.onweb(1876322)
-    # and submit to the evaluation given the file identifier
-    p.submitFile(1899304)
-
-
-Note that there is a template project at
-https://www.synapse.org/#!Synapse:syn1899304
-
-
-The admin can now get the submitted file and compute scores::
+::
 
     e = hpn.HPNAdmin()
-    e.get_submissions()
-    # not needed but you can look at the submissions in details
     submissions = e.get_submissions_network()
-    # update the score for the open submissions
-    e.update_scores_prediction()
-    # once computed, you can update the leaderboard()
-    e.update_leaderboard_prediction()
-    # and check it onlie
-    e.client.onweb()
 
 
 """
@@ -103,134 +69,6 @@ class HPN(Login, ZIP):
 
     def json(self, data):
         return json.dumps(data)
-
-
-class HPNProject(HPN):
-    """Class create project to submit results to the HPN evaluation.
-
-    .. warning:: FOR USERS ONLY
-
-    This class will automatically login into synapse provided a username and
-    password.
-
-    If you want to create a new project, provide a name as argument::
-
-        p = HPNProject(name="My HPN project")
-
-    This command creates a project for you. The project identifier can be retrieved
-    from the :attr:`project.id` attribute.
-
-    Next time you want to access to your project, simply provide its identifier::
-
-        p = HPNProject(eid=1876322)
-
-    You can then add data and submit them from this
-    interface.
-
-    As a simple example to start with, you can change the title
-    programmatically::
-
-
-        h.project["name"] = "HPN-DREAM test project"
-        h.client.store(h.project)
-
-    This can also be done from the web interface.
-
-    Within the web interface, you can also add files, update files. However, for
-    now (june 2013), you can not submit files to an evaluation. this can be
-    achieved with this class.
-
-    One can create 5 projects for each sub challenge or a unique project. IT
-    does not matter because all files are sent to the HPN project.
-    Indeed, HPNProject class has the interanl HPN link, which is unique.
-
-    Let us consider that you have a zip file with the proper files related to
-    sub challenge 1.A. You need to upload the file first::
-
-        entity = h.uploadFile(filename, name="a title")
-
-    If you want to update the File, you have to use another function, where name
-    is not needed anymore. Instead, you need the synapse identifier of the file
-    you,ve just uploaded::
-
-        eid = entity.id
-        h.updateFile(eid, filename)
-
-    Once you are happy, you can submit the latest version of the file to the
-    challenged evaluation:
-
-
-
-    """
-    def __init__(self, eid=None, name=None, username=None, password=None,
-            client=None):
-        super(HPNProject, self).__init__(username=username, password=password,
-                client=client)
-
-        #: The identifier of the evaluation where to submit files
-        print("WARNING. if you submit a project, it will be send to %s " % test_evaluationID)
-        print("WARNING. You can set the evaluation Id manually by changing the attribute evaluationId")
-        self.evaluationId = test_evaluationID
-
-        if eid == None:
-            if name == None:
-                raise ValueError("If no identifier (eid) is provided, you must provide a name to create a new project")
-            else:
-                project = self.client.Project(name)
-                self.project = self.client.store(project)
-        else:
-            self.project = self.client.getEntity(eid)
-
-
-
-
-    def uploadFile(self, filename, name=None):
-        """Upload a file into the project for the first time
-
-        :param str filename: the file to upload
-        :return: a synapse  entity. You can get the entity id (see example)
-
-        ::
-            entity = h.uploadFile(filename) # if name if omitted, it is set to filename without extension
-            entity.id
-
-        """
-        if name == None:
-            name = os.path.split(os.path.splitext(filename)[0])[1]
-
-        entity = self.client.File(path=filename, parent=self.project.id, name=name)
-
-        try:
-            res = self.client.store(entity)
-            print("New file uploaded with identifier %s" % res.id)
-        except Exception:
-            raise Exception
-
-    def updateFile(self, entity, filename):
-        """Update a file that is already present in the project page
-
-        :param str/int entity: an existing file identifier
-        :param str filename: the file to upload
-        :return: updated synapse entity with a new version number
-
-        ::
-
-            entity = h.client.getEntity(1899304) # The id correspond to a file in your project.
-            entity = h.updateFile(entity.id, filename)
-
-
-        """
-        entity = self.client.get(entity)
-        if type(entity) != self.client.File:
-            raise TypeError("The identifier you provided does not seem to be a File")
-        entity.path = filename
-        newentity = self.client.store(entity)
-        print("The file should have been updated on Synapse. Please check before submission")
-        return newentity
-
-    def join(self):
-        """Joins the evaluation"""
-        self.client.joinEvaluation(self.evaluationId)
 
 
 class HPNAdmin(HPN):
@@ -1262,7 +1100,3 @@ class HPNAdmin(HPN):
         print("get_submissions_in_date_range: eid="+self.evaluationId[sc_index]+
               ", total count="+str(count)+", # in range="+str(len(result)))
         return (result)
-
-
-
-
