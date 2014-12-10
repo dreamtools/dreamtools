@@ -58,13 +58,37 @@ Here is the procedure to get the ROC or RMSE::
 downloads.py 
 ----------------
 
-
 Download all valid submissions that were used to score and rank the participants
-in Dream8-HPN challenge::
+in Dream8-HPN challenge. This could be required to 
+
+#. create the aggregation figures
+#. compute the final ranking table used in the final leaderboards
+
+::
 
     from dreamtools.dream8.D8C1 import downloads
     d = downloads.SubmissionsDownloader()
     d.download_all() # takes some time
 
+aggregation
+-------------
 
+The SC1A challenge is very slow to compute. Others are faster. You can plot the aggregation of N best participants
+of random set of participants. We'll show here below the SC1B case but all cases have the same API.
+
+:: 
+
+    from dreamtools.dream8.D8C1 import aggregation
+    a = aggregation.SC1B_aggregation()
+    
+    # Best aggregation
+    a.plot_aggr_best_score()
+    
+    # Random aggregation
+    a.plot_aggr_random(10, 20) # first argumentss the number of replicates, second number of participants to use
+
+    
+.. figure:: sc1a_aggregation.png
+    
+.. figure:: sc1b_aggregation.png
     
