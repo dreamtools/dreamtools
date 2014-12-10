@@ -15,6 +15,10 @@ For users, the most relevant is the **scoring** module that provides tools to co
 
 Other modules required adming right on synapse projects are are therefore irrelevant or end-users for now.
 
+Here below is a quick description of each module. More information could be found in the code itself.
+
+This code is a subset (cleaned and simplified) from dreamtools on bitbucket (https://bitbucket.org/cokelaer/dreamtools)
+
 
 scoring
 -----------
@@ -92,3 +96,14 @@ of random set of participants. We'll show here below the SC1B case but all cases
     
 .. figure:: sc1b_aggregation.png
     
+others
+-------
+    
+#. commons.py  
+#. hpn.py  was used to create the leaderboards and updating scores in synapse (admin only)
+#. sc1a_tools.py  used to computea null distribution (admin only)
+#. setup.py used to build a cython code to compute the scores (SC1A)
+#. submissions.py retrieve submissions (admin only)
+
+
+
