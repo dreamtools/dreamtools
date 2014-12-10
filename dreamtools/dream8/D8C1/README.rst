@@ -84,6 +84,7 @@ of random set of participants. We'll show here below the SC1B case but all cases
 
     from dreamtools.dream8.D8C1 import aggregation
     a = aggregation.SC1B_aggregation()
+    a.load_submissions()
     
     # Best aggregation
     a.plot_aggr_best_score()
