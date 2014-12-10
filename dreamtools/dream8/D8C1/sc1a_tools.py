@@ -15,6 +15,10 @@
 #
 ##############################################################################
 import pickle
+import glob
+import os
+
+import pylab
 
 import numpy as np
 from scipy.stats import kstest
@@ -65,8 +69,6 @@ class AUCnull(object):
         that stores AUC in different files
 
         """
-        import glob, os
-
         self.data = {}
         for c in self.cellLines:
             self.data[c] = {}
@@ -178,51 +180,29 @@ class AUCnull(object):
     def plot_auc_histograms(self, directory):
         #from scoring import HPNScoringNetwork
         #s = HPNScoringNetwork()
-        from pylab import figure, clf, subplot, hist, title, xlim, grid
 
         self.loaddata(directory=directory, tag="AUC")
 
-        figure(1)
-        clf()
+        pylab.figure(1)
+        pylab.clf()
         for i,c in enumerate(self.cellLines):
             for j,l in enumerate(self.ligands):
-                subplot(4,8,i*8+j+1)
-                hist([x for x in self.data[c][l] if np.isnan(x)==False], 50, normed=True)
-                title("%s/%s" % (c,l))
-                xlim([0.,1])
-                grid(True)
-
-                #P = s.true_descendants[c][l].count(1)
-                #F = s.true_descendants[c][l].count(0)
-                #L = len([x for x in s.true_descendants[c][l] if x != None])
-                #ymax = ylim()[1] * 0.9
-                #text(0.05,ymax, "P/L=%5.3f" % (P/float(L)))
-
+                pylab.subplot(4,8,i*8+j+1)
+                pylab.hist([x for x in self.data[c][l] if np.isnan(x)==False], 50, normed=True)
+                pylab.title("%s/%s" % (c,l))
+                pylab.xlim([0.,1])
+                pylab.grid(True)
 
     def plot_aupr_histograms(self, directory):
         #from scoring import HPNScoringNetwork
         #s = HPNScoringNetwork()
-        from pylab import figure, clf, subplot, hist, title, xlim, grid
-
         self.loaddata(directory=directory, tag="AUPR")
-        figure(1)
-        clf()
+        pylab.figure(1)
+        pylab.clf()
         for i,c in enumerate(self.cellLines):
             for j,l in enumerate(self.ligands):
-                subplot(4,8,i*8+j+1)
-                hist([x for x in self.data[c][l] if np.isnan(x)==False], 50, normed=True)
-                title("%s/%s" % (c,l))
-                xlim([0.,1])
-                grid(True)
-
-                #P = s.true_descendants[c][l].count(1)
-                #F = s.true_descendants[c][l].count(0)
-                #L = len([x for x in s.true_descendants[c][l] if x != None])
-                #ymax = ylim()[1] * 0.9
-                #text(0.05,ymax, "P/L=%5.3f" % (P/float(L)))
-
-
-
-
-
-
+                pylab.subplot(4,8,i*8+j+1)
+                pylab.hist([x for x in self.data[c][l] if np.isnan(x)==False], 50, normed=True)
+                pylab.title("%s/%s" % (c,l))
+                pylab.xlim([0.,1])
+                pylab.grid(True)
