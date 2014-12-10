@@ -1,6 +1,9 @@
 Overview
 ===========
 
+.. contents::
+
+
 This directory contains tools for users and administrators of the Dream8-HPN challenge (alias D8C1).
 
 There were 4 sub-challenges called 
@@ -108,3 +111,7 @@ others
 
 
 
+testing
+---------
+
+There is a test suite in ./test/dream8/D8C1 It contains test for the scoring and test for the other modules (admin only)
