@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 __revision__ = "$Id$"
-import sys
 import os
 from setuptools import setup, find_packages
-import glob
 
 
 _MAJOR               = 0
@@ -65,7 +63,7 @@ setup(
     description = metainfo['description'],
     license          = metainfo['license'],
     platforms        = metainfo['platforms'],
-    url              = metainfo['url'],      
+    url              = metainfo['url'],
     download_url     = metainfo['download_url'],
     classifiers      = metainfo['classifiers'],
 
@@ -78,7 +76,7 @@ setup(
 
     include_package_data = True,
     # (you can provide an exclusion dictionary named exclude_package_data to remove parasites).
-    # alternatively to global inclusion, list the file to include   
+    # alternatively to global inclusion, list the file to include
     package_data = {'' : ['*.txt', '*.so', '*.zip', '*.csv', '*.ini'],},
 
 
