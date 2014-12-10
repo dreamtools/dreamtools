@@ -302,7 +302,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
     test_synapse_id = "syn1971273"
     true_synapse_id = "syn1971278"
 
-    def __init__(self, filename=None, verbose=False):
+    def __init__(self, filename=None, verbose=False, true_descendants=None):
         """
 
         :param str filename:
@@ -314,10 +314,13 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             self.load_submission(self.filename)
         self.robustness_testing = False
         self.masking = 0.1
+        if true_descendants is None:
+            self._load_true_descendants_from_zip()
+        else:
+            self.true_descendants = copy.deepcopy(true_descendants)
 
     def load_submission(self, filename):
         self.loadZIPFile(filename)
-        self._load_true_descendants_from_zip()
         self.load_all_eda_files_from_zip()
 
     def _init(self):
@@ -437,7 +440,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         # together with the correponsind species
 
         self.compute_all_aucs()
-
         if len(self.auc['BT20']):
             self.score = self.get_average_auc()
 

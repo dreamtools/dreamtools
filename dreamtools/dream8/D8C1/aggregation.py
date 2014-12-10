@@ -21,7 +21,6 @@ import json
 
 import numpy as np
 import pylab
-from easydev import get_share_file as gsf
 import pandas as pd
 
 import submissions
@@ -35,6 +34,7 @@ from scoring import HPNScoringNetworkInsilico
 import commons
 
 from dreamtools.dream8.D8C1 import d8c1path
+from dreamtools.dream8.D8C1 import scoring
 
 __all__ = ["SC2AggregationPlotting", "SC2A_aggregation", "SC2B_aggregation",
     "SC1AggregationPlotting", "SC1A_aggregation", "SC1B_aggregation"]
@@ -42,7 +42,6 @@ __all__ = ["SC2AggregationPlotting", "SC2A_aggregation", "SC2B_aggregation",
 
 class AggregationTools(Login):
     """common class to be used for the aggregation performances
-
 
     .. warning:: cannot be used by itself. You should use
     :class:`SC1A_aggregation` for instance.
@@ -110,7 +109,6 @@ class AggregationTools(Login):
         df['submissionId'] = [this['id'] for this in subs]
 
         if self.name == "SC1A":
-
             df['mean_rank'] = [this['ranking'] for this in subs]
             df['mean_auc'] = [this['mean_aucs'] for this in subs]
             df['mean_zscore'] = [this['zscore'] for this in subs]
@@ -123,7 +121,6 @@ class AggregationTools(Login):
             df['auc'] = [this['auc'] for this in subs]
             df['mean_auc'] = [this['auc'] for this in subs]
             df['zscore'] = [this['zscore'] for this in subs]
-
 
         if self.name == "SC2A":
             df['mean_rank'] = [this['ranking'] for this in subs]
@@ -144,7 +141,8 @@ class AggregationTools(Login):
             #df['zscores'] = [this['zscores'] for this in subs]
 
         get_filename = lambda sub: json.loads(sub['entityBundleJSON'])['fileHandles'][0]['fileName']
-        df['filename'] = [d8c1path+os.sep+get_filename(this) for this in subs]
+        prefix = os.sep.join([d8c1path, 'submissions', self.name.lower() ])
+        df['filename'] = [prefix+ os.sep + get_filename(this) for this in subs]
 
         if self.name == "SC1A" or self.name == "SC2A":
             df.sort(columns="mean_rank", inplace=True)
@@ -178,7 +176,8 @@ class SC1AggregationPlotting(object):
     def __init__(self):
         pass
 
-    def plot_aggr_best_score(self, M=None, start=0,marker='o', color="r", markersize=6):
+    def plot_aggr_best_score(self, M=None, start=0, marker='o', color="r",
+                             markersize=6):
         """Plots scores of the aggregation of the best submissions
 
         The submissionsfor selected are those found in the range m
@@ -197,11 +196,10 @@ class SC1AggregationPlotting(object):
         .. note:: takes about 250 seconds using multiprocessing ( SC1A case).
 
         """
-        if M== None:
+        if M is None:
             M = len(self.df.index)
 
         mean_aucs = []
-
         span = range(start+1, M+1)
 
         # used by paper module.
@@ -233,7 +231,7 @@ class SC1AggregationPlotting(object):
         pylab.axis([0.5, M+1, yr[0]-0.05, yr[1]+0.05])
         pylab.ylim([0.35, 0.86])
         pylab.legend(loc="lower left")
-
+        return iauc
 
     def plot_aggr_random(self, N=5, Nmax=10,
                          marker="o", color="r", markersize=6, results=None):
@@ -252,8 +250,6 @@ class SC1AggregationPlotting(object):
 
         .. note:: takes about 300 to compute for N=1, Nmax=74 for SC1A
         """
-        #mean_aucs = []
-
         assert Nmax >= 1
         span = range(1, Nmax+1)
         if results!=None:
@@ -272,7 +268,9 @@ class SC1AggregationPlotting(object):
         self.results = self._random_results
         #mean_aucs = results.mean(axis=0)
 
-        self._plot_aggr_random(span, Nmax, markersize=markersize, marker=marker, color=color)
+        iauc = self._plot_aggr_random(span, Nmax, markersize=markersize, marker=marker, color=color)
+        return iauc
+
 
     def _plot_aggr_random(self, span,Nmax, marker='o', color='r', markersize=6):
         # those are the best submitter. Nothing to recompute, can be extracted
@@ -280,9 +278,6 @@ class SC1AggregationPlotting(object):
         iauc = [self.df.ix[x].mean_auc for x in range(0, Nmax)]
 
         pylab.clf()
-
-        #pylab.plot(span, mean_aucs, 'x-', label="Random aggregation ({}) for each N".format(N))
-
         pylab.plot([x for x in span], iauc, marker+color, markersize=markersize,
                    label="AUC (individual submissions)".format(self.mode))
         pylab.grid(True)
@@ -297,6 +292,7 @@ class SC1AggregationPlotting(object):
         xmax = pylab.xlim()[1]
         pylab.ylim([0.35, 0.86])
         pylab.xlim(0.5, xmax)
+        return iauc
 
     def compute_grand_mean_auc(self, data):
         if isinstance(data, dict):
@@ -343,6 +339,7 @@ class SC2AggregationPlotting(object):
         #yr = pylab.ylim()
         #pylab.axis([1, , start+N+1, yr[0],yr[1]])
         pylab.legend(loc="upper left")
+        return iauc
 
     def plot_aggr_random(self, N=5, Nmax=14):
         """plots aggregation using N random submissions
@@ -350,8 +347,6 @@ class SC2AggregationPlotting(object):
         .. seealso:: :class:`SC2A_aggregation`
 
         """
-        #start = 0
-
         mean_aucs = []
 
         assert Nmax>=1
@@ -371,7 +366,6 @@ class SC2AggregationPlotting(object):
         #newspan = [x+1.5 for x in range(start,start+Nmax)]
 
         pylab.clf()
-        print mean_aucs, span
         self.results = results
 
         pylab.plot(span, mean_aucs, 'x-', label="Random aggregation ({}) for each N".format(N))
@@ -383,6 +377,7 @@ class SC2AggregationPlotting(object):
         pylab.title("{} RMSE using N random submissions".format(self.mode), fontsize=20)
         pylab.errorbar(range(1,Nmax+1), results.mean(axis=0), results.std(axis=0))
         pylab.legend(loc="upper left")
+        return iauc
 
 
 class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
@@ -429,7 +424,6 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
         :param startweek: default is begining of the challenge (week 1)
         :param endweek: default is end of the challenge (week 9)
 
-
         """
         super(SC1A_aggregation, self).__init__(name="SC1A", client=client)
         self.best = 2
@@ -446,13 +440,16 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
             self.df = self._load_submissions_from_synapse()
             self.df.to_pickle("sc1a_aggregation_data.pkl")
 
+        scoring = HPNScoringNetwork()
+        self.true_descendants = copy.deepcopy(scoring.true_descendants)
 
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
             aggregate = copy.deepcopy(self._individuals[index])
         else:
             filename = self.df.ix[index].filename
-            aggregate = HPNScoringNetwork(filename=filename)
+            aggregate = HPNScoringNetwork(filename=filename,
+                                          true_descendants=self.true_descendants)
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -474,7 +471,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
                 else:
                     filename =self.df.ix[sub].filename
                     individual = HPNScoringNetwork(filename=filename,
-                        )
+                        true_descendants=self.true_descendants)
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.edge_scores.keys():
                     for l in aggregate.edge_scores[c].keys():
@@ -494,8 +491,6 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
     def plot_aggregate_edge_rank(self, N=None, ss=None, method="min"):
         """
 
-
-
         See paper for the vectors of aggregsation (best weighted scores)
         and submissions AUCs
 
@@ -514,13 +509,14 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
         assert method in ["average", "max", "min", "first"]
 
         # first, we need to load all edge scores.
-        if ss == None:
+        if ss is None:
             print("loading a scoring function")
-            ss = HPNScoringNetwork("hpndream8_downloads/sc1a/DC_GFP-Network.zip")
+            filename = os.sep.join([d8c1path, 'submissions', 'sc1b', 'DC_GFP-Network.zip'])
+            ss = HPNScoringNetwork(filename, true_descendants=self.true_descendants)
         else:
             pass
 
-        if N==None:
+        if N is None:
             N = len(self.submissions)
 
         print("Loading all edge scores")
@@ -529,7 +525,8 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
                 pass
             else:
                 filename = self.df.ix[sub].filename
-                individual = HPNScoringNetwork(filename=filename)
+                individual = HPNScoringNetwork(filename=filename,
+                                               true_descendants=self.true_descendants)
                 self._individuals[sub] = copy.deepcopy(individual)
 
         print("Extracting the edge ranks")
@@ -546,7 +543,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
                     except:
                         edge_scores[c][l] = [ranks]
 
-        print("averageing")
+        print("averaging")
         for c in edge_scores.keys():
             for l in edge_scores[c].keys():
                 if self.mode == "mean":
@@ -554,7 +551,6 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
                     edge_scores[c][l] = np.mean(edge_scores[c][l], axis=0)
                 elif self.mode == "median":
                     edge_scores[c][l] = np.median(edge_scores[c][l], axis=0)
-
 
         ss.descendancy_matrices = dict([(x,{}) for x in ss.valid_cellLines])
         for c in edge_scores.keys():
@@ -649,24 +645,21 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
         return aggr.get_auc()
 
 
-
 class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
     """Investigating the aggregation over several teams.
 
     ::
 
-        >>> import sc2a_tools
-        >>> a = sc2a_tools.SC2A_aggregation()
+        >>> import aggregation
+        >>> a = aggregation.SC2A_aggregation()
         >>> a.plot_aggr_random(N=100, Nmax=14)
 
     By default, uses the submissions from the challenge itself (up to week 9)
-
 
     .. figure::  sc2a_aggregation_best.png
         :width: 50%
 
         SC2A aggregation of best submissions
-
 
     .. figure:: sc2a_aggregation_random.png
         :width: 50%
@@ -887,11 +880,12 @@ class GenerateSC1AMatrixForMatlabAggregation(Login, ZIP):
 submissions.  Found %s" % len(filenames))
 
 
-        true_desc_filename = os.sep.join([d8c1path, 'gs', 'TrueDescVectors.zip'])
+        #true_desc_filename = os.sep.join([d8c1path, 'gs', 'TrueDescVectors.zip'])
 
         for filename in filenames:
             team_name = self.mapping[filename.split("/")[2]]
             individual = HPNScoringNetwork(filename=filename,
+                                           true_descendants=self.true_descendants,
                     skip_true=True)
             self.edge_scores[team_name] = individual.edge_scores.copy()
         print("all edge scores available in edge_scores dictionary")
@@ -1202,7 +1196,7 @@ def create_all_aggregation_figures():
 
 
 
-def sc1a_check_edge_scores_range(directory="hpndream8_downloads"):
+def sc1a_check_edge_scores_range():
     """
 
     load all submissions from sc1a and check that values are >0.
@@ -1211,10 +1205,6 @@ def sc1a_check_edge_scores_range(directory="hpndream8_downloads"):
 
     values larger than one im amss1012, sannio2,ML_BHK_KG
     """
-    import glob
-    import pandas as pd
-    from dreamtools import scoring
-
     filenames = glob.glob(os.sep.join([d8c1path, "submissions", "sc1a", "*zip"]))
     client = None
     for filename in filenames:
@@ -1241,9 +1231,6 @@ def sc1b_check_edge_scores_range():
 
     values larger than one im amss1012, sannio2,ML_BHK_KG
     """
-    import glob
-    import pandas as pd
-    from dreamtools import scoring
     filenames = glob.glob(os.sep.join([d8c1path , 'submissions', "sc1b", "*zip"]))
     client = None
     for filename in filenames:
