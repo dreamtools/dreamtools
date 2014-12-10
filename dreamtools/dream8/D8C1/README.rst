@@ -1,6 +1,20 @@
 Overview
 ===========
 
+This directory contains tools for users and administrators of the Dream8-HPN challenge (alias D8C1).
+
+There were 4 sub-challenges called 
+
+* SC1A for Network
+* SC1B for Network Insilico
+* SC2A for Prediction
+* SC2B for Prediction Insilico
+
+For users, the most relevant is the **scoring** module that provides tools to compute the AUROC and RMSE.
+
+
+Other modules required adming right on synapse projects are are therefore irrelevant or end-users for now.
+
 
 scoring
 -----------
@@ -39,10 +53,6 @@ Here is the procedure to get the ROC or RMSE::
     sc2b = scoring.HPNScoringPredictionInsilico(sc2b_submissions.zip)
     sc2b.compute_all_rmse()
     sc2b.get_mean_rmse()
-
-
-
-
 
 
 downloads.py 
