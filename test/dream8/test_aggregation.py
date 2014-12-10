@@ -22,7 +22,7 @@ def test_sc1a():
     b = aggregation.SC1A_aggregation()
     b.load_submissions()
     aucs = b.plot_aggr_best_score(M=2)
-    assert aucs == [0.782027404722, 0.790459765732]
+    assert aucs == [0.78202740472227761, 0.77107383364675341]
     aucs = b.plot_aggr_random(2,2)
 
 
@@ -31,7 +31,6 @@ def test_sc1b():
     b = aggregation.SC1B_aggregation()
     b.load_submissions()
     aucs = b.plot_aggr_best_score(M=2)
-    assert aucs == [0.764220102455, 0.769916975799]
-
+    assert aucs == [0.76422010245539662, 0.73489666136724974]
     aucs = b.plot_aggr_random(2,2)
 

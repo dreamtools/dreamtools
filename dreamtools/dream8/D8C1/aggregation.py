@@ -3,7 +3,7 @@
 #
 #  This file is part of dreamtools software
 #
-#  Copyright (c) 2011-2014 - EBI-EMBL
+#  Copyright (c) 2013-2014 - EBI-EMBL
 #
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
 #
@@ -270,7 +270,6 @@ class SC1AggregationPlotting(object):
 
         iauc = self._plot_aggr_random(span, Nmax, markersize=markersize, marker=marker, color=color)
         return iauc
-
 
     def _plot_aggr_random(self, span,Nmax, marker='o', color='r', markersize=6):
         # those are the best submitter. Nothing to recompute, can be extracted
