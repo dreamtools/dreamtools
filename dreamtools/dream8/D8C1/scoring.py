@@ -1833,6 +1833,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
     def __init__(self, filename=None, verbose=False):
         super(HPNScoringPredictionInsilico, self).__init__(filename)
         filename = os.sep.join([self._path2data, "goldstandard", "TruePredictionInsilico.zip"])
+        filename = os.sep.join([self._path2data, "goldstandard",  "TruePredictionInsilico2.zip"])
         self.true_desc_filename = filename
 
 
