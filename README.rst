@@ -3,7 +3,7 @@ DreamTools
 Overview
 ---------
 
-**dreamtools** aims at sharing code related to `DREAM <http://www.the-dream-project.org/>`_ challenges.
+**dreamtools** aims at sharing code related to `DREAM <http://dreamchallenges.org>`_ challenges.
 
 This repository is meant to contain (small) data sets and codes related to the scoring of the 
 `DREAM challenges <http://dreamchallenges.org>`_. 
