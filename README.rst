@@ -25,7 +25,17 @@ when installing dreamtools. Knowing the name of the challenge (and possibly sub-
 
     dreamtools-scoring --challenge d8c1 --sub-challenge sc1a --submission ~/alphabeta-Network.zip
     
-It prints some information and the score of the submision.
+It prints some information and the score of the submision for instance for the example above::
+
+     Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
+     AUROC: 0.781937275711
+
+Scoring functions available so far:
+
+
+* Dream8 HPN (D8C1) sub challenges named sc1a, sc1b, sc2a, sc2b. 
+  See `Synapse page <https://www.synapse.org/#!Synapse:syn1720047>`_ for details
+
 
 Installation
 ---------------
