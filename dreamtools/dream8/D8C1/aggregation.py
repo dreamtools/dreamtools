@@ -442,6 +442,15 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
         scoring = HPNScoringNetwork()
         self.true_descendants = copy.deepcopy(scoring.true_descendants)
 
+    def remove_correlated_submissions(self):
+        teams = ['AHAT', 'NIPL', 'T4', 'Taylor Swift', 'Hatric',
+                'ScreamingGoats', 'dftt', 'bdalab']
+
+        self.submissions = [sub for sub in self.submissions if
+            sub['submitterAlias'] not in teams]
+
+
+
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
             aggregate = copy.deepcopy(self._individuals[index])
@@ -606,6 +615,12 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
             print("File sc1b_aggregaton_data.pkl not found. Generating it. Please be patient")
             self.df = self._load_submissions_from_synapse()
             self.df.to_pickle("sc1b_aggregation_data.pkl")
+
+    def remove_correlated_submissions(self):
+        teams = [] #same  as in SC1A actually...
+
+        self.submissions = [sub for sub in self.submissions if
+            sub['submitterAlias'] not in teams]
 
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
