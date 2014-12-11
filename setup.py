@@ -86,9 +86,14 @@ setup(
         'synapseclient',
         'tabulate'],
 
-    )
+    
 
 
+    entry_points = {
+        'console_scripts': [
+            'dreamtools-scoring=dreamtools.core.scoring:scoring',
+        ]
+    },
+)
 
-# cython modules
 post_process()
