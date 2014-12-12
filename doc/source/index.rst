@@ -22,3 +22,11 @@ Dream6 resources
 
 
 
+
+
+Reference guide
+=================
+
+.. toctree::
+
+    references.rst

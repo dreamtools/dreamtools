@@ -231,7 +231,7 @@ class SC1AggregationPlotting(object):
         pylab.axis([0.5, M+1, yr[0]-0.05, yr[1]+0.05])
         pylab.ylim([0.35, 0.86])
         pylab.legend(loc="lower left")
-        return iauc
+        return mean_aucs
 
     def plot_aggr_random(self, N=5, Nmax=10,
                          marker="o", color="r", markersize=6, results=None):
@@ -411,6 +411,8 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
         s.load_submissions()
 
 
+    2 regimes ignored while doing the scoring/aggregation.
+
     """
     valid_ligands_final = commons.valid_ligands_final
     def __init__(self, best=2, client=None):
@@ -432,12 +434,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
         self._individuals = {}
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc1a'])
 
-        if os.path.isfile("sc1a_aggregation_data.pkl"):
-            self.df = pd.read_pickle("sc1a_aggregation_data.pkl")
-        else:
-            print("File sc1a_aggregaton_data.pkl not found. Generating it. Please be patient")
-            self.df = self._load_submissions_from_synapse()
-            self.df.to_pickle("sc1a_aggregation_data.pkl")
+        self.df = self._load_submissions_from_synapse()
 
         scoring = HPNScoringNetwork()
         self.true_descendants = copy.deepcopy(scoring.true_descendants)
@@ -449,7 +446,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
         self.submissions = [sub for sub in self.submissions if
             sub['submitterAlias'] not in teams]
 
-
+        self.df = self.get_df_from_submissions()
 
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
@@ -486,6 +483,9 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
                         #aggregate.edge_scores[c][l] += individual.edge_scores[c][l]
                         edge_scores[c][l].append(individual.edge_scores[c][l])
 
+                        if edge_scores[c][l][0].max()>1:
+                            print c,l,edge_scores[c][l][0].max()
+
         for c in aggregate.edge_scores.keys():
             for l in aggregate.edge_scores[c].keys():
                 if self.mode == "mean":
@@ -511,6 +511,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
             auc_min.append(es)
         plot(auc, label="min")
 
+         with 66 submissions, and method=min we reach 84%
         """
 
         # first does not really work
@@ -519,7 +520,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
         # first, we need to load all edge scores.
         if ss is None:
             print("loading a scoring function")
-            filename = os.sep.join([d8c1path, 'submissions', 'sc1b', 'DC_GFP-Network.zip'])
+            filename = os.sep.join([d8c1path, 'submissions', 'sc1a', 'DC_GFP-Network.zip'])
             ss = HPNScoringNetwork(filename, true_descendants=self.true_descendants)
         else:
             pass
@@ -609,18 +610,16 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
 
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc1b'])
 
-        if os.path.isfile("sc1b_aggregation_data.pkl"):
-            self.df = pd.read_pickle("sc1b_aggregation_data.pkl")
-        else:
-            print("File sc1b_aggregaton_data.pkl not found. Generating it. Please be patient")
-            self.df = self._load_submissions_from_synapse()
-            self.df.to_pickle("sc1b_aggregation_data.pkl")
+        self.df = self._load_submissions_from_synapse()
 
     def remove_correlated_submissions(self):
-        teams = [] #same  as in SC1A actually...
+        # same  as in SC1A actually...
+        teams = ['AHAT', 'NIPL', 'T4', 'Taylor Swift', 'Hatric',
+                'ScreamingGoats', 'dftt', 'bdalab']
 
         self.submissions = [sub for sub in self.submissions if
             sub['submitterAlias'] not in teams]
+        self.df = self.get_df_from_submissions()
 
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
@@ -692,16 +691,10 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
         """
         super(SC2A_aggregation, self).__init__(name="SC2A", client=client)
 
-
         self._individuals = {}
 
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc2a'])
-        if os.path.isfile("sc2a_aggregation_data.pkl"):
-            self.df = pd.read_pickle("sc2a_aggregation_data.pkl")
-        else:
-            print("File sc2a_aggregaton_data.pkl not found. Generating it. Please be patient")
-            self.df = self._load_submissions_from_synapse()
-            self.df.to_pickle("sc2a_aggregation_data.pkl")
+        self.df = self._load_submissions_from_synapse()
 
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
@@ -794,12 +787,7 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
         self._individuals = {}
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc2b'])
 
-        if os.path.isfile("sc2b_aggregation_data.pkl"):
-            self.df = pd.read_pickle("sc2b_aggregation_data.pkl")
-        else:
-            print("File sc2b_aggregaton_data.pkl not found. Generating it. Please be patient")
-            self.df = self._load_submissions_from_synapse()
-            self.df.to_pickle("sc2b_aggregation_data.pkl")
+        self.df = self._load_submissions_from_synapse()
 
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
@@ -1218,14 +1206,16 @@ def sc1a_check_edge_scores_range():
 
 
     values larger than one im amss1012, sannio2,ML_BHK_KG
+    large values around 8 for ML_BHK_KG-N
+    between 1.2 and 1.8 for sannio
+    up to 30 for amss1012
+    # need to comment scaling in socring module.
     """
     filenames = glob.glob(os.sep.join([d8c1path, "submissions", "sc1a", "*zip"]))
-    client = None
     for filename in filenames:
         print("#################")
         print filename
-        s = scoring.HPNScoringNetwork(filename,verbose=False, client=client)
-        client = s.client
+        s = scoring.HPNScoringNetwork(filename,verbose=False)
         p = pd.Panel(dict([(c+"_"+l, pd.DataFrame(s.edge_scores[c][l]))
             for c in s.edge_scores.keys() for l in s.edge_scores[c].keys()]))
         for item in p.items:
@@ -1233,30 +1223,24 @@ def sc1a_check_edge_scores_range():
                 print("-----Found negative in %s %s" % (filename, item))
             if p[item].max().max()>1:
                 print("-------Found larger than one in %s %s" % (filename, item))
-            print("---------- max in %s %s" %(item, p[item].max().max()))
+            #print("---------- max in %s %s" %(item, p[item].max().max()))
 
 
 def sc1b_check_edge_scores_range():
-    """
+    """Check that all SC1B edge score are in the range [0,1]
 
-    load all submissions from sc1a and check that values are >0.
-    If not, print info
-
-
-    values larger than one im amss1012, sannio2,ML_BHK_KG
+    sannio2 with values ~ 1.2
+    # need to comment scaling in socring module.
     """
     filenames = glob.glob(os.sep.join([d8c1path , 'submissions', "sc1b", "*zip"]))
-    client = None
     for filename in filenames:
         print("#################")
         print filename
-        s = scoring.HPNScoringNetworkInsilico(filename,verbose=False, client=client)
-        client = s.client
+        s = scoring.HPNScoringNetworkInsilico(filename,verbose=False)
         p = pd.DataFrame(s.user_graph)
 
         if p.min().min()<-0.0001:
             print("-----Found NEGATIVE in %s " % (filename))
         if p.max().max()>1.001:
             print("-------Found larger than one in %s " % (filename))
-        print("---------- max in %s" %(p.max().max()))
-
+        #print("---------- max in %s" %(p.max().max()))

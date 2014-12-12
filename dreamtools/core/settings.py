@@ -11,7 +11,7 @@ import shutil
 
 import appdirs
 
-__all__ = ["defaultParams", "DreamTools"]
+__all__ = ["ConfigReadOnly", "DreamToolsConfig"]
 
 
 # first item if the value
