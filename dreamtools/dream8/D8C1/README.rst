@@ -23,6 +23,29 @@ Here below is a quick description of each module. More information could be foun
 This code is a subset (cleaned and simplified) from dreamtools on bitbucket (https://bitbucket.org/cokelaer/dreamtools)
 
 
+Before starting
+------------------
+
+For admin, you may need to download some files before using e.g., the
+aggregation functions. Since you will need to access to synapse to download
+those files, you will also need to create a configuration file::
+
+    [authentication]
+    username: your_email_registered@synapse
+    password: yourSynapsePassword
+
+
+Then, type::
+
+
+    from dreamtools.dream8.D8C1 import downloads
+    d = downloads.GSDownloader()
+    d.download_experimental()
+
+
+    d = downloads.SubmissionDownloader()
+    d.download_all()
+
 scoring
 -----------
 
