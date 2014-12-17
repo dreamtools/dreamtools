@@ -103,7 +103,6 @@ class AggregationTools(Login):
         df = pd.DataFrame()
         df['submitterAlias'] = [this['submitterAlias'] for this in subs]
 
-        #df['evaluationId'] = [this['evaluationId'] for this in subs.submissions]
         df['userId'] = [this['userId'] for this in subs]
         df['entityId'] = [this['entityId'] for this in subs]
         df['submissionId'] = [this['id'] for this in subs]
@@ -135,10 +134,7 @@ class AggregationTools(Login):
             df['mean_rank'] = [this['ranking'] for this in subs]
             df['mean_rmse'] = [this['mean_rmse'] for this in subs]
             df['zscore'] = [this['zscore'] for this in subs]
-
-            #df['ranks'] = [this['ranks'] for this in subs]
             df['rmses'] = [this['rmses'] for this in subs]
-            #df['zscores'] = [this['zscores'] for this in subs]
 
         get_filename = lambda sub: json.loads(sub['entityBundleJSON'])['fileHandles'][0]['fileName']
         prefix = os.sep.join([d8c1path, 'submissions', self.name.lower() ])
@@ -156,7 +152,6 @@ class AggregationTools(Login):
 
     def _load_submissions_from_synapse(self):
         """To be used only onece to obtain all relevant metadata
-
 
         A way to check that ranks are correct is:
 
@@ -176,36 +171,34 @@ class SC1AggregationPlotting(object):
     def __init__(self):
         pass
 
-    def plot_aggr_best_score(self, M=None, start=0, marker='o', color="r",
+    def plot_aggr_best_score(self, M=None, marker='o', color="r",
                              markersize=6):
         """Plots scores of the aggregation of the best submissions
 
-        The submissionsfor selected are those found in the range m
+        The submissionsfor selected are those found in the range 0
         to M. The scores of the individual submissions are also plotted.
 
-        :param m: m th best solution
-        :param m: M th best solution
+        :param m: use the M th best solutions
 
         .. seealso:: :class:`SC1A_aggregation`
-
 
         .. note:: the curve that shows the aggregation of the submissions is
             shifted by +1 on the x-axis since it must have at least 2
             submissions to aggregate.
 
-        .. note:: takes about 250 seconds using multiprocessing ( SC1A case).
+        .. note:: takes about 250 seconds
 
         """
         if M is None:
             M = len(self.df.index)
 
         mean_aucs = []
-        span = range(start+1, M+1)
+        span = range(1, M+1)
 
         # used by paper module.
         self.results = []
         for i in span:
-            aggr = self.aggregate_submissions(i, start=start)
+            aggr = self.aggregate_submissions(i, start=0)
             aggr.compute_score()
             mu = self.compute_grand_mean_auc(aggr.auc)
             mean_aucs.append(mu)
@@ -213,16 +206,19 @@ class SC1AggregationPlotting(object):
             self.results.append(aggr.auc)
 
         self._mean_auc = mean_aucs[:]
+        self._best_results = {'x': span}
         # those are the best submitter. Nothing to recompute, can be extracted
         # from the df itself.
-        iauc = [self.df.ix[x].mean_auc for x in range(0,M)]
+        iauc = [self.df.ix[x].mean_auc for x in range(0, M)]
 
         pylab.clf()
-        pylab.plot(range(1,M+1), iauc, marker+color, markersize=markersize,
+        pylab.plot(span, iauc, marker+color, markersize=markersize,
                    label="AUC (individual submissions)")
         pylab.plot(span, mean_aucs, 'x-',
                    label="{} aggregation (over first N submissions)".format(self.mode))
         pylab.grid(True)
+        self._best_results['aggregation'] = mean_aucs
+        self._best_results['individual'] = iauc
 
         pylab.xlabel("N", fontsize=20)
         pylab.ylabel("AUC", fontsize=20)
@@ -231,13 +227,13 @@ class SC1AggregationPlotting(object):
         pylab.axis([0.5, M+1, yr[0]-0.05, yr[1]+0.05])
         pylab.ylim([0.35, 0.86])
         pylab.legend(loc="lower left")
-        return mean_aucs
+        return self._best_results
 
     def plot_aggr_random(self, N=5, Nmax=10,
                          marker="o", color="r", markersize=6, results=None):
         """
         :param N: repeat N times the aggregation to obtain some errors
-        :param Nmax: takes at most N10 values randomly chosen
+        :param Nmax: takes at most N values randomly chosen
 
         .. image:: sc1a_aggregation_random.png
             :width: 50%
@@ -248,7 +244,7 @@ class SC1AggregationPlotting(object):
             >>> a = sc1a_tools.SC1A_aggregation()
             >>> a.plot_aggr_random(N=100, Nmax=74)
 
-        .. note:: takes about 300 to compute for N=1, Nmax=74 for SC1A
+        .. note:: takes about 300s to compute for N=1, Nmax=74 for SC1A
         """
         assert Nmax >= 1
         span = range(1, Nmax+1)
@@ -259,19 +255,20 @@ class SC1AggregationPlotting(object):
             for i,n in enumerate(range(0, N)):
                 print("Replicate %s" % (i+1) )
                 for j, nmax in enumerate(range(1, Nmax+1)):
+                    print('----'+str(j))
                     aggr = self.aggregate_submissions_random(nmax)
-                    aggr.compute_score() # useless for SC2B but kept to have same function
+                    aggr.compute_score()
                     mu = self.compute_grand_mean_auc(aggr.auc)
                     results[i][j] = mu
 
-        self._random_results = results.copy()
-        self.results = self._random_results
+            self.results = results
         #mean_aucs = results.mean(axis=0)
 
-        iauc = self._plot_aggr_random(span, Nmax, markersize=markersize, marker=marker, color=color)
-        return iauc
+        self._plot_aggr_random(span, Nmax, markersize=markersize,
+                                      marker=marker, color=color)
+        return self._random_results
 
-    def _plot_aggr_random(self, span,Nmax, marker='o', color='r', markersize=6):
+    def _plot_aggr_random(self, span, Nmax, marker='o', color='r', markersize=6):
         # those are the best submitter. Nothing to recompute, can be extracted
         # from the df itself.
         iauc = [self.df.ix[x].mean_auc for x in range(0, Nmax)]
@@ -284,18 +281,26 @@ class SC1AggregationPlotting(object):
         pylab.xlabel("N", fontsize=20)
         pylab.ylabel("AUC", fontsize=20)
         pylab.title("Aggregated AUC (random case)", fontsize=20)
-        pylab.errorbar(range(1,Nmax+1), self.results.mean(axis=0), self.results.std(axis=0),
+
+        pylab.errorbar(span, self.results.mean(axis=0), self.results.std(axis=0),
                        label="{} aggregation (over N submissions)".format(self.mode))
         pylab.legend(loc="lower left")
+
+        self._random_results = {}
+        self._random_results['x'] = span
+        self._random_results['individual'] = iauc
+        self._random_results['aggregation_mean'] = list(self.results.mean(axis=0))
+        self._random_results['aggregation_std'] = list(self.results.std(axis=0))
+        self._random_results['aggregation_all'] = [list(x) for x in self.results]
 
         xmax = pylab.xlim()[1]
         pylab.ylim([0.35, 0.86])
         pylab.xlim(0.5, xmax)
-        return iauc
 
     def compute_grand_mean_auc(self, data):
         if isinstance(data, dict):
-            return np.mean([data[k1][k2] for k1 in data.keys() for k2 in data[k1].keys() if k2
+            return np.mean([data[k1][k2] for k1 in data.keys()
+                for k2 in data[k1].keys() if k2
                 in self.valid_ligands_final[k1]])
         else:
             return data
@@ -1193,9 +1198,6 @@ def create_all_aggregation_figures():
         pylab.savefig("sc1a_aggregation_random_median.pdf")
     except:
         print("SC1A random median failed")
-
-
-
 
 
 def sc1a_check_edge_scores_range():
