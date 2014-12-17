@@ -1832,9 +1832,9 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
 
     def __init__(self, filename=None, verbose=False):
         super(HPNScoringPredictionInsilico, self).__init__(filename)
-        filename = os.sep.join([self._path2data, "goldstandard", "TruePredictionInsilico.zip"])
-        filename = os.sep.join([self._path2data, "goldstandard",  "TruePredictionInsilico2.zip"])
-        self.true_desc_filename = filename
+        fname = os.sep.join([self._path2data, "goldstandard", "TruePredictionInsilico.zip"])
+        fname = os.sep.join([self._path2data, "goldstandard",  "TruePredictionInsilico2.zip"])
+        self.true_desc_filename = fname
 
 
         #self.loadZIPFile(self.filename)
@@ -1844,8 +1844,8 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         self.inhibitors = ["AB%s"%x for x in range(1,21)]
         self.phosphos = ["AB%s"%x for x in range(1,21)]
 
-        #try:
-        self.get_user_prediction()
+        if self.filename is not None:
+            self.get_user_prediction()
         #except:
         #    print("could not read user prediction")
 
@@ -2069,10 +2069,11 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
 
     def get_training_data(self):
         self.training = {}
-        filenames = [gsf("dreamtools", "data/dream8hpn", "MD_insilico.csv")]
+        filenames = [os.sep.join([self._path2data, "data", "MD_insilico.csv"])]
 
         for filename in filenames:
-            if self.verbose:print("Scanning %s" % filename)
+            if self.verbose:
+                print("Scanning %s" % filename)
 
             data_iter = csv.reader(open(filename, "r"), delimiter=",")
 
@@ -2128,7 +2129,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         +DMSO, and time points.
         """
         import random
-        data = copy.deepcopy(self.user_prediction)
+        data = copy.deepcopy(self.true_prediction)
 
         for c in self.training.keys():
             for p in self.training.keys():
