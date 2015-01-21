@@ -1,7 +1,7 @@
 Overview
 ===========
 
-This directory contains tools for scoring of the 2 sub challenges of NIEHS-NCATS-UNC DREAM Toxicogenetics Challenge. 
+This directory contains tools for scoring of the two sub challenges of NIEHS-NCATS-UNC DREAM Toxicogenetics Challenge. 
 
 
 Subchallenge 1
@@ -11,7 +11,7 @@ Subchallenge 1
 
 For further information on the subchallenge and on the submission format go to https://www.synapse.org/#!Wiki:syn1761567/ENTITY/55909 
 
-For details on the scoring metrics go to https://www.synapse.org/#!Wiki:syn1761567/ENTITY/60497
+For details on the scoring metrics go to https://www.synapse.org/#!Wiki:syn1761567/ENTITY/60497.
 
 
 Subchallenge 2
@@ -21,7 +21,7 @@ Subchallenge 2
 
 For further information on the subchallenge and on the submission format go to https://www.synapse.org/#!Wiki:syn1761567/ENTITY/55911 
 
-For details on the scoring metrics go to https://www.synapse.org/#!Wiki:syn1761567/ENTITY/60498
+For details on the scoring metrics go to https://www.synapse.org/#!Wiki:syn1761567/ENTITY/60498.
 
 
 
