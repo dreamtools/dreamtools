@@ -4,7 +4,8 @@ import easydev
 import sys
 from easydev.console import purple, darkgreen
 
-registered = {'d8c1': ['sc1a', 'sc1b', 'sc2a', 'sc2b']}
+registered = {'d8c1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
+        'd8c2': ['sc1']}
 
 
 # Define the simple scoring functions here below
@@ -36,7 +37,11 @@ def d8c1_sc2b(filename):
     sc2b.compute_all_rmse()
     return {'RMSE': sc2b.get_mean_rmse()}
 
-
+def d8c2_sc1(filename):
+    from dreamtools.dream8.D8C2 import sc1
+    s = sc1.D8C2_sc1(filename)
+    s.run()
+    return {'results': s.df}
 
 def scoring(args=None):
     """This function is used by the standalone application called dreamscoring
@@ -92,6 +97,13 @@ def scoring(args=None):
             res = d8c1_sc2a(options.filename)
         elif options.sub_challenge == 'sc2b':
             res = d8c1_sc2b(options.filename)
+    elif options.challenge == 'd8c2':
+        if options.sub_challenge == 'sc1':
+            res = d8c2_sc1(options.filename)
+    else:
+        raise ValueError("Only challenge d8c1 and d8c2 available")
+
+
     txt = "Solution for %s in challenge %s" % (options.filename, options.challenge)
     if subchallenge is not None:
         txt += " (sub-challenge %s)" % subchallenge
@@ -100,10 +112,6 @@ def scoring(args=None):
         txt += darkgreen("     %s: %s" %(k, res[k]))
 
     print(txt)
-
-
-
-
 
 
 class Options(argparse.ArgumentParser):

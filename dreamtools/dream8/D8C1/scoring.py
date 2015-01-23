@@ -613,6 +613,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         self.edge_scores[cellLine][ligand] = abs(tempdata)
         M = self.edge_scores[cellLine][ligand].max()
         if M>1:
+            print("!!!!!!!!!!!!!!!!!!!!1, %s %s" % (cellLine, ligand))
             self.edge_scores[cellLine][ligand] /= float(M)
 
     def compute_all_descendant_matrices(self):

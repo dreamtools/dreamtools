@@ -103,7 +103,7 @@ pearson <- function(observed, predicted){
 
 # fuction to compute the probCindex
 # function to compute prob c-Index
-source("prob_Cidx.R")
+#source("prob_Cidx.R")
 probCindex <- function(observed, predicted, pooled_std){
   # compute pCIdx
   pCIdx_GS(observed, pooled_std, rank(predicted, ties.method="random"))
