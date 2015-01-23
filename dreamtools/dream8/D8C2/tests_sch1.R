@@ -1,6 +1,6 @@
 
 # load all data needed to compute score (i.e. gold standard, "toxCompoundsID", "pooled_std" and scores precomputed for submissions in the final leaderboard
-load("data_sch1.RData")
+load("data/data_sch1.RData")
 
 # source all functions needed for scoring
 source("functionsLeaderboard_sch1.R")
