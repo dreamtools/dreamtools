@@ -9,6 +9,8 @@ Subchallenge 1
 
 **Challenge description:** Predict interindividual variability in in vitro cytotoxicity based on genomic profiles of individual cell lines. For each compound, participants will be challenged to predict the absolute values and relative ranks of cytotoxicity across a set of unknown cell lines for which genomic data is available. 
 
+The template for scoring is provided within this synapse https://www.synapse.org/#!Synapse:syn1917708 page. 
+
 For further information on the subchallenge and on the submission format go to https://www.synapse.org/#!Wiki:syn1761567/ENTITY/55909 
 
 For details on the scoring metrics go to https://www.synapse.org/#!Wiki:syn1761567/ENTITY/60497.

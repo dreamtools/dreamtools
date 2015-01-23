@@ -1,6 +1,6 @@
 
 # source all functions needed for scoring
-source("functionsLeaderboard_sch2.R")
+source("data/functionsLeaderboard_sch2.R")
 
 # some test submissions
 load("testSubmissions_sch2.RData")
