@@ -8,9 +8,6 @@ Overview
 This repository is meant to contain (small) data sets and codes related to the scoring of the 
 `DREAM challenges <http://dreamchallenges.org>`_. 
 
-It was created at the time of DREAM8-9 and contains only Dream8 HPN challenge code for now. 
-Note however that **dreamtools** contains information about DREAM6-7 (parameter estimation). 
-More code/scripts about other challenges will be added later. 
 
 The main goals are:
 
@@ -35,6 +32,8 @@ Scoring functions available so far:
 
 * Dream8 HPN (D8C1) sub challenges named sc1a, sc1b, sc2a, sc2b. 
   See `Synapse page <https://www.synapse.org/#!Synapse:syn1720047>`_ for details
+* Dream8 Tox (D8C2) sub challenges named sc1, sc2. 
+  See `Synapse page <https://www.synapse.org/#!Synapse:syn1761567>`_ for details
 
 
 Installation

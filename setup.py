@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 _MAJOR               = 0
 _MINOR               = 0
-_MICRO               = 3
+_MICRO               = 4
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
@@ -22,6 +22,7 @@ def post_process():
 metainfo = {
     'authors': {
         'Cokelaer':('Thomas Cokelaer','cokelaer@gmail.com'),
+        'Eduati': ('Federica Eduati', 'eduati@ebi.ac.uk')
         },
     'version': version,
     'license' : 'BSD',
@@ -83,8 +84,7 @@ setup(
     # distutils in rtools.package
     #install_requires = [ 'pandas', 'bioservices', 'colormap>=0.9.3'],
     install_requires = ['numpy', 'matplotlib', 'pandas', 'appdirs', 'easydev',
-        'synapseclient',
-        'tabulate'],
+        'synapseclient', 'tabulate', 'cython'],
 
     
 

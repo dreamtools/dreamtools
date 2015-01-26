@@ -90,6 +90,21 @@ aggregation
     :members:
     :undoc-members:
 
+D8C2
+~~~~~~~~~
+
+NIEHS-NCATS-UNC DREAM Toxicogenetics 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: dreamtools.dream8.D8C2.sc1
+    :members:
+    :undoc-members:
+
+.. automodule:: dreamtools.dream8.D8C2.sc2
+    :members:
+    :undoc-members:
+
+
 
 DREAM9 challenges
 --------------------

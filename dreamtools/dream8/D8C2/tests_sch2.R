@@ -1,12 +1,12 @@
 
 # source all functions needed for scoring
-source("data/functionsLeaderboard_sch2.R")
+source("functionsLeaderboard_sch2.R")
 
 # some test submissions
 load("testSubmissions_sch2.RData")
 
 # load all data that I need to compute score (i.e. gold standard and scores precomputed for submissions in the final leaderboard)
-load("data_sch2.RData")
+load("data/data_sch2.RData")
 
 
 ## function 'computeMetric' can be used to compute metrics for each submssion for predicted median and interquantile distance

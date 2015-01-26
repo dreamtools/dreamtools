@@ -2,10 +2,10 @@ import os
 import argparse
 import easydev
 import sys
-from easydev.console import purple, darkgreen
+from easydev.console import purple, darkgreen, red
 
 registered = {'d8c1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
-        'd8c2': ['sc1']}
+        'd8c2': ['sc1', 'sc2']}
 
 
 # Define the simple scoring functions here below
@@ -37,11 +37,32 @@ def d8c1_sc2b(filename):
     sc2b.compute_all_rmse()
     return {'RMSE': sc2b.get_mean_rmse()}
 
+
 def d8c2_sc1(filename):
     from dreamtools.dream8.D8C2 import sc1
-    s = sc1.D8C2_sc1(filename)
+    s = sc1.D8C2_sc1(filename, verboseR=False)
     s.run()
     return {'results': s.df}
+
+
+def d8c2_sc2(filename):
+    from dreamtools.dream8.D8C2 import sc2
+    s = sc2.D8C2_sc2(filename, verboseR=False)
+    s.run()
+    return {'results': s.df}
+
+
+
+# -------------------------------------------------- The User Interface
+def print_color(txt, func_color, underline=False):
+    try:
+        if underline:
+            print(easydev.underline(func_color(txt)))
+        else:
+            print(func_color(txt))
+    except:
+        print(txt)
+
 
 def scoring(args=None):
     """This function is used by the standalone application called dreamscoring
@@ -54,40 +75,48 @@ def scoring(args=None):
     d = easydev.DevTools()
 
     if args == None:
-        args=sys.argv[:]
+        args = sys.argv[:]
     user_options = Options(prog="dreamtools-scoring")
+
     if len(args) == 1:
         user_options.parse_args(["prog", "--help"])
     else:
         options = user_options.parse_args(args[1:])
 
-    if options.sub_challenge:
-        subchallenge = options.sub_challenge
-    else:
-        subchallenge = None
+    if options.challenge is None or options.sub_challenge is None:
+        print_color('--challenge and --sub-challenge must be provided', red)
+        sys.exit()
+
 
     try:
         d.check_param_in_list(options.challenge, registered.keys())
     except ValueError as err:
-        print("DreamScoring error: unknown challenge or not yet implemented")
-        print("--->" + err.message)
+        txt = "DreamScoring error: unknown challenge name (%s) or not yet implemented\n" % options.challenge
+        txt += "--->" + err.message
+        print_color(txt, red)
         sys.exit()
 
     try:
-        d.check_param_in_list(subchallenge, registered[options.challenge])
+
+        d.check_param_in_list(options.sub_challenge, registered[options.challenge])
     except ValueError as err:
         print("DreamScoring error: unknown sub challenge or not yet implemented")
         print("--->" + err.message)
+        sys.exit()
 
     if os.path.exists(options.filename) is False:
         raise IOError("file %s does not seem to exists" % options.filename)
 
-    try:
-        print(easydev.underline(purple("Dreamtools scoring ")))
-    except:
-        print(easydev.underline("Dreamtools scoring "))
+
+    print(print_color("Dreamtools scoring",purple, underline=True))
+    print('Challenge %s (sub challenge %s)\n\n' % (options.challenge, options.sub_challenge))
 
     res = '??'
+
+    if options.challenge not in registered.keys():
+        raise ValueError('Invalid challenge name. Choose one of %s' % registered.keys())
+
+
     if options.challenge == 'd8c1':
         if options.sub_challenge == 'sc1a':
             res = d8c1_sc1a(options.filename)
@@ -100,14 +129,17 @@ def scoring(args=None):
     elif options.challenge == 'd8c2':
         if options.sub_challenge == 'sc1':
             res = d8c2_sc1(options.filename)
-    else:
-        raise ValueError("Only challenge d8c1 and d8c2 available")
+        if options.sub_challenge == 'sc2':
+            res = d8c2_sc2(options.filename)
+
 
 
     txt = "Solution for %s in challenge %s" % (options.filename, options.challenge)
-    if subchallenge is not None:
-        txt += " (sub-challenge %s)" % subchallenge
+    if options.sub_challenge is not None:
+        txt += " (sub-challenge %s)" % options.sub_challenge
     txt += " is :\n"
+
+
     for k in sorted(res.keys()):
         txt += darkgreen("     %s: %s" %(k, res[k]))
 
@@ -115,10 +147,35 @@ def scoring(args=None):
 
 
 class Options(argparse.ArgumentParser):
-
+    description = "tests"
     def __init__(self, version="1.0", prog=None):
-        usage = """usage: python %s --challenge d8c1 --sub-challenge sc1a --input""" % prog
-        super(Options, self).__init__(usage=usage, version=version, prog=prog)
+
+        usage = """usage: python %s --challenge d8c1 --sub-challenge sc1a --submission <filename>""" % prog
+        epilog="""Author(s):
+
+        - Thomas Cokelaer (D8C1 and dreamtools package design including tests and doc)
+        - Federica Eduati (D8C2)
+
+Source code on: https://github.com/dreamtools/dreamtools
+Issues or bug report ? Please fill an issue on http://github.com/dreamtools/dreamtools/issues """
+        description = """General Description:
+    You must provide the challenge nickname (e.g., d8c1) and
+    if there were several sub-challenges, you also must
+    provide the sub-challenge nickname (e.g., sc1).
+    Finally, the submission has to be provided. The format must
+    be in agreement with the description of the challenge
+    itself.
+
+    Registered challenge and sub-challenges are:"""
+        description +="\n"
+        for c in registered.keys():
+            description +=  "    - " + c + ": "
+            for s in registered[c]:
+                description += s + " "
+            description += "\n"
+
+        super(Options, self).__init__(usage=usage, version=version, prog=prog, epilog=epilog, description=description,
+                                      formatter_class=argparse.RawDescriptionHelpFormatter)
         self.add_input_options()
 
     def add_input_options(self):
@@ -128,14 +185,12 @@ class Options(argparse.ArgumentParser):
         the ini file is overwritten in :class:`apps.Apps`.
         """
 
-        group = self.add_argument_group("General",
-                    """You must provide the challenge nickname (e.g., d8c1) and 
-                    if there were several sub-challenges, you also must 
-                    provide the sub-challenge nickname (e.g., sc1).
-                    Finally, the submission has to be provided. The format must
-                    be in agreement with the description of the challenge
-                    itself.
-                    """)
+
+
+
+
+
+        group = self.add_argument_group("General", 'General options (compulsary or not)')
 
         group.add_argument("--challenge", dest='challenge',
                          default=None, type=str, 
