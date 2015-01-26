@@ -85,7 +85,8 @@ Here is the procedure to get the ROC or RMSE::
     sc2b.get_mean_rmse()
 
 :Note: scoring in SC2B gives different results as compared to https://www.synapse.org/#!Synapse:syn1720047/wiki/60532
-    because the true networks are different. The one used in dreamtools is correct. 
+    because the true networks are different. The one used in dreamtools is correct. You can still retrieve previous 
+    results by hacking the scoring.py module around line 1821 in HPNScoringPredictionInsilico
 
 downloads.py 
 ----------------
