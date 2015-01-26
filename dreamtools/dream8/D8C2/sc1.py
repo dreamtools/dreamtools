@@ -46,6 +46,7 @@ class D8C2_sc1(RTools):
         self.res = self.session.res
         self.df = self.res['summaryScores']
         self.df.index = ['bestPerformer','randomSubmission','yourSubmission']
+        self.df.columns = [c.strip() for c in self.df.columns]
         return self.df
 
 
