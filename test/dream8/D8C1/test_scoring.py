@@ -42,4 +42,4 @@ def test_scoring_sc2b():
         'CGR-Prediction-Insilico.zip'])
     s = scoring.HPNScoringPredictionInsilico(filename)
     s.compute_all_rmse()
-    assert s.get_mean_rmse() == 0.27750290989139931
+    assert s.get_mean_rmse() == 0.24554824475398279
