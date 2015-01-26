@@ -84,6 +84,8 @@ Here is the procedure to get the ROC or RMSE::
     sc2b.compute_all_rmse()
     sc2b.get_mean_rmse()
 
+:Note: scoring in SC2B gives different results as compared to https://www.synapse.org/#!Synapse:syn1720047/wiki/60532
+    because the true networks are different. The one used in dreamtools is correct. 
 
 downloads.py 
 ----------------
