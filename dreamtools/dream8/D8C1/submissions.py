@@ -473,14 +473,14 @@ class SC1Aggregate(Login):
         for name in sorted(names):
             results[name] = {}
             if name in self.sc1a.keys():
-                xa = self.sc1a[name]
+                xa = self.sc1a[name][5]
                 results[name]['sc1a'] = xa
             else:
                 mynan = np.nan # or numpy.nan
                 xa = mynan
                 results[name]['sc1a'] = mynan
             if name in self.sc1b.keys():
-                xb = self.sc1b[name]
+                xb = self.sc1b[name][5]
                 results[name]['sc1b'] = xb
             else:
                 mynan = np.nan

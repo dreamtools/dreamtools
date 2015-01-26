@@ -36,4 +36,3 @@ def test_submissions_sc1_aggregate():
 def test_submissions_sc2_aggregate():
     s = submissions.SC2Aggregate()
     s.summary()
-
