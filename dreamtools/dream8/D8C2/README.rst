@@ -33,21 +33,24 @@ Scoring
 
 From the dreamtools package, you can score a submission from the D8C1 first sub challenge as follows:
 
-```from dreamtools.dream8.D8C2 import sc1
-s = sc1.D8C1_sc1(filename)
-s.run()
-# results are stored in s.df 
-s.df
-```
+::
 
-Note that the computation takes a few minutes. The computation for the sub-challenge 2 is much faster and works similalrly:
+  from dreamtools.dream8.D8C2 import sc1
+  s = sc1.D8C1_sc1(filename)
+  s.run()
+  # results are stored in s.df 
+  s.df
 
-```from dreamtools.dream8.D8C2 import sc2
-s = sc2.D8C1_sc2(filename)
-s.run()
-# results are stored in s.df 
-s.df
-```
+
+Note that the computation takes a few minutes. The computation for the sub-challenge 2 is much faster and works similalrly::
+
+  from dreamtools.dream8.D8C2 import sc2
+  s = sc2.D8C1_sc2(filename)
+  s.run()
+  # results are stored in s.df 
+  s.df
+
+
 Examples of submission files can be found in the source code (e.g., data/test_sc1.csv)
 
 
