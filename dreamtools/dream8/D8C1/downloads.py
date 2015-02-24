@@ -28,7 +28,7 @@ class SubmissionsDownloader(Login):
 
     ::
 
-        >>> from dreamtools.dream8hpn import downloads
+        >>> from dreamtools.dream8.D8C1 import downloads
         >>> d = downloads.SubmissionsDownloader(directory="download")
         >>> d.download_all()
 
