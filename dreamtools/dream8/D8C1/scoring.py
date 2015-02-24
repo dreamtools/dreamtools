@@ -116,7 +116,6 @@ class HPNScoring(ZIP):
         # assuming length are 44, 39, 44, 46 that is excludnig  the taz and fox phosphos
         self.mTor_index = {'BT20': 23, 'UACC812': 21, 'MCF7':21, 'BT549':21}
         #indices are computed using:
-        #sorted(self.species['BT549']['EGF'], key=lambda x:x.lower()).index('mTOR_pS2448')
 
         self.species_to_ignore = {
             'MCF7':['TAZ_pS89', 'FOXO3a_pS318_S321'],
@@ -189,7 +188,7 @@ class HPNScoringNetworkBase(HPNScoring):
         """See validate() for details
 
         """
-        from cno.core import CNOGraph
+        from cno.io import CNOGraph
         if self.verbose: print("Validating %s" % filename),
 
         # read the SIF file
@@ -612,9 +611,11 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
                 tempdata[i][j] = z
         self.edge_scores[cellLine][ligand] = abs(tempdata)
         M = self.edge_scores[cellLine][ligand].max()
-        if M>1:
-            print("!!!!!!!!!!!!!!!!!!!!1, %s %s" % (cellLine, ligand))
-            self.edge_scores[cellLine][ligand] /= float(M)
+        #if M>1:
+        #    print("!!!!!!!!!!!!!!!!!!!!1, %s %s" % (cellLine, ligand))
+        #    self.edge_scores[cellLine][ligand] /= float(M)
+        self.edge_scores[cellLine][ligand] /= float(M)
+
 
     def compute_all_descendant_matrices(self):
         """Compute all descendancy matrices
