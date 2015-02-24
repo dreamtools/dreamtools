@@ -221,8 +221,8 @@ class SC1AggregationPlotting(object):
         self._best_results['individual'] = iauc
 
         pylab.xlabel("N", fontsize=20)
-        pylab.ylabel("AUC", fontsize=20)
-        pylab.title("Aggregated AUC (best case)", fontsize=20)
+        pylab.ylabel("AUROC", fontsize=20)
+        pylab.title("Aggregated AUROC (best case)", fontsize=20)
         yr = pylab.ylim()
         pylab.axis([0.5, M+1, yr[0]-0.05, yr[1]+0.05])
         pylab.ylim([0.35, 0.86])
@@ -279,8 +279,8 @@ class SC1AggregationPlotting(object):
         pylab.grid(True)
         #pylab.plot()
         pylab.xlabel("N", fontsize=20)
-        pylab.ylabel("AUC", fontsize=20)
-        pylab.title("Aggregated AUC (random case)", fontsize=20)
+        pylab.ylabel("AUROC", fontsize=20)
+        pylab.title("Aggregated AUROC (random case)", fontsize=20)
 
         pylab.errorbar(span, self.results.mean(axis=0), self.results.std(axis=0),
                        label="{} aggregation (over N submissions)".format(self.mode))
