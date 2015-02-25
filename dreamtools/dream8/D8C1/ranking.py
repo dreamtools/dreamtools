@@ -62,6 +62,7 @@ class SC1A_ranking(Ranking):
 
         #indices = df['Team Name']
         indices = [sub['submitterAlias'] for sub in self.submissions]
+        indices = [this.replace("ChaosLab", "FreiburgBiossX") for this in indices]
 
 
         aucs = pd.DataFrame(aucs, columns=columns, index=indices)
@@ -132,12 +133,27 @@ class SC1B_ranking(Ranking):
 
 class SC1Aggregate():
 
-
     def __init__(self):
+        pass
+
+    def get_ranking(self, rsc1a, rsc1b):
+        # Here we want to replace values that are not between 1 and N
+        # into integer from 1 to N so that it can be compared to df1b
         df1a = rsc1a.get_ranking()
+        N = len(df1a)
+        df1a = pd.DataFrame(range(1, N+1), index=df1a.index)
+
+        # df1a has already values from 1 to N
         df1b = rsc1b.get_ranking()
-        df = pd.concat([df1a, df1b], axis=1).fillna(1000).rank(ascending=False, method='min')
 
+        df = pd.concat([df1a, df1b], axis=1).fillna(1e6) #.rank(ascending=False, method='min')
+        df.columns = ['SC1A', 'SC1B']
+        df['mean'] = df.mean(axis=1)
+        df.sort(columns='mean', inplace=True)
 
+        ranks = df['mean'].rank(ascending=True, method='min')
+        df['aggregate rank'] = ranks
+
+        return df
 
 
