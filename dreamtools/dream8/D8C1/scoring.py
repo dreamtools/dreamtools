@@ -22,8 +22,7 @@ play with.
 
 Here is an example related to the Network subchallenge::
 
-    >>> from dreamtools import dream8hpn
-    >>> from dream8hpn import scoring
+    >>> from dreamtools.dream8.D8C1 import scoring
     >>> s = scoring.HPNScoringNetwork()
     >>> s.validation() # optional
     >>> s.compute_all_descendant_matrices()
@@ -1834,10 +1833,11 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
 
     def __init__(self, filename=None, verbose=False):
         super(HPNScoringPredictionInsilico, self).__init__(filename)
+        # WRONG NETWORK as used in the official LB
         fname = os.sep.join([self._path2data, "goldstandard", "TruePredictionInsilico.zip"])
-        fname = os.sep.join([self._path2data, "goldstandard",  "TruePredictionInsilico2.zip"])
+        # CORRECT NETWORK
+        #fname = os.sep.join([self._path2data, "goldstandard",  "TruePredictionInsilico2.zip"])
         self.true_desc_filename = fname
-
 
         #self.loadZIPFile(self.filename)
         self.valid_cellLines = [""]

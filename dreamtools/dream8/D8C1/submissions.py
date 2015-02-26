@@ -153,7 +153,6 @@ class SubmissionTools(Login):
             dstart = dateutil.parser.parse(weeks[1][0])
             if d <= dstart:
                 result = 0
-
         return result
 
     def attach_status_to_submissions(self, submissions):
@@ -293,26 +292,7 @@ class SC1ASubmissions(SubmissionTools):
             self.submissions[i]['mean_aucs'] =  np.mean([this[k1][k2] for k1 in this.keys()
                 for k2 in this[k1].keys()])
 
-    def export2json(self, filename=None):
-        """Save relevant imformation in a json file.
 
-        """
-        data = {}
-        for s in self.submissions:
-            name = s['submitterAlias'] + "_" + str(s['week'])
-            data[name] = {}
-            data[name]['zscores'] = s['zscores']
-            data[name]['mean_zscore'] = s['zscore']
-            data[name]['aucs'] = s['aucs']
-            data[name]['mean_rank'] = s['ranking']
-            data[name]['mean_aucs'] = s['mean_aucs']
-            data[name]['ranks'] = s['ranks']
-
-            if filename:
-                fh = open(filename, "w")
-                json.dump(data, fh)
-                fh.close()
-        return data
 
     def summary_final(self, show="all"):
         print("Remove 3 combi of cell line/ligands before printing")
@@ -412,22 +392,7 @@ class SC1BSubmissions(SubmissionTools):
             self.submissions[i]['auc'] = report['auc']
             self.submissions[i]['zscore'] = report['score']
 
-    def export2json(self, filename=None):
-        """Save relevant imformation in a json file.
 
-        """
-        data = {}
-        for s in self.submissions:
-            name = s['submitterAlias'] + "_" + str(s['week'])
-            data[name] = {}
-            data[name]['zscores'] = s['zscore']
-            data[name]['auc'] = s['auc']
-            data[name]['rank'] = s['ranking']
-            if filename:
-                fh = open(filename, "w")
-                json.dump(data, fh)
-                fh.close()
-        return data
 
     def summary_final(self):
 
@@ -631,21 +596,7 @@ class SC2ASubmissions(SubmissionTools):
             results[sub['submitterAlias']] =  i+1
         return results
 
-    def export2json(self, filename=None):
-        """Save relevant imformation in a json file"""
-        data = {}
-        for s in self.submissions:
-            name = s['submitterAlias'] + "_" + str(s['week'])
-            data[name] = {}
-            data[name]['zscores'] = s['zscores']
-            data[name]['mean_zscore'] = s['zscore']
-            data[name]['mean_rmse'] = s['mean_rmse']
-            data[name]['rmses'] = s['rmses']
-            if filename:
-                fh = open(filename, "w")
-                json.dump(data, fh)
-                fh.close()
-        return data
+
 
 
 class SC2BSubmissions(SubmissionTools):
