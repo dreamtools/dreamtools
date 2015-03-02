@@ -1,13 +1,19 @@
-import pandas as pd
 import json
+import os
+import pandas as pd
 from dreamtools.dream8.D8C1 import submissions
 from dreamtools.dream8.D8C1 import scoring
+from dreamtools.dream8.D8C1 import d8c1path
 
 class Ranking(object):
 
     def __init__(self, name):
         self.name = name
         self.yours = 'YOUR_SUBMISSION'
+
+    def _getdata(self, filename):
+        path2data = os.path.split(os.path.abspath(__file__))[0]
+        return os.sep.join([path2data, 'data', filename])
 
     def add_team(self):
         raise NotImplementedError
@@ -37,13 +43,15 @@ class Ranking(object):
         raise NotImplementedError
 
     def get_rank_your_submission(self):
-        if self.yours in self.ranked_df.index:
-            return list(self.get_ranking().index).index(self.yours) + 1
-        elif self.yours in self.ranked_df['Team Name'].values:
-            return self.get_ranking().ix[self.yours].values[0]
-        else:
-            print("Use append_submission() method to add your submission")
-            return 99
+        try:
+            return list(self.get_ranking().index).index(self.yours) 
+        except:
+            print("Are we here?")
+            try:
+                return self.get_ranking().ix[self.yours].values[0]
+            except:
+                print("Use append_submission() method to add your submission")
+                return 99
 
     def __str__(self):
         return self.get_ranked_df().to_string()
@@ -56,8 +64,8 @@ class SC1A_ranking(Ranking):
     """
     def __init__(self):
         super(SC1A_ranking, self).__init__('SC1A')
-        self.aucs = pd.read_json("SC1A_aucs.json")
-        self.ranked_df = pd.read_json("SC1A_results.json")
+        self.aucs = pd.read_json(self._getdata("SC1A_aucs.json"))
+        self.ranked_df = pd.read_json(self._getdata("SC1A_results.json"))
 
     def _sort_df(self, df):
         df.sort('Mean Rank', inplace=True)
@@ -129,14 +137,14 @@ class SC1A_ranking(Ranking):
         try:
             res = scoring.HPNScoringNetwork(res)
             res.compute_all_aucs()
-        except:
-            pass
+        except Exception:
+            if getattr(res, 'aucs') is False:
+                raise Exception
 
         self.aucs.ix[self.yours] = [1] * 32
         #now replace the values as expected; s.auc is a 4 by  8 matrix
         for cell in res.auc.keys():
             for stim in res.auc[cell].keys():
-
                 self.aucs.ix[self.yours][cell + "_" + stim] = res.auc[cell][stim]
 
 
@@ -144,7 +152,7 @@ class SC1B_ranking(Ranking):
 
     def __init__(self):
         super(SC1B_ranking, self).__init__('SC1B')
-        self.ranked_df = pd.read_json("SC1B_results.json")
+        self.ranked_df = pd.read_json(self._getdata("SC1B_results.json"))
 
     def _sort_df(self, df):
         df.sort('AUC', inplace=True, ascending=False)
@@ -199,17 +207,10 @@ class SC1B_ranking(Ranking):
         self.ranked_df = self._sort_df(self.ranked_df.append(ts))
 
 
-
-
-
-
-
 class SC2A_ranking(Ranking):
     """
 
     """
-
-
     # 375805/alphabeta is a test from TC
     # 1991105/sakev from week 5 has different id from sakev week 6. renmove
     #      week5 that has a lower score anyway
@@ -217,8 +218,8 @@ class SC2A_ranking(Ranking):
     userIds_toremove =  ["375805", "1991105", "1971259"]
     def __init__(self):
         super(SC2A_ranking, self).__init__('SC2A')
-        self.rmses = pd.read_json("SC2A_rmses.json")
-        self.ranked_df = pd.read_json("SC2A_results.json")
+        self.rmses = pd.read_json(self._getdata("SC2A_rmses.json"))
+        self.ranked_df = pd.read_json(self._getdata("SC2A_results.json"))
 
         self.phosphos_to_exclude = {
                 'MCF7': ['TAZ_pS89', 'FOXO3a_pS318_S321', 'mTOR_pS2448'],
@@ -310,8 +311,8 @@ class SC2B_ranking(Ranking):
     userIds_toremove =  ["375805", "1991105"]
     def __init__(self):
         super(SC2B_ranking, self).__init__('SC2B')
-        self.rmses = pd.read_json("SC2B_rmses.json")
-        self.ranked_df = pd.read_json("SC2B_results.json")
+        self.rmses = pd.read_json(self._getdata("SC2B_rmses.json"))
+        self.ranked_df = pd.read_json(self._getdata("SC2B_results.json"))
 
     def _sort_df(self, df):
         df.sort('Mean Rank', inplace=True)
