@@ -36,8 +36,10 @@ __all__  = ["SubmissionTools", "SC1ASubmissions", "SC1BSubmissions",
 class SubmissionTools(Login):
     """Utilities to manipulate list of submissions.
 
-    .. note:: Used in hpn module and SCXYSubmissions classes but users shoudle
-        not used it.
+    .. note:: Used in hpn module and SCXYSubmissions classes but users
+        do not need this module. For book keeping only.
+
+    .. seealso:: ranking module
 
     This class could be used to attach information to submissions, load the
     status from synapse and attached it to the submissions, plot summary,
@@ -292,8 +294,6 @@ class SC1ASubmissions(SubmissionTools):
             self.submissions[i]['mean_aucs'] =  np.mean([this[k1][k2] for k1 in this.keys()
                 for k2 in this[k1].keys()])
 
-
-
     def summary_final(self, show="all"):
         print("Remove 3 combi of cell line/ligands before printing")
         ranks = np.argsort([sub['ranking'] for sub in self.submissions])
@@ -392,8 +392,6 @@ class SC1BSubmissions(SubmissionTools):
             self.submissions[i]['auc'] = report['auc']
             self.submissions[i]['zscore'] = report['score']
 
-
-
     def summary_final(self):
 
         header = ("Final rank", "Team name", "userID", "synapse ID", "entityID" , "AUC", "zscore", "p-value")
@@ -414,8 +412,6 @@ class SC1BSubmissions(SubmissionTools):
             print("|%12s | %20s | %20s | %20s | %10.6s|  %10.6s |%10.6s |%12.6s|" % data)
             results[sub['submitterAlias']] = data[:]
         return results
-
-
 
 
 class SC2ASubmissions(SubmissionTools):
@@ -544,8 +540,6 @@ class SC2ASubmissions(SubmissionTools):
         return results
 
 
-
-
 class SC2BSubmissions(SubmissionTools):
     def __init__(self, client=None):
         super(SC2BSubmissions, self).__init__(client=client, name="SC2B")
@@ -654,4 +648,3 @@ class SC2BSubmissions(SubmissionTools):
                         sub['mean_rmse'],sub['ranking'],sub['zscore']))
             results[sub['submitterAlias']] = i+1
         return results
-

@@ -346,7 +346,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
                         name1 = species[i]
                         name2 = species[j]
                         value = self.edge_scores[k1][k2][i][j]
-                        print k1,k2,name1,name2,value
                         fh.write("{} (1) {} = {}\n".format(name1, name2,value))
                 fh.close()
 
@@ -1456,12 +1455,9 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
                 'BT549': ['TAZ_pS89','mTOR_pS2448']
         }
 
-        #self.validation()
         self.rmse = {}
         self.get_true_prediction()
-
         self.get_user_prediction()
-
 
     def get_user_prediction(self):
         """
@@ -1481,7 +1477,6 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
             print("Loading MIDAS files")
 
         for filename in filenames:
-            print filename
             tail = os.path.split(filename)[-1]
             team, cell, ligand, other = tail.split("-")
             if cell not in self.valid_cellLines:
@@ -2145,7 +2140,6 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         """Retrieve mean and sigma for 32 combi from a null AUC distribution"""
         filename = 'sc2b_null_mu_sigma.dat'
         filename = os.sep.join([self._path2data, "data", filename])
-        print filename
         # a dict contain dict (phospho) of dict (phospho) of dict (mu,sigma)
         mu_sigma = pickle.load(open(filename, "r"))
         mu = {}

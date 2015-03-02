@@ -27,7 +27,7 @@ ligands = ["EGF", "HGF", "FGF1", "IGF1", "Insulin", "NRG1", "PBS", "Serum"]
 valid_ligands_final = {
                    'UACC812': ['PBS', 'Serum', 'NRG1', 'Insulin', 'HGF', 'EGF', 'FGF1',  'IGF1'],
                       'BT20': ['IGF1', 'PBS', 'Serum', 'NRG1', 'HGF', 'EGF', 'FGF1'],
-                      'BT549': ['IGF1', 'PBS', 'Serum',  'Insulin', 'HGF', 'EGF', 'FGF1'],
+                      'BT549': ['IGF1', 'PBS', 'Serum', 'Insulin', 'HGF', 'EGF', 'FGF1'],
                       'MCF7': ['IGF1', 'PBS', 'Serum', 'NRG1', 'Insulin',  'HGF', 'EGF', 'FGF1']
                       }
 
