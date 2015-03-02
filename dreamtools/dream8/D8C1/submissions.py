@@ -416,59 +416,6 @@ class SC1BSubmissions(SubmissionTools):
         return results
 
 
-class SC1Aggregate(Login):
-    """This is not aggregation but combimaison of SC1A and B"""
-
-    def __init__(self, client=None):
-        super(SC1Aggregate, self).__init__(client=client)
-        self.load()
-
-    def load(self):
-        self.subs_sc1a = SC1ASubmissions()
-        self.subs_sc1a.load_submissions()
-        self.sc1a = self.subs_sc1a.summary_final()
-        self.subs_sc1b = SC1BSubmissions()
-        self.subs_sc1b.load_submissions()
-        self.sc1b = self.subs_sc1b.summary_final()
-
-    def get_aggregation(self):
-        results = {}
-        names = list(set(self.sc1a.keys() + self.sc1b.keys()))
-
-        for name in sorted(names):
-            results[name] = {}
-            if name in self.sc1a.keys():
-                xa = self.sc1a[name][5]
-                results[name]['sc1a'] = xa
-            else:
-                mynan = np.nan # or numpy.nan
-                xa = mynan
-                results[name]['sc1a'] = mynan
-            if name in self.sc1b.keys():
-                xb = self.sc1b[name][5]
-                results[name]['sc1b'] = xb
-            else:
-                mynan = np.nan
-                xb = mynan
-                results[name]['sc1b'] =mynan
-            print name, xa, xb
-            results[name]['aggregate_score'] = (xa+xb)/2.
-        return results
-
-    def summary(self):
-        agg = self.get_aggregation()
-        print("|Aggregate rank | Team name | SC1A rank | SC1B rank | Aggregate rank|")
-        print("|---------------|-----------|-----------|-----------|---------------|")
-        keys = agg.keys()
-        ranks = [x['aggregate_score'] for x in agg.values()]
-        indices = np.argsort(ranks)
-
-        for i, index in enumerate(indices):
-            key = keys[index]
-            this = agg[key]
-            rank = this['aggregate_score']
-            print("| %20s | %20s | %20s | %20s | %20s |" % (i+1, key, this['sc1a'], this['sc1b'], rank))
-
 
 
 class SC2ASubmissions(SubmissionTools):
@@ -707,59 +654,4 @@ class SC2BSubmissions(SubmissionTools):
                         sub['mean_rmse'],sub['ranking'],sub['zscore']))
             results[sub['submitterAlias']] = i+1
         return results
-
-
-class SC2Aggregate(Login):
-
-    def __init__(self, load=True):
-        super(SC2Aggregate, self).__init__()
-        if load:
-            self.load()
-
-    def load(self):
-        self.subs_sc1a = SC2ASubmissions()
-        self.subs_sc1a.load_submissions()
-        self.sc1a = self.subs_sc1a.summary_final()
-        self.subs_sc1b = SC2BSubmissions()
-        self.subs_sc1b.load_submissions()
-        self.sc1b = self.subs_sc1b.summary_final()
-
-    def get_aggregation(self):
-        results = {}
-        names = list(set(self.sc1a.keys() + self.sc1b.keys()))
-
-        for name in sorted(names):
-            results[name] = {}
-            if name in self.sc1a.keys():
-                xa = self.sc1a[name]
-                results[name]['sc1a'] = xa
-            else:
-                mynan = np.nan
-                xa = mynan
-                results[name]['sc1a'] = mynan
-            if name in self.sc1b.keys():
-                xb = self.sc1b[name]
-                results[name]['sc1b'] = xb
-            else:
-                mynan = np.nan
-                xb = mynan
-                results[name]['sc1b'] = mynan
-            print name, xa, xb, (xa+xb)/2.
-            results[name]['aggregate_score'] = (xa+xb)/2.
-        return results
-
-    def summary(self):
-        agg = self.get_aggregation()
-        print("|Aggregate rank | Team name | SC2A rank | SC2B rank | Aggregate rank|")
-        print("|---------------|-----------|-----------|-----------|---------------|")
-        keys = agg.keys()
-        ranks = [x['aggregate_score'] for x in agg.values()]
-        indices = np.argsort(ranks)
-
-        for i, index in enumerate(indices):
-            key = keys[index]
-            this = agg[key]
-            rank = this['aggregate_score']
-            print("| %s | %s | %s | %s | %s |" % (i+1, key, this['sc1a'], this['sc1b'], rank))
-
 
