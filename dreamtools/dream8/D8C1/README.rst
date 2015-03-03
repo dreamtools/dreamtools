@@ -1,6 +1,12 @@
 Overview
 ===========
 
+:Challenge: HPN-DREAM Breast Cancer Network Inference Challenge
+:Alias: D8C1
+:SubChallenges: SC1A, SC1B, SC2A, SC2B
+:Synapse page: https://www.synapse.org/#!Synapse:syn1720047
+
+
 .. contents::
 
 
@@ -13,22 +19,25 @@ There were 4 sub-challenges called
 * SC2A for Prediction
 * SC2B for Prediction Insilico
 
-For users, the most relevant is the **scoring** module that provides tools to compute the AUROC and RMSE.
+For users, the most relevant are the **scoring** and **ranking** modules that provides 
+tools to compute the AUROC and RMSE as well as the ranking that would have been obtained as comparead with other
+participants.
 
 
-Other modules required adming right on synapse projects are are therefore irrelevant or end-users for now.
+Most of the other modules would require admin access to the synapse project. Amongst those other modules, 
+some are up-to-date (E.g., those to create the aggregate results), some are just kept for book keepig (e.g, hpn,
+sc1a_tools).
 
-Here below is a quick description of each module. More information could be found in the code itself.
-
-This code is a subset (cleaned and simplified) from dreamtools on bitbucket (https://bitbucket.org/cokelaer/dreamtools)
+.. seealso:: dreamtools on bitbucket (https://bitbucket.org/cokelaer/dreamtools) was developed for dream8 HPN challenge
+    and most of its contensts has been moved here.
 
 
 Before starting
 ------------------
 
-For admin, you may need to download some files before using e.g., the
+For admin, you may need to download some files before using the code e.g., the
 aggregation functions. Since you will need to access to synapse to download
-those files, you will also need to create a configuration file::
+those files, you will also need to create a configuration file in your home directory.::
 
     [authentication]
     username: your_email_registered@synapse
@@ -36,7 +45,6 @@ those files, you will also need to create a configuration file::
 
 
 Then, type::
-
 
     from dreamtools.dream8.D8C1 import downloads
     d = downloads.GSDownloader()
