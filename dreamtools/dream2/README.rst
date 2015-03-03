@@ -1,9 +1,9 @@
 DREAM2
 ==========
 
-DREAM2 had 3 challenges, which we refer to as D2C1, D2C2.
+DREAM2 had 2 challenges, which we refer to as D2C1, D2C2.
 
-For full details see: http://dreamchallenges.org/project-list/dream8-2013/
+For full details see: http://dreamchallenges.org/project-list/dream2-2007/
 
 Click on the image below to jump to the **synapse page** related to each challenge:
 
