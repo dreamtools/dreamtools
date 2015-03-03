@@ -35,6 +35,8 @@ sc1a_tools).
 Before starting
 ------------------
 
+If you are a end-user, you can skip this section and move directly to the scoring section.
+
 For admin, you may need to download some files before using the code e.g., the
 aggregation functions. Since you will need to access to synapse to download
 those files, you will also need to create a configuration file in your home directory.::
