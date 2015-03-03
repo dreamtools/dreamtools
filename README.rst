@@ -26,7 +26,9 @@ when installing dreamtools. Knowing the name of the challenge (and possibly sub-
 It prints some information and the score of the submision for instance for the example above::
 
      Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
-     AUROC: 0.781937275711
+     AUROC: 0.803628919403
+     Rank LB: 0
+
 
 Scoring functions available so far:
 
@@ -37,7 +39,7 @@ Scoring functions available so far:
   See `Synapse page <https://www.synapse.org/#!Synapse:syn1761567>`_ for details
 
 **Format** for the challenges can be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 
-please see ./dreamtools/dream8/D8C1/READM.rst
+please see ./dreamtools/dream8/D8C1/README.rst
 
 Installation
 ---------------

@@ -61,7 +61,7 @@ class Ranking(object):
 
     def get_rank_your_submission(self):
         try:
-            return list(self.get_ranking().index).index(self.yours) 
+            return list(self.get_ranking().index).index(self.yours) + 1
         except:
             print("Are we here?")
             try:

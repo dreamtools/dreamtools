@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 _MAJOR               = 0
 _MINOR               = 0
-_MICRO               = 5
+_MICRO               = 6
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
@@ -79,7 +79,8 @@ setup(
 
     # distutils in rtools.package
     #install_requires = [ 'pandas', 'bioservices', 'colormap>=0.9.3'],
-    install_requires = ['numpy', 'matplotlib', 'pandas', 'appdirs', 'easydev',
+    install_requires = ['numpy', 'matplotlib', 'pandas', 'appdirs',
+        'easydev>=0.8.3',
         'synapseclient', 'tabulate', 'cython'],
 
     
