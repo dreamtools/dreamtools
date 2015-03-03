@@ -29,10 +29,3 @@ def test_submissions_sc2b():
     assert len(s.submissions) == 11
     s.summary_final()
 
-def test_submissions_sc1_aggregate():
-    s = submissions.SC1Aggregate()
-    s.summary()
-
-def test_submissions_sc2_aggregate():
-    s = submissions.SC2Aggregate()
-    s.summary()

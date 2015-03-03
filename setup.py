@@ -71,14 +71,11 @@ setup(
     zip_safe=False,
     packages = find_packages(),
     # package installation
-    #package_dir = package_dir,
-    #packages = ['biokit'],
-    #package_dir  = package_dir,
 
     include_package_data = True,
     # (you can provide an exclusion dictionary named exclude_package_data to remove parasites).
     # alternatively to global inclusion, list the file to include
-    package_data = {'' : ['*.txt', '*.so', '*.zip', '*.csv', '*.ini'],},
+    package_data = {'' : ['*.txt', '*.so', '*.zip', '*.csv', '*.ini', '*.R'],},
 
 
     # distutils in rtools.package

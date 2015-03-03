@@ -1,7 +1,8 @@
 DreamTools
 ==========
+
 Overview
----------
+----------------
 
 **dreamtools** aims at sharing code related to `DREAM <http://dreamchallenges.org>`_ challenges.
 
