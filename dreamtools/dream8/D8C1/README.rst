@@ -50,17 +50,24 @@ Then, type::
     d = downloads.GSDownloader()
     d.download_experimental()
 
-
     d = downloads.SubmissionDownloader()
     d.download_all()
 
-scoring
+Scoring
 -----------
 
 The scoring functions inside **scoring** can be used to obtain the ROC or RMSE
 values of a given submissions.
 
+The **ranking** can be used to obtain the rank of a submisson as compared to all other participants.
+
 Format of submissions are explained on https://www.synapse.org/#!Synapse:syn1720047/wiki/
+and examples can be found in those 4 Synapse pages:
+
+* For SC1A: https://www.synapse.org/#!Synapse:syn2326038
+* For SC1B: https://www.synapse.org/#!Synapse:syn2326038
+* For SC2A: https://www.synapse.org/#!Synapse:syn2326038
+* For SC2B: https://www.synapse.org/#!Synapse:syn2326038
 
 ROC and RMSE are absolute values and you may get a **better** score than what
 was obtained in the challenges:
@@ -68,11 +75,12 @@ was obtained in the challenges:
 - https://www.synapse.org/#!Synapse:syn1720047/wiki/60530
 - https://www.synapse.org/#!Synapse:syn1720047/wiki/60532
 
-Note however, the teams were also compared to each other and final ranking could
-be different from the pure ROC/RMSE ranking.
+However, the teams were also compared to each other and final ranking could
+be different from the pure ROC/RMSE ranking. The final ranking is the average
+rank for each combination of cell line/stimuli in SC1A for instance. 
 
-Here is the procedure to get the ROC or RMSE::
 
+Here is the procedure to get the ROC or RMSE for each sub-challenge::
 
     from dreamtools.dream8.D8C1 import scoring
 
@@ -95,6 +103,19 @@ Here is the procedure to get the ROC or RMSE::
 :Note: scoring in SC2B gives different results as compared to https://www.synapse.org/#!Synapse:syn1720047/wiki/60532
     because the true networks are different. The one used in dreamtools is correct. You can still retrieve previous 
     results by hacking the scoring.py module around line 1821 in HPNScoringPredictionInsilico
+    
+    
+Here is the procedure to get the final ranking::
+
+     from dreamtools.dream8.D8C1 import ranking
+
+    r = ranking.SC1A_ranking()
+    r.append_submissions(sc1a_submissions.zip)
+    r.get_rank_your_submissions()
+
+    # similarly for SC1B, SC2A, SC2B
+    
+
 
 downloads.py 
 ----------------
