@@ -64,12 +64,7 @@ values of a given submissions.
 The **ranking** can be used to obtain the rank of a submisson as compared to all other participants.
 
 Format of submissions are explained on https://www.synapse.org/#!Synapse:syn1720047/wiki/
-and examples can be found in those 4 Synapse pages:
-
-* For SC1A: https://www.synapse.org/#!Synapse:syn2326038
-* For SC1B: https://www.synapse.org/#!Synapse:syn2326038
-* For SC2A: https://www.synapse.org/#!Synapse:syn2326038
-* For SC2B: https://www.synapse.org/#!Synapse:syn2326038
+and examples are provided in ./templates directory.
 
 ROC and RMSE are absolute values and you may get a **better** score than what
 was obtained in the challenges:
