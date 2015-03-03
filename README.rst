@@ -4,7 +4,7 @@ DreamTools
 Overview
 ----------------
 
-**dreamtools** aims at sharing code related to `DREAM <http://dreamchallenges.org>`_ challenges.
+**DreamTools** aims at sharing code related to `DREAM <http://dreamchallenges.org>`_ challenges.
 
 This repository is meant to contain (small) data sets and codes related to the scoring of the 
 `DREAM challenges <http://dreamchallenges.org>`_. 
@@ -12,8 +12,8 @@ This repository is meant to contain (small) data sets and codes related to the s
 
 The main goals are:
 
-#. provide user a scoring function for the challenges
-#. provide developer a place to share-reuse code used before/during/after the challenges
+#. provide scoring functions for the Dream challenges for end-users
+#. provide a place to share-reuse code used before/during/after the challenges for developers
 
 dreamtools-scoring executable
 -------------------------------
@@ -36,6 +36,8 @@ Scoring functions available so far:
 * Dream8 Tox (D8C2) sub challenges named sc1, sc2. 
   See `Synapse page <https://www.synapse.org/#!Synapse:syn1761567>`_ for details
 
+**Format** for the challenges can be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 
+please see ./dreamtools/dream8/D8C1/READM.rst
 
 Installation
 ---------------

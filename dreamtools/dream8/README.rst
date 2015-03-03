@@ -1,11 +1,11 @@
 DREAM8
 ==========
 
+DREAM8 had 3 challenges, which we refer to as D8C1, D8C2 and D8C3.
+
 For full details see: http://dreamchallenges.org/project-list/dream8-2013/
 
-Here are the acronyms used for each challenge (click on the image to jump to the synapse page related to each challenge):
-D8C1, D8C2, D8C3
-
+Click on the image below to jump to the **synapse page** related to each challenge:
 
 .. figure:: http://dreamchallenges.org/wordpress2/wp-content/uploads/closed_breastcancer1.jpg
   :target: https://www.synapse.org/#!Synapse:syn1720047 
