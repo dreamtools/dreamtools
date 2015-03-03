@@ -101,10 +101,12 @@ Here is the procedure to get the ROC or RMSE for each sub-challenge::
     because the true networks are different. The one used in dreamtools is correct. You can still retrieve previous 
     results by hacking the scoring.py module around line 1821 in HPNScoringPredictionInsilico
     
+Ranking
+-----------
     
 Here is the procedure to get the final ranking::
 
-     from dreamtools.dream8.D8C1 import ranking
+    from dreamtools.dream8.D8C1 import ranking
 
     r = ranking.SC1A_ranking()
     r.append_submissions(sc1a_submissions.zip)
@@ -112,10 +114,20 @@ Here is the procedure to get the final ranking::
 
     # similarly for SC1B, SC2A, SC2B
     
+Standalone
+--------------
+
+In a shell, type one of ::
+
+    dreamtools-scoring --challenge d8c1 --sub-challenge sc1a --filename templates/alphabeta-Network.zip 
+    dreamtools-scoring --challenge d8c1 --sub-challenge sc1b --filename templates/alphabeta-Network-Insilico.zip 
+    dreamtools-scoring --challenge d8c1 --sub-challenge sc2a --filename templates/alphabeta-Prediction.zip 
+    dreamtools-scoring --challenge d8c1 --sub-challenge sc2b --filename templates/alphabeta-Prediction-Insilico.zip 
 
 
-downloads.py 
-----------------
+
+downloads.py module
+-------------------------
 
 Download all valid submissions that were used to score and rank the participants
 in Dream8-HPN challenge. This could be required to 
@@ -129,8 +141,8 @@ in Dream8-HPN challenge. This could be required to
     d = downloads.SubmissionsDownloader()
     d.download_all() # takes some time
 
-aggregation
--------------
+aggregation module
+-------------------------
 
 The SC1A challenge is very slow to compute. Others are faster. You can plot the aggregation of N best participants
 of random set of participants. We'll show here below the SC1B case but all cases have the same API.
