@@ -15,8 +15,8 @@ The main goals are:
 #. provide scoring functions for the Dream challenges for end-users
 #. provide a place to share-reuse code used before/during/after the challenges for developers
 
-dreamtools-scoring executable
--------------------------------
+The **dreamtools-scoring** executable
+-------------------------------------
 
 For users, **dreamtools** provide one executable called **dreamtools-scoring**, which should be installed automatically
 when installing dreamtools. Knowing the name of the challenge (and possibly sub-challenge), it works as  follows::
@@ -47,5 +47,16 @@ Installation
     pip install dreamtools
     
     
+Issues
+-----------
+
+Please fill bug report in https://github.com/dreamtools/dreamtools/issues
+    
+For developers
+----------------
+
+Not all challenges are yet provided. If you wish to contribute, please let us know. 
+
+
 
 
