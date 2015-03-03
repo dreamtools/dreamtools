@@ -35,6 +35,8 @@ Scoring functions available so far:
 * Dream8 Tox (D8C2) sub challenges named sc1, sc2. 
   See `Synapse page <https://www.synapse.org/#!Synapse:syn1761567>`_ for details
 
+**Format** for the challenges can be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 
+please see ./dreamtools/dream8/D8C1/READM.rst
 
 Installation
 ---------------
