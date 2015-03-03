@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-__revision__ = "$Id$"
 import os
 from setuptools import setup, find_packages
 
 
 _MAJOR               = 0
 _MINOR               = 0
-_MICRO               = 4
+_MICRO               = 5
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
