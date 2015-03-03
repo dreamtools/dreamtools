@@ -1,3 +1,20 @@
+# -*- python -*-
+# -*- coding: utf-8 -*-
+#
+#  This file is part of dreamtools software
+#
+#  Copyright (c) 2013-2015 - EBI-EMBL
+#
+#  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
+#
+#  Distributed under the GPLv3 License.
+#  See accompanying file LICENSE.txt or copy at
+#      http://www.gnu.org/licenses/gpl-3.0.html
+#
+#  website: http://github.com/dreamtools
+#
+##############################################################################
+
 import json
 import os
 import pandas as pd
@@ -284,12 +301,11 @@ class SC2A_ranking(Ranking):
         except:
             pass
 
-        self.aucs.ix[self.yours] = [1] * 32
+        self.rmses.ix[self.yours] = [1] * 162
         #now replace the values as expected; s.auc is a 4 by  8 matrix
-        for cell in res.auc.keys():
-            for stim in res.auc[cell].keys():
-
-                self.aucs.ix[self.yours][cell + "_" + stim] = res.auc[cell][stim]
+        for cell in res.rmse.keys():
+            for stim in res.rmse[cell].keys():
+                self.rmses.ix[self.yours][cell + "_" + stim] = res.rmse[cell][stim]
 
 
 
@@ -367,6 +383,20 @@ class SC2B_ranking(Ranking):
         df = rmses.rank(ascending=True, method='min').mean(axis=1)
         df.sort()
         return df
+
+    def append_submission(self, res):
+        try:
+            res = scoring.HPNScoringPredictionInsilico(res)
+            res.compute_all_rmse()
+        except:
+            pass
+
+        self.rmses.ix[self.yours] = [1] * 231
+        #now replace the values as expected; s.auc is a 4 by  8 matrix
+        for cell in res.rmse.keys():
+            for stim in res.rmse[cell].keys():
+                self.rmses.ix[self.yours][cell + "_" + stim] = res.rmse[cell][stim]
+
 
 
 class Aggregate():

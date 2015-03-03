@@ -3,7 +3,7 @@
 #
 #  This file is part of dreamtools software
 #
-#  Copyright (c) 2013-2014 - EBI-EMBL
+#  Copyright (c) 2013-2015 - EBI-EMBL
 #
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
 #

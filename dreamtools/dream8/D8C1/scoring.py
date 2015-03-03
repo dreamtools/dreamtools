@@ -183,33 +183,6 @@ class HPNScoringNetworkBase(HPNScoring):
         f.close()
         if self.verbose: print("ok")
 
-    def _validate_sif(self, filename):
-        """See validate() for details
-
-        """
-        from cno.io import CNOGraph
-        if self.verbose: print("Validating %s" % filename),
-
-        # read the SIF file
-        f = self.zip_data.open(filename)
-        reader = csv.reader(f)
-        rawdata = [row for row in reader]
-        f.close()
-
-        for i, row in enumerate(rawdata):
-            if len(row[0].split()) < 3:
-                self.error("  * in file %s, line %s contains a ill-formed reactions:%s" %(filename, i+1, row))
-
-        # read the SIF file with cno.io
-        f = tempfile.NamedTemporaryFile(delete=False, suffix=".sif")
-        try:
-            f.write(self.zip_data.open(filename).read().strip())
-            f.close()
-            CNOGraph(f.name)
-        except:
-            self.error("  * Could not read the SIF file content (%s)" % filename)
-        finally:
-            os.remove(f.name)
 
     def _str_cleanup(self, text):
         # required to cleanup some submissions
@@ -256,8 +229,8 @@ class HPNScoringNetworkBase(HPNScoring):
 class HPNScoringNetwork(HPNScoringNetworkBase):
     """Class to compute the score of a Network submission
 
-    A user will provide a ZIP file that contains 65 files: 32 EDA, 32 SIF and 1
-    Write up. The 32 files should be tagged with the 32 combinaisons of cell
+    A user will provide a ZIP file that contains 65 files: 32 EDA,
+     The 32 files should be tagged with the 32 combinaisons of cell
     lines and ligands. To create an instance of HPNScoringNetwork, type::
 
         s = HPNScoringNetwork("TeamName-Network.zip")
@@ -349,31 +322,13 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
                         fh.write("{} (1) {} = {}\n".format(name1, name2,value))
                 fh.close()
 
-                filename = teamname + "-" +  k1 + "-" + k2 + "-Network.sif"
-                fh = open(directory + os.sep + filename, "w")
-                assert self.edge_scores[k1][k2].shape == (N, N)
-                for i in range(0,N):
-                    for j in range(0,N):
-                        name1 = species[i]
-                        name2 = species[j]
-                        value = self.edge_scores[k1][k2][i][j]
-                        if value !=0:
-                            fh.write("{} 1 {}\n".format(name1, name2))
-                fh.close()
 
-        fh = open(directory + os.sep + teamname + "-Network-Writeup.txt", "w")
-        fh.close()
+
 
     def validation(self):
         """General validation
 
-            * Check that there are 32 SIF files
             * Check that there are 32 EDA files
-            * Check presence of Writeup file
-            * For each SIF file, further checks
-                * format of the filename (correct cell line and ligand names)
-                * format of the data (3 columns)
-                * check that the network is a complete graph
             * For each EDA file, calls further check
                 * format of the filename (correct cell line and ligand names)
                 * format of the dataa = character with a RHS and LHS
@@ -385,14 +340,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
 
         if self.verbose:print("Checking number of files and extensions..."),
         extensions = [os.path.splitext(x)[1] for x in self.zip_filenames if "MACOSX" not in x]
-        if extensions.count(".sif") != 32 or extensions.count(".eda")!=32:
-            self.error("* Found %s SIF files and %s EDA files. Expected 32 of each" % (extensions.count(".sif"), extensions.count(".eda")))
-
-        if self.verbose:print("ok\nChecking presence of Writeup file..."),
-        if len([x for x in self.zip_filenames if "Writeup" in x]) == 0:
-            #self.error("* Could not find the Writeup file. Should be TeamName-Network-Writeup.txt" )
-            print("Found no write up...")
-            return
 
         # check that the contents of the SIF are 3 columns
         if self.verbose:print("ok\nChecking filename and contents of SIF files"),
@@ -419,7 +366,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             if ligand not in self.valid_ligands:
                 self.error(" * filename %s ill-formed. unrecognised ligand. must be in %s " % filename, self.valid_ligands)
         except ValueError:
-            self.error(" * filename %s is ill formed. Expects TeamName-CellLine-Ligand-Network.sif" % filename)
+            self.error(" * filename %s is ill formed. Expects TeamName-CellLine-Ligand-Network.eda" % filename)
 
     def compute_score(self, validation=True):
         """Computes the final score.
@@ -474,7 +421,8 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         filename = os.sep.join([self._path2data, "goldstandard", "TrueDescVectors.zip"])
 
         zipdata = zipfile.ZipFile(filename)
-        print("Loading all true descendants data set (%s)" % filename)
+        if self.verbose:
+            print("Loading all true descendants data set (%s)" % filename)
 
         for filename in zipdata.namelist():
             try:
@@ -483,7 +431,8 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
                 data = [int(x) if x!="NaN" else None for x in data.strip().split(',')]
                 self.true_descendants[cellLine][ligand] = data[:]
             except:
-                print("note: skipping " + filename)
+                #print("note: skipping " + filename)
+                pass
 
     def load_all_eda_files_from_zip(self):
         """Loads all EDA file from a participant into :attr:`edge_scores`"""
@@ -531,7 +480,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         try:
             teamName, cellLine, ligand, tag = tail.split("-")
         except:
-            self.error(" * filename %s is ill formed. Expects TeamName-CellLine-Ligand-Network.sif" % filename)
+            self.error(" * filename %s is ill formed. Expects TeamName-CellLine-Ligand-Network.eda" % filename)
             return
 
         # skip first row
@@ -1296,6 +1245,16 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
         #self.species = species[:]
 
         return tempdata
+
+    def to_eda(self, filename):
+        """EXports the user EDA file"""
+        fh = open(filename, "w")
+        fh.write("EdgeScore\n")
+        for i in range(0,20):
+            for j in range(0,20):
+                fh.write("AB%s (1) AB%s = %s\n" % (i+1, j+1, self.user_graph[i][j]))
+
+        fh.close()
 
     def get_roc(self):
         """Gets a ROC instance using thegiven the user and true graphs as inputs"""
