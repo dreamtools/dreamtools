@@ -1,6 +1,12 @@
 Overview
 ===========
 
+:Challenge: HPN-DREAM Breast Cancer Network Inference Challenge
+:Alias: D8C1
+:SubChallenges: SC1A, SC1B, SC2A, SC2B
+:Synapse page: https://www.synapse.org/#!Synapse:syn1720047
+
+
 .. contents::
 
 
@@ -13,22 +19,27 @@ There were 4 sub-challenges called
 * SC2A for Prediction
 * SC2B for Prediction Insilico
 
-For users, the most relevant is the **scoring** module that provides tools to compute the AUROC and RMSE.
+For users, the most relevant are the **scoring** and **ranking** modules that provides 
+tools to compute the AUROC and RMSE as well as the ranking that would have been obtained as comparead with other
+participants.
 
 
-Other modules required adming right on synapse projects are are therefore irrelevant or end-users for now.
+Most of the other modules would require admin access to the synapse project. Amongst those other modules, 
+some are up-to-date (E.g., those to create the aggregate results), some are just kept for book keepig (e.g, hpn,
+sc1a_tools).
 
-Here below is a quick description of each module. More information could be found in the code itself.
-
-This code is a subset (cleaned and simplified) from dreamtools on bitbucket (https://bitbucket.org/cokelaer/dreamtools)
+.. seealso:: dreamtools on bitbucket (https://bitbucket.org/cokelaer/dreamtools) was developed for dream8 HPN challenge
+    and most of its contensts has been moved here.
 
 
 Before starting
 ------------------
 
-For admin, you may need to download some files before using e.g., the
+If you are a end-user, you can skip this section and move directly to the scoring section.
+
+For admin, you may need to download some files before using the code e.g., the
 aggregation functions. Since you will need to access to synapse to download
-those files, you will also need to create a configuration file::
+those files, you will also need to create a configuration file in your home directory.::
 
     [authentication]
     username: your_email_registered@synapse
@@ -37,22 +48,28 @@ those files, you will also need to create a configuration file::
 
 Then, type::
 
-
     from dreamtools.dream8.D8C1 import downloads
     d = downloads.GSDownloader()
     d.download_experimental()
 
-
     d = downloads.SubmissionDownloader()
     d.download_all()
 
-scoring
+Scoring
 -----------
 
 The scoring functions inside **scoring** can be used to obtain the ROC or RMSE
 values of a given submissions.
 
+The **ranking** can be used to obtain the rank of a submisson as compared to all other participants.
+
 Format of submissions are explained on https://www.synapse.org/#!Synapse:syn1720047/wiki/
+and examples can be found in those 4 Synapse pages:
+
+* For SC1A: https://www.synapse.org/#!Synapse:syn2326038
+* For SC1B: https://www.synapse.org/#!Synapse:syn2326038
+* For SC2A: https://www.synapse.org/#!Synapse:syn2326038
+* For SC2B: https://www.synapse.org/#!Synapse:syn2326038
 
 ROC and RMSE are absolute values and you may get a **better** score than what
 was obtained in the challenges:
@@ -60,11 +77,12 @@ was obtained in the challenges:
 - https://www.synapse.org/#!Synapse:syn1720047/wiki/60530
 - https://www.synapse.org/#!Synapse:syn1720047/wiki/60532
 
-Note however, the teams were also compared to each other and final ranking could
-be different from the pure ROC/RMSE ranking.
+However, the teams were also compared to each other and final ranking could
+be different from the pure ROC/RMSE ranking. The final ranking is the average
+rank for each combination of cell line/stimuli in SC1A for instance. 
 
-Here is the procedure to get the ROC or RMSE::
 
+Here is the procedure to get the ROC or RMSE for each sub-challenge::
 
     from dreamtools.dream8.D8C1 import scoring
 
@@ -87,6 +105,19 @@ Here is the procedure to get the ROC or RMSE::
 :Note: scoring in SC2B gives different results as compared to https://www.synapse.org/#!Synapse:syn1720047/wiki/60532
     because the true networks are different. The one used in dreamtools is correct. You can still retrieve previous 
     results by hacking the scoring.py module around line 1821 in HPNScoringPredictionInsilico
+    
+    
+Here is the procedure to get the final ranking::
+
+     from dreamtools.dream8.D8C1 import ranking
+
+    r = ranking.SC1A_ranking()
+    r.append_submissions(sc1a_submissions.zip)
+    r.get_rank_your_submissions()
+
+    # similarly for SC1B, SC2A, SC2B
+    
+
 
 downloads.py 
 ----------------
