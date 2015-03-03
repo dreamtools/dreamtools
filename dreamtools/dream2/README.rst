@@ -8,9 +8,9 @@ For full details see: http://dreamchallenges.org/project-list/dream2-2007/
 Click on the image below to jump to the **synapse page** related to each challenge:
 
 .. figure:: http://dreamchallenges.org/wordpress2/wp-content/uploads/closed_insilico-agct.jpg
-  :target: DREAM 2 In Silico Network Challenge
+  :target: https://www.synapse.org/#!Synapse:syn2825394
   
-  **D2C1** - DREAM 8 - HPN-DREAM Breast Cancer Network Inference Challenge
+  **D2C1** - DREAM 2 In Silico Network Challenge
   
 .. figure:: http://dreamchallenges.org/wordpress2/wp-content/uploads/closed_ecoli.jpg
     :target:   https://www.synapse.org/#!Synapse:syn3034894
