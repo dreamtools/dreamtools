@@ -141,6 +141,12 @@ in Dream8-HPN challenge. This could be required to
     d = downloads.SubmissionsDownloader()
     d.download_all() # takes some time
 
+Templates
+-------------
+
+Templates can be found in the ./templates directory for each of the 4 sub-challenges.
+
+
 aggregation module
 -------------------------
 
@@ -165,6 +171,9 @@ of random set of participants. We'll show here below the SC1B case but all cases
 .. figure:: sc1a_aggregation.png
     
 .. figure:: sc1b_aggregation.png
+    
+    
+    
     
 others
 -------
