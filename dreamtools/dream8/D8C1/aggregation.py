@@ -136,9 +136,12 @@ class AggregationTools(Login):
             df['zscore'] = [this['zscore'] for this in subs]
             df['rmses'] = [this['rmses'] for this in subs]
 
-        get_filename = lambda sub: json.loads(sub['entityBundleJSON'])['fileHandles'][0]['fileName']
-        prefix = os.sep.join([d8c1path, 'submissions', self.name.lower() ])
-        df['filename'] = [prefix+ os.sep + get_filename(this) for this in subs]
+        try:
+            get_filename = lambda sub: json.loads(sub['entityBundleJSON'])['fileHandles'][0]['fileName']
+            prefix = os.sep.join([d8c1path, 'submissions', self.name.lower() ])
+            df['filename'] = [prefix+ os.sep + get_filename(this) for this in subs]
+        except:
+            df['filename'] = [this['filename'] for this in subs]
 
         if self.name == "SC1A" or self.name == "SC2A":
             df.sort(columns="mean_rank", inplace=True)
@@ -162,6 +165,74 @@ class AggregationTools(Login):
         """
         self.load_submissions()
         df = self.get_df_from_submissions()
+        return df
+
+    def _load_local_submissions(self, directory):
+        import glob
+        import os
+        from easydev import progressbar
+        filenames = glob.glob(directory + os.sep + '*zip')
+        N = len(filenames)
+        print("Found %s zipped file")
+        pb = progressbar.progress_bar(N)
+
+        self.submissions = []
+        for i, filename in enumerate(filenames):
+            sub = {}
+            if self.name == 'SC1A':
+                raise NotImplementedError
+
+            elif self.name == 'SC1B':
+                try:
+                    s = scoring.HPNScoringNetworkInsilico(filename, verbose=False)
+                    s.compute_score()
+                except:
+                    print('Skipping %s . Could not read or compute score' %
+                            filename)
+                    continue
+                sub['submitterAlias'] = 'unknown'
+                sub['entityId'] = 'unknown'
+                sub['id'] = 'unknown'
+                sub['auc'] = s.auc
+                sub['zscore'] = -1
+                sub['filename'] = filename
+                sub['userId'] = 'unknonwn'
+
+            elif self.name == 'SC2A':
+                raise NotImplementedError
+
+
+            elif self.name == 'SC2B':
+                try:
+                    s = scoring.HPNScoringPredictionInsilico(filename, verbose=False)
+                    s.compute_all_rmse()
+                except:
+                    print('Skipping %s . Could not read or compute score' %
+                            filename)
+                sub['submitterAlias'] = 'unknown'
+                sub['entityId'] = 'unknown'
+                sub['id'] = 'unknown'
+                sub['mean_rmse'] = s.get_mean_rmse()
+                sub['zscore'] = -1
+                sub['ranking'] = 1
+                sub['rmses'] = 1
+                
+
+                sub['filename'] = filename
+                sub['userId'] = 'unknonwn'
+
+
+            self.submissions.append(sub)
+            pb.animate(i+1,0)
+
+        df = self.get_df_from_submissions()
+        if self.name == 'SC2B':
+            df['mean_rank'] = df.index
+
+
+        # We must compute the scores of each team
+
+        #df = self.get_df_from_submissions()
         return df
 
 
@@ -191,6 +262,8 @@ class SC1AggregationPlotting(object):
         """
         if M is None:
             M = len(self.df.index)
+        if M>len(self.df.index):
+            M = len(self.df.index)
 
         mean_aucs = []
         span = range(1, M+1)
@@ -209,6 +282,7 @@ class SC1AggregationPlotting(object):
         self._best_results = {'x': span}
         # those are the best submitter. Nothing to recompute, can be extracted
         # from the df itself.
+
         iauc = [self.df.ix[x].mean_auc for x in range(0, M)]
 
         pylab.clf()
@@ -318,6 +392,8 @@ class SC2AggregationPlotting(object):
 
         """
         assert N>=2
+        if N > len(self.df.index):
+            N = len(self.df.index)
         mean_rmses = []
 
         span = range(1, N+1)
@@ -420,7 +496,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
 
     """
     valid_ligands_final = commons.valid_ligands_final
-    def __init__(self, best=2, client=None):
+    def __init__(self, best=2, client=None, local_submissions=False):
         """
 
         :param best:
@@ -439,7 +515,11 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
         self._individuals = {}
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc1a'])
 
-        self.df = self._load_submissions_from_synapse()
+        if local_submissions is False:
+            self.df = self._load_submissions_from_synapse()
+        else:
+            self.df = self._load_local_submissions(local_submissions)
+
 
         scoring = HPNScoringNetwork()
         self.true_descendants = copy.deepcopy(scoring.true_descendants)
@@ -597,7 +677,7 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
         SC1B aggregation of random submissions
 
     """
-    def __init__(self, best=2, client=None):
+    def __init__(self, best=2, client=None, local_submissions=False):
         """
 
         :param best:
@@ -615,7 +695,10 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
 
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc1b'])
 
-        self.df = self._load_submissions_from_synapse()
+        if local_submissions is False:
+            self.df = self._load_submissions_from_synapse()
+        else:
+            self.df = self._load_local_submissions(local_submissions)
 
     def remove_correlated_submissions(self):
         # same  as in SC1A actually...
@@ -685,7 +768,8 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
         SC2A aggregation of random submissions
 
     """
-    def __init__(self, client=None):
+    def __init__(self, client=None, local_submissions=False):
+
         """
 
         :param best:
@@ -699,7 +783,10 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
         self._individuals = {}
 
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc2a'])
-        self.df = self._load_submissions_from_synapse()
+        if local_submissions is False:
+            self.df = self._load_submissions_from_synapse()
+        else:
+            self.df = self._load_local_submissions(local_submissions)
 
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
@@ -782,7 +869,7 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
         SC2B aggregation of random submissions
 
     """
-    def __init__(self,  client=None):
+    def __init__(self, client=None, local_submissions=False):
         """
 
         :param client: an existing synapse client
@@ -792,7 +879,10 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
         self._individuals = {}
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc2b'])
 
-        self.df = self._load_submissions_from_synapse()
+        if local_submissions is False:
+            self.df = self._load_submissions_from_synapse()
+        else:
+            self.df = self._load_local_submissions(local_submissions)
 
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
