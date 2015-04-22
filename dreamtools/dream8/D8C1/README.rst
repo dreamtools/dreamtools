@@ -170,8 +170,7 @@ of random set of participants. We'll show here below the SC1B case but all cases
     
 .. figure:: sc1a_aggregation.png
     
-.. figure:: sc1b_aggregation.png
-    
+
     
     
     
