@@ -170,9 +170,20 @@ of random set of participants. We'll show here below the SC1B case but all cases
     
 .. figure:: sc1a_aggregation.png
     
+aggregation standalone
+---------------------------
 
+It is implemented for SC1B and SC2B and works by providing a directory that contains the list of zipped files to be used
+for the aggregation:
     
+::
+
+    from dreamtools.dream8.D8C1 import aggregation
+    sc1b = aggregation.SC1B_aggregation(local_submissions='where to find the zip files')
+    sc1b.plot_aggr_best_score(20)  # uses the first best 20 submissions. put large number to use everything
     
+    sc2b = aggregation.SC2B_aggregation(local_submissions='where to find the zip files')
+    sc2b.plot_aggr_best_score(20)  # uses the first best 20 submissions. put large number to use everything
     
 others
 -------
