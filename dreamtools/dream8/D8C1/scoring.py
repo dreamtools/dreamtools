@@ -35,7 +35,6 @@ https://www.synapse.org/#!Synapse:syn1720047/wiki/60530
 
 """
 import csv
-import tempfile
 import os
 import copy
 import pickle
@@ -321,9 +320,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
                         value = self.edge_scores[k1][k2][i][j]
                         fh.write("{} (1) {} = {}\n".format(name1, name2,value))
                 fh.close()
-
-
-
 
     def validation(self):
         """General validation
@@ -1187,7 +1183,8 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
     test_synapse_id = "syn1973430"
     true_synapse_id = "syn1976597"
     def __init__(self, filename=None, verbose=False):
-        super(HPNScoringNetworkInsilico, self).__init__(filename)
+        super(HPNScoringNetworkInsilico, self).__init__(filename,
+                verbose=verbose)
 
         try:
             self.loadZIPFile(self.filename)
@@ -1785,12 +1782,24 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
     test_synapse_id =  "syn2009175"
     true_synapse_id = "syn2143242"
 
-    def __init__(self, filename=None, verbose=False):
+    def __init__(self, filename=None, verbose=False, version='official'):
+        """
+        :param str version: default to 'official' (see note below). Set to
+            anything else to use correct network
+
+        .. note:: scoring in SC2B gives different results as compared to
+            https://www.synapse.org/#!Synapse:syn1720047/wiki/60532 because the true
+            networks are different. The one used in dreamtools is correct. You can still
+            retrieve previous results by hacking the scoring.py module around line 1821 in
+            HPNScoringPredictionInsilico
+        """
         super(HPNScoringPredictionInsilico, self).__init__(filename)
         # WRONG NETWORK as used in the official LB
-        fname = os.sep.join([self._path2data, "goldstandard", "TruePredictionInsilico.zip"])
-        # CORRECT NETWORK
-        #fname = os.sep.join([self._path2data, "goldstandard",  "TruePredictionInsilico2.zip"])
+        if version == 'official':
+            fname = os.sep.join([self._path2data, "goldstandard", "TruePredictionInsilico.zip"])
+        else:
+            # CORRECT NETWORK
+            fname = os.sep.join([self._path2data, "goldstandard",  "TruePredictionInsilico2.zip"])
         self.true_desc_filename = fname
 
         #self.loadZIPFile(self.filename)
@@ -1962,7 +1971,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
                 for i, phospho in enumerate(phosphos):
                     # ignore the indices related to FOX, TAX, mTor
                     datum = row[i+1+8+1] # +cell line +1 time + 8 stimuli
-                    if datum == "NA":
+                    if datum == "NA" or datum =='?':
                         results[inhib][phospho][stimuli[stim_index]][time_index]= np.nan
                     else:
                         results[inhib][phospho][stimuli[stim_index]][time_index] = float(datum)
