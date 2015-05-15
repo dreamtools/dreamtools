@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from setuptools import setup, find_packages
+from Cython.Build import cythonize
 
 
 _MAJOR               = 0
@@ -83,7 +84,7 @@ setup(
         'easydev>=0.8.3',
         'synapseclient', 'tabulate', 'cython'],
 
-    
+    ext_modules = cythonize("dreamtools/dream8/D8C1/*.pyx"),
 
 
     entry_points = {
@@ -93,4 +94,5 @@ setup(
     },
 )
 
-post_process()
+#using cythonize command gets the compiled cython code into the .egg
+#post_process()
