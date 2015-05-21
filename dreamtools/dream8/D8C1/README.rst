@@ -185,6 +185,20 @@ for the aggregation:
     sc2b = aggregation.SC2B_aggregation(local_submissions='where to find the zip files')
     sc2b.plot_aggr_best_score(20)  # uses the first best 20 submissions. put large number to use everything
     
+
+Create EDA files for an aggregation
+-------------------------------------
+    
+::
+
+    a = aggregation.SC1A_aggregation()
+    a.remove_correlated_submissions()
+    aggr = a.aggregate_submissions(66)
+    aggr.compute_score()
+    a.compute_grand_mean_auc(aggr.auc)
+    aggr.edge_score_to_eda_files('test')
+
+
 others
 -------
     
