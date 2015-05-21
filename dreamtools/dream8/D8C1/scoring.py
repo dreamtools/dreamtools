@@ -436,6 +436,12 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             if filename.endswith(".eda") and "__MACOS" not in filename:
                 self.load_eda_file(filename)
 
+        # Issue in github https://github.com/dreamtools/dreamtools/issues/16
+        M = max([self.edge_scores[cell][l].max() for cell in
+            self.cellLines_names_steven for l in self.ligands_names_steven])
+        for cell in self.cellLines_names_steven:
+            for lig in self.ligands_names_steven:
+                self.edge_scores[cell][lig] /= float(M)
     def load_eda_file(self, filename, local=False):
         """Loads scores from one EDA file
 
@@ -557,7 +563,10 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         #if M>1:
         #    print("!!!!!!!!!!!!!!!!!!!!1, %s %s" % (cellLine, ligand))
         #    self.edge_scores[cellLine][ligand] /= float(M)
-        self.edge_scores[cellLine][ligand] /= float(M)
+        
+        # max is now computed across all networks
+        # https://github.com/dreamtools/dreamtools/issues/16
+        # self.edge_scores[cellLine][ligand] /= float(M)
 
 
     def compute_all_descendant_matrices(self):
@@ -2016,6 +2025,12 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
                     continue
                 if l in ["AB3", "AB13", "AB18"] or c in ["AB3", "AB13", "AB18"]:
                     continue
+
+                # those nodes have been ignored in the official leaderboards
+                # based on the participants submissions.
+                # To get the same results for a new participants, those nodes
+                # should be keep the same. Although, we a entirely new set of
+                # participants, those should be updated. 
                 dummy_nodes = [(2,1), (6,1),(7,1), (6,4),(2,5), (6,5),(16,6),
                         (16,7), (6,8),
                         (16,8),(6,9),(7,9),(16,9),(20,9), (6,10),(6,12),(2,14),(6,14),
