@@ -1654,15 +1654,16 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
     def get_training_data(self):
         self.training = {}
         filenames = [
-                "MD_BT20_main.csv",
-                "MD_BT549_main.csv",
-                "MD_MCF7_main.csv",
-                "MD_UACC812_main.csv"]
+                "MD-BT20_main_for_null.csv",
+                "MD-BT549_main_for_null.csv",
+                "MD-MCF7_main_for_null.csv",
+                "MD-UACC812_main_for_null.csv"]
 
         for filename in filenames:
-            filename = "experimental/MIDAS/" + filename
+            dummy, cell = filename.split("-")
+            cell, other = cell.split("_", 1)
+            filename = self._path2data + os.sep + 'data' + os.sep +filename
             if self.verbose:print("Scanning %s" % filename)
-            dummy, cell, other = filename.split("_")
 
             data_iter = csv.reader(open(filename, "r"), delimiter=",")
 
