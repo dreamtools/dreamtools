@@ -11,4 +11,4 @@ Code and data related to each challenge should be structured as follows:
 #. data should be store in ./data directory
 #. templates should be store in ./templates directory
 #. goldstandard should be stored in ./goldstandatd directory
-# Whatever else in ./misc
+#. Whatever else in ./misc
