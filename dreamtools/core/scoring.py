@@ -16,17 +16,27 @@
 ##############################################################################
 import os
 import argparse
-import easydev
 import sys
-from easydev.console import purple, darkgreen, red
-
+from easydev.console import red, purple, darkgreen
 registered = {'d8c1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
-        'd8c2': ['sc1', 'sc2']}
-
-
+        'd8c2': ['sc1', 'sc2'],
+        'd7c1':['model1_parameter', 'model2_topology', 'model1_prediction']}
 # Define the simple scoring functions here below
 
 # DREAM8 Challenge 1
+
+def d7c1_model1_parameter(filename):
+    from dreamtools.dream7.D7C1 import scoring
+    s = scoring.D7C1()
+    score = s.score_model1_parameters(filename)
+    return {'score': score}
+
+def d7c1_model1_prediction(filename):
+    from dreamtools.dream7.D7C1 import scoring
+    s = scoring.D7C1()
+    score = s.score_model1_prediction(filename)
+    return {'score': score}
+
 def d8c1_sc1a(filename, verbose=False):
     from dreamtools.dream8.D8C1 import scoring, ranking
     sc1a = scoring.HPNScoringNetwork(filename,  verbose=verbose)
@@ -57,7 +67,6 @@ def d8c1_sc2a(filename, verbose=False):
     return {'RMSE': sc2a.get_mean_rmse(),
             'Rank LB': rank.get_rank_your_submission()}
 
-
 def d8c1_sc2b(filename, verbose=False):
     from dreamtools.dream8.D8C1 import scoring, ranking
     sc2b = scoring.HPNScoringPredictionInsilico(filename, verbose=verbose)
@@ -86,6 +95,7 @@ def d8c2_sc2(filename, verbose=False, verboseR=False):
 
 # -------------------------------------------------- The User Interface
 def print_color(txt, func_color, underline=False):
+    import easydev
     try:
         if underline:
             print(easydev.underline(func_color(txt)))
@@ -103,6 +113,7 @@ def scoring(args=None):
         dreamscoring-scoring --help
 
     """
+    import easydev
     d = easydev.DevTools()
 
     if args == None:
@@ -166,6 +177,11 @@ def scoring(args=None):
             res = d8c2_sc1(options.filename, verbose=options.verbose)
         if options.sub_challenge == 'sc2':
             res = d8c2_sc2(options.filename, verbose=options.verbose)
+    elif options.challenge == 'd7c1':
+        if options.sub_challenge == 'model1_parameter':
+            res = d7c1_model1_parameter(options.filename)
+        if options.sub_challenge == 'model1_prediction':
+            res = d7c1_model1_prediction(options.filename)
 
     txt = "Solution for %s in challenge %s" % (options.filename, options.challenge)
     if options.sub_challenge is not None:
@@ -209,8 +225,9 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
                 description += s + " "
             description += "\n"
 
-        super(Options, self).__init__(usage=usage, version=version, prog=prog, epilog=epilog, description=description,
-                                      formatter_class=argparse.RawDescriptionHelpFormatter)
+        super(Options, self).__init__(usage=usage, version=version, prog=prog, 
+                epilog=epilog, description=description,
+                formatter_class=argparse.RawDescriptionHelpFormatter)
         self.add_input_options()
 
     def add_input_options(self):
@@ -219,12 +236,6 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
         Default is None. Keep it that way because otherwise, the contents of
         the ini file is overwritten in :class:`apps.Apps`.
         """
-
-
-
-
-
-
         group = self.add_argument_group("General", 'General options (compulsary or not)')
 
         group.add_argument("--challenge", dest='challenge',
