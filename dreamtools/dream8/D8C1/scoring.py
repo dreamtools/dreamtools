@@ -43,7 +43,6 @@ import zipfile
 import pylab
 import numpy as np
 
-from easydev import get_share_file as gsf
 from dreamtools.core import rocs
 
 import cython_scoring
