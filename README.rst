@@ -37,6 +37,7 @@ Scoring functions available so far:
   See `Synapse page <https://www.synapse.org/#!Synapse:syn1720047>`_ for details
 * Dream8 Tox (D8C2) sub challenges named sc1, sc2. 
   See `Synapse page <https://www.synapse.org/#!Synapse:syn1761567>`_ for details
+* DREAM 7 Network Parameter Estimation (D7C1)
 
 **Format** for the challenges can be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 
 please see ./dreamtools/dream8/D8C1/README.rst
