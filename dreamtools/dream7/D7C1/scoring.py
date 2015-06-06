@@ -4,6 +4,9 @@ import pandas as pd
 import os
 from cno.misc.profiler import do_profile
 
+__all__ = ['D7C1']
+
+
 
 class D7C1(object):
     """
@@ -17,6 +20,38 @@ class D7C1(object):
 
         s.summary() returns scores of the participants (if you have the files)
 
+
+
+
+    topology scoring
+
+    The challenge requests predictions for 3 missing links, knowing that 
+    a gene can regulate up to two genes when they are in the same operon, 
+    6 gene interactions
+    have to be indicated by the participants (3 links*2 genes) and whether these
+    interactions are activating (+) or repressing (-).
+    We define the score as :math:`S_2^{netw} = \sum_{i,j=1}^3 L_j + \delta_{ij}`
+    qith 0 <=S_2^{netw}<=1
+
+
+    where :math:`L_j` is 6 if both genes defining the link and the nature of the regulation are  correct (i.e +/-). In case a link is NOT correct, :math:`\delta_{ij}` adds 1 for each correct  regulated gene, 2 if the regulated gene and the nature of the regulation (i.e +/-) are correct and 1 if the regulator gene is correct.
+
+     For each participant, the p-value associated with the score :math:`A_2^{netw}`  , will be calculated by generating a distribution of scores from a large number of surrogate gene networks obtained by randomly adding 3 links that follow the connection rules to the initial gene network.
+
+
+    Explain template. links can regulate one or two genes
+
+    ::
+
+        5 + 7 + 11
+
+    means gene 5 positively regulates gene 7 and gene 11
+
+    ::
+
+        6 - 2 + 0
+
+    means gene 6 negatively regulates gene 2 (gene 0 does not exists)
     """
 
     def __init__(self, path='submissions'):
@@ -26,16 +61,17 @@ class D7C1(object):
         teams = glob.glob(path + os.sep +'*')
         self.teams = [this for this in teams if os.path.isdir(this) is True]
 
-
         self.N = len(self.teams)
         self.distances = np.zeros((self.N, 4))
         self.pvalues = np.zeros((self.N, 4))
 
         self.scores = {}
         self._load_gold_standard()
+
         self._load_submissions()
         self.compute_score_distance_model1()
         self.compute_score_parameter_prediction_model1()
+        self.compute_score_topology()
         
         # data structure to store null distances
         self.rdistance_pred1 = [] 
@@ -79,7 +115,7 @@ class D7C1(object):
                 df = pd.read_csv(filename, sep=sep, index_col=0)
             elif mode == 'topo':
                 df = pd.read_csv(filename, sep=sep, index_col=None, header=None,
-                        names=['g1','sign1','g2','sign2','g3'])
+                        names=['regulator','sign1','g1','sign2','g2'])
         except Exception as err:
             print filename
             print(err)
@@ -96,6 +132,11 @@ class D7C1(object):
         distance = self._compute_score_distance_model1(data, 10,39)
         return distance
 
+    def score_topology(self, filename):
+        data = self._read_df(filename, mode='topo')
+        distance = self._compute_score_topology(data)
+        return distance
+
     def _get_gs(self, filename):
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         filename = os.sep.join([self._path2data, "goldstandard", filename])
@@ -107,6 +148,17 @@ class D7C1(object):
         self.gs['param2'] = self._read_df(self._get_gs("model2_parameters_answer.txt"), mode='param')
         self.gs['pred1'] = self._read_df(self._get_gs("model1_prediction_answer.txt"), mode='pred')
         self.gs['topo2'] = self._read_df(self._get_gs("model2_topology_answer.txt"), mode='topo')
+
+    def compute_score_topology(self):
+        scores = {}
+        for team in self.team_names:
+            data = self.data['topo2'][team]
+            score = self._compute_score_topology(data)
+            scores[team] = score
+        df = pd.TimeSeries(scores)
+        df = pd.DataFrame({'scores':df, 'rank':df.rank()})
+        self.scores['topo2'] = df.sort(columns='rank')
+
 
     def compute_score_parameter_prediction_model1(self):
         """
@@ -277,6 +329,75 @@ class D7C1(object):
                 left_index=True, right_index=True, 
                 suffixes=['_param', '_pred'])
         return df
+
+
+    def _compute_score_topology(self, data):
+        """
+
+        For each of the predicted links i=1,2,3, we define a score:
+
+        :math:`S_i^{link} = L_i + N_i`
+
+        where :math:`L_i = 6` if one connection has all its elements correctly 
+        predicted (that is, the source gene, the sign of the connection, and 
+        the destination gene are all correct) and :math:`L_i = 12` if the link 
+        regulates an operon composed of two genes and both connections are 
+        correct. Alternatively, :math:`L_i = 0` if some element of the 
+        connection is incorrect. If :math:`L_i >0` then :math:`N_i=0`.
+
+        In case a link is NOT correctly predicted (:math:`L_i=0`) :math:`N_i` 
+        adds to the score different values for depending on how good the 
+        prediction is. In the score is increased by 1 for each correctly 
+        regulated gene, 2 if the regulated gene and the nature of the 
+        regulation (i.e +/-) are correct and 1 if the regulator gene is 
+        correct
+
+        Hence ONLY for the links where :math:`L_i=0`, :math:`N_i` rewards 
+        correctly predicted element of the link as shown in the following 
+        (non-exhaustive) table, where i stands for incorrect and c correct 
+        predictions. Note that correct (+/-) predictions without the correct 
+        gene give no points.
+
+
+        Snetw= S1link+S2link+S3link
+
+        """
+
+        cor = data == self.gs['topo2']
+
+        Li = np.array([0,0,0])
+        Ni = np.array([0,0,0])
+
+        for i in range(0,3):
+            # if all 5 values are correct, L = 12 and stops there
+            if cor.ix[i][['regulator', 'sign1', 'g1']].sum() == 3:
+                Li[i] += 6
+            if cor.ix[i][['regulator', 'sign2', 'g2']].sum() == 3:
+                Li[i] += 6
+
+            if Li[i] != 0:
+                continue
+            # here, Li = 0 i.e not link was predicted correctly
+            # We still adds values to ths score depending how good the
+            # prediction is
+            if cor.ix[i]['regulator'].sum() == 1:
+                Ni[i]+=1
+
+            if cor.ix[i]['g1'].sum() == 1:
+                Ni[i]+=1
+                if cor.ix[i]['sign1'].sum() == 1:
+                    Ni[i]+=1
+            if cor.ix[i]['g2'].sum() == 1:
+                Ni[i]+=1
+                if cor.ix[i]['sign2'].sum() == 1:
+                    Ni[i]+=1
+
+        Si = Li + Ni
+        print Li, Ni, Si
+        return sum(Si)
+
+
+
 
 
 """
