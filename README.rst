@@ -33,11 +33,25 @@ It prints some information and the score of the submision for instance for the e
 Scoring functions available so far:
 
 
-* Dream8 HPN (D8C1) sub challenges named sc1a, sc1b, sc2a, sc2b. 
-  See `Synapse page <https://www.synapse.org/#!Synapse:syn1720047>`_ for details
-* Dream8 Tox (D8C2) sub challenges named sc1, sc2. 
-  See `Synapse page <https://www.synapse.org/#!Synapse:syn1761567>`_ for details
-* DREAM 7 Network Parameter Estimation (D7C1)
+#. DREAM8
+
+    * D8C1 (HPN breat cancer)  sub challenges named sc1a, sc1b, sc2a, sc2b. 
+      See `Synapse page <https://www.synapse.org/#!Synapse:syn1720047>`_ for details
+    * D8C2 (Toxoxicology) sub challenges named sc1, sc2. 
+      See `Synapse page <https://www.synapse.org/#!Synapse:syn1761567>`_ for details
+
+#. DREAM7
+
+    * D7C1 (Network Parameter Estimation)
+
+#. DREAM6
+
+    * D6C1 (Network Parameter Estimation) IN PROGRESS
+    
+#. DREAM5    
+
+    * D5C2 (transcription factor)  IN PROGRESS
+
 
 **Format** for the challenges can be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 
 please see ./dreamtools/dream8/D8C1/README.rst
