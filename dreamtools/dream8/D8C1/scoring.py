@@ -1,4 +1,4 @@
-# -*- python -*-
+#-*- python -*-
 # -*- coding: utf-8 -*-
 #
 #  This file is part of dreamtools software
@@ -1792,15 +1792,15 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
     true_synapse_id = "syn2143242"
 
     def __init__(self, filename=None, verbose=False, version='official'):
-        """
+        """SC2B sub challenge (prediction in silico)
+
+        :param filename: file to score
         :param str version: default to 'official' (see note below). Set to
             anything else to use correct network
 
-        .. note:: scoring in SC2B gives different results as compared to
-            https://www.synapse.org/#!Synapse:syn1720047/wiki/60532 because the true
-            networks are different. The one used in dreamtools is correct. You can still
-            retrieve previous results by hacking the scoring.py module around line 1821 in
-            HPNScoringPredictionInsilico
+        .. note:: This code use the official gold standard used
+            in https://www.synapse.org/#!Synapse:syn1720047/wiki/60532 . Note, 
+            however, that a corrected version is provided and can be used
         """
         super(HPNScoringPredictionInsilico, self).__init__(filename)
         # WRONG NETWORK as used in the official LB
