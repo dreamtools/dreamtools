@@ -97,9 +97,18 @@ Here is the procedure to get the ROC or RMSE for each sub-challenge::
     sc2b.compute_all_rmse()
     sc2b.get_mean_rmse()
 
-:Note: scoring in SC2B gives different results as compared to https://www.synapse.org/#!Synapse:syn1720047/wiki/60532
-    because the true networks are different. The one used in dreamtools is correct. You can still retrieve previous 
-    results by hacking the scoring.py module around line 1821 in HPNScoringPredictionInsilico
+:Note: scoring in SC2B is identical to the official learderboard shown in 
+    https://www.synapse.org/#!Synapse:syn1720047/wiki/60532 . However, the gold 
+    standard used in the official leaderboard was incorrectly computed. We also provide the
+    new version in the code. See **HPNScoringPredictionInsilico** class in the **scoring** module.
+    
+    A scaling/normalization for each species over all conditions and time points was computed to 
+    take into account the fact that simulated phophoactivity spawn across different orders
+    of magnitude. Initially, the same 20 conditions were used for both SC1B and SC2B, so the
+    scaling factor was the same. Unfortunately, at some point, three inhibitors (Pertuzumab,
+    U0126 and Cetuximab) were removed from the SC2B simulations. The result was that different
+    scaling factors where used to generate the training data and the gold standard data. To correct
+    this, the GS data was recomputed with the same scaling factor as used in SC1B. 
     
 Ranking
 -----------
