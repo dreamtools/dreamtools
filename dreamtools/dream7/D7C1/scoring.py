@@ -153,7 +153,7 @@ class D7C1(object):
         scores = {}
         for team in self.team_names:
             data = self.data['topo2'][team]
-            score = self._compute_score_topology(data)
+            score = self._compute_score_topology(data, team=team)
             scores[team] = score
         df = pd.TimeSeries(scores)
         df = pd.DataFrame({'scores':df, 'rank':df.rank()})
@@ -331,7 +331,7 @@ class D7C1(object):
         return df
 
 
-    def _compute_score_topology(self, data):
+    def _compute_score_topology(self, data, team=''):
         """
 
         For each of the predicted links i=1,2,3, we define a score:
@@ -363,42 +363,66 @@ class D7C1(object):
 
         """
 
-        cor = data == self.gs['topo2']
+        gs = self.gs['topo2']
 
         Li = np.array([0,0,0])
         Ni = np.array([0,0,0])
 
+        # loop over solution
+        cols1 = ['regulator', 'sign1', 'g1']
+        cols2 = ['regulator', 'sign2', 'g2']
+        # build list of existing genes and their signs from the GS
+        # order does not matter, this is for th counting of Ni
+        genes =  pd.concat([gs.g1 , gs.g2]).values
+        signs =  pd.concat([gs.sign1 , gs.sign2]).values
+
+        # make sure there are unique
+        genes_data =  pd.concat([data.g1 , data.g2]).values
+        signs_data =  pd.concat([data.sign1 , data.sign2]).values
+        genes_data, indices = np.unique(genes_data, return_index=True)
+        signs_data = signs_data[indices]
+        regulators_data = set(data.regulator)
+
+        if team == 'ntu':
+            print genes
+            print signs
+            print genes_data
+            print signs_data
+
         for i in range(0,3):
-            # if all 5 values are correct, L = 12 and stops there
-            if cor.ix[i][['regulator', 'sign1', 'g1']].sum() == 3:
-                Li[i] += 6
-            if cor.ix[i][['regulator', 'sign2', 'g2']].sum() == 3:
-                Li[i] += 6
+            for j in range(0,3):
+                # if all 5 values are correct, L = 12 and stops there
+                # Note that is the regulated gene is zero, it means 
+                # it does not exists so it is ignored.
+                if all(gs.ix[i][cols1] == data.ix[j][cols1]) is True:
+                    # g1 should be different from 0
+                    # regulator is tested as well although the GS are no such case
+                    if gs.ix[i]['g1'] != 0 and gs.ix[i]['regulator'] != 0 :
+                        Li[i] += 6
+                if all(gs.ix[i][cols2] == data.ix[j][cols2]) is True:
+                    # g1 should be different from 0
+                    # regulator is tested as well although the GS are no such case
+                    if gs.ix[i]['g2'] != 0 and gs.ix[i]['regulator'] != 0 :
+                        Li[i] += 6
 
-            if Li[i] != 0:
-                continue
-            # here, Li = 0 i.e not link was predicted correctly
-            # We still adds values to ths score depending how good the
-            # prediction is
-            if cor.ix[i]['regulator'].sum() == 1:
-                Ni[i]+=1
-
-            if cor.ix[i]['g1'].sum() == 1:
-                Ni[i]+=1
-                if cor.ix[i]['sign1'].sum() == 1:
-                    Ni[i]+=1
-            if cor.ix[i]['g2'].sum() == 1:
-                Ni[i]+=1
-                if cor.ix[i]['sign2'].sum() == 1:
-                    Ni[i]+=1
+        # any regulator correctly predicted ?
+        for i in range(0,3):
+            for reg in data.regulator:
+                print reg
+                if gs.ix[i]['regulator'] == reg and Li[i] == 0:
+                    Ni[i] += 1
+        print team, "Ni regulator=", Ni
+        # any gene and sign found in GS? 
+        for gene, sign in zip(genes, signs):
+            for gene_data, sign_data in zip(genes_data, signs_data):
+                if gene == gene_data and gene!=0:
+                    Ni[i] += 1
+                    if sign == sign_data:
+                        Ni[i] += 1
 
         Si = Li + Ni
-        print Li, Ni, Si
+        print Li, Ni, Si, sum(Si)
         return sum(Si)
-
-
-
-
 
 """
 Model 2. Relative p-value and scores
