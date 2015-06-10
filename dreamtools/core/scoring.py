@@ -20,22 +20,31 @@ import sys
 from easydev.console import red, purple, darkgreen
 registered = {'d8c1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
         'd8c2': ['sc1', 'sc2'],
-        'd7c1':['model1_parameter', 'model2_topology', 'model1_prediction']}
+        'd7c1':['parameter', 'topology', 'timecourse']}
+
+
 # Define the simple scoring functions here below
 
-# DREAM8 Challenge 1
-
 def d7c1_model1_parameter(filename):
-    from dreamtools.dream7.D7C1 import scoring
-    s = scoring.D7C1()
+    from dreamtools import D7C1
+    s = D7C1()
     score = s.score_model1_parameters(filename)
     return {'score': score}
 
+
 def d7c1_model1_prediction(filename):
-    from dreamtools.dream7.D7C1 import scoring
-    s = scoring.D7C1()
-    score = s.score_model1_prediction(filename)
+    from dreamtools import D7C1
+    s = D7C1()
+    score = s.score_model1_timecourse(filename)
     return {'score': score}
+
+
+def d7c1_model2_topology(filename):
+    from dreamtools import D7C1
+    s = D7C1()
+    score = s.score_topology(filename)
+    return {'score': score}
+
 
 def d8c1_sc1a(filename, verbose=False):
     from dreamtools.dream8.D8C1 import scoring, ranking
@@ -141,8 +150,10 @@ def scoring(args=None):
     try:
         d.check_param_in_list(options.sub_challenge, registered[options.challenge])
     except ValueError as err:
-        print("DreamScoring error: unknown sub challenge or not yet implemented")
-        print("--->" + err.message)
+        txt = "DreamScoring error: unknown sub challenge or not yet implemented"
+        txt += "--->" + err.message
+        print_color(txt, red)
+        
         sys.exit()
 
     if options.filename is None:
@@ -178,10 +189,12 @@ def scoring(args=None):
         if options.sub_challenge == 'sc2':
             res = d8c2_sc2(options.filename, verbose=options.verbose)
     elif options.challenge == 'd7c1':
-        if options.sub_challenge == 'model1_parameter':
+        if options.sub_challenge == 'parameter':
             res = d7c1_model1_parameter(options.filename)
-        if options.sub_challenge == 'model1_prediction':
+        if options.sub_challenge == 'prediction':
             res = d7c1_model1_prediction(options.filename)
+        if options.sub_challenge == 'topology':
+            res = d7c1_model2_topology(options.filename)
 
     txt = "Solution for %s in challenge %s" % (options.filename, options.challenge)
     if options.sub_challenge is not None:

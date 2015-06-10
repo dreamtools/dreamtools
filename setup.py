@@ -81,7 +81,7 @@ setup(
     # distutils in rtools.package
     #install_requires = [ 'pandas', 'bioservices', 'colormap>=0.9.3'],
     install_requires = ['numpy', 'matplotlib', 'pandas', 'appdirs',
-        'easydev>=0.8.3',
+        'easydev>=0.8.3', 'fitter',
         'synapseclient', 'tabulate', 'cython'],
 
     ext_modules = cythonize("dreamtools/dream8/D8C1/*.pyx"),
