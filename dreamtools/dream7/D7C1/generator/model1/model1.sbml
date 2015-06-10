@@ -67,65 +67,65 @@
     <listOfParameters>
       <parameter id="v8_mrna_degradation_rate" name="v8_mrna_degradation_rate" value="1" constant="true"/>
       <parameter id="v9_mrna_degradation_rate" name="v9_mrna_degradation_rate" value="1" constant="true"/>
-      <parameter id="p1_degradation_rate" name="p1_degradation_rate" value="0.1" constant="true"/>
-      <parameter id="p2_degradation_rate" name="p2_degradation_rate" value="0.1" constant="true"/>
-      <parameter id="p3_degradation_rate" name="p3_degradation_rate" value="0.1" constant="true"/>
-      <parameter id="p4_degradation_rate" name="p4_degradation_rate" value="0.1" constant="true"/>
-      <parameter id="p5_degradation_rate" name="p5_degradation_rate" value="0.1" constant="true"/>
-      <parameter id="p6_degradation_rate" name="p6_degradation_rate" value="0.1" constant="true"/>
-      <parameter id="p7_degradation_rate" name="p7_degradation_rate" value="0.1" constant="true"/>
-      <parameter id="p8_degradation_rate" name="p8_degradation_rate" value="0.1" constant="true"/>
-      <parameter id="p9_degradation_rate" name="p9_degradation_rate" value="0.1" constant="true"/>
-      <parameter id="r1_Kd" name="r1_Kd" value="2.3432" constant="true"/>
-      <parameter id="r1_h" name="r1_h" value="2" constant="true"/>
-      <parameter id="r2_Kd" name="r2_Kd" value="1.342" constant="true"/>
-      <parameter id="r2_h" name="r2_h" value="2" constant="true"/>
-      <parameter id="r3_Kd" name="r3_Kd" value="1.774" constant="true"/>
-      <parameter id="r3_h" name="r3_h" value="2" constant="true"/>
-      <parameter id="r4_Kd" name="r4_Kd" value="0.262" constant="true"/>
-      <parameter id="r4_h" name="r4_h" value="2" constant="true"/>
-      <parameter id="r5_Kd" name="r5_Kd" value="0.568" constant="true"/>
-      <parameter id="r5_h" name="r5_h" value="2" constant="true"/>
-      <parameter id="r6_Kd" name="r6_Kd" value="2.6" constant="true"/>
-      <parameter id="r6_h" name="r6_h" value="4" constant="true"/>
-      <parameter id="r7_Kd" name="r7_Kd" value="1.54" constant="true"/>
-      <parameter id="r7_h" name="r7_h" value="2" constant="true"/>
-      <parameter id="r8_Kd" name="r8_Kd" value="0.12" constant="true"/>
-      <parameter id="r8_h" name="r8_h" value="2" constant="true"/>
-      <parameter id="r9_Kd" name="r9_Kd" value="1.13" constant="true"/>
-      <parameter id="r9_h" name="r9_h" value="2" constant="true"/>
+      <parameter id="p1_degradation_rate" name="p1_degradation_rate" value="1" constant="true"/>
+      <parameter id="p2_degradation_rate" name="p2_degradation_rate" value="1" constant="true"/>
+      <parameter id="p3_degradation_rate" name="p3_degradation_rate" value="1" constant="true"/>
+      <parameter id="p4_degradation_rate" name="p4_degradation_rate" value="1" constant="true"/>
+      <parameter id="p5_degradation_rate" name="p5_degradation_rate" value="1" constant="true"/>
+      <parameter id="p6_degradation_rate" name="p6_degradation_rate" value="1" constant="true"/>
+      <parameter id="p7_degradation_rate" name="p7_degradation_rate" value="1" constant="true"/>
+      <parameter id="p8_degradation_rate" name="p8_degradation_rate" value="1" constant="true"/>
+      <parameter id="p9_degradation_rate" name="p9_degradation_rate" value="1" constant="true"/>
+      <parameter id="r1_Kd" name="r1_Kd" value="1" constant="true"/>
+      <parameter id="r1_h" name="r1_h" value="1" constant="true"/>
+      <parameter id="r2_Kd" name="r2_Kd" value="1" constant="true"/>
+      <parameter id="r2_h" name="r2_h" value="1" constant="true"/>
+      <parameter id="r3_Kd" name="r3_Kd" value="1" constant="true"/>
+      <parameter id="r3_h" name="r3_h" value="1" constant="true"/>
+      <parameter id="r4_Kd" name="r4_Kd" value="1" constant="true"/>
+      <parameter id="r4_h" name="r4_h" value="1" constant="true"/>
+      <parameter id="r5_Kd" name="r5_Kd" value="1" constant="true"/>
+      <parameter id="r5_h" name="r5_h" value="1" constant="true"/>
+      <parameter id="r6_Kd" name="r6_Kd" value="1" constant="true"/>
+      <parameter id="r6_h" name="r6_h" value="1" constant="true"/>
+      <parameter id="r7_Kd" name="r7_Kd" value="1" constant="true"/>
+      <parameter id="r7_h" name="r7_h" value="1" constant="true"/>
+      <parameter id="r8_Kd" name="r8_Kd" value="1" constant="true"/>
+      <parameter id="r8_h" name="r8_h" value="1" constant="true"/>
+      <parameter id="r9_Kd" name="r9_Kd" value="1" constant="true"/>
+      <parameter id="r9_h" name="r9_h" value="1" constant="true"/>
       <parameter id="v1_mrna_degradation_rate" name="v1_mrna_degradation_rate" value="1" constant="true"/>
       <parameter id="v2_mrna_degradation_rate" name="v2_mrna_degradation_rate" value="1" constant="true"/>
-      <parameter id="pro1_strength" name="pro1_strength" value="0.67" constant="true"/>
-      <parameter id="pro2_strength" name="pro2_strength" value="1.42" constant="true"/>
-      <parameter id="pro3_strength" name="pro3_strength" value="5" constant="true"/>
-      <parameter id="pro4_strength" name="pro4_strength" value="1.5" constant="true"/>
-      <parameter id="pro5_strength" name="pro5_strength" value="1.3" constant="true"/>
+      <parameter id="pro1_strength" name="pro1_strength" value="1" constant="true"/>
+      <parameter id="pro2_strength" name="pro2_strength" value="1" constant="true"/>
+      <parameter id="pro3_strength" name="pro3_strength" value="1" constant="true"/>
+      <parameter id="pro4_strength" name="pro4_strength" value="1" constant="true"/>
+      <parameter id="pro5_strength" name="pro5_strength" value="1" constant="true"/>
       <parameter id="v3_mrna_degradation_rate" name="v3_mrna_degradation_rate" value="1" constant="true"/>
       <parameter id="pro6_strength" name="pro6_strength" value="1" constant="true"/>
-      <parameter id="pro7_strength" name="pro7_strength" value="0.8" constant="true"/>
-      <parameter id="pro8_strength" name="pro8_strength" value="1.5" constant="true"/>
-      <parameter id="pro9_strength" name="pro9_strength" value="3.77" constant="true"/>
+      <parameter id="pro7_strength" name="pro7_strength" value="1" constant="true"/>
+      <parameter id="pro8_strength" name="pro8_strength" value="1" constant="true"/>
+      <parameter id="pro9_strength" name="pro9_strength" value="1" constant="true"/>
       <parameter id="v4_mrna_degradation_rate" name="v4_mrna_degradation_rate" value="1" constant="true"/>
-      <parameter id="r10_Kd" name="r10_Kd" value="1.4" constant="true"/>
-      <parameter id="r10_h" name="r10_h" value="2" constant="true"/>
-      <parameter id="r11_Kd" name="r11_Kd" value="2" constant="true"/>
-      <parameter id="r11_h" name="r11_h" value="2" constant="true"/>
-      <parameter id="r12_Kd" name="r12_Kd" value="0.2" constant="true"/>
-      <parameter id="r12_h" name="r12_h" value="2" constant="true"/>
-      <parameter id="r13_Kd" name="r13_Kd" value="0.5" constant="true"/>
-      <parameter id="r13_h" name="r13_h" value="4" constant="true"/>
+      <parameter id="r10_Kd" name="r10_Kd" value="1" constant="true"/>
+      <parameter id="r10_h" name="r10_h" value="1" constant="true"/>
+      <parameter id="r11_Kd" name="r11_Kd" value="1" constant="true"/>
+      <parameter id="r11_h" name="r11_h" value="1" constant="true"/>
+      <parameter id="r12_Kd" name="r12_Kd" value="1" constant="true"/>
+      <parameter id="r12_h" name="r12_h" value="1" constant="true"/>
+      <parameter id="r13_Kd" name="r13_Kd" value="1" constant="true"/>
+      <parameter id="r13_h" name="r13_h" value="1" constant="true"/>
       <parameter id="v5_mrna_degradation_rate" name="v5_mrna_degradation_rate" value="1" constant="true"/>
-      <parameter id="rbs1_strength" name="rbs1_strength" value="2.1" constant="true"/>
-      <parameter id="rbs2_strength" name="rbs2_strength" value="1.5" constant="true"/>
-      <parameter id="rbs3_strength" name="rbs3_strength" value="5" constant="true"/>
-      <parameter id="rbs4_strength" name="rbs4_strength" value="1.1" constant="true"/>
-      <parameter id="rbs5_strength" name="rbs5_strength" value="0.8" constant="true"/>
+      <parameter id="rbs1_strength" name="rbs1_strength" value="1" constant="true"/>
+      <parameter id="rbs2_strength" name="rbs2_strength" value="1" constant="true"/>
+      <parameter id="rbs3_strength" name="rbs3_strength" value="1" constant="true"/>
+      <parameter id="rbs4_strength" name="rbs4_strength" value="1" constant="true"/>
+      <parameter id="rbs5_strength" name="rbs5_strength" value="1" constant="true"/>
       <parameter id="v6_mrna_degradation_rate" name="v6_mrna_degradation_rate" value="1" constant="true"/>
-      <parameter id="rbs6_strength" name="rbs6_strength" value="5" constant="true"/>
-      <parameter id="rbs7_strength" name="rbs7_strength" value="5" constant="true"/>
-      <parameter id="rbs8_strength" name="rbs8_strength" value="5" constant="true"/>
-      <parameter id="rbs9_strength" name="rbs9_strength" value="5" constant="true"/>
+      <parameter id="rbs6_strength" name="rbs6_strength" value="1" constant="true"/>
+      <parameter id="rbs7_strength" name="rbs7_strength" value="1" constant="true"/>
+      <parameter id="rbs8_strength" name="rbs8_strength" value="1" constant="true"/>
+      <parameter id="rbs9_strength" name="rbs9_strength" value="1" constant="true"/>
       <parameter id="v7_mrna_degradation_rate" name="v7_mrna_degradation_rate" value="1" constant="true"/>
     </listOfParameters>
     <listOfRules>
