@@ -57,6 +57,16 @@ DREAM6 challenges
 DREAM7 challenges
 --------------------
 
+D7C1
+~~~~~
+
+Parameter Estimation and Network Topology 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: dreamtools.dream7.D7C1.scoring
+    :members:
+    :undoc-members:
+
 
 DREAM8 challenges
 --------------------

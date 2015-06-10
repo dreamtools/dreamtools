@@ -135,18 +135,21 @@ class D5C2(object):
     def split_data(self, precision=6):
         """precision is to get same results as in the original perl script"""
         mask = self.gs.Flag == 0
-        self.user_data = self.user_data[mask]
+        self.user_data_clean = self.user_data[mask].copy()
         print('Removing flagged data (%s out of %s)' % (self.gs.shape[0] - mask.sum(), self.gs.shape[0]))
-        self.gs = self.gs[mask]
+        self.gs_clean = self.gs[mask].copy()
+        # local aliases
+        gs = self.gs_clean
+        user_data = self.user_data_clean
 
         from easydev import progress_bar
         pb = progress_bar(66, interval=1)
         for transcription in range(1,67):
             this_tf = 'TF_%s'  % transcription
-            tf_gs = self.gs[self.gs.Id == this_tf].Answer
-            tf_user = self.user_data[self.user_data.TF_Id == this_tf].Signal_Mean
+            tf_gs = gs[gs.Id == this_tf].Answer
+            tf_user = user_data[user_data.TF_Id == this_tf].Signal_Mean
             df = pd.concat([tf_gs, tf_user], axis=1)
-            df.to_csv(this_tf + 'tmp.dat', index=False, sep='\t', header=False, float_format="%.6s")
+            df.to_csv(this_tf + 'tmp.dat', index=False, sep='\t', header=False, float_format="%f")
 
             pb.animate(transcription)
 
@@ -184,6 +187,133 @@ class D5C2(object):
             self.error("Validation failed with this error:" + error)
         self.log("done</p>" )
 
+
+    def probe_data_preprocessing1(self):
+        # mkdir Probes
+        try: os.mkdir('Probes')
+        except: pass
+
+        # reads probes (sequences)
+        print('Reading probes')
+        # just one column so no need for a separator
+        probes = pd.read_csv('Data/probes35.txt')
+
+        # GOOD AND CHECKED
+        print('Creating val.txt')
+        # create the val.txt (first and third column of pred.txt)
+        df = self.user_data[['TF_Id', 'Signal_Mean']].copy()
+        df['Signal_Mean'] = df['Signal_Mean'].map(lambda x: round(x,6))
+        #df.to_csv('val.csv', sep='\t', index=False, float_format="%.6f")
+
+        # data.txt is paste of probes35.txt and val.txt
+        data = pd.concat([probes, df], axis=1)
+
+        # Creates probes/TF_1.dat that contains the sequence from the GS and the answer from the user
+        # for each TF
+        # GOOD AND CHECKED
+        print('Creating probes/TF_1_tmp.csv + sorting ')
+        from easydev import progress_bar
+        pb = progress_bar(67, interval=1)
+        for i in range(1,67):
+            # could use a groupby here ? faster  maybe
+            tag = 'TF_%s' % i
+            sequence = data[['Sequence']].ix[self.gs.Id==tag]
+            answer = data.Signal_Mean[data.TF_Id == tag]
+            df = pd.concat([sequence, answer], axis=1)
+            df.sort(columns=['Signal_Mean', 'Sequence'], ascending=[False, False], inplace=True)
+            df['Signal_Mean'] = df['Signal_Mean'].map(lambda x: round(x,6))
+            df.to_csv('Probes/%s_tmp.csv' % tag, sep='\t', index=False, header=False,
+                      float_format="%.6f")
+            pb.animate(i)
+
+    def read_octomers(self):
+        self.octomers_gs = pd.read_csv('Data/8mers_gs.txt', sep='\t', header=None)
+
+        self.octomers = pd.read_csv('Data/all_8mers.txt', sep='\t', header=None)  # contains reverse complemtn
+        self.octomers.columns = ['octomer','octomerRC']
+
+        # build a dictionary out of it /
+
+        self.probes_gs = pd.read_csv('Data/probe35_gs.txt', header=None)
+
+    def probe_data_processing(self):
+        #
+        """
+
+     my $fileDVP = $WRK_DIR.'/DVP/TF_'.$i.'.dat';
+     my $fileO = $WRK_DIR.'/Out/TF_'.$i.'.dat';
+     my $fileDV = $WRK_DIR.'/DV/TF_'.$i.'.dat';
+     #
+     open(OUT,"> $fileO") || die "Can't open file $fileO";
+     my %ids = ();
+     open(IN,$file) || die "Can't open file $file (why? $!)";
+     while(<IN>) #Matt's code in this loop, but I added the calculation of median and the reverse complement
+     {
+        chomp;
+        @tabs = split (/\t/);
+        $seq = shift (@tabs);
+        @seq = split (//, $seq);
+        $score = shift (@tabs);
+        chomp $score;
+        for (my $i=0; $i<scalar @seq-$len+1; $i++) {
+            $cur = substr ($seq, $i, $len);
+7            if (exists $u8mers{$cur}) {$curR = $cur;}
+8            else {$curR = $u8mersRC{$cur};} ##real current is from the list of 8mers, if not there take RC
+9            if (exists $ids{$curR}) {$ids{$curR} .= $score."\t";}
+            else {$ids{$curR} = $score."\t";}
+ #           #print OUT "$cur\t$score\n";
+        }
+     }
+154     close IN;
+
+        :return:
+        """
+        self.read_octomers()
+
+
+        octomers = self.octomers.octomer
+        octomersRC = self.octomers.octomerRC
+        mapping1  = dict([(k,v) for k,v in zip(octomers.values, octomersRC.values)])
+        mapping2  = dict([(k,v) for k,v in zip(octomersRC.values, octomers.values)])
+
+
+        import collections
+        from easydev import progress_bar
+        pb = progress_bar(67, interval=1)
+        for tf_index in range(1,67):
+            tf = pd.read_csv("Probes/TF_%s_tmp.csv" %tf_index, sep="\t",
+                             header=None)
+            tf.columns = ['Sequence', 'Score']
+            ids = collections.defaultdict(list)
+            for index, row in tf.iterrows():
+                seq, score = row
+                # scan the sequence
+                for i in range(0, len(seq)-8+1):
+                    subseq = seq[i:i+8]
+                    try:
+                        mapping1[subseq]
+                        curR = subseq
+                    except:
+                        curR = mapping2[subseq]
+                    ids[curR].append(score)
+            # now let us build the new dataframe for the indices found
+            import numpy as np
+            df = pd.DataFrame({0:[k for k in  ids.keys()],
+                               1:[np.median(v) for v in ids.values()]})
+            df.sort(columns=1, ascending=False, inplace=True)
+            df.to_csv('Out/TF_%s_tmp.dat' % tf_index, index=False)
+            pb.animate(tf_index)
+
+
+            self.ids = ids
+            break
+
+
+
+
+
+
+
     def probe_data(self, ROnly):
         """Launch the probe_to_mersFULL.pl script and tf.r script 
 
@@ -201,6 +331,10 @@ class D5C2(object):
 
         
         """
+        self.read_octomers()
+        self.probe_data_preprocessing1()
+        self.probe_data_processing()
+
         self.log("<p><strong>Probing data</strong>    Please wait<br>")
         cgidir = os.path.abspath(os.path.curdir)
         t1 = time.time()

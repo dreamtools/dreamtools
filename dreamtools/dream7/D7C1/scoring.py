@@ -1,3 +1,15 @@
+"""Scoring Functions for the Dream7 Challenge 1 (Parameter estimation and network topology prediction)
+
+
+:References:
+    * http://dreamchallenges.org/project-list/dream7-2012/
+    * https://www.synapse.org/#!Synapse:syn2821735/wiki/
+
+:Publications: http://www.biomedcentral.com/1752-0509/8/13/abstract
+
+"""
+
+
 import numpy as np
 import glob
 import pandas as pd
@@ -9,52 +21,46 @@ __all__ = ['D7C1']
 
 
 class D7C1(object):
-    """
-        Official, we provide only the scoring functions but additional tools
-        such as draft version of the NULL distribution + pvalues are provided.
+    """DREAM 7 - Network Topology and Parameter Inference Challenge
 
+    Here is a quick example on calling the scoring methods::
 
+        from dreamtools import D7C1
         s = D7C1()
-        s.score_model1_prediction(filename)
+        s.score_model1_timecourse(filename)
         s.score_model1_parameters(filename)
-
-        s.summary() returns scores of the participants (if you have the files)
-
+        s.score_topology(filename)
 
 
+    This class provides 3 main scoring functions:
 
-    topology scoring
+    #. :meth:`score_topology`
+    #. :meth:`score_model1_timecourse`
+    #. :meth:`score_model1_parameters`
 
-    The challenge requests predictions for 3 missing links, knowing that 
-    a gene can regulate up to two genes when they are in the same operon, 
-    6 gene interactions
-    have to be indicated by the participants (3 links*2 genes) and whether these
-    interactions are activating (+) or repressing (-).
-    We define the score as :math:`S_2^{netw} = \sum_{i,j=1}^3 L_j + \delta_{ij}`
-    qith 0 <=S_2^{netw}<=1
+    Each takes as an input a valid submission as described in the official
+    `synapse page <https://www.synapse.org/#!Synapse:syn2821735/wiki/>`_.
 
+    Templates are also provided within the source code on `github dreamtools <https://github.com/dreamtools>`_
+    in the directory dreamtools/dream7/D7C1/templates.
 
-    where :math:`L_j` is 6 if both genes defining the link and the nature of the regulation are  correct (i.e +/-). In case a link is NOT correct, :math:`\delta_{ij}` adds 1 for each correct  regulated gene, 2 if the regulated gene and the nature of the regulation (i.e +/-) are correct and 1 if the regulator gene is correct.
+    D7C1 scoring function are also included in the standalone code **dreamtools-scoring**.
 
-     For each participant, the p-value associated with the score :math:`A_2^{netw}`  , will be calculated by generating a distribution of scores from a large number of surrogate gene networks obtained by randomly adding 3 links that follow the connection rules to the initial gene network.
+    For the details of the scoring functions, please refer to the paper (see module documentation)
+    Some details are provided in the methods themselves as well.
 
+    There are other methods (starting with leaderboard) that should not be used. Those are
+    draft version used to compute pvalues and report scores as in the final leaderboard.
 
-    Explain template. links can regulate one or two genes
-
-    ::
-
-        5 + 7 + 11
-
-    means gene 5 positively regulates gene 7 and gene 11
-
-    ::
-
-        6 - 2 + 0
-
-    means gene 6 negatively regulates gene 2 (gene 0 does not exists)
+    .. note:: the scoring functions were implemented following Pablo Meyer's matlab **codescore_dream7_c1s1.m**
     """
 
     def __init__(self, path='submissions'):
+        """.. rubric:: constructor
+
+        :param path: path to a directory containing submissions
+        :return:
+        """
 
         self.path = path
 
@@ -68,16 +74,23 @@ class D7C1(object):
         self.scores = {}
         self._load_gold_standard()
 
-        self._load_submissions()
-        self.compute_score_distance_model1()
-        self.compute_score_parameter_prediction_model1()
-        self.compute_score_topology()
+        #self.load_submissions()
+        #self.compute_score_distance_model1()
+        #self.compute_score_parameter_prediction_model1()
+        #self.compute_score_topology()
         
         # data structure to store null distances
         self.rdistance_pred1 = [] 
         self.rdistance_param1 = []
 
-    def _load_submissions(self):
+    def load_submissions(self):
+        """Load a bunch of submissions to be found in the submissions directory
+
+        The directory name is defined in :attr:`path`
+
+
+        :return: nothing. Populates :attr:`data` attribute and :attr:`team_names`.
+        """
 
         tag_param1 = 'dream7_netparinf_parameters_model_1'
         tag_param2 = 'dream7_netparinf_parameters_model_2'
@@ -90,6 +103,7 @@ class D7C1(object):
         self.data['pred1'] = {}
         self.data['topo2'] = {}
         self.team_names = []
+
         for team in self.teams:
             team_name = team.split(os.sep)[1]
             self.team_names.append(team_name)
@@ -107,36 +121,142 @@ class D7C1(object):
             self.data['topo2'][team_name] = self._read_df(filename, 'topo')
 
     def _read_df(self, filename, mode, sep='\s+'):
-        try:
-            if mode == 'param':
-                df = pd.read_csv(filename, sep=sep, index_col=0, 
-                    header=None, names=['values'])
-            elif mode == 'pred':
-                df = pd.read_csv(filename, sep=sep, index_col=0)
-            elif mode == 'topo':
-                df = pd.read_csv(filename, sep=sep, index_col=None, header=None,
-                        names=['regulator','sign1','g1','sign2','g2'])
-        except Exception as err:
-            print filename
-            print(err)
-            df = None
+
+        def error_message(msg):
+            txt = 'Error while parsing %s\n' % filename
+            txt += msg
+            return txt
+        if mode == 'param':
+            df = pd.read_csv(filename, sep=sep, index_col=0,
+                header=None, names=['values'])
+        elif mode == 'pred':
+            df = pd.read_csv(filename, sep=sep, index_col=0)
+            assert all(df.columns == ['p3','p5','p8']), \
+                error_message('Header columns  must be p3 p5 p8. Found %s' % df.columns)
+        elif mode == 'topo':
+            df = pd.read_csv(filename, sep=sep, index_col=None, header=None,
+                    names=['regulator','sign1','g1','sign2','g2'])
+
         return df
 
+    ############################################################################   standalone scoring functions:
     def score_model1_parameters(self, filename):
+        r"""Return distance between submission and gold standard for parameters challenge (model1)
+
+        :param filename: must be valid templates
+        :return: score (distance)
+
+
+        ::
+
+            >>> from dreamtools import D7C1
+            >>> s = D7C1()
+            >>> s.score_model1_parameters('templates/model1_parameters_alphabeta.txt')
+            0.022867555017785129
+
+
+        The score is computed using the square of the ratio of the user prediction and the gold standard.
+        Taking the mean of the log10 :
+
+        .. math::
+
+            S = \overline{\log10 \left( \left( \frac{X}{X_{\rm{gold\;standard}}} \right)^2\right)}
+
+
+        """
         data = self._read_df(filename, mode='param')
-        distance = self._compute_score_parameter_prediction_model(data)
+        distance = self._compute_score_model1_parameters(data)
         return distance
 
-    def score_model1_prediction(self, filename):
+    def score_model1_timecourse(self, filename):
+        r"""Returns distance between prediction and gold standard (model1)
+
+
+        :param filename: must be valid templates
+        :return: score (distance)
+
+        ::
+
+            >>> from dreamtools import D7C1
+            >>> s = D7C1()
+            s.score_model1_timecourse('templates/model1_timecourse_alphabeta.txt')
+            0.0024383612676804048
+
+
+        There are 3 time courses to be predicted.
+        The score for each time course is
+
+        .. math::
+
+            S_i = \frac{(X_i - \hat{X_i}) ^ 2}{0.01 + 0.04 * X_i^2}
+
+        where :math:`X` is the gold standard and :math:`\hat{X}` the prediction.
+        and final score is just the average across the 3 time courses.
+
+        """
         data = self._read_df(filename, mode='pred')
-        distance = self._compute_score_distance_model1(data, 10,39)
+        distance = self._compute_score_timecourse_model1(data, 10,39)
         return distance
 
     def score_topology(self, filename):
+        """Standalone version of the network topology scoring
+
+        :param str filename:
+
+        ::
+
+            >>> from dreamtools import D7C1
+            >>> s = D7C1()
+            >>> s.score_topology('templates/network_topology_alphabeta.txt')
+            12
+
+
+        :scoring details:
+
+            The challenge requests predictions for 3 missing links, knowing that
+            a gene can regulate up to two genes when they are in the same operon,
+            6 gene interactions have to be indicated by the participants (3 links*2 genes)
+            and whether these interactions are activating (+) or repressing (-).
+
+            For each of the predicted links i=1,2,3, we define a score:
+
+            :math:`S_i^{link} = L_i + N_i`
+
+            where :math:`L_j` is 6 if the nature of
+            the regulation iscorrect (that is, the source gene, the sign of the connection, and
+            the destination gene are all correct) and :math:`L_i = 12` if the link
+            regulates an operon composed of two genes and both connections are
+            correct. If :math:`L_i >0` then :math:`N_i=0`.
+
+            In case a link is NOT correctly predicted (:math:`L_i=0`) :math:`N_i`
+            is defined as follows. It is increased by 1 for each correctly
+            regulated gene, 2 if the regulated gene and the nature of the
+            regulation (i.e +/-) are correct and 1 if the regulator gene is
+            correct
+
+
+            The gold standard contains 3 lines similar to ::
+
+                5 + 7 + 11
+
+            It means gene 5 positively regulates gene 7 and gene 11.  If a prediction is ::
+
+                5 + 7 + 2
+
+            Then L =6. If the prediction is ::
+
+                2 + 7 + 2
+
+            L = 0 so N may be updated. Here the regulon (2) is not correct, However, one gene (7) is correctly predicted
+            with the good sign so N = 2.
+
+
+        """
         data = self._read_df(filename, mode='topo')
         distance = self._compute_score_topology(data)
         return distance
 
+    ############################################################################# Load gold standard files
     def _get_gs(self, filename):
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         filename = os.sep.join([self._path2data, "goldstandard", filename])
@@ -149,7 +269,18 @@ class D7C1(object):
         self.gs['pred1'] = self._read_df(self._get_gs("model1_prediction_answer.txt"), mode='pred')
         self.gs['topo2'] = self._read_df(self._get_gs("model2_topology_answer.txt"), mode='topo')
 
-    def compute_score_topology(self):
+
+    ############################################################################# compute all submissions from challenge
+    def leaderboard_compute_score_topology(self):
+        """Computes all scores (topology) for loaded submissions
+
+        For the metric, see :meth:`score_topology`.
+
+        :return: fills :attr:`scores`.
+
+
+        .. seealso:: :meth:`load_submissions`
+        """
         scores = {}
         for team in self.team_names:
             data = self.data['topo2'][team]
@@ -159,34 +290,35 @@ class D7C1(object):
         df = pd.DataFrame({'scores':df, 'rank':df.rank()})
         self.scores['topo2'] = df.sort(columns='rank')
 
+    def leaderboard_compute_score_parameters_model1(self):
+        """Computes all scores (parameters model1)
 
-    def compute_score_parameter_prediction_model1(self):
-        """
-        
+        :return: Nothing but fills :attr:`scores`.
 
-        equation http://www.the-dream-project.org/result/network-topology-and-parameter-inference-challenge
+        For the metric, see :meth:`score_model1_parameters`.
+
+
+        .. seealso:: :meth:`load_submissions`
 
         """
         # parameter model1
         scores = {}
         for team in self.team_names:
             data = self.data['param1'][team]
-            score = self._compute_score_parameter_prediction_model(data)
+            score = self._compute_score_model1_parameters(data)
             scores[team] = score
         df = pd.TimeSeries(scores)
         df = pd.DataFrame({'scores':df, 'rank':df.rank()})
         self.scores['param1'] = df.sort(columns='rank')
 
-    def _compute_score_parameter_prediction_model(self, data):
-        diff = data / self.gs['param1']
-        diff = (np.log10(diff)**2).mean()
-        score = diff.values[0] # should be a single float
-        return score
+    def leaderboard_compute_score_timecourse_model1(self, startindex=10, endindex=39):
+        """Computes all scores (timecourse model1)
 
-    def compute_score_distance_model1(self, startindex=10, endindex=39):
-        """
+        :return: Nothing but fills :attr:`scores`
 
-        endindex is set to 39 so it does not take into account last value at time=20
+        For the metric, see :meth:`score_model1_parameters`.
+
+        Note that *endindex* is set to 39 so it does not take into account last value at time=20
         This is to be in agreement with the implemenation used in the final leaderboard
 
         https://www.synapse.org/#!Synapse:syn2821735/wiki/71062
@@ -197,14 +329,20 @@ class D7C1(object):
         scores = {}
         for team in self.team_names:
             data = self.data['pred1'][team]
-            scores[team] = self._compute_score_distance_model1(data, startindex, endindex)
+            scores[team] = self._compute_score_timecourse_model1(data, startindex, endindex)
         self.scores['pred1'] = pd.TimeSeries(scores)
         self.scores['pred1'].sort()
         self.scores['pred1'] = self.scores['pred1'].to_frame()
         self.scores['pred1'].columns = ['scores']
-       
+
+    def _compute_score_model1_parameters(self, data):
+        diff = data / self.gs['param1']
+        diff = (np.log10(diff)**2).mean()
+        score = diff.values[0] # should be a single float
+        return score
+
     #@do_profile()
-    def _compute_score_distance_model1(self, data, startindex, endindex):
+    def _compute_score_timecourse_model1(self, data, startindex, endindex):
         d1 = (self.gs['pred1'] - data) ** 2  
         d1 /= (0.01 + 0.04 * self.gs['pred1'].values**2)
         # let us ignore the first 10 points
@@ -215,7 +353,23 @@ class D7C1(object):
         distance = np.sum(data) / (3*N)  # normalisation
         return distance
 
-    def get_null_param1(self, N=10000):
+
+    #################################################################### NULL distribution (draft do not use)
+    def get_null_parameters_model1(self, N=10000, Nbest=9):
+        """Null distribution for the model1 parameter
+
+        :param N: number of distribution
+        :param int Nbest: In the official challenge, 12 submissions wre provided. Here, we use only the 9 best submissions
+            like in the paper.
+        :return: a dataframe with null distributions
+
+
+        .. note:: submissions are loaded and scored before creating the null
+            distributions.
+
+        """
+        self.load_submissions()
+        self.leaderboard_compute_score_parameters_model1()
         # select only best 9 as in the paper
         Nbest = 9
         best_teams = list(self.scores['param1'].ix[0:Nbest].index)
@@ -236,14 +390,14 @@ class D7C1(object):
         return df
 
     def _compute_rdist_param1(self, N=10000):
-        df = self.get_null_param1(N=N)
+        df = self.get_null_parameters_model1(N=N)
 
         distances =[]
         from easydev import progress_bar
         pb = progress_bar(N)
         for i in xrange(0, N):
             df1 = df.ix[i].to_frame(name='values')
-            distance = self._compute_score_parameter_prediction_model(df1)
+            distance = self._compute_score_model1_parameters(df1)
             distances.append(distance)
             pb.animate(i, 0)
         return distances
@@ -255,8 +409,15 @@ class D7C1(object):
         #        for score in self.scores['param1'].scores]
         #self.scores['param1']['pvalues'] = pvalues
 
-    def get_random_pred1(self, N=10000):
-        Nbest = 9
+    def get_null_timecourse_model1(self, N=10000, Nbest=9):
+        """Null distributions for the model1 timecourse challenge
+
+        :param N: number of distributions
+        :param int Nbest: In the official challenge, 12 submissions wre provided. Here, we use only the 9 best submissions
+            like in the paper.
+        :return: a dataframe with the null distribution
+        """
+
         best_teams = list(self.scores['pred1'].ix[0:Nbest].index)
         print(best_teams)
 
@@ -276,7 +437,7 @@ class D7C1(object):
            
     #@do_profile()
     def _compute_rdist_pred1(self, N=10000):
-        data = self.get_random_pred1() # numpy matrices
+        data = self.get_null_timecourse_model1() # numpy matrices
 
         distances = []
         from easydev import progress_bar
@@ -284,7 +445,7 @@ class D7C1(object):
         for i in xrange(0,N):
             df = data[:,:,i]
             # FIXME those values 10,39 should not be hardcoded
-            distance = self._compute_score_distance_model1(df, 10,39)
+            distance = self._compute_score_timecourse_model1(df, 10,39)
             distances.append(distance)
             pb.animate(i, 0)
         return distances
@@ -296,11 +457,10 @@ class D7C1(object):
         #        for score in self.scores['pred1'].scores]
         #self.scores['pred1']['pvalues'] = pvalues
 
-    def compute_overall_score(self, N=100):
-        """
-        For model 1, each team obtained a p-value for the time-course 
-        predictions and a p-value for the parameter predictions. The overall 
-        score is -log10 of the product of these two p-values.
+    def _leaderboard_compute_overall_score(self, N=100):
+        """Based on NULL distribution, compute overall score of model1
+
+        Not finalised.
 
         """
         self._compute_pvalues_pred1(N=N)
@@ -323,47 +483,35 @@ class D7C1(object):
         self.scores['param1']['pvalues'] = self.pvalues_param1
 
 
-    def summary(self):
+    def leaderboard(self):
+        """Computes all scores for all submissions and returns dataframe
 
-        df = pd.merge(self.scores['param1'], self.scores['pred1'], 
+
+        :return: dataframe with scores for each submissions for the
+            model1 (parameter and timecourse) and model2 (topology)
+        """
+        self.load_submissions()
+        self.leaderboard_compute_score_parameters_model1()
+        self.leaderboard_compute_score_topology()
+        self.leaderboard_compute_score_timecourse_model1(10,39)
+
+        df = pd.merge(self.scores['param1'], self.scores['pred1'],
                 left_index=True, right_index=True, 
-                suffixes=['_param', '_pred'])
+                suffixes=['_parameter', '_timecourse'])
+
+
+        df = pd.merge(df, self.scores['topo2'],
+                left_index=True, right_index=True
+                )
+        df.columns = [c if c!='scores' else 'scores_topology' for c in df.columns]
+
         return df
 
 
     def _compute_score_topology(self, data, team=''):
-        """
-
-        For each of the predicted links i=1,2,3, we define a score:
-
-        :math:`S_i^{link} = L_i + N_i`
-
-        where :math:`L_i = 6` if one connection has all its elements correctly 
-        predicted (that is, the source gene, the sign of the connection, and 
-        the destination gene are all correct) and :math:`L_i = 12` if the link 
-        regulates an operon composed of two genes and both connections are 
-        correct. Alternatively, :math:`L_i = 0` if some element of the 
-        connection is incorrect. If :math:`L_i >0` then :math:`N_i=0`.
-
-        In case a link is NOT correctly predicted (:math:`L_i=0`) :math:`N_i` 
-        adds to the score different values for depending on how good the 
-        prediction is. In the score is increased by 1 for each correctly 
-        regulated gene, 2 if the regulated gene and the nature of the 
-        regulation (i.e +/-) are correct and 1 if the regulator gene is 
-        correct
-
-        Hence ONLY for the links where :math:`L_i=0`, :math:`N_i` rewards 
-        correctly predicted element of the link as shown in the following 
-        (non-exhaustive) table, where i stands for incorrect and c correct 
-        predictions. Note that correct (+/-) predictions without the correct 
-        gene give no points.
-
-
-        Snetw= S1link+S2link+S3link
-
-        """
-
-        gs = self.gs['topo2']
+        """see :meth:`score_topology` for details """
+        data = data.copy() # make sure we do not change the data so use copy()
+        gs = self.gs['topo2'].copy()
 
         Li = np.array([0,0,0])
         Ni = np.array([0,0,0])
@@ -377,17 +525,8 @@ class D7C1(object):
         signs =  pd.concat([gs.sign1 , gs.sign2]).values
 
         # make sure there are unique
-        genes_data =  pd.concat([data.g1 , data.g2]).values
-        signs_data =  pd.concat([data.sign1 , data.sign2]).values
-        genes_data, indices = np.unique(genes_data, return_index=True)
-        signs_data = signs_data[indices]
         regulators_data = set(data.regulator)
 
-        if team == 'ntu':
-            print genes
-            print signs
-            print genes_data
-            print signs_data
 
         for i in range(0,3):
             for j in range(0,3):
@@ -399,46 +538,49 @@ class D7C1(object):
                     # regulator is tested as well although the GS are no such case
                     if gs.ix[i]['g1'] != 0 and gs.ix[i]['regulator'] != 0 :
                         Li[i] += 6
+                        data.iloc[j,0] = 0 # index 0 means first columns that is the regulator
+                        data.iloc[j,2] = 0 # index 4 means gene1
                 if all(gs.ix[i][cols2] == data.ix[j][cols2]) is True:
                     # g1 should be different from 0
                     # regulator is tested as well although the GS are no such case
                     if gs.ix[i]['g2'] != 0 and gs.ix[i]['regulator'] != 0 :
                         Li[i] += 6
+                        data.iloc[j,0] = 0 # index 0 means first columns that is the regulator
+                        data.iloc[j,4] = 0 # index 4 means gene2
 
         # any regulator correctly predicted ?
-        for i in range(0,3):
-            for reg in data.regulator:
-                print reg
-                if gs.ix[i]['regulator'] == reg and Li[i] == 0:
+
+        for reg in set(data.regulator):
+            if reg !=0 and reg in gs.regulator.values:
+                Ni[i] += 1
+
+        genes_data =  pd.concat([data.g1 , data.g2]).values
+        signs_data =  pd.concat([data.sign1 , data.sign2]).values
+        import collections
+
+        dgenes = collections.defaultdict(list)
+        for gene, sign in zip(genes,signs):
+            dgenes[gene].append(sign)
+        dgenes_data = collections.defaultdict(list)
+        for gene, sign in zip(genes_data,signs_data):
+            dgenes_data[gene].append(sign)
+
+        # here this is ambigous: a gene may have 2 opposite signs... To be in agreement with original code
+        # from pablo that was used in the dream challenge, we keep the latest values found in the submissions.
+        # this is arbitrary though.
+        #for key in dgenes_data.keys():
+        #  if dgenes_data.
+        del dgenes[0]
+        del dgenes_data[0]
+
+        # any gene and sign found in GS?
+        for gene, signs in dgenes_data.iteritems():
+            if gene in dgenes.keys():
+                Ni[i] += 1
+                if signs[-1] in dgenes[gene]:
                     Ni[i] += 1
-        print team, "Ni regulator=", Ni
-        # any gene and sign found in GS? 
-        for gene, sign in zip(genes, signs):
-            for gene_data, sign_data in zip(genes_data, signs_data):
-                if gene == gene_data and gene!=0:
-                    Ni[i] += 1
-                    if sign == sign_data:
-                        Ni[i] += 1
+
 
         Si = Li + Ni
-        print Li, Ni, Si, sum(Si)
         return sum(Si)
 
-"""
-Model 2. Relative p-value and scores
-Teams   Topology prediction score   p-value for topology    OverallScore
-crux    12  1.49E-02    1.83
-ForeCinHD   9   5.60E-02    1.25
-Synmikro    8   1.07E-01    0.97
-Dreamcatcher    8   1.07E-01    0.97
-Biometris   8   1.07E-01    0.97
-TBP 7   2.10E-01    0.68
-thetasigmabeta  6   3.83E-01    0.42
-BCB 5   6.01E-01    0.22
-orangeballs 4   8.01E-01    0.10
-reinhardt   4   8.01E-01    0.10
-2pac    3   9.86E-01    0.01
-ntu 2   1.00E+00    0
-
-
-"""
