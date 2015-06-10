@@ -1,6 +1,8 @@
 DreamTools
 ==========
 
+:Online documentation: 'On pypi website `http://pythonhosted.org/dreamtools/`_,
+
 Overview
 ----------------
 
@@ -13,8 +15,10 @@ The main goals are:
 #. provide a place to share-reuse code used before/during/after the challenges for **developers** and organisers 
    of the challenges
 
-Altough it may be provided in some of the challenges, **DreamTools** does other code such as aggregation, computations of
-pvalues. Depending on the complexixity of the challenge, you may find other information such as gold standard, templates, miscellaneous code and so on.
+
+Code related to aggregation, leaderboards, or more complex analysis are not
+guaranteed to be found in dreamtools even though it may be in some challenges
+(e.g. D8C1). Some functionalities may be restricted with some access to synapse.
 
 
 The **dreamtools-scoring** executable
@@ -31,8 +35,11 @@ It prints some information and the score of the submision for instance for the e
      AUROC: 0.803628919403
      Rank LB: 1
 
+**Developers** can use code to perform the same tasks. 
 
-Scoring functions available so far are:
+
+Not all DREAM challenges are included but here is the current status.
+
 
 #. DREAM10
 
@@ -54,7 +61,7 @@ Scoring functions available so far are:
 
 #. DREAM6
 
-    * D6C1 (Network Parameter Estimation) IN PROGRESS
+    * D6C1 (Network Parameter Estimation) WONT be included (see D7C1 instead)
     
 #. DREAM5    
 
@@ -77,18 +84,18 @@ Installation
 ::
 
     pip install dreamtools
-    
-    
+
+
 Issues
 -----------
 
 Please fill bug report in https://github.com/dreamtools/dreamtools/issues
-    
+
 For developers
 ----------------
 
-Not all challenges are yet provided. If you wish to contribute, please let us know. 
-
+Not all challenges are yet provided. If you wish to contribute, please let us
+know. See doc/source/developers
 
 
 
