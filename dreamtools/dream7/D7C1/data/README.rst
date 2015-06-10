@@ -7,4 +7,3 @@ This directory contains the model1 and model2 as well as the solutions.
 The contents of model1 and model2 directory is an exact copy of the links at the
 bottom of the DREAM7 Parameter Estimation page (link above).
 
-The ./solutions directory contains the model parameters and time course to be predicted.
