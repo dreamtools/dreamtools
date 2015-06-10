@@ -2,13 +2,26 @@ For developers
 ===================
 
 
-Code and data related to each challenge should be structured as follows:
 
-#. Create a directory. For instance for DREAM8 and challenge 1 (whatever is the name), 
-   create a directory called D8C1 in ./dreamtools/dream/D8C1
-#. In that directory, create an empty file __init__.py
-#. This directory will contains code 
-#. data should be store in ./data directory
-#. templates should be store in ./templates directory
-#. goldstandard should be stored in ./goldstandatd directory
-#. Whatever else in ./misc
+How to structure a challenge:
+-------------------------------
+
+Let us assume DREAM9 challenge refered as the first challenge. Its nickname is
+D9C1.
+
+
+That challenge may have sub challenges. For instance in D7C1, we had 3
+sub-challenges. Nicknames should be given as well. Those nicknames will be used
+in the dreamtools-scoring standalone application.
+
+#. In the tree directory of **drematools**, we host a challenge in
+   ./dreamtools/dream9/D9C1. 
+#. there, create a file called __init__.,py , which can be empty.
+#. Create a scoring.py module where code will be implemented.
+#. Store the templats in ./templates directory
+#. Store the templats in ./templates directory
+#. add a README.rst (see for isntance D7C1/README.rst)
+#. data required to score submissions could be store in ./data
+#. tools and resources to generate the test data in ./generator
+#. any other resources in ./misc   
+
