@@ -19,3 +19,4 @@ def create_dreamtools_config_directories(maindir, subdirectories):
             os.mkdir(subdir)
 
 from dream7.D7C1.scoring import D7C1
+from dream5.D5C2.scoring import D5C2

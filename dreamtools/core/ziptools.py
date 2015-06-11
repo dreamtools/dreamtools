@@ -29,9 +29,14 @@ class ZIP(object):
         :param str filename: the ZIP filename to load
 
         """
-        #print("Loading the ZIP file %s " % filename)
+        # USED in D8C1 and D5C2 do not change
         if zipfile.is_zipfile(filename) == False:
             raise ValueError("Input file (%s) is not a valid ZIP file. " % filename)
         else:
             self.zip_data = zipfile.ZipFile(filename)
             self.zip_filenames = self.zip_data.namelist()
+            self.filenames = self.zip_filenames # keep zip_filenames for back compat
+
+
+    def read(self, filename):
+        return self.zip_data.read(filename)

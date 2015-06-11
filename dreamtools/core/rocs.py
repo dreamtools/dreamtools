@@ -15,10 +15,49 @@
 ##############################################################################
 """Provides tools related to Receiver Operating Characteristic (ROC)"""
 import numpy as np
+from cno.misc.profiler import do_profile
+
+class ROCBase(object):
+
+    def __init__(self):
+        pass
+
+    def get_statistics(self):
+        raise NotImplementedError
+
+    def compute_auc(self, roc=None):
+        """Compute AUC given a ROC data set (recomputed otherwise)
+
+        :param str roc: The roc data structure must be a dictionary with "tpr"
+            key. Could be a variable returned by :meth:`get_statistics`. If not
+            provided, compute the ROC.
+        :return: the AUC
+
+        """
+        if roc == None:
+            roc = self.get_statistics()
+        import scipy.integrate
+        value = scipy.integrate.trapz(roc['tpr'], roc['fpr'])
+        return value
+        #return sum(roc['tpr']) / len(roc['tpr'])
+
+    def compute_aupr(self, roc=None):
+        """Compute AUPR given a ROC data set (recomputed otherwise)
+
+        :param str roc: The roc data structure must be a dictionary with "tpr"
+            key. Could be a variable returned by :meth:`get_statistics`. If not
+            provided, compute the ROC.
+        :return: the AUPR
+        """
+        if roc == None:
+            roc = self.get_statistics()
+        import scipy.integrate
+        value = scipy.integrate.trapz(roc['precision'], x=roc['recall'])
+        return value
 
 
-class ROC(object):
-    """A class to compute ROC, AUC and AUPRs
+class ROC(ROCBase):
+    """A class to compute ROC, AUC and AUPRs for a binary problem
 
 
         >>> r = ROC() # could provide scores and labels as arguments
@@ -36,6 +75,7 @@ class ROC(object):
         :param list classes: binary class made of 1 or 0 numerical values. Also
             called labels in the literature.
         """
+        super(ROC, self).__init__()
         self._scores = None
         self._classes = None
 
@@ -63,6 +103,10 @@ class ROC(object):
         return roc
 
     def get_roc(self):
+        """See meth:`get_statistics`"""
+        return self.get_statistics()
+
+    def get_statistics(self):
         """Compute the ROC curve X/Y vectors and some other metrics
 
         :return: a dictionary with different metrics such FPR (false positive
@@ -122,35 +166,6 @@ class ROC(object):
         roc = self._compute_other_metrics(roc)
         return roc
 
-    def compute_auc(self, roc=None):
-        """Compute AUC given a ROC data set (recomputed otherwise)
-
-        :param str roc: The roc data structure must be a dictionary with "tpr"
-            key. Could be a variable returned by :meth:`get_roc`. If not
-            provided, compute the ROC.
-        :return: the AUC
-
-        """
-        if roc == None:
-            roc = self.get_roc()
-        import scipy.integrate
-        value = scipy.integrate.trapz(roc['tpr'], roc['fpr'])
-        return value
-        #return sum(roc['tpr']) / len(roc['tpr'])
-
-    def compute_aupr(self, roc=None):
-        """Compute AUPR given a ROC data set (recomputed otherwise)
-
-        :param str roc: The roc data structure must be a dictionary with "tpr"
-            key. Could be a variable returned by :meth:`get_roc`. If not
-            provided, compute the ROC.
-        :return: the AUPR
-        """
-        if roc == None:
-            roc = self.get_roc()
-        import scipy.integrate
-        value = scipy.integrate.trapz(roc['precision'], x=roc['recall'])
-        return value
 
     def _compute_other_metrics(self, roc):
         #Be aware that there is alway a first value TP=0,FP=0
@@ -210,7 +225,7 @@ class ROC(object):
 
         """
         if roc == None:
-            roc = self.get_roc()
+            roc = self.get_stastistics()
         from pylab import plot, xlim, ylim ,grid, title, xlabel, ylabel
         x = roc['fpr']
         plot(x, roc['tpr'], '-o')
@@ -221,6 +236,59 @@ class ROC(object):
         title("ROC curve (AUC=%s)" % self.compute_auc(roc))
         xlabel("FPR")
         ylabel("TPR")
+
+
+class ROCDiscovery(ROCBase):
+    """A variant of ROC statistics
+
+    Used in D5C2 challenge.
+
+    .. note:: Does not work if any NA are found.
+    """
+    def __init__(self, discovery):
+        """
+
+
+
+        :param discovery: a list of 0/1 where 1 means positives
+        :return:
+        """
+        super(ROCDiscovery, self).__init__()
+
+        try:
+            self.discovery = discovery.values # a pandas time series ?
+        except:
+            self.discovery = np.array(discovery)
+
+        # sanity checks
+        assert set(np.unique(self.discovery)) == set([0,1]), 'ERROR: discovery is only allowed to have (0,1) entries.'
+
+    def get_statistics(self):
+        """Retourn dictionary with FPR, TPR and other metrics"""
+        discovery = self.discovery # an alias
+        T = len(discovery)  # Total
+        P = np.sum(discovery) # positives
+        N = T - P # negatives
+
+        # true positives (false positives) at depth k
+        TPk = np.cumsum(discovery)
+        FPk = np.cumsum(1-discovery)
+
+        # metrics
+        TPR = TPk / float(P)
+        FPR = FPk / float(N)
+        REC = TPR  # recall
+        PREC = TPk / np.linspace(1, T+1,T) # precision
+
+        roc = {"fpr": FPR, "tpr":TPR, "precision":PREC, "FP":[], "TP":[],
+            "recall": REC, "accuracy":[], "Fmeasure":[], 'threshold':[]}
+        return roc
+
+    def compute_aupr(self, roc=None):
+        """Returns AUPR normalised by (1-1/P) P being number of positives"""
+        AUPR = super(ROCDiscovery, self).compute_aupr(roc=roc)
+        P = np.sum(self.discovery)
+        return AUPR / (1-1./P)
 
 
 

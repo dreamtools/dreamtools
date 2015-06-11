@@ -153,7 +153,7 @@ def scoring(args=None):
         txt = "DreamScoring error: unknown sub challenge or not yet implemented"
         txt += "--->" + err.message
         print_color(txt, red)
-        
+
         sys.exit()
 
     if options.filename is None:
