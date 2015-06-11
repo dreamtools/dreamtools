@@ -6,7 +6,7 @@ from Cython.Build import cythonize
 
 _MAJOR               = 0
 _MINOR               = 0
-_MICRO               = 6
+_MICRO               = 7
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
