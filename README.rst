@@ -1,7 +1,7 @@
 DreamTools
 ==========
 
-:Online documentation: `On pypi website `http://pythonhosted.org/dreamtools/`_,
+:Online documentation: `On pypi website <http://pythonhosted.org/dreamtools/>`_,
 
 .. contents::
 
@@ -51,9 +51,9 @@ Not all DREAM challenges are included but here is the current status.
 #. DREAM8
 
     * D8C1 (HPN breat cancer)  sub challenges named sc1a, sc1b, sc2a, sc2b. 
-      See `Synapse page <https://www.synapse.org/#!Synapse:syn1720047>`_ for details
+      See `Synapse page D8C1 <https://www.synapse.org/#!Synapse:syn1720047>`_ for details
     * D8C2 (Toxoxicology) sub challenges named sc1, sc2. 
-      See `Synapse page <https://www.synapse.org/#!Synapse:syn1761567>`_ for details
+      See `Synapse page D8C2 <https://www.synapse.org/#!Synapse:syn1761567>`_ for details
     * D8C3 coming soon
 
 #. DREAM7
