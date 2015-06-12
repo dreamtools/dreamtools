@@ -1,7 +1,9 @@
 DreamTools
 ==========
 
-:Online documentation: 'On pypi website `http://pythonhosted.org/dreamtools/`_,
+:Online documentation: `On pypi website `http://pythonhosted.org/dreamtools/`_,
+
+.. contents::
 
 Overview
 ----------------
@@ -35,7 +37,6 @@ It prints some information and the score of the submision for instance for the e
      AUROC: 0.803628919403
      Rank LB: 1
 
-**Developers** can use code to perform the same tasks. 
 
 
 Not all DREAM challenges are included but here is the current status.
@@ -65,7 +66,7 @@ Not all DREAM challenges are included but here is the current status.
     
 #. DREAM5    
 
-    * D5C2 (transcription factor)  IN PROGRESS
+    * D5C2 (transcription factor)  
 
 #. DREAM4
 
