@@ -3,4 +3,5 @@ recursive-include dreamtools *.R *.csv
 recursive-include dreamtools/dream8/D8C1/templates *
 recursive-include dreamtools/dream8/D8C1/goldstandard *.csv *.zip 
 recursive-include dreamtools/dream8/D8C1/data *.csv *.json *dat
+recursive-include dreamtools/dream5/D5C2/data *.csv 
 
