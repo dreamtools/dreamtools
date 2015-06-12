@@ -38,6 +38,8 @@ Scoring functions available so far:
   See `Synapse page <https://www.synapse.org/#!Synapse:syn1720047>`_ for details
 * Dream8 Tox (D8C2) sub challenges named sc1, sc2 
   See `Synapse page <https://www.synapse.org/#!Wiki:syn1761567>`_ for details
+* Dream 7 (Network topology)
+* Dream 5 Challenge 2 (Transcription factor)
 
 
 Installation
@@ -48,18 +50,17 @@ Installation
     pip install dreamtools
 
 
-
-
-
-
 Contributions
 ----------------
 
 Please join https://github.com/dreamtools/dreamtools
 
+For developers
+-------------------
 
+.. toctree::
 
-
+    developers.rst
 
 Reference guide
 ---------------------

@@ -39,6 +39,12 @@ Ziptools
     :members:
     :undoc-members:
 
+Downloader 
+~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: dreamtools.core.downloader
+    :members:
+    :undoc-members:
+
 DREAM2 challenges
 --------------------
 
@@ -50,6 +56,17 @@ DREAM4 challenges
 
 DREAM5 challenges
 --------------------
+
+D5C2
+~~~~~~~
+
+Transcription Factor 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: dreamtools.dream5.D5C2.scoring
+    :members:
+    :undoc-members:
+
 
 DREAM6 challenges
 --------------------

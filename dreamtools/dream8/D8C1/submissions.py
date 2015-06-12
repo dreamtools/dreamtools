@@ -235,7 +235,7 @@ class SC1ASubmissions(SubmissionTools):
 
     def remove_users(self, userIds=["375805", "1971259", "1991105", "1961142",
     "2208193", "2154231", "2200202", "2197351", "375570"]):
-        """
+        """Remove some users to get final submissions
 
         * 375805 alphabeta is a test from TC
         * sakevin is the same team as sakev Last submission by sakve in on week
@@ -248,7 +248,7 @@ class SC1ASubmissions(SubmissionTools):
         * SHCH and tongki aliases correspond to the same userId. tongji
           submitted last
 
-        # From Steven's analysis, some results are highly correlated:
+        From Steven's analysis, some results are highly correlated:
 
         * ams1012,cas3,cas4 are the same submission. We keep only ams1012
           cas3 1961142, cas4 2208193 should be removed.

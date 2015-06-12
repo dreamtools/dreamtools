@@ -1,7 +1,4 @@
-"""
-
-  Copyright 2015 EBI
-
+"""D5C2 challenge scoring functions
 
 :Author: Thomas Cokelaer . Based on TF_web.pl (perl version) provided by Rachel Norel (Columbia University/IBM)
    that is used wihtin the web server http://www.ebi.ac.uk/saezrodriguez-srv/d5c2/cgi-bin/TF_web.pl
@@ -11,7 +8,6 @@ import os
 from os.path import join as pj
 import zipfile
 import StringIO
-import subprocess
 import time
 import collections
 import numpy as np
@@ -27,25 +23,27 @@ from cno.misc.profiler import do_profile
 
 
 class D5C2(Challenge):
-    """A class dedicated to running the different processing steps on 
-    the data provided by the user.
+    """A class dedicated to D5C2 challenge
 
-
+    :Usage:
     ::
 
-        s = D5C2("prediction.zip")
-        s.split_data()
-        s.
-
+        from dreamtools import D5C2
+        s = D5C2()
+        s.download_templates() 
+        s.score('templates.txt.gz')
         s.get_table()
         s.plot()
 
-    A prediction example can be downloaded using ::
-
-        s.download_templates()
+    Data and templates are downloaded from Synapse. You must have a login.
 
     """
     def __init__(self, tmpdir=None, Ntf=66):
+        """.. rubric:: constructor
+        
+        :param Ntf: not to be used. Used for fast testing and debugging
+        :param tmpdir: a local temporary file if provided. 
+        """
         super(D5C2, self).__init__('D5C2')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.Ntf = Ntf
@@ -56,6 +54,10 @@ class D5C2(Challenge):
         self._probes = {}
 
     def score(self, prediction_file):
+        """Compute all results and compare user prediction with all official participants
+        
+        This scoring function can take a long time (about 5-10 minutes). 
+        """
 
         self.init() # this provides a temporary file
         self.prediction_file = prediction_file
@@ -66,11 +68,11 @@ class D5C2(Challenge):
         self.download_all_data()
 
         print('\nProcessing\nSplitting data sets (step 3 out of 5)')
-        self.split_data()
+        self._split_data()
         print('\nComputing probes (step 4 out of 5)')
-        self.preprocessing()
+        self._preprocessing()
         print('\nComputing performances (step 5 out of 5)')
-        self.processing()
+        self._processing()
 
     def init(self):
         """Creates the temporary directory and the sub directories.
@@ -93,15 +95,8 @@ class D5C2(Challenge):
             if os.path.exists(this) is False:
                 os.mkdir(this)
 
-    def load_gs(self, filename=None):
-        """Download DREAM5_GoldStandard_probes.zip from synapse syn2898469"""
-        filename = self._download_data('DREAM5_GoldStandard_probes.zip', 'syn2898469')
-        z = ZIP()
-        z.loadZIPFile(filename)
-        data = z.read('Answers.txt')
-        self.gs = pd.read_csv(StringIO.StringIO(data), sep='\t')
-
     def download_all_data(self):
+        """Download all large data sets from Synapse"""
         pb = progress_bar(5)
         # load the large gold standard file from D5C2 synapse main page
         filename = self._download_data('DREAM5_GoldStandard_probes.zip', 'syn2898469')
@@ -122,6 +117,7 @@ class D5C2(Challenge):
         pb.animate(5)
     
     def download_templates(self):
+        """Download a template from synapse"""
         filename = self._download_data('templates.txt.gz', 'syn4483192')
 
     def _download_data(self, name, synid):
@@ -134,7 +130,7 @@ class D5C2(Challenge):
 
         return filename
 
-    def split_data(self, precision=6):
+    def _split_data(self, precision=6):
         """precision is to get same results as in the original perl script"""
         mask = self.gs.Flag == 0
         self.user_data_clean = self.user_data[mask].copy()
@@ -178,7 +174,7 @@ class D5C2(Challenge):
         df = pd.read_csv(StringIO.StringIO(data), sep='\t');# engine='python')
         self.user_data = df
 
-    def preprocessing(self):
+    def _preprocessing(self):
         """Create temporary files for before further processing
 
         :return: nothing
@@ -226,12 +222,10 @@ class D5C2(Challenge):
             self._probes[i] = df
             pb.animate(i)
 
-
-
     def _setfile(self, index, directory):
         return self.tmpdir + os.sep + directory + os.sep + 'TF_%s' % index + '.csv'
 
-    def processing(self):
+    def _processing(self):
         """
 
         :return:
@@ -305,6 +299,13 @@ class D5C2(Challenge):
             pb.animate(tf_index)
 
     def compute_statistics(self):
+        """Returns final results of the user predcition
+        
+        :return: a dataframe with various metrics for each transcription factor.
+        
+        Must call :meth:`score` before.
+
+        """
         data = {'Pearson': [],
                 'Spearman': [],
                 'Pearson_Log': [],
@@ -351,12 +352,14 @@ class D5C2(Challenge):
         return df
 
     def get_table(self):
-        """Return table with participants results compared to 14 other participants
+        """Return table with user results from the user and participants
 
-        14 as in the Leaderboard found here https://www.synapse.org/#!Synapse:syn2887863/wiki/72188
+        There are 14 participants as in the Leaderboard found here 
+        https://www.synapse.org/#!Synapse:syn2887863/wiki/72188
 
 
-        :return:
+        :return: a dataframe with different metrics showing performance of the submission
+            with respect to other participants.
 
 
         ::
@@ -437,6 +440,7 @@ class D5C2(Challenge):
         pylab.xlabel('Pearson probes')
         pylab.ylabel('Log Pearson probes')
 
-
     def cleanup(self):
-        pass
+        """Remove the temporary directory"""
+        import shutil
+        shutil.rmtree(self.tmpdir)

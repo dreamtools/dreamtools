@@ -20,7 +20,8 @@ import sys
 from easydev.console import red, purple, darkgreen
 registered = {'d8c1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
         'd8c2': ['sc1', 'sc2'],
-        'd7c1':['parameter', 'topology', 'timecourse']}
+        'd7c1':['parameter', 'topology', 'timecourse'],
+        'd5c2': []}
 
 
 # Define the simple scoring functions here below
@@ -44,6 +45,17 @@ def d7c1_model2_topology(filename):
     s = D7C1()
     score = s.score_topology(filename)
     return {'score': score}
+
+def d5c2(filename):
+    from dreamtools import D5C2
+    s = D5C2(Ntf=2)
+    s.score(filename)
+
+    df = s.get_table()
+    results = {}
+    results['table']  = df
+    results['user model'] = df.ix[20] # 20 is the user id
+    return results
 
 
 def d8c1_sc1a(filename, verbose=False):
@@ -134,10 +146,10 @@ def scoring(args=None):
     else:
         options = user_options.parse_args(args[1:])
 
-    if options.challenge is None or options.sub_challenge is None:
-        print_color('--challenge and --sub-challenge must be provided', red)
-        sys.exit()
-
+    if options.challenge is None:
+        if len(registered[options.challenge])!=0 and options.sub_challenge is None:
+            print_color('--challenge and --sub-challenge must be provided', red)
+            sys.exit()
 
     try:
         d.check_param_in_list(options.challenge, registered.keys())
@@ -147,14 +159,14 @@ def scoring(args=None):
         print_color(txt, red)
         sys.exit()
 
-    try:
-        d.check_param_in_list(options.sub_challenge, registered[options.challenge])
-    except ValueError as err:
-        txt = "DreamScoring error: unknown sub challenge or not yet implemented"
-        txt += "--->" + err.message
-        print_color(txt, red)
-
-        sys.exit()
+    if options.sub_challenge is not None:
+        try: 
+            d.check_param_in_list(options.sub_challenge, registered[options.challenge])
+        except ValueError as err:
+            txt = "DreamScoring error: unknown sub challenge or not yet implemented"
+            txt += "--->" + err.message
+            print_color(txt, red)
+            sys.exit()
 
     if options.filename is None:
         txt = "---> filename not provided. You must provide a filename with correct format\n"
@@ -195,6 +207,8 @@ def scoring(args=None):
             res = d7c1_model1_prediction(options.filename)
         if options.sub_challenge == 'topology':
             res = d7c1_model2_topology(options.filename)
+    elif options.challenge == 'd5c2':
+        res = d5c2(options.filename)
 
     txt = "Solution for %s in challenge %s" % (options.filename, options.challenge)
     if options.sub_challenge is not None:

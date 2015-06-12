@@ -19,6 +19,7 @@ import sys, os
 
 pkg_name = "dreamtools"
 
+exec("import %s" % pkg_name)
 try:
     exec("import %s" % pkg_name)
 except Exception, e:
