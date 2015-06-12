@@ -1,7 +1,9 @@
 DreamTools
 ==========
 
-:Online documentation: 'On pypi website `http://pythonhosted.org/dreamtools/`_,
+:Online documentation: `On pypi website `http://pythonhosted.org/dreamtools/`_,
+
+.. contents::
 
 Overview
 ----------------
