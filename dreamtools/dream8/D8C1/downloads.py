@@ -104,6 +104,7 @@ class SubmissionsDownloader(Login):
 class GSDownloader(Login):
     """Factory to download gold standard files
 
+    .. tood:: could be replaced with the dreamtools.core.download.Downloader class
     """
     def __init__(self, client=None):
         super(GSDownloader, self).__init__(client=client)
