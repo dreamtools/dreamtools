@@ -65,7 +65,7 @@ Not all DREAM challenges are included but here is the current status.
     
 #. DREAM5    
 
-    * D5C2 (transcription factor)  IN PROGRESS
+    * D5C2 (transcription factor)  
 
 #. DREAM4
 
