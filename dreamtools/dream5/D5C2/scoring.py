@@ -9,25 +9,24 @@
 import tempfile
 import os
 from os.path import join as pj
+import zipfile
 import StringIO
 import subprocess
 import time
 import collections
 import numpy as np
 import pandas as pd
+import tempfile
 
 from easydev import progress_bar
-from cno.misc.profiler import  do_profile
 from dreamtools.core.ziptools import ZIP
+from dreamtools.core.challenge import Challenge
+from dreamtools.core.rocs import ROCDiscovery
+from dreamtools.core.downloader import Downloader
+from cno.misc.profiler import do_profile
 
 
-# Nothing to changed here below #####################################
-
-#cgitb.enable() # to allow tracking exception in the HTML page.
- 
-
-
-class D5C2(object):
+class D5C2(Challenge):
     """A class dedicated to running the different processing steps on 
     the data provided by the user.
 
@@ -46,30 +45,34 @@ class D5C2(object):
         s.download_templates()
 
     """
-    def __init__(self, prediction_file, tmpdir=None, goldstandard=None):
-
+    def __init__(self, tmpdir=None, Ntf=66):
+        super(D5C2, self).__init__('D5C2')
+        self._path2data = os.path.split(os.path.abspath(__file__))[0]
+        self.Ntf = Ntf
         self.tmpdir = tmpdir               # directory where to save the results
+
+        self._dvs = {}
+        self._dvps = {}
+        self._probes = {}
+
+    def score(self, prediction_file):
+
+        self.init() # this provides a temporary file
         self.prediction_file = prediction_file
-        self.init(tmpdir=tmpdir) # this provides a temporary file
-
-
-
-        print('Loading user data set (step 1 out of 6)')
+        print('Loading user data set (step 1 out of 5)')
         self._loading_user_data()
-        print('Loading octomers and other data files required for the scoring (step 2 out of 6)')
-        self.read_octomers()
 
-        print('Loading the gold standard and user prediction. Takes a few seconds (step 3 out 6')
-        self.load_gs(filename=goldstandard)
+        print('Loading the gold standard and user prediction. Takes a few seconds (step 2 out 5')
+        self.download_all_data()
 
-        print('\nProcessing\nSplitting data sets (step 4 out of 6)')
+        print('\nProcessing\nSplitting data sets (step 3 out of 5)')
         self.split_data()
-        print('\nComputing probes (step 5 out of 6)')
-        self.probe_data_preprocessing1()
-        print('\nComputing performances (step 6 out of 6)')
-        self.probe_data_processing()
+        print('\nComputing probes (step 4 out of 5)')
+        self.preprocessing()
+        print('\nComputing performances (step 5 out of 5)')
+        self.processing()
 
-    def init(self, tmpdir=None):
+    def init(self):
         """Creates the temporary directory and the sub directories.
 
         Behaviour differs whether the directory was provided
@@ -77,39 +80,59 @@ class D5C2(object):
         """
         self.cwd = os.path.abspath(os.path.curdir)
 
-        if tmpdir is None:
-            import tempfile
+        if self.tmpdir is None:
             self.tmpdir = tempfile.mkdtemp()
         else:
-            self.tmpdir = tmpdir
             try:
                 os.mkdir(self.tmpdir)
             except:
                 pass
 
-        for directory in ['Data', 'Out', 'DV', 'DVP', 'Probes']:
+        for directory in ['Data', 'Out']:
             this = pj(self.tmpdir, directory)
             if os.path.exists(this) is False:
                 os.mkdir(this)
 
-    def cleanup(self):
-        #TODO
-        # remove temp file
-        pass
-
     def load_gs(self, filename=None):
-        if filename is None:
-            from dreamtools.core import sageutils
-            s = sageutils.SynapseClient()
-            print('Downloading answers if not already downloaded',)
-            out = s.downloadEntity('syn2898469')
-            print('...done')
-            filename = out.path
-
+        """Download DREAM5_GoldStandard_probes.zip from synapse syn2898469"""
+        filename = self._download_data('DREAM5_GoldStandard_probes.zip', 'syn2898469')
         z = ZIP()
         z.loadZIPFile(filename)
         data = z.read('Answers.txt')
         self.gs = pd.read_csv(StringIO.StringIO(data), sep='\t')
+
+    def download_all_data(self):
+        pb = progress_bar(5)
+        # load the large gold standard file from D5C2 synapse main page
+        filename = self._download_data('DREAM5_GoldStandard_probes.zip', 'syn2898469')
+        pb.animate(1)
+        z = ZIP()
+        z.loadZIPFile(filename)
+        data = z.read('Answers.txt')
+        self.gs = pd.read_csv(StringIO.StringIO(data), sep='\t')
+
+        # download 4 other filenames from dreamtools synapse project
+        self._download_data('all_8mers.txt', 'syn4483185')
+        pb.animate(2)
+        self._download_data('8mers_gs.txt', 'syn4483187')
+        pb.animate(3)
+        self._download_data('probe35_gs.txt', 'syn4483184')
+        pb.animate(4)
+        self._download_data('probes35.txt', 'syn4483183')
+        pb.animate(5)
+    
+    def download_templates(self):
+        filename = self._download_data('templates.txt.gz', 'syn4483192')
+
+    def _download_data(self, name, synid):
+        filename = self.directory + os.sep + name
+        if os.path.exists(filename) is False:
+            # must download the data now
+            print("File %s not found. Downloading from Synapse. You must have a login." % filename)
+            d = Downloader(self.nickname)
+            d.download(synid)
+
+        return filename
 
     def split_data(self, precision=6):
         """precision is to get same results as in the original perl script"""
@@ -121,8 +144,8 @@ class D5C2(object):
         gs = self.gs_clean
         user_data = self.user_data_clean
 
-        pb = progress_bar(66, interval=1)
-        for tf_index in range(1,67):
+        pb = progress_bar(self.Ntf, interval=1)
+        for tf_index in range(1, self.Ntf + 1):
             this_tf = 'TF_%s'  % tf_index
             tf_gs = gs.query("Id == @this_tf").Answer
             tf_user = user_data.query("TF_Id == @this_tf").Signal_Mean
@@ -133,48 +156,54 @@ class D5C2(object):
 
     def _loading_user_data(self):
         """Get the file from the form, save it, decompress it."""
-        # TODO: replace TF_Id with same name as in GS
 
-        import zipfile
-        z = zipfile.ZipFile(self.prediction_file)
-        assert len(z.filelist) == 1, "zipped archive should contain only 1 file"
-
-        # extract in byte
-        data = z.read(z.filelist[0])
-
-
-        self.prediction_file_unzipped = 'tmp_' + z.filelist[0].filename
+        # could be either gz or zip
+        import mimetypes
+        itemtype = mimetypes.guess_type(self.prediction_file)[1]
+        
+        if itemtype == 'gzip':
+            import gzip
+            fh = gzip.open(self.prediction_file, 'rb')
+            data = fh.read()
+            fh.close()
+        elif itemtype == 'zip':
+            z = zipfile.ZipFile(self.prediction_file)
+            assert len(z.filelist) == 1, "zipped archive should contain only 1 file"
+            # extract in byte
+            data = z.read(z.filelist[0])
+            self.prediction_file_unzipped = 'tmp_' + z.filelist[0].filename
+        else:
+            raise IOError("input file must be gzipped or zipped")
 
         df = pd.read_csv(StringIO.StringIO(data), sep='\t');# engine='python')
-
         self.user_data = df
 
-    def validating(self):
-        cwd = os.path.abspath(os.path.curdir)
-        proc = subprocess.Popen(
-                ["perl", "%s/DREAM5_challenge2_Validate.pl"%cwd, "%s" % self.prediction_file_unzipped],
-                        stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-        error = proc.stderr.read()
-        if len(error)>0:
-            Exception("Validation failed with this error:" + error)
-
-    def probe_data_preprocessing1(self):
+    def preprocessing(self):
         """Create temporary files for before further processing
-
-
 
         :return: nothing
         """
-        # mkdir Probes
-        try: os.mkdir('Probes')
-        except: pass
+        # Read file octomers gold standard
+        filename = self.directory + os.sep + '8mers_gs.txt'
+        self.octomers_gs = pd.read_csv(filename, sep='\t', header=None)
+
+        # Read file octomers 
+        filename = self.directory + os.sep + 'all_8mers.txt'
+        self.octomers = pd.read_csv(filename, sep='\t', header=None)  # contains reverse complemtn
+        self.octomers.columns = ['octomer','octomerRC']
+
+        # Read probes gs
+        filename = self.directory + os.sep + 'probe35_gs.txt'
+        self.probes_gs = pd.read_csv(filename, header=None, sep='\t')
+        self.probes_gs.columns = ['Id', 'Sequence']
 
         # reads probes (sequences)
         print('Reading probes')
+        filename = self.directory + os.sep + 'probes35.txt'
         # just one column so no need for a separator
-        probes = pd.read_csv('Data/probes35.txt')
+        probes = pd.read_csv(filename)
 
-        # create the val.txt (first and third column of pred.txt)
+        # Extract information (first and third column of pred.txt)
         df = self.user_data[['TF_Id', 'Signal_Mean']].copy()
         df['Signal_Mean'] = df['Signal_Mean'].map(lambda x: round(x,6))
 
@@ -184,8 +213,8 @@ class D5C2(object):
         # Creates probes/TF_1.dat that contains the sequence from the GS and the answer from the user
         # for each TF
         print('Creating probes/TF_1.csv + sorting')
-        pb = progress_bar(67, interval=1)
-        for i in range(1,67):
+        pb = progress_bar(self.Ntf, interval=1)
+        for i in range(1, self.Ntf+1):
             # could use a groupby here ? faster  maybe
             tag = 'TF_%s' % i
             sequence = data[['Sequence']].ix[self.gs.Id==tag]
@@ -193,28 +222,20 @@ class D5C2(object):
             df = pd.concat([sequence, answer], axis=1)
             df.sort(columns=['Signal_Mean', 'Sequence'], ascending=[False, False], inplace=True)
             df['Signal_Mean'] = df['Signal_Mean'].map(lambda x: round(x,6))
-            df.to_csv(self._setfile(i, 'Probes'), sep='\t', index=False, header=False,
-                      float_format="%.6f")
+
+            self._probes[i] = df
             pb.animate(i)
 
-    def read_octomers(self):
-        self.octomers_gs = pd.read_csv('Data/8mers_gs.txt', sep='\t', header=None)
-        self.octomers = pd.read_csv('Data/all_8mers.txt', sep='\t', header=None)  # contains reverse complemtn
-        self.octomers.columns = ['octomer','octomerRC']
 
-        self.probes_gs = pd.read_csv('Data/probe35_gs.txt', header=None, sep='\t')
-        self.probes_gs.columns = ['Id', 'Sequence']
 
     def _setfile(self, index, directory):
         return self.tmpdir + os.sep + directory + os.sep + 'TF_%s' % index + '.csv'
 
-    def probe_data_processing(self):
-        #
+    def processing(self):
         """
 
         :return:
         """
-
         ########################################  1 Create the Out/TF_XX.dat files
         octomers = self.octomers.octomer
         octomersRC = self.octomers.octomerRC
@@ -222,14 +243,12 @@ class D5C2(object):
         mapping2  = dict([(k,v) for k,v in zip(octomersRC.values, octomers.values)])
         keys = tuple(sorted(octomers.values))
 
-        self.keys = keys
-        self.mapping1 = mapping1
-        Ntf = 66
-        pb = progress_bar(Ntf, interval=1)
+        lm = set(octomers.values)
+
+        pb = progress_bar(self.Ntf, interval=1)
         pb.animate(0)
-        for tf_index in range(1,Ntf+1):
-            filename = self._setfile(tf_index, 'Probes')
-            tf = pd.read_csv(filename, sep="\t", header=None)
+        for tf_index in range(1, self.Ntf + 1):
+            tf = self._probes[tf_index]
             tf.columns = ['Sequence', 'Score']
             ids = collections.defaultdict(list)
             ###### TODO: most of the time is spent in the "for curR in generator" loop
@@ -241,6 +260,11 @@ class D5C2(object):
                     if mapping1.has_key(curR) is False:
                         curR = mapping2[curR]
                     ids[curR].append(score)
+                # Using a set does not help speeding up the code
+                #for curR in generator:
+                #    if curR not in lm:
+                #        curR = mapping2[curR]
+                #    ids[curR].append(score)
 
             # now let us build the new dataframe for the indices found
             df = pd.DataFrame({0:[k for k in  ids.keys()],
@@ -250,54 +274,35 @@ class D5C2(object):
 
             df.to_csv(self._setfile(tf_index, 'Out'), sep=' ', index=False, header=None, float_format="%.6f")
             pb.animate(tf_index)
-
+        print("")
         ################################################# 2 create the DVP
 
-        pb = progress_bar(Ntf, interval=1)
-        for tf_index in range(1,Ntf+1):
+        pb = progress_bar(self.Ntf, interval=1)
+        for tf_index in range(1,self.Ntf+1):
             tag = 'TF_%s' % tf_index
             tf_probes = list(self.probes_gs.ix[self.probes_gs.groupby('Id').groups[tag]].Sequence)
-            tf = pd.read_csv(self._setfile(tf_index, "Probes"), sep="\t",
-                             header=None)
-            tf.columns = ['Sequence', 'Score']
+
+            tf = self._probes[tf_index]
             dv = tf.Sequence.apply(lambda x: x in tf_probes).astype(int)
-            dv.to_csv(self._setfile(tf_index, 'DVP'), header=None, index=None)
+            self._dvps[tf_index] = dv
             pb.animate(tf_index)
+        print("")
 
         ########################################################## DV
         gs_octomers = self.octomers_gs.copy()
         gs_octomers.columns = ['id', 'octomer']
-        pb = progress_bar(Ntf, interval=1)
-        for tf_index in range(1,Ntf+1):
+        pb = progress_bar(self.Ntf, interval=1)
+        for tf_index in range(1,self.Ntf+1):
             tag = 'TF_%s' % tf_index
             tf_octomers = list(gs_octomers.ix[gs_octomers.groupby('id').groups[tag]].octomer)
             tf = pd.read_csv(self._setfile(tf_index, "Out"), sep=" ",
                              header=None)
             tf.columns = ['Octomer', 'Score']
             dv = tf.Octomer.apply(lambda x: x in tf_octomers).astype(int)
-            dv.to_csv(self._setfile(tf_index, 'DV'), header=None, index=None)
+
+            # Stores the dataframe
+            self._dvs[tf_index] = dv
             pb.animate(tf_index)
-
-    def probe_data(self, ROnly):
-        """Launch the probe_to_mersFULL.pl script and tf.r script 
-
-        Since this part is long to run (about 4-5 minutes), the output is really
-        dependent on the server configuration. This function ideally should be written
-        in a very simple manner. However, because of the current configuration server, the 
-        timeout is less than the duration of this script. Therefore, trick had to be found. 
-
-        This is done by running the script in the background, writting the status in a frame
-        that is refreshed.
-
-        The R command must be after the probe is over.
-
-        :param ROnly: to run only the R script
-
-        
-        """
-        self.read_octomers()
-        self.probe_data_preprocessing1()
-        self.probe_data_processing()
 
     def compute_statistics(self):
         data = {'Pearson': [],
@@ -308,8 +313,8 @@ class D5C2(object):
                 "AUROC_probe": [],
                 "AUPR_probe": []}
 
-        pb = progress_bar(66, interval=1)
-        for tf_index in range(1,67):
+        pb = progress_bar(self.Ntf, interval=1)
+        for tf_index in range(1, self.Ntf + 1):
             dfdata = pd.read_csv(self._setfile(tf_index, "Data"), sep='\t', header=None)
             pearson = dfdata.corr('pearson').ix[0,1]
             spearman = dfdata.corr('spearman').ix[0,1]
@@ -319,9 +324,10 @@ class D5C2(object):
             data['Pearson_Log'].append(pearsonLog)
             data['Spearman'].append(spearman)
 
-            from dreamtools.core.rocs import ROCDiscovery
 
-            dvdata = pd.read_csv(self._setfile(tf_index, "DV"), index_col=False, header=None)
+            dvdata = self._dvs[tf_index]
+
+            #dvdata = pd.read_csv(self._setfile(tf_index, "DV"), index_col=False, header=None)
             r = ROCDiscovery(dvdata.values)
             rocdata = r.get_statistics()
             auroc = r.compute_auc(roc=rocdata)
@@ -329,7 +335,8 @@ class D5C2(object):
             data['AUROC_8mer'].append(auroc)
             data['AUPR_8mer'].append(aupr)
 
-            dvdata = pd.read_csv(self._setfile(tf_index, 'DVP'), index_col=False, header=None)
+            dvdata = self._dvps[tf_index] 
+            #dvdata = pd.read_csv(self._setfile(tf_index, 'DVP'), index_col=False, header=None)
             r = ROCDiscovery(dvdata.values)
             rocdata = r.get_statistics()
             auroc = r.compute_auc(roc=rocdata)
@@ -366,7 +373,8 @@ class D5C2(object):
         userdf['Team'] = 'Your team'
         userdf['Model type'] = 'Your model'
 
-        participants = pd.read_csv("d5c2_data_table.csv", sep='\t', index_col=0)
+        filename = os.sep.join([self._path2data, "data", "d5c2_data_table.csv"])
+        participants = pd.read_csv(filename, sep='\t', index_col=0)
         table = pd.concat([participants, userdf])
 
         # compute ranks based on those columns. Using method first to be in agreement with the server
@@ -385,7 +393,9 @@ class D5C2(object):
         userdf.index = [20] # there are 20 participants, let us add this user as the 21st
 
         # load all data from participants for comparison
-        participants = pd.read_csv('d5c2_data_plot.csv', sep='\t', )
+        filename = os.sep.join([self._path2data, "data", "d5c2_data_plot.csv"])
+        participants = pd.read_csv(filename, sep='\t', )
+
         df = pd.concat([participants, userdf])
         return (df, userdf)
 
@@ -428,4 +438,5 @@ class D5C2(object):
         pylab.ylabel('Log Pearson probes')
 
 
-
+    def cleanup(self):
+        pass
