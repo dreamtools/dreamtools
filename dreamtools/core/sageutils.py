@@ -49,13 +49,11 @@ class Login(object):
 
         In [10]: l = sageutils.Login(l)
 
-
-
     """
-    def __init__(self, client=None):
-        if client == None:
-            self.client = SynapseClient()
-            #self.client.login()
+    def __init__(self, client=None, username=None, password=None):
+        if client is None:
+            self.client = SynapseClient(username, password)
+
         else:
             self.client = client
 
@@ -141,7 +139,6 @@ class SynapseClient(synapseclient.Synapse, object):
             filename = self.getSubmission(sub, downloadFile=True, **kargs)['filePath']
 
         return filename
-
 
     def __setProvenance(self, entity, name):
         """Set provenance
