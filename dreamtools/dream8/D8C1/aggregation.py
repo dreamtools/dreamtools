@@ -314,8 +314,8 @@ class SC1AggregationPlotting(object):
 
         ::
 
-            >>> from dreamtools import sc1a_tools
-            >>> a = sc1a_tools.SC1A_aggregation()
+            >>> from dreamtools.dream8.D8C1 import agregation
+            >>> a = aggregation.SC1A_aggregation()
             >>> a.plot_aggr_random(N=100, Nmax=74)
 
         .. note:: takes about 300s to compute for N=1, Nmax=74 for SC1A
@@ -472,12 +472,6 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
     By default, uses the submissions from the challenge itself (up to week 9)
 
     You need to download the file before hand:
-
-        import downloads
-        downloads.
-
-        s = submissions.SC1ASubmissions()
-        s.load_submissions()
 
 
     2 regimes ignored while doing the scoring/aggregation.
