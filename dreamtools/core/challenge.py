@@ -1,3 +1,20 @@
+# -*- python -*-
+#
+#  This file is part of DreamTools software
+#
+#  Copyright (c) 2014-2015 - EBI-EMBL
+#
+#  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
+#
+#  Distributed under the GPLv3 License.
+#  See accompanying file LICENSE.txt or copy at
+#      http://www.gnu.org/licenses/gpl-3.0.html
+#
+#  website: http://github.org/dreamtools
+#
+##############################################################################
+"""Common utility to all challenges"""
+
 import os
 import re
 from dreamtools import configuration as cfg
@@ -7,11 +24,15 @@ class Challenge(object):
     """Handler for the creation of config directory for each challenge"""
 
     def __init__(self, challenge_name):
-        """
+        """.. rubric:: constructor
+
+        :param str challenge_name:
 
         """
+        #: nickname of the challenge. Must be DXCY form with X, Y being 2 numbers
         self.nickname = challenge_name
         self._check_challenge_name()
+        #: directory where is stored the configuration file and possibly data files.
         self.mainpath = cfg.user_config_dir
 
     def _get_directory(self):

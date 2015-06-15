@@ -1,14 +1,27 @@
+# -*- python -*-
+#
+#  This file is part of DreamTools software
+#
+#  Copyright (c) 2014-2015 - EBI-EMBL
+#
+#  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
+#
+#  Distributed under the GPLv3 License.
+#  See accompanying file LICENSE.txt or copy at
+#      http://www.gnu.org/licenses/gpl-3.0.html
+#
+#  website: http://github.org/dreamtools
+#
+##############################################################################
 """D5C2 challenge scoring functions
 
-:Author: Thomas Cokelaer . Based on TF_web.pl (perl version) provided by Rachel Norel (Columbia University/IBM)
+:Credits: Based on TF_web.pl (perl version) provided by Raquel Norel (Columbia University/IBM)
    that is used wihtin the web server http://www.ebi.ac.uk/saezrodriguez-srv/d5c2/cgi-bin/TF_web.pl
 """
-import tempfile
 import os
 from os.path import join as pj
 import zipfile
 import StringIO
-import time
 import collections
 import numpy as np
 import pandas as pd
@@ -19,13 +32,13 @@ from dreamtools.core.ziptools import ZIP
 from dreamtools.core.challenge import Challenge
 from dreamtools.core.rocs import ROCDiscovery
 from dreamtools.core.downloader import Downloader
-from cno.misc.profiler import do_profile
+
 
 
 class D5C2(Challenge):
     """A class dedicated to D5C2 challenge
 
-    :Usage:
+
     ::
 
         from dreamtools import D5C2
@@ -33,7 +46,7 @@ class D5C2(Challenge):
 
         # You can get a template from www.synapse.org page (you need to register)
         s.download_templates() 
-        s.score('templates.txt.gz')
+        s.score('templates.txt.gz') # takes about 5 minutes
         s.get_table()
         s.plot()
 
@@ -82,8 +95,6 @@ class D5C2(Challenge):
         Behaviour differs whether the directory was provided
         in the constructor or not.
         """
-        self.cwd = os.path.abspath(os.path.curdir)
-
         if self.tmpdir is None:
             self.tmpdir = tempfile.mkdtemp()
         else:

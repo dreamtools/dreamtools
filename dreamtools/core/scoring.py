@@ -1,9 +1,8 @@
 # -*- python -*-
-# -*- coding: utf-8 -*-
 #
-#  This file is part of dreamtools software
+#  This file is part of DreamTools software
 #
-#  Copyright (c) 2013-2015 - EBI-EMBL
+#  Copyright (c) 2014-2015 - EBI-EMBL
 #
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
 #
@@ -11,9 +10,10 @@
 #  See accompanying file LICENSE.txt or copy at
 #      http://www.gnu.org/licenses/gpl-3.0.html
 #
-#  website: http://github.com/dreamtools
+#  website: http://github.org/dreamtools
 #
 ##############################################################################
+"""Main standalone application dreamtools-scoring"""
 import os
 import argparse
 import sys
@@ -27,6 +27,7 @@ registered = {'d8c1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
 # Define the simple scoring functions here below
 
 def d7c1_model1_parameter(filename):
+    """wrapper to score D7C1 submission (parameter model1)"""
     from dreamtools import D7C1
     s = D7C1()
     score = s.score_model1_parameters(filename)
@@ -34,6 +35,7 @@ def d7c1_model1_parameter(filename):
 
 
 def d7c1_model1_prediction(filename):
+    """wrapper to score D7C1 submission (prediction model1)"""
     from dreamtools import D7C1
     s = D7C1()
     score = s.score_model1_timecourse(filename)
@@ -41,12 +43,14 @@ def d7c1_model1_prediction(filename):
 
 
 def d7c1_model2_topology(filename):
+    """wrapper to score D7C1 submission (topology)"""
     from dreamtools import D7C1
     s = D7C1()
     score = s.score_topology(filename)
     return {'score': score}
 
 def d5c2(filename):
+    """wrapper to score D5C2 submission"""
     from dreamtools import D5C2
     s = D5C2(Ntf=2)
     s.score(filename)
@@ -59,6 +63,7 @@ def d5c2(filename):
 
 
 def d8c1_sc1a(filename, verbose=False):
+    """wrapper to score D8C1 submission(SC1A sub challenge)"""
     from dreamtools.dream8.D8C1 import scoring, ranking
     sc1a = scoring.HPNScoringNetwork(filename,  verbose=verbose)
     sc1a.compute_all_aucs()
@@ -70,6 +75,7 @@ def d8c1_sc1a(filename, verbose=False):
 
 
 def d8c1_sc1b(filename, verbose=False):
+    """wrapper to score D8C1 submission(SC1B sub challenge)"""
     from dreamtools.dream8.D8C1 import scoring, ranking
     sc1b = scoring.HPNScoringNetworkInsilico(filename,  verbose=verbose)
     sc1b.compute_score()
@@ -80,6 +86,7 @@ def d8c1_sc1b(filename, verbose=False):
 
 
 def d8c1_sc2a(filename, verbose=False):
+    """wrapper to score D8C1 submission(SC2A sub challenge)"""
     from dreamtools.dream8.D8C1 import scoring, ranking
     sc2a = scoring.HPNScoringPrediction(filename, verbose=verbose)
     sc2a.compute_all_rmse()
@@ -89,6 +96,7 @@ def d8c1_sc2a(filename, verbose=False):
             'Rank LB': rank.get_rank_your_submission()}
 
 def d8c1_sc2b(filename, verbose=False):
+    """wrapper to score D8C1 submission(SC2B sub challenge)"""
     from dreamtools.dream8.D8C1 import scoring, ranking
     sc2b = scoring.HPNScoringPredictionInsilico(filename, verbose=verbose)
     sc2b.compute_all_rmse()
@@ -100,6 +108,7 @@ def d8c1_sc2b(filename, verbose=False):
 
 # DREAM8 Challenge 2
 def d8c2_sc1(filename, verbose=False, verboseR=False):
+    """wrapper to score D8C2 submission(SC1 sub challenge)"""
     from dreamtools.dream8.D8C2 import sc1
     s = sc1.D8C2_sc1(filename, verboseR=verboseR)
     s.run()
@@ -107,6 +116,7 @@ def d8c2_sc1(filename, verbose=False, verboseR=False):
 
 
 def d8c2_sc2(filename, verbose=False, verboseR=False):
+    """wrapper to score D8C2 submission(SC2 sub challenge)"""
     from dreamtools.dream8.D8C2 import sc2
     s = sc2.D8C2_sc2(filename, verboseR=verboseR)
     s.run()
@@ -226,6 +236,7 @@ class Options(argparse.ArgumentParser):
     def __init__(self, version="1.0", prog=None):
 
         usage = """usage: python %s --challenge d8c1 --sub-challenge sc1a --submission <filename>""" % prog
+        usage += """      python %s --challenge d5c2 --submission <filename>""" % prog
         epilog="""Author(s):
 
         - Thomas Cokelaer: DreamTools package and framework including tests and docs
@@ -238,13 +249,16 @@ Source code on: https://github.com/dreamtools/dreamtools
 Issues or bug report ? Please fill an issue on http://github.com/dreamtools/dreamtools/issues """
         description = """General Description:
     You must provide the challenge nickname (e.g., d8c1 for Dream8, Challenge 1) and
-    if there were several sub-challenges, you also must
-    provide the sub-challenge nickname (e.g., sc1).
-    Finally, the submission has to be provided. The format must
-    be in agreement with the description of the challenge
-    itself.
+    if there were several sub-challenges, you also must provide the sub-challenge
+    nickname (e.g., sc1). Finally, the submission has to be provided. The format must
+    be in agreement with the description of the challenge itself.
 
-    Registered challenge and sub-challenges are:"""
+    Help and documentation about the templates may be found either within the online
+    documentation http://pythonhosted.org/dreamtools/ or within the source code
+    hosted on github http://github.org/dreamtools/dreamtools
+
+    Registered challenge so far (and sub-challenges) are:
+    """
         description +="\n"
         for c in registered.keys():
             description +=  "    - " + c + ": "

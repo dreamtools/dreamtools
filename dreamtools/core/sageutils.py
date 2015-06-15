@@ -1,3 +1,18 @@
+# -*- python -*-
+#
+#  This file is part of DreamTools software
+#
+#  Copyright (c) 2014-2015 - EBI-EMBL
+#
+#  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
+#
+#  Distributed under the GPLv3 License.
+#  See accompanying file LICENSE.txt or copy at
+#      http://www.gnu.org/licenses/gpl-3.0.html
+#
+#  website: http://github.org/dreamtools
+#
+##############################################################################
 """A module dedicated to synapse
 
 The class :class:`SynapseClient` is a specialised class built upon synapseclient
@@ -13,9 +28,11 @@ was still in development. In order to test the system, I built this class
 been included later in the synapseclient. After successive cleanups, I've still
 have a couple of methods that may be redundant with synapse or not...
 
+This class may be removed but for now it is used
+
 ::
 
-    >>> from dreamtools import sageutils
+    >>> from dreamtools.core import sageutils
     >>> s = sageutils.SynapseClient()
 
 
@@ -161,45 +178,6 @@ class SynapseClient(synapseclient.Synapse, object):
         obsolet available in synapseclient now"""
         e = self.restGET("/evaluation/%s" % eid)
         return e
-
-    def __getEvaluationByName(self, name):
-        """Get evaluation by its name
-        
-        
-        
-        .. warning:: may be obsolet. Look into original synapseclient instead
-        """
-        e = self.restGET("/evaluation/name/%s" % name)
-        return e
-
-    def __createEvaluation(self, name, status="PLANNED", contentSource=None):
-        """
-
-        >>> createEvaluation("testval1", status="PLANNED", contentSource="")
-
-        .. warning:: may be obsolet. Look into original synapseclient instead
-        """
-        if contentSource == None:
-            raise ValueError("contentSource must be a valid wiki id")
-        evaluation = synapseclient.Evaluation(name=name, status=status,
-            contentSource=contentSource) # e.g., 1720047 for HPN
-
-        print("Creating evaluation (POST)")
-        try:
-            res = self.restPOST("/evaluation", body=self.json(evaluation))
-            return res
-        except Exception, e:
-            print(e)
-            print("Evaluation not created. Exist already ?")
-            raise Exception
-
-    def __deleteEvaluation(self, eid):
-        """Deletes an evaluation page
-
-        """
-        print("deleting evaluation eid")
-        res = self.restDELETE("/evaluation/" + eid)
-        return res
 
     def __createWiki(self, owner, title, markdown, owner_type=None):
         """

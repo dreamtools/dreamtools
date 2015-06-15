@@ -465,23 +465,11 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
 
     ::
 
-        >>> import sc1a_tools
-        >>> a = sc1a_tools.SC1A_aggregation()
+        >>> from dreamtools.dream8.D8C1 import aggregation
+        >>> a = aggregation.SC1A_aggregation()
         >>> a.plot_aggr_random(N=100, Nmax=74)
 
     By default, uses the submissions from the challenge itself (up to week 9)
-
-    .. figure::  sc1a_aggregation_best.png
-        :width: 50%
-
-        SC1A aggregation of best submissions
-
-
-    .. figure:: sc1a_aggregation_random.png
-        :width: 50%
-
-        SC1A aggregation of random submissions
-
 
     You need to download the file before hand:
 
@@ -499,7 +487,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
     def __init__(self, best=2, client=None, local_submissions=False):
         """
 
-        :param best:
+        :param best: default to 2
         :param client: an existing synapse client
         :param submissions: list of submissions already downloaded. Otherwise
             reload all of them
@@ -587,16 +575,16 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
         See paper for the vectors of aggregsation (best weighted scores)
         and submissions AUCs
 
-        Then chose a method and loop over this function
+        Then chose a method and loop over this function::
 
-        auc_min = []
-        for i in range(0,74):
-            es = s.plot_aggregate_edge_rank(i, ss=ss)
-            print es
-            auc_min.append(es)
-        plot(auc, label="min")
+            auc_min = []
+            for i in range(0,74):
+                es = s.plot_aggregate_edge_rank(i, ss=ss)
+                print es
+                auc_min.append(es)
+            plot(auc, label="min")
 
-         with 66 submissions, and method=min we reach 84%
+        with 66 submissions, and method=min we reach 84%
         """
 
         # first does not really work
@@ -659,22 +647,12 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
 
     ::
 
-        >>> import aggregation
+        >>> from dreamtools.dream8.D8C1 import aggregation
         >>> a = aggregation.SC1B_aggregation()
         >>> a.plot_aggr_random(N=100, Nmax=5)
 
     By default, uses the submissions from the challenge itself (up to week 9)
 
-    .. figure::  sc1b_aggregation_best.png
-        :width: 50%
-
-        SC1B aggregation of best submissions
-
-
-    .. figure:: sc1b_aggregation_random.png
-        :width: 50%
-
-        SC1B aggregation of random submissions
 
     """
     def __init__(self, best=2, client=None, local_submissions=False):
@@ -751,26 +729,16 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
 
     ::
 
-        >>> import aggregation
+        >>> from dreamtools.dream8.D8C1 import aggregation
         >>> a = aggregation.SC2A_aggregation()
         >>> a.plot_aggr_random(N=100, Nmax=14)
 
     By default, uses the submissions from the challenge itself (up to week 9)
 
-    .. figure::  sc2a_aggregation_best.png
-        :width: 50%
-
-        SC2A aggregation of best submissions
-
-    .. figure:: sc2a_aggregation_random.png
-        :width: 50%
-
-        SC2A aggregation of random submissions
 
     """
     def __init__(self, client=None, local_submissions=False):
-
-        """
+        """.. rubric:: constructor
 
         :param best:
         :param client: an existing synapse client
@@ -850,23 +818,14 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
 
     ::
 
-        >>> import sc2b_tools
-        >>> a = sc2b_tools.SC2B_aggregation()
+        >>> from dreamtools.dream8.D8C1 import aggregation
+        >>> a = aggregation.SC2B_aggregation()
         >>> a.plot_aggr_random(N=100, Nmax=5)
 
     By default, uses the submissions from the challenge itself (up to week 9)
 
 
-    .. figure::  sc2b_aggregation_best.png
-        :width: 50%
 
-        SC2B aggregation of best submissions
-
-
-    .. figure:: sc2b_aggregation_random.png
-        :width: 50%
-
-        SC2B aggregation of random submissions
 
     """
     def __init__(self, client=None, local_submissions=False):

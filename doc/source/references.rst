@@ -91,9 +91,9 @@ DREAM8 challenges
 D8C1
 ~~~~
 
-HPN/synapse
-^^^^^^^^^^^^^^^^
-.. automodule:: dreamtools.dream8.D8C1.hpn
+.. HPN/synapse
+   ^^^^^^^^^^^^^^^^
+   .. automodule:: dreamtools.dream8.D8C1.hpn
     :members:
     :undoc-members:
 
@@ -111,11 +111,20 @@ admin
     :undoc-members:
 
 
+downloads
+^^^^^^^^^^^^^^^^
+
+.. automodule:: dreamtools.dream8.D8C1.downloads
+    :members:
+    :undoc-members:
+
+
+
 aggregation
 ^^^^^^^^^^^^^^^^
 .. automodule:: dreamtools.dream8.D8C1.aggregation
     :members:
-    :undoc-members:
+
 
 D8C2
 ~~~~~~~~~

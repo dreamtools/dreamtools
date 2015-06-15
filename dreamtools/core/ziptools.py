@@ -1,10 +1,16 @@
+# -*- python -*-
+#
+#  This file is part of DreamTools software
+#
+#  Copyright (c) 2014-2015 - EBI-EMBL
+#
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
 #
 #  Distributed under the GPLv3 License.
 #  See accompanying file LICENSE.txt or copy at
 #      http://www.gnu.org/licenses/gpl-3.0.html
 #
-#  website: http://www.ebi.ac.uk/~cokelaer
+#  website: http://github.org/dreamtools
 #
 ##############################################################################
 import zipfile

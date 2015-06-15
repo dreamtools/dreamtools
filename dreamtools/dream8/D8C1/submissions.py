@@ -237,26 +237,27 @@ class SC1ASubmissions(SubmissionTools):
     "2208193", "2154231", "2200202", "2197351", "375570"]):
         """Remove some users to get final submissions
 
-        * 375805 alphabeta is a test from TC
-        * sakevin is the same team as sakev Last submission by sakve in on week
-          8. sakevin submitted last on week 2 so can be ignored (userId 1991105)
-        * hd systems submitted with 2 userId:
-            [(u'1967990', u'HD_Systems', u'Michael Zengerling', 8)]
-            [(u'1971259', u'HD_Systems', u'Ruth Grosseholz', 7)]
-           The latest has the best score (week 8) so I suspect this is the one to be
-           used.
-        * SHCH and tongki aliases correspond to the same userId. tongji
-          submitted last
+            * 375805 alphabeta is a test from TC
+            * sakevin is the same team as sakev Last submission by sakve in on week
+              8. sakevin submitted last on week 2 so can be ignored (userId 1991105)
+            * hd systems submitted with 2 userId:
+              [(u'1967990', u'HD_Systems', u'Michael Zengerling', 8)]
+              [(u'1971259', u'HD_Systems', u'Ruth Grosseholz', 7)]
+              The latest has the best score (week 8) so I suspect this is the one to be
+              used.
+            * SHCH and tongki aliases correspond to the same userId. tongji
+              submitted last
 
         From Steven's analysis, some results are highly correlated:
 
-        * ams1012,cas3,cas4 are the same submission. We keep only ams1012
-          cas3 1961142, cas4 2208193 should be removed.
-        * gucas (2154231) is same as Zhangroup. gucas removed
-        * Dream5607 (2200202) and Pitt.transmed are the same. Remove Dream5607
-        * sfntt has same alias but 2 different userId. Remove 2197351 so that
-          the latest remains only.
-        * same with SBIT 375570
+            * ams1012,cas3,cas4 are the same submission. We keep only ams1012
+              cas3 1961142, cas4 2208193 should be removed.
+            * gucas (2154231) is same as Zhangroup. gucas removed
+            * Dream5607 (2200202) and Pitt.transmed are the same. Remove Dream5607
+            * sfntt has same alias but 2 different userId. Remove 2197351 so that
+              the latest remains only.
+            * same with SBIT 375570
+
 
         """
         submissions = [x for x in self.submissions if x['userId'] not in userIds]

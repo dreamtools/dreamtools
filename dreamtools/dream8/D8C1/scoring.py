@@ -24,7 +24,6 @@ Here is an example related to the Network subchallenge::
 
     >>> from dreamtools.dream8.D8C1 import scoring
     >>> s = scoring.HPNScoringNetwork()
-    >>> s.validation() # optional
     >>> s.compute_all_descendant_matrices()
     >>> s.compute_all_rocs()
     >>> s.compute_all_aucs()
@@ -44,11 +43,11 @@ import pylab
 import numpy as np
 
 from dreamtools.core import rocs
-
 import cython_scoring
 from dreamtools.core.ziptools import ZIP
 from dreamtools.core.rocs import ROC
-#from dreamtools.dream8 import D8C1 as d8c1
+from dreamtools.core.challenge import Challenge
+
 
 __all__ = ["HPNScoringNetwork", "HPNScoring", "HPNScoringNetworkInsilico",
     "HPNScoringNetwork_ranking", "HPNScoringPrediction",
@@ -71,13 +70,13 @@ class HPNScoring(ZIP):
     The HPN challenges use data from 32 types of combinaison of cell lines (4) and
     ligands (8). This class provides aliases to:
 
-     * valid cell lines (:attr:`~dreamtools.dream8hpn.scoring.HPNScoring.valid_cellLines`)
-     * valid ligands (:attr:`~dreamtools.dream8hpn.scoring.HPNScoring.valid_ligands`)
+     * valid cell lines (:attr:`~dreamtools.dream8.D8C1.scoring.HPNScoring.valid_cellLines`)
+     * valid ligands (:attr:`~dreamtools.dream8.D8C1.scoring.HPNScoring.valid_ligands`)
      * expected length of the vectors for each cell line
-       (:attr:`~dreamtools.dream8hpn.scoring.HPNScoring.valid_length`)
+       (:attr:`~dreamtools.dream8.D8C1.scoring.HPNScoring.valid_length`)
      * indices of the row vectors containing the mTOR species within the
        descendancy matrices
-       (:attr:`~dreamtools.dream8hpn.scoring.HPNScoring.mTor_index`)
+       (:attr:`~dreamtools.dream8.D8C1.scoring.HPNScoring.mTor_index`)
 
     .. note:: all matrices and vectors are sorted according to a hard-coded
         list of species for a combinaison of cell line and ligand. The species
@@ -163,12 +162,13 @@ class HPNScoring(ZIP):
             self.species[cell] = phosphos
 
 
-class HPNScoringNetworkBase(HPNScoring):
+class HPNScoringNetworkBase(HPNScoring, Challenge):
     test_synapse_id = "syn1971273"
     true_synapse_id = "syn1971278"
 
     def __init__(self, filename=None, verbose=True):
-        super(HPNScoringNetworkBase, self).__init__(verbose=verbose)
+        HPNScoring.__init__(self, verbose=verbose)
+        Challenge.__init__(self, challenge_name='D8C1')
         self.filename = filename
         self.load_species()
 
@@ -180,7 +180,6 @@ class HPNScoringNetworkBase(HPNScoring):
         reader.next() # skip the header
         f.close()
         if self.verbose: print("ok")
-
 
     def _str_cleanup(self, text):
         # required to cleanup some submissions
@@ -228,17 +227,15 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
     """Class to compute the score of a Network submission
 
     A user will provide a ZIP file that contains 65 files: 32 EDA,
-     The 32 files should be tagged with the 32 combinaisons of cell
+    The 32 files should be tagged with the 32 combos of cell
     lines and ligands. To create an instance of HPNScoringNetwork, type::
 
         s = HPNScoringNetwork("TeamName-Network.zip")
         # or later
-        s = HPNScoringNetwork("TeamName-Network.zip")
-        s.loadZIPFile("TeamNeame-Network.zip")
+        s = HPNScoringNetwork()
+        s.load_submission("TeamName-Network.zip")
 
-        s.compute_aucs()
         s.get_auc_final_scoring() # as in the challenge ignoring some regimes
-
 
 
     You then need to specifically load the EDA files. This may be done
@@ -337,10 +334,12 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         extensions = [os.path.splitext(x)[1] for x in self.zip_filenames if "MACOSX" not in x]
 
         # check that the contents of the SIF are 3 columns
-        if self.verbose:print("ok\nChecking filename and contents of SIF files"),
+        if self.verbose:
+            print("ok\nChecking filename and contents of SIF files"),
 
         # check that the contents of the EDA files are correct.
-        if self.verbose:print("All SIF files seem ok\nChecking filename and contents of EDA files"),
+        if self.verbose:
+            print("All SIF files seem ok\nChecking filename and contents of EDA files"),
         for filename in self.zip_filenames:
             if filename.endswith(".eda"):
                 self._check_filename(filename)
@@ -364,7 +363,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             self.error(" * filename %s is ill formed. Expects TeamName-CellLine-Ligand-Network.eda" % filename)
 
     def compute_score(self, validation=True):
-        """Computes the final score.
+        """Computes the final score that is the average over the 32 AUCs
 
         This function compute the final score. First, il loads all EDA files
         provided by the  participany (from the ZIP file). Then, it computes
@@ -387,14 +386,14 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         used in final scoring and collaborative rounds.
 
         The individual AUCs must be computed first with
-        :meth:`compute_all_aucs` or .
+        :meth:`compute_all_aucs` or .::
 
 
             >>> s = scoring.HPNScoringNetwork(filename)
-            >>> s.compute_all_aucs()
             >>> auc = s.get_auc_final_scoring()
 
         """
+        self.compute_all_aucs()
         ligands = {'BT20': ['IGF1', 'PBS', 'Serum', 'NRG1', 'HGF', 'EGF',  'FGF1'],
             'BT549': ['IGF1', 'PBS', 'Serum', 'Insulin', 'HGF', 'EGF', 'FGF1'],
             'MCF7': ['IGF1', 'PBS', 'Serum', 'NRG1', 'Insulin', 'HGF', 'EGF', 'FGF1'],
@@ -441,6 +440,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         for cell in self.cellLines_names_steven:
             for lig in self.ligands_names_steven:
                 self.edge_scores[cell][lig] /= float(M)
+
     def load_eda_file(self, filename, local=False):
         """Loads scores from one EDA file
 
@@ -795,8 +795,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         """
         self.validation()
 
-
-        #if len(self.descendancy_matrices['BT20'])==0:
         self.compute_all_descendant_matrices()
 
         for c in self.valid_cellLines:
@@ -875,7 +873,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         .. plot::
             :include-source:
 
-            from dreamtools.dream8hpn import scoring
+            from dreamtools.dream8.D8C1 import scoring
             from pylab import clf, plot, hist, grid, pi, exp, sqrt, mean, std
             s = scoring.HPNScoringNetwork()
             rocs, aucs, auprs = s.get_null_distribution(100)
@@ -921,14 +919,16 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             :width: 80%
 
             from pylab import clf, plot, hist, grid
-            from dreamtools.dream8hpn import scoring
-
+            from dreamtools.dream8.D8C1 import scoring
+            import os
             s = scoring.HPNScoringNetwork()
-            #s.load_all_eda_files_from_zip()
+            filename = s._path2data + os.sep + 'templates'+os.sep +'alphabeta-Network.zip'
+            s.load_submission(filename)
             s.compute_score()
             s.plot_all_rocs()
+
         """
-        if cellLines == None:
+        if cellLines is None:
             cellLines = self.valid_cellLines
         else:
             cellLines = [cellLines]
@@ -967,14 +967,10 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
                     zscores[c][l] = (self.auc[c][l] - mu[c][l])/sigma[c][l]
         return zscores
 
-    def plot_class_skew(self):
-        from pylab import hist
-        hist([self.true_descendants[c][x].count(1)/float(self.valid_length[c])
-            for x in self.valid_ligands for c in self.valid_cellLines])
-
     def print_aucs(self):
         # the order here is defined to compare with steven results but could be
         # chnaged later on.
+        self.compute_all_aucs()
         for c in self.cellLines_names_steven:
             #["UACC812","BT549","MCF7","BT20"]:
             print(c, "\t"),
@@ -990,7 +986,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         import sc1a_tools
         null = sc1a_tools.AUCnull(self.valid_cellLines, self.valid_ligands, verbose=False)
         #filename = 'sc1a_null_aucs_mean_sigma.dat'
-        #filename = easydev.get_share_file("dreamtools", "data/dream8hpn", filename)
         null.loadaucs()
         mean = null.get_mean_dict()
         sigma = null.get_sigma_dict()
@@ -1182,8 +1177,13 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
 
     ::
 
-        from dreamtools.dream8hpn import HPNScoringNetworkInsilico()
+        from dreamtools.dream8.D8C1 import HPNScoringNetworkInsilico
         s = HPNScoringNetworkInsilico()
+        import os
+        filename = s._path2data + os.sep + 'templates' + os.sep + 'alphabeta-Network-Insilico.zip'
+        s.read_file(filename)
+
+
 
     .. note:: If you want to test your own local file, provide a filename.
 
@@ -1194,6 +1194,11 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
         super(HPNScoringNetworkInsilico, self).__init__(filename,
                 verbose=verbose)
 
+        self.read_file(filename)
+        self.true_graph = self._load_true_graph_from_zip()
+
+    def read_file(self, filename):
+        self.filename = filename
         try:
             self.loadZIPFile(self.filename)
         except Exception, e:
@@ -1207,7 +1212,6 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
             print e
             # it not read permission loadZIP and get_eda will fail,
             self.error("Could not compute EDA")
-        self.true_graph = self._load_true_graph_from_zip()
 
     def _load_true_graph_from_zip(self):
         """Reads true graph  provided by Steven 10 July 2013
@@ -1219,7 +1223,6 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
         reader = csv.reader(open(filename, "r"))
         data = np.array(list(reader), dtype="float")
         return data
-
 
     def _get_participant_eda(self):
         """This function retrieves the EDA file from a participant
@@ -1313,8 +1316,12 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
             :include-source:
             :width: 80%
 
-            from dreamtools.dream8hpn import HPNScoringNetworkInsilico
+            from dreamtools.dream8.D8C1 import HPNScoringNetworkInsilico
+            import os
+
             s = HPNScoringNetworkInsilico()
+            filename = s._path2data + os.sep + 'templates' + os.sep + 'alphabeta-Network-Insilico.zip'
+            s.read_file(filename)
             aucs, auprs = s.get_null_auc_aupr(1000)
             s.plot_null_distribution(aucs)
             from pylab import xlim
@@ -1747,7 +1754,6 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
                     # select 7 random values for 7 time points for each stimuli
                     data[c][p][s] = random.sample(self.training[c][p], 7)[:]
         return data
-
 
     def _get_mean_and_sigma_null_parameters(self):
         """Retrieve mean and sigma for 4 celllines and phosphos"""

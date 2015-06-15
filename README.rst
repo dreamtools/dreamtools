@@ -11,7 +11,7 @@ Overview
 
 **DreamTools** aims at sharing code used in the scoring of `DREAM <http://dreamchallenges.org>`_ challenges.
 
-The main goals arei to provide:
+The main goals are to provide:
 
 #. scoring functions for the Dream challenges for **end-users** via the **dreamtools-scoring** standalone
    application.
@@ -31,7 +31,7 @@ The **dreamtools-scoring** executable
 For users, **dreamtools** provide one executable called **dreamtools-scoring**, which should be installed automatically
 when installing dreamtools. Knowing the name of the challenge (and possibly sub-challenge), it works as  follows::
 
-    dreamtools-scoring --challenge d8c1 --sub-challenge sc1a --submission alphabeta-Network.zip
+    dreamtools-scoring --challenge d8c1 --sub-challenge sc1a --submission example.zip
     
 It prints some information and the score of the submision for instance for the example above::
 
@@ -86,7 +86,8 @@ please see ./dreamtools/dream8/D8C1/README.rst
 Installation
 ---------------
 
-::
+**DreamTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically
+installed with **dreamtools** using pip executable::
 
     pip install dreamtools
 
@@ -96,16 +97,22 @@ Issues
 
 Please fill bug report in https://github.com/dreamtools/dreamtools/issues
 
+
+Contributions
+---------------
+
+Please join https://github.com/dreamtools/dreamtools
+
+
 For developers
 ----------------
 
-Not all challenges are yet provided. If you wish to contribute, please let us
-know. See doc/source/developers.rst
+Please see doc/source/developers.rst
 
 Credits
 -----------
 
-See doc/source/credits.rst
+Please see doc/source/credits.rst
 
 
 

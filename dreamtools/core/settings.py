@@ -1,9 +1,19 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Aug  8 15:31:34 2014
-
-@author: cokelaer
-"""
+# -*- python -*-
+#
+#  This file is part of DreamTools software
+#
+#  Copyright (c) 2014-2015 - EBI-EMBL
+#
+#  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
+#
+#  Distributed under the GPLv3 License.
+#  See accompanying file LICENSE.txt or copy at
+#      http://www.gnu.org/licenses/gpl-3.0.html
+#
+#  website: http://github.org/dreamtools
+#
+##############################################################################
+"""Tools to handle a configuration file."""
 import os
 from easydev import DynamicConfigParser, underline
 import copy
@@ -35,9 +45,11 @@ class ConfigReadOnly(object):
 
     """
     def __init__(self, name=None, default_params={}):
-        """name is going to be the generic name of the config folder
+        """.. rubric:: constructor
 
-        e.g., /home/user/.config/<name>/<name>.cfg
+
+        :param str name: is going to be the generic name of the config folder
+            e.g., /home/user/.config/<name>/<name>.cfg
 
         """
         if name is None:

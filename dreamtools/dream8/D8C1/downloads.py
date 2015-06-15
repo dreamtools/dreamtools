@@ -2,7 +2,7 @@
 #
 #  This file is part of dreamtools software
 #
-#  Copyright (c) 2013-2014 - EBI-EMBL
+#  Copyright (c) 2014-2015 - EBI-EMBL
 #
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
 #
@@ -104,7 +104,7 @@ class SubmissionsDownloader(Login):
 class GSDownloader(Login):
     """Factory to download gold standard files
 
-    .. tood:: could be replaced with the dreamtools.core.download.Downloader class
+    .. todo:: could be replaced with the dreamtools.core.download.Downloader class
     """
     def __init__(self, client=None):
         super(GSDownloader, self).__init__(client=client)

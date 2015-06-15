@@ -1,23 +1,45 @@
+# -*- python -*-
+#
+#  This file is part of DreamTools software
+#
+#  Copyright (c) 2014-2015 - EBI-EMBL
+#
+#  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
+#
+#  Distributed under the GPLv3 License.
+#  See accompanying file LICENSE.txt or copy at
+#      http://www.gnu.org/licenses/gpl-3.0.html
+#
+#  website: http://github.org/dreamtools
+#
+##############################################################################
+from dreamtools.core.challenge import Challenge
 from dreamtools.core.rtools import RTools
 import os
 
 
 __all__ = ['D8C2_sc2']
 
-class D8C2_sc2(RTools):
+class D8C2_sc2(Challenge, RTools):
     """D8C2 Tox challenge scoring (sub challenge 2)
 
     ::
 
-        from dreamtools.dream8.D8C2.sc2 import D8C2_s2
+        from dreamtools import D8C2_s2
         s = D8C2_sc2(filename)
         s.run()
         s.df
 
+
+    see `github README <https://github.com/dreamtools/dreamtools/tree/master/dreamtools/dream8/D8C2>`_ for details
+
+
     """
 
     def __init__(self, filename, verboseR=True):
-        super(D8C2_sc2,self).__init__(verboseR=verboseR)
+        Challenge.__init__(self, challenge_name='D8C2')
+        RTools.__init__(self, verboseR=verboseR)
+
         self.filename = filename
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
 

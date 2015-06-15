@@ -2,7 +2,7 @@
 #
 #  This file is part of DreamTools software
 #
-#  Copyright (c) 2011-2012 - EBI-EMBL
+#  Copyright (c) 2014-2015 - EBI-EMBL
 #
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
 #
@@ -10,14 +10,22 @@
 #  See accompanying file LICENSE.txt or copy at
 #      http://www.gnu.org/licenses/gpl-3.0.html
 #
-#  website: 
+#  website: http://github.org/dreamtools
 #
 ##############################################################################
-"""Provides tools related to Receiver Operating Characteristic (ROC)"""
+"""Provides tools related to Receiver Operating Characteristic (ROC).
+
+
+Those code were direct translation of Perl or matlab codes but we stronly recommend
+to use scikit-learn in the future."""
 import numpy as np
-from cno.misc.profiler import do_profile
+
+
+__all__ = ['ROC', 'ROCDiscovery']
+
 
 class ROCBase(object):
+    """An ABC class"""
 
     def __init__(self):
         pass
@@ -69,7 +77,7 @@ class ROC(ROCBase):
 
     """
     def __init__(self, scores=None, classes=None):
-        """:Constructor:
+        """.. rubric:: Constructor
 
         :param list scores: the scores
         :param list classes: binary class made of 1 or 0 numerical values. Also
@@ -103,13 +111,13 @@ class ROC(ROCBase):
         return roc
 
     def get_roc(self):
-        """See meth:`get_statistics`"""
+        """See :meth:`get_statistics`"""
         return self.get_statistics()
 
     def get_statistics(self):
         """Compute the ROC curve X/Y vectors and some other metrics
 
-        :return: a dictionary with different metrics such FPR (false positive
+        :return: a dictionary with different metrics such as FPR (false positive
             rate), PTR (true positive rate).
 
         """
@@ -166,7 +174,6 @@ class ROC(ROCBase):
         roc = self._compute_other_metrics(roc)
         return roc
 
-
     def _compute_other_metrics(self, roc):
         #Be aware that there is alway a first value TP=0,FP=0
         # this should be handled with care the recall/precision computatio
@@ -209,7 +216,6 @@ class ROC(ROCBase):
         roc['recall'] = [float(x) for x in recall]
         return roc
 
-
     def plot_roc(self, roc=None):
         """Plot ROC curves
 
@@ -217,15 +223,15 @@ class ROC(ROCBase):
             :include-source:
             :width: 80%
 
-            from dreamtools import rocs
-            r = rocs.ROC()
+            from dreamtools.core.rocs import ROC
+            r = ROC()
             r.scores = [.9,.5,.6,.7,.1,.2,.6,.4,.7,.9, .2]
             r.classes = [1,0,1,0,0,1,1,0,0,1,1]
             r.plot_roc()
 
         """
         if roc == None:
-            roc = self.get_stastistics()
+            roc = self.get_statistics()
         from pylab import plot, xlim, ylim ,grid, title, xlabel, ylabel
         x = roc['fpr']
         plot(x, roc['tpr'], '-o')
@@ -246,12 +252,10 @@ class ROCDiscovery(ROCBase):
     .. note:: Does not work if any NA are found.
     """
     def __init__(self, discovery):
-        """
-
+        """.. rubric:: constructor
 
 
         :param discovery: a list of 0/1 where 1 means positives
-        :return:
         """
         super(ROCDiscovery, self).__init__()
 
@@ -264,7 +268,7 @@ class ROCDiscovery(ROCBase):
         assert set(np.unique(self.discovery)) == set([0,1]), 'ERROR: discovery is only allowed to have (0,1) entries.'
 
     def get_statistics(self):
-        """Retourn dictionary with FPR, TPR and other metrics"""
+        """Return dictionary with FPR, TPR and other metrics"""
         discovery = self.discovery # an alias
         T = len(discovery)  # Total
         P = np.sum(discovery) # positives

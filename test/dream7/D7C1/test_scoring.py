@@ -48,6 +48,6 @@ def test_scoring_timecourse():
     score = s.score_model1_timecourse(filename)
     nose.tools.assert_almost_equal(score, 0.002438361267)
 
-def test_others():
+def _test_others():
     s = scoring.D7C1()
     df = s.get_null_parameters_model1()

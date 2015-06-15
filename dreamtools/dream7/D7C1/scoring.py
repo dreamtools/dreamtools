@@ -1,3 +1,18 @@
+# -*- python -*-
+#
+#  This file is part of DreamTools software
+#
+#  Copyright (c) 2014-2015 - EBI-EMBL
+#
+#  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
+#
+#  Distributed under the GPLv3 License.
+#  See accompanying file LICENSE.txt or copy at
+#      http://www.gnu.org/licenses/gpl-3.0.html
+#
+#  website: http://github.org/dreamtools
+#
+##############################################################################
 """Scoring Functions for the Dream7 Challenge 1 (Parameter estimation and network topology prediction)
 
 
@@ -8,19 +23,19 @@
 :Publications: http://www.biomedcentral.com/1752-0509/8/13/abstract
 
 """
-
+from dreamtools.core.challenge import Challenge
 
 import numpy as np
 import glob
 import pandas as pd
 import os
-from cno.misc.profiler import do_profile
+
 
 __all__ = ['D7C1']
 
 
 
-class D7C1(object):
+class D7C1(Challenge):
     """DREAM 7 - Network Topology and Parameter Inference Challenge
 
     Here is a quick example on calling the scoring methods::
@@ -61,6 +76,7 @@ class D7C1(object):
         :param path: path to a directory containing submissions
         :return:
         """
+        Challenge.__init__(self, challenge_name='D7C1')
 
         self.path = path
 
