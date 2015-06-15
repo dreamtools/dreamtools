@@ -30,6 +30,8 @@ class D5C2(Challenge):
 
         from dreamtools import D5C2
         s = D5C2()
+
+        # You can get a template from www.synapse.org page (you need to register)
         s.download_templates() 
         s.score('templates.txt.gz')
         s.get_table()
@@ -117,8 +119,12 @@ class D5C2(Challenge):
         pb.animate(5)
     
     def download_templates(self):
-        """Download a template from synapse"""
+        """Download a template from synapse into ~/config/dreamtools/dream5/D5C2
+
+        :return: filename and its full path
+        """
         filename = self._download_data('templates.txt.gz', 'syn4483192')
+        return filename
 
     def _download_data(self, name, synid):
         filename = self.directory + os.sep + name

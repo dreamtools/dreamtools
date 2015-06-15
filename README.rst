@@ -2,6 +2,7 @@ DreamTools
 ==========
 
 :Online documentation: `On pypi website <http://pythonhosted.org/dreamtools/>`_,
+:Issues and bug reports: `On github <https://github.com/dreamtools/dreamtools/issues>`_,
 
 .. contents::
 
@@ -10,17 +11,18 @@ Overview
 
 **DreamTools** aims at sharing code used in the scoring of `DREAM <http://dreamchallenges.org>`_ challenges.
 
-The main goals are:
+The main goals arei to provide:
 
-#. provide scoring functions for the Dream challenges for **end-users** via the **dreamtools-scoring** standalone
+#. scoring functions for the Dream challenges for **end-users** via the **dreamtools-scoring** standalone
    application.
-#. provide a place to share-reuse code used before/during/after the challenges for **developers** and organisers 
-   of the challenges
+#. a place for **developers** involved in the dream challenges to share code
 
 
 Code related to aggregation, leaderboards, or more complex analysis are not
 guaranteed to be found in dreamtools even though it may be in some challenges
 (e.g. D8C1). Some functionalities may be restricted with some access to synapse.
+Some challenges will require to download public data sets from `Synapse
+<www.synapse.org>`_ (in which case you will need to register).
 
 
 The **dreamtools-scoring** executable
@@ -38,9 +40,11 @@ It prints some information and the score of the submision for instance for the e
      Rank LB: 1
 
 
+Available challenges
+-------------------------
 
-Not all DREAM challenges are included but here is the current status.
-
+**Dreamtools** software does not include all scoring functions but more will be
+implemented in the future. Here is the list of challenges available 
 
 #. DREAM10
 
@@ -76,7 +80,7 @@ Not all DREAM challenges are included but here is the current status.
 
 #. DREAM1
 
-**Format** for the challenges can be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 
+**Format** of the template for each challenge should be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 
 please see ./dreamtools/dream8/D8C1/README.rst
 
 Installation
@@ -96,7 +100,15 @@ For developers
 ----------------
 
 Not all challenges are yet provided. If you wish to contribute, please let us
-know. See doc/source/developers
+know. See doc/source/developers.rst
+
+Credits
+-----------
+
+See doc/source/credits.rst
+
+
+
 
 
 
