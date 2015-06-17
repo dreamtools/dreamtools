@@ -1,0 +1,5 @@
+	Kinase	Protein	Phosphorylated Protein	Phosphatase	Activated Phosphatase	Complex	Phosphorylated Complex
+X1	1	0	0	0	0	0	0
+X2	0	0	0	1	0	0	0
+X3	0	1	0	0	0	0	0
+X4	0	0	1	0	0	0	0
