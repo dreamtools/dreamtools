@@ -52,6 +52,7 @@ implemented in the future. Here is the list of challenges available
   See `Synapse page <https://www.synapse.org/#!Wiki:syn1761567>`_ for details
 * Dream 7 (D7C1) (Network topology and parameter estimation)
 * Dream 5 (D5C2) (Transcription factor)
+* Dream3 (D3C1) (Signalling cascade)
 
 
 Installation
