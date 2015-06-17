@@ -76,6 +76,8 @@ implemented in the future. Here is the list of challenges available
 
 #. DREAM3
 
+    * D3C1 (Signaling Cascade Challenge)
+
 #. DREAM2
 
 #. DREAM1
