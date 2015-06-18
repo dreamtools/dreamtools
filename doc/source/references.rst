@@ -51,6 +51,12 @@ DREAM2 challenges
 DREAM3 challenges
 --------------------
 
+D3C1
+~~~~~~~
+.. automodule:: dreamtools.dream3.D3C1.scoring
+    :members:
+    :undoc-members:
+
 DREAM4 challenges
 --------------------
 
@@ -96,6 +102,18 @@ D8C1
    .. automodule:: dreamtools.dream8.D8C1.hpn
     :members:
     :undoc-members:
+
+
+DREAM9.5
+------------
+
+D9dot5C1
+~~~~~~~~~~~~~
+
+.. automodule:: dreamtools.dream9dot5.D9dot5C1.scoring
+    :members:
+    :undoc-members:
+
 
 Scoring
 ^^^^^^^^^^^^^^^^
