@@ -43,7 +43,7 @@ class Challenge(object):
     directory = property(_get_directory)
 
     def _check_challenge_name(self):
-         results = re.search("^D\d+C\d+$", self.nickname)
+         results = re.search("^D\d+(dot5)?C\d+$", self.nickname)
          if results is None:
             msg = "Challenge name provided (%s) is incorrect expects DXCY with X and Y as numbers"
             raise ValueError(msg % name)
