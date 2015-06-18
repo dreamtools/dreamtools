@@ -48,6 +48,9 @@ implemented in the future. Here is the list of challenges available
 
 #. DREAM10
 
+#. DREAM9.5
+
+
 #. DREAM9
 
 #. DREAM8.5
