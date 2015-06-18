@@ -18,13 +18,17 @@ import os
 import argparse
 import sys
 from easydev.console import red, purple, darkgreen
-registered = {'d8c1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
+registered = {
+        'd8c1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
         'd8c2': ['sc1', 'sc2'],
         'd7c1':['parameter', 'topology', 'timecourse'],
-        'd5c2': []}
+        'd5c2': [],
+        'd9dot5c1': ['sc1', 'sc2']}
 
 
 # Define the simple scoring functions here below
+
+
 
 def d7c1_model1_parameter(filename):
     """wrapper to score D7C1 submission (parameter model1)"""
@@ -122,6 +126,19 @@ def d8c2_sc2(filename, verbose=False, verboseR=False):
     s.run()
     return {'results': s.df}
 
+def d9dot5c1_sc1(filename, verbose=False):
+    from dreamtools import D9dot5C1
+    s = D9dot5C1()
+    df = s.score_sc1(filename)
+    return {'results': df}
+
+def d9dot5c1_sc2(filename, verbose=False):
+    from dreamtools import D9dot5C1
+    s = D9dot5C1()
+    df = s.score_sc2(filename)
+    return {'results': df}
+
+
 
 
 # -------------------------------------------------- The User Interface
@@ -196,6 +213,11 @@ def scoring(args=None):
     if options.challenge not in registered.keys():
         raise ValueError('Invalid challenge name. Choose one of %s' % registered.keys())
 
+    if options.challenge == 'd9dot5c1':
+        if options.sub_challenge == 'sc1':
+            res = d9dot5c1_sc1(options.filename, verbose=options.verbose)
+        elif options.sub_challenge == 'sc2':
+            res = d9dot5c1_sc2(options.filename, verbose=options.verbose)
     if options.challenge == 'd8c1':
         if options.sub_challenge == 'sc1a':
             res = d8c1_sc1a(options.filename, verbose=options.verbose)
