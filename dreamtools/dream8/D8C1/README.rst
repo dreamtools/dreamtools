@@ -1,8 +1,11 @@
 Overview
 ===========
 
+
+:Title: DREAM 8 - HPN-DREAM Breast Cancer Network Inference Challenge
+:Nickname: D8C1
+:Summary: Participants in this Challenge were provided with extensive proteomics time-course dataset on four breast cancer cell lines and tasked with analyzing these data to solve 3 sub-challenges.
 :Challenge: HPN-DREAM Breast Cancer Network Inference Challenge
-:Alias: D8C1
 :SubChallenges: SC1A, SC1B, SC2A, SC2B
 :Synapse page: https://www.synapse.org/#!Synapse:syn1720047
 
