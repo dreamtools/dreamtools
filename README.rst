@@ -50,6 +50,8 @@ implemented in the future. Here is the list of challenges available
 
 #. DREAM9.5
 
+    * D9dot5C1 olfaction challenge
+
 
 #. DREAM9
 
