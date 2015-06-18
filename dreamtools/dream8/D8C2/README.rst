@@ -42,8 +42,8 @@ From the dreamtools package, you can score a submission from the D8C1 first sub 
 
 ::
 
-  from dreamtools.dream8.D8C2 import sc1
-  s = sc1.D8C1_sc1(filename)
+  from dreamtools import D8C2_sc1
+  s = D8C1_sc1(filename)
   s.run()
   # results are stored in s.df 
   s.df
@@ -51,8 +51,8 @@ From the dreamtools package, you can score a submission from the D8C1 first sub 
 
 Note that the computation takes a few minutes. The computation for the sub-challenge 2 is much faster and works similalrly::
 
-  from dreamtools.dream8.D8C2 import sc2
-  s = sc2.D8C1_sc2(filename)
+  from dreamtools import D8C2_sc2
+  s = D8C1_sc2(filename)
   s.run()
   # results are stored in s.df 
   s.df
