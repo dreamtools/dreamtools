@@ -73,7 +73,7 @@ class D3C1(Challenge):
         P = sum( np.double(self.X>=x) * self.Y * dx )
         return P
 
-    def get_template(self):
+    def download_template(self):
         """Return filename of a template to be used for testing"""
         filename = self._path2data + os.sep + 'templates' + os.sep 
         filename += 'example_SignalingCascadeChallenge.txt'

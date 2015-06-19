@@ -6,7 +6,7 @@ import os
 def test_d3c1():
     # load data first
     s = D3C1()  # temporary directory will be created
-    filename = s.get_template()
+    filename = s.download_template()
     num, pval = s.score(filename)
     assert num == 2
     assert_almost_equal(pval, 0.108333333)
