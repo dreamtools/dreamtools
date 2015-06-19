@@ -2,11 +2,4 @@ Credits
 ----------
 
 
-Full contributions to dreamtools can be found in the log but many codes were developed in other context.
-Here is non-exhaustive list of developers. Please add your name and contributions if missing.
-
-* Thomas Cokelaer (dreamtools, D6C1, D7C1, D8C3, D5C2)
-* Federica Eduati (D8C2)
-* Pablo Meyer (D6C1, D7C1)
-* Steven Hill (D8C1)
-* Raquel Norel (D5C2)
+Contributions to dreamtools are direct (e.g. by contributing to this github repository) or indirect (e.g., by developing original scornig functions). For details about the credits, please see the README.rst or scoring.py module of each challenge.
