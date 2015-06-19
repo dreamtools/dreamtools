@@ -45,8 +45,8 @@ class Challenge(object):
     def _check_challenge_name(self):
          results = re.search("^D\d+(dot5)?C\d+$", self.nickname)
          if results is None:
-            msg = "Challenge name provided (%s) is incorrect expects DXCY with X and Y as numbers"
-            raise ValueError(msg % name)
+            msg = "Challenge name provided (%s) is incorrect expects DXCY with X and Y as numbers. Or possibly DXdot5CY (e.g. D8C3, D9dot5C2)"
+            raise ValueError(msg % self.nickname)
 
     def _get_challenge_directory(self):
         # name is e.g., D1C2 we want to extract the 1 (with more than 1 digit)
@@ -59,6 +59,12 @@ class Challenge(object):
         directory = self.get_directory()
         if os.path.exists(directory) is False:
             os.mkdir(directory)
-        
+
+    def download_templates(self):
+        raise NotImplementedError
+
+    def score(self):
+        raise NotImplementedError
+
 
 
