@@ -24,6 +24,14 @@ guaranteed to be found in dreamtools even though it may be in some challenges
 Some challenges will require to download public data sets from `Synapse
 <www.synapse.org>`_ (in which case you will need to register).
 
+Installation
+---------------
+
+**DreamTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically
+installed with **dreamtools** using pip executable::
+
+    pip install dreamtools
+
 
 The **dreamtools-scoring** executable
 ------------------------------------------
@@ -89,14 +97,6 @@ implemented in the future. Here is the list of challenges available
 
 **Format** of the template for each challenge should be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 
 please see ./dreamtools/dream8/D8C1/README.rst
-
-Installation
----------------
-
-**DreamTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically
-installed with **dreamtools** using pip executable::
-
-    pip install dreamtools
 
 
 Issues
