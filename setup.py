@@ -6,7 +6,7 @@ from Cython.Build import cythonize
 
 _MAJOR               = 0
 _MINOR               = 1
-_MICRO               = 0
+_MICRO               = 1
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
@@ -30,7 +30,7 @@ metainfo = {
     'url' : ['https://github.com/dreamtools/dreamtools'],
     'description':'Scoring functions for the dream / sage challenges' ,
     'platforms' : ['Linux', 'Unix', 'MacOsX', 'Windows'],
-    'keywords' : ['scoring', 'dream', 'roc', 'leaderboard'],
+    'keywords' : ['DREAM challenges', 'DREAM', 'System Biology', 'Leaderboard'],
     'classifiers' : [
           'Development Status :: 1 - Planning',
           'Intended Audience :: Developers',
@@ -46,10 +46,8 @@ metainfo = {
     }
 
 
-
 with open('README.rst') as f:
     readme = f.read()
-
 
 
 setup(
@@ -81,7 +79,7 @@ setup(
     # distutils in rtools.package
     #install_requires = [ 'pandas', 'bioservices', 'colormap>=0.9.3'],
     install_requires = ['numpy', 'matplotlib', 'pandas', 'appdirs',
-        'easydev>=0.8.3', 'fitter',
+        'easydev>=0.8.5', 'fitter',
         'synapseclient', 'tabulate', 'cython'],
 
     ext_modules = cythonize("dreamtools/dream8/D8C1/*.pyx"),
@@ -90,6 +88,7 @@ setup(
     entry_points = {
         'console_scripts': [
             'dreamtools-scoring=dreamtools.core.scoring:scoring',
+            'dreamtools-layout=dreamtools.core.layout:layout',
         ]
     },
 )
