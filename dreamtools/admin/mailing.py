@@ -1,3 +1,4 @@
+"""Obsolet module kept for book keeping but will be deleted"""
 from BeautifulSoup import BeautifulSoup
 import urllib2
 
