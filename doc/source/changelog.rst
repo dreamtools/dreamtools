@@ -1,5 +1,13 @@
 ChangeLog
 
+0.1.2
+---------
+
+* NEWS: added dreamtools-layout for the developer to automatically create a challenge layout 
+* CHANGES: dreamtools-scoring now handles automatically new challenges providing the Challenge
+  class has the mehod score() and download_template() available.
+
+
 0.1.1
 ------
 
