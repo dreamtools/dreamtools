@@ -45,7 +45,7 @@ Scoring
 
     from dreamtools import %(nickname)s
     s = %(nickname)s()
-    filename = s.download_templates() 
+    filename = s.download_template() 
     s.score(filename) 
 
 
@@ -63,7 +63,7 @@ class %(nickname)s(Challenge):
 
         from dreamtools import %(nickname)s
         s = %(nickname)s()
-        filename = s.download_templates() 
+        filename = s.download_template() 
         s.score(filename) 
 
     Data and templates are downloaded from Synapse. You must have a login.
@@ -106,7 +106,8 @@ class Layout(Logging):
         self._create_directory(self.name)
 
         self._create_file(self._pj('__init__.py'))
-        for directory in ['data', 'paper', 'templates', 'goldstandard']:
+        for directory in ['misc', 'leaderboard', 'generator', 'data', 
+                'paper', 'templates', 'goldstandard']:
             self._create_directory(self._pj(directory))
 
         # now fill the contents of scoring.py if the file does not exists !
@@ -191,10 +192,12 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
         D8C1/__init__.py
         D8C1/scoring.py
         D8C1/README.rst
+        D8C1/generator/
         D8C1/data/
         D8C1/templates/
         D8C1/goldstandard/
         D8C1/leaderboard/
+        D8C1/misc/
         D8C1/paper/
     """
         super(Options, self).__init__(usage=usage, version=version, prog=prog, 

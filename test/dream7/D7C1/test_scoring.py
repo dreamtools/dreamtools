@@ -7,13 +7,11 @@ def test_scoring_model1():
 
     ################## model1 parameters:
     # best performer
-    filename = s._path2data + os.sep + 'templates' + \
-            os.sep + 'model1_parameters_alphabeta.txt'
-    score = s.score_model1_parameters(filename)
+    filename = s.download_template('parameter')
+    score = s.score(filename, 'parameter')
     nose.tools.assert_almost_equal(score,0.02286755)
     # gold standard
-    filename = s._path2data + os.sep + 'goldstandard' + \
-            os.sep + 'model1_parameters_answer.txt'
+    filename = s.download_gs('parameter')
     score = s.score_model1_parameters(filename)
     assert score == 0
 
@@ -29,23 +27,20 @@ def test_scoring_topology_leaderboard():
 
 def test_scoring_topology():
     s = scoring.D7C1()
-    filename = s._path2data + os.sep + 'templates' + os.sep 
-    filename += 'network_topology_alphabeta.txt'
-    score = s.score_topology(filename)
+    filename = s.download_template('topology')
+    score = s.score(filename, 'topology')
     assert score == 4
 
 def test_scoring_parameters():
     s = scoring.D7C1()
-    filename = s._path2data + os.sep + 'templates' + os.sep 
-    filename += 'model1_parameters_alphabeta.txt'
-    score = s.score_model1_parameters(filename)
+    filename = s.download_template('parameter')
+    score = s.score(filename, 'parameter')
     nose.tools.assert_almost_equal(score, 0.02286755501)
 
 def test_scoring_timecourse():
     s = scoring.D7C1()
-    filename = s._path2data + os.sep + 'templates' + os.sep 
-    filename += 'model1_timecourse_alphabeta.txt'
-    score = s.score_model1_timecourse(filename)
+    filename = s.download_template('timecourse')
+    score = s.score(filename, 'timecourse')
     nose.tools.assert_almost_equal(score, 0.002438361267)
 
 def _test_others():

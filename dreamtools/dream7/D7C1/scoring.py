@@ -13,8 +13,7 @@
 #  website: http://github.org/dreamtools
 #
 ##############################################################################
-"""Scoring Functions for the Dream7 Challenge 1 (Parameter estimation and network topology prediction)
-
+"""DREAM7 Challenge 1 (Parameter estimation and network topology prediction)
 
 :References:
     * http://dreamchallenges.org/project-list/dream7-2012/
@@ -23,16 +22,16 @@
 :Publications: http://www.biomedcentral.com/1752-0509/8/13/abstract
 
 """
-from dreamtools.core.challenge import Challenge
-
-import numpy as np
-import glob
-import pandas as pd
 import os
+import glob
+
+import pandas as pd
+import numpy as np
+
+from dreamtools.core.challenge import Challenge
 
 
 __all__ = ['D7C1']
-
 
 
 class D7C1(Challenge):
@@ -77,6 +76,7 @@ class D7C1(Challenge):
         :return:
         """
         Challenge.__init__(self, challenge_name='D7C1')
+        self.sub_challenges = ['parameter', 'topology', 'timecourse']
 
         self.path = path
 
@@ -98,6 +98,21 @@ class D7C1(Challenge):
         # data structure to store null distances
         self.rdistance_pred1 = [] 
         self.rdistance_param1 = []
+
+    def download_template(self, name):
+        """Return filename of a template
+
+        :param str name: one in 'topology', 'parameter', 'timecourse'
+        """
+        if name == 'parameter':
+            return self._pj([self._path2data, 'templates', 'model1_parameters_alphabeta.txt'])
+        elif name == 'topology':
+            return self._pj([self._path2data, 'templates', 'network_topology_alphabeta.txt'])
+        elif name == 'timecourse':
+            return self._pj([self._path2data, 'templates', 'model1_timecourse_alphabeta.txt'])
+        else:
+            raise ValueError("Incorrect challenge name. Use one of %s " % self.sub_challenges)
+        
 
     def load_submissions(self):
         """Load a bunch of submissions to be found in the submissions directory
@@ -155,7 +170,22 @@ class D7C1(Challenge):
 
         return df
 
-    ############################################################################   standalone scoring functions:
+    ###########################################################   standalone scoring functions:
+    def score(self, filename, sub_challenge):
+        """Return score for a given sub challenge
+
+        :param str filename: input filemame. 
+        :return: name of a sub_challenge. See :attr:`sub_challenges` attribute.
+        """
+        if sub_challenge == 'parameter':
+            return self.score_model1_parameters(filename)
+        elif sub_challenge == 'timecourse':
+            return self.score_model1_timecourse(filename)
+        elif sub_challenge == 'topology':
+            return self.score_topology(filename)
+        else:
+            raise ValueError("Incorrect challenge name. Use one of %s " % self.sub_challenges)
+
     def score_model1_parameters(self, filename):
         r"""Return distance between submission and gold standard for parameters challenge (model1)
 
@@ -167,7 +197,8 @@ class D7C1(Challenge):
 
             >>> from dreamtools import D7C1
             >>> s = D7C1()
-            >>> s.score_model1_parameters('templates/model1_parameters_alphabeta.txt')
+            >>> filename = s.download_template('parameter')
+            >>> s.score(filename, 'parameter')
             0.022867555017785129
 
 
@@ -195,7 +226,8 @@ class D7C1(Challenge):
 
             >>> from dreamtools import D7C1
             >>> s = D7C1()
-            s.score_model1_timecourse('templates/model1_timecourse_alphabeta.txt')
+            >>> filename = s.download_template('timecourse')
+            >>> s.score_model1_timecourse(filename)
             0.0024383612676804048
 
 
@@ -223,7 +255,8 @@ class D7C1(Challenge):
 
             >>> from dreamtools import D7C1
             >>> s = D7C1()
-            >>> s.score_topology('templates/network_topology_alphabeta.txt')
+            >>> filename = s.download_template('topology')
+            >>> s.score(filename, 'topology')
             12
 
 
@@ -272,7 +305,17 @@ class D7C1(Challenge):
         distance = self._compute_score_topology(data)
         return distance
 
-    ############################################################################# Load gold standard files
+    ##################################################################### Load gold standard files
+    def download_gs(self, name):
+        if name == 'parameter':
+            return self._get_gs('model1_parameters_answer.txt')
+        elif name == 'timecourse':
+            return self._get_gs('model1_prediction_answer.txt')
+        elif name == 'topology':
+            return self._get_gs('model2_topology_answer.txt')
+        else:
+            raise ValueError("Incorrect challenge name. Use one of %s " % self.sub_challenges)
+
     def _get_gs(self, filename):
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         filename = os.sep.join([self._path2data, "goldstandard", filename])
@@ -286,7 +329,7 @@ class D7C1(Challenge):
         self.gs['topo2'] = self._read_df(self._get_gs("model2_topology_answer.txt"), mode='topo')
 
 
-    ############################################################################# compute all submissions from challenge
+    ################################################### compute all submissions from challenge
     def leaderboard_compute_score_topology(self):
         """Computes all scores (topology) for loaded submissions
 
@@ -370,7 +413,7 @@ class D7C1(Challenge):
         return distance
 
 
-    #################################################################### NULL distribution (draft do not use)
+    ################################################# NULL distribution (draft do not use)
     def get_null_parameters_model1(self, N=10000, Nbest=9):
         """Null distribution for the model1 parameter
 
@@ -498,7 +541,6 @@ class D7C1(Challenge):
         self.scores['pred1']['pvalues'] = self.pvalues_pred1
         self.scores['param1']['pvalues'] = self.pvalues_param1
 
-
     def leaderboard(self):
         """Computes all scores for all submissions and returns dataframe
 
@@ -522,7 +564,6 @@ class D7C1(Challenge):
         df.columns = [c if c!='scores' else 'scores_topology' for c in df.columns]
 
         return df
-
 
     def _compute_score_topology(self, data, team=''):
         """see :meth:`score_topology` for details """

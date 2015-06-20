@@ -34,6 +34,7 @@ class Challenge(object):
         self._check_challenge_name()
         #: directory where is stored the configuration file and possibly data files.
         self.mainpath = cfg.user_config_dir
+        self.sub_challenges = []
 
     def _get_directory(self):
         """Gets directory where data will be stored."""
@@ -60,11 +61,12 @@ class Challenge(object):
         if os.path.exists(directory) is False:
             os.mkdir(directory)
 
-    def download_templates(self):
+    def download_template(self, sub_challenge=None):
         raise NotImplementedError
 
-    def score(self):
+    def score(self, filename, sub_challenge=None):
         raise NotImplementedError
 
-
+    def _pj(self, listdir):
+        return os.sep.join(listdir)
 
