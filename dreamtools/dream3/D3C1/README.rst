@@ -3,11 +3,11 @@ Overview
 ===========
 
 
-:Title: 
+:Title: DREAM 3 Signaling Cascade Identification
 :Nickname: D3C1
-:Summary: 
+:Summary: Infer a signaling network from flow cytometry data
 :Challenge:
-:SubChallenges: 
+:SubChallenges: None
 :Synapse page: https://www.synapse.org/#!Synapse:synXXXXXXX
 
 
