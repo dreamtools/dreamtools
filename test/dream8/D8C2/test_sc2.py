@@ -1,11 +1,19 @@
-from dreamtools.dream8.D8C2.sc2 import D8C2_sc2
-from dreamtools.dream8 import D8C2
+from dreamtools import D8C2
 import os
 
-def test_sc2():
+from nose.plugins.attrib import attr
 
-    filename = os.sep.join([D8C2.__path__[0], 'data', 'test_sc2.csv'])
-    s = D8C2_sc2(filename)
-    s.run()
+
+@attr('skip')
+def test_sc2():
+    s = D8C2()
+    filename = s.download_template('sc2')
+    s.score(filename, 'sc2')#
     assert s.df['SC_m']['bestPerformer'] == 0.45085234093637499564
+
+
+
+
+
+
 
