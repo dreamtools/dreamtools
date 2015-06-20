@@ -44,8 +44,19 @@ class D9dot5C1(Challenge):
     def __init__(self):
         """.. rubric:: constructor """
         super(D9dot5C1, self).__init__('D9dot5C1')
+        self.sub_challenges = ['sc1','sc2']
+
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.download_gs()
+        
+    def score(self, filename, sub_challenge_name):
+
+        if sub_challenge_name == 'sc1':
+            self.score_sc1(filename)
+        if sub_challenge_name == 'sc2':
+            self.score_sc2(filename)
+        else:
+            raise ValueError('Invalid sub challenge name. Use %s' % self.sub_challenges)
 
     def score_sc1(self, prediction_file):
         """Compute all results and compare user prediction with all official participants
@@ -72,6 +83,15 @@ class D9dot5C1(Challenge):
         df = pd.read_csv(fh.name, sep='\t', index_col=None).ix[0]
         fh.delete()
         return df
+
+    def download_template(self, name):
+        filename1, filename2 = self.download_templates()
+        if name == 'sc1':
+            return filename1
+        elif name == 'sc2':
+            return filename2
+        else:
+            raise ValueError("Invalid name provided. Use %s" % self.sub_challenges)
 
     def download_templates(self):
         """Download a template from synapse into ~/config/dreamtools/dream5/D5C2

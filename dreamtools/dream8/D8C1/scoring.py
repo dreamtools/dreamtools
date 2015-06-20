@@ -567,7 +567,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         # https://github.com/dreamtools/dreamtools/issues/16
         # self.edge_scores[cellLine][ligand] /= float(M)
 
-
     def compute_all_descendant_matrices(self):
         """Compute all descendancy matrices
 

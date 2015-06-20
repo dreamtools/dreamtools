@@ -37,7 +37,7 @@ def generic_scoring( challenge_name, sub_challenge_name, filename):
     if sub_challenge_name is None:
         score = class_inst.score(filename)
     else:
-        score = class_inst.download_template(filename, sub_challenge_name)
+        score = class_inst.score(filename, sub_challenge_name)
     return {'Results': score}
 
 
@@ -219,13 +219,6 @@ def scoring(args=None):
             res = d8c1_sc2a(options.filename, verbose=options.verbose)
         elif options.sub_challenge == 'sc2b':
             res = d8c1_sc2b(options.filename, verbose=options.verbose)
-    elif options.challenge == 'D8C2':
-        if options.sub_challenge == 'sc1':
-            res = d8c2_sc1(options.filename, verbose=options.verbose)
-        if options.sub_challenge == 'sc2':
-            res = d8c2_sc2(options.filename, verbose=options.verbose)
-    elif options.challenge == 'D5C2':
-        res = d5c2(options.filename)
     else:
         res = generic_scoring(options.challenge, options.sub_challenge, options.filename)
 

@@ -38,24 +38,22 @@ For details on the scoring metrics go to https://www.synapse.org/#!Wiki:syn17615
 Scoring
 ---------
 
-From the dreamtools package, you can score a submission from the D8C1 first sub challenge as follows:
+From the dreamtools package, you can score a submission from the D8C2 first sub challenge as follows:
 
 ::
 
-  from dreamtools import D8C2_sc1
-  s = D8C1_sc1(filename)
-  s.run()
-  # results are stored in s.df 
-  s.df
+  from dreamtools import D8C2
+  s = D8C2()
+  filename = s.download_template('sc1')
+  df = s.score(filename, 'sc1')
 
 
 Note that the computation takes a few minutes. The computation for the sub-challenge 2 is much faster and works similalrly::
 
-  from dreamtools import D8C2_sc2
-  s = D8C1_sc2(filename)
-  s.run()
-  # results are stored in s.df 
-  s.df
+  from dreamtools import D8C2
+  s = D8C2()
+  filename = s.download_template('sc2')
+  df = s.score(filename, 'sc2')
 
 
 Examples of submission files can be found in the source code (e.g., data/test_sc1.csv)
