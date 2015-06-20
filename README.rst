@@ -54,16 +54,10 @@ Available challenges
 **Dreamtools** software does not include all scoring functions but more will be
 implemented in the future. Here is the list of challenges available 
 
-#. DREAM10
 
 #. DREAM9.5
 
     * D9dot5C1 olfaction challenge
-
-
-#. DREAM9
-
-#. DREAM8.5
 
 #. DREAM8
 
@@ -85,15 +79,10 @@ implemented in the future. Here is the list of challenges available
 
     * D5C2 (transcription factor)  
 
-#. DREAM4
-
 #. DREAM3
 
     * D3C1 (Signaling Cascade Challenge)
 
-#. DREAM2
-
-#. DREAM1
 
 **Format** of the template for each challenge should be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 
 please see ./dreamtools/dream8/D8C1/README.rst
