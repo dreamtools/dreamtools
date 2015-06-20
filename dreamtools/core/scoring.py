@@ -18,40 +18,28 @@ import os
 import argparse
 import sys
 from easydev.console import red, purple, darkgreen
+from dreamtools import Challenge
+
+
 registered = {
-        'd8c1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
-        'd8c2': ['sc1', 'sc2'],
-        'd7c1':['parameter', 'topology', 'timecourse'],
-        'd5c2': [],
-        'd9dot5c1': ['sc1', 'sc2']}
+        'D8C1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
+        'D8C2': ['sc1', 'sc2'],
+        'D7C1':['parameter', 'topology', 'timecourse'],
+        'D5C2': [],
+        'D3C1':[],
+        'D9dot5C1': ['sc1', 'sc2']}
 
 
 # Define the simple scoring functions here below
+def generic_scoring( challenge_name, sub_challenge_name, filename):
+    c = Challenge(challenge_name)
+    class_inst = c.import_scoring_class()
+    if sub_challenge_name is None:
+        score = class_inst.score(filename)
+    else:
+        score = class_inst.download_template(filename, sub_challenge_name)
+    return {'Results': score}
 
-
-
-def d7c1_model1_parameter(filename):
-    """wrapper to score D7C1 submission (parameter model1)"""
-    from dreamtools import D7C1
-    s = D7C1()
-    score = s.score_model1_parameters(filename)
-    return {'score': score}
-
-
-def d7c1_model1_prediction(filename):
-    """wrapper to score D7C1 submission (prediction model1)"""
-    from dreamtools import D7C1
-    s = D7C1()
-    score = s.score_model1_timecourse(filename)
-    return {'score': score}
-
-
-def d7c1_model2_topology(filename):
-    """wrapper to score D7C1 submission (topology)"""
-    from dreamtools import D7C1
-    s = D7C1()
-    score = s.score_topology(filename)
-    return {'score': score}
 
 def d5c2(filename):
     """wrapper to score D5C2 submission"""
@@ -99,6 +87,7 @@ def d8c1_sc2a(filename, verbose=False):
     return {'RMSE': sc2a.get_mean_rmse(),
             'Rank LB': rank.get_rank_your_submission()}
 
+
 def d8c1_sc2b(filename, verbose=False):
     """wrapper to score D8C1 submission(SC2B sub challenge)"""
     from dreamtools.dream8.D8C1 import scoring, ranking
@@ -126,17 +115,6 @@ def d8c2_sc2(filename, verbose=False, verboseR=False):
     s.run()
     return {'results': s.df}
 
-def d9dot5c1_sc1(filename, verbose=False):
-    from dreamtools import D9dot5C1
-    s = D9dot5C1()
-    df = s.score_sc1(filename)
-    return {'results': df}
-
-def d9dot5c1_sc2(filename, verbose=False):
-    from dreamtools import D9dot5C1
-    s = D9dot5C1()
-    df = s.score_sc2(filename)
-    return {'results': df}
 
 
 
@@ -177,6 +155,9 @@ def scoring(args=None):
         if len(registered[options.challenge])!=0 and options.sub_challenge is None:
             print_color('--challenge and --sub-challenge must be provided', red)
             sys.exit()
+    else:
+        options.challenge = options.challenge.upper()
+        options.challenge = options.challenge.replace('DOT', 'dot')
 
     try:
         d.check_param_in_list(options.challenge, registered.keys())
@@ -195,10 +176,28 @@ def scoring(args=None):
             print_color(txt, red)
             sys.exit()
 
+    if options.challenge not in registered.keys():
+        raise ValueError('Invalid challenge name. Choose one of %s' % registered.keys())
+
+    if options.download_template is True:
+        c = Challenge(options.challenge)
+        class_inst = c.import_scoring_class()
+        if options.sub_challenge is None:
+            try:
+                filename = class_inst.download_template()
+            except:
+                print_color('could not download template. Missing sub challenge name', red)
+                print_color(registered[options.challenge], red)
+                return
+        else:
+            filename = class_inst.download_template(options.sub_challenge)
+        print(filename)
+        return
+
     if options.filename is None:
         txt = "---> filename not provided. You must provide a filename with correct format\n"
-        txt += "Format are explained on DreamTools website or Synapse website\n"
-        txt += "https://github.com/dreamtools/dreamtools, or http://www.synapse.org\n"
+        txt += "You may get a template using --download-template option\n"
+        txt += "https://github.com/dreamtools/dreamtools, or http://dreamchallenges.org\n"
         print_color(txt, red)
         sys.exit()
 
@@ -210,15 +209,8 @@ def scoring(args=None):
 
     res = '??'
 
-    if options.challenge not in registered.keys():
-        raise ValueError('Invalid challenge name. Choose one of %s' % registered.keys())
 
-    if options.challenge == 'd9dot5c1':
-        if options.sub_challenge == 'sc1':
-            res = d9dot5c1_sc1(options.filename, verbose=options.verbose)
-        elif options.sub_challenge == 'sc2':
-            res = d9dot5c1_sc2(options.filename, verbose=options.verbose)
-    if options.challenge == 'd8c1':
+    if options.challenge == 'D8C1':
         if options.sub_challenge == 'sc1a':
             res = d8c1_sc1a(options.filename, verbose=options.verbose)
         elif options.sub_challenge == 'sc1b':
@@ -227,20 +219,16 @@ def scoring(args=None):
             res = d8c1_sc2a(options.filename, verbose=options.verbose)
         elif options.sub_challenge == 'sc2b':
             res = d8c1_sc2b(options.filename, verbose=options.verbose)
-    elif options.challenge == 'd8c2':
+    elif options.challenge == 'D8C2':
         if options.sub_challenge == 'sc1':
             res = d8c2_sc1(options.filename, verbose=options.verbose)
         if options.sub_challenge == 'sc2':
             res = d8c2_sc2(options.filename, verbose=options.verbose)
-    elif options.challenge == 'd7c1':
-        if options.sub_challenge == 'parameter':
-            res = d7c1_model1_parameter(options.filename)
-        if options.sub_challenge == 'prediction':
-            res = d7c1_model1_prediction(options.filename)
-        if options.sub_challenge == 'topology':
-            res = d7c1_model2_topology(options.filename)
-    elif options.challenge == 'd5c2':
+    elif options.challenge == 'D5C2':
         res = d5c2(options.filename)
+    else:
+        res = generic_scoring(options.challenge, options.sub_challenge, options.filename)
+
 
     txt = "Solution for %s in challenge %s" % (options.filename, options.challenge)
     if options.sub_challenge is not None:
@@ -303,9 +291,8 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
 
         group.add_argument("--challenge", dest='challenge',
                          default=None, type=str, 
-                         help="nickname of the challenge (e.g., d8c1 stands for"
-                         "dream8 challenge 1). Challenge nicknames can be found on"
-                         "dreamchallenges.org.")
+                         help="nickname of the challenge (e.g., D8C1 stands for"
+                         "dream8 challenge 1).")
         group.add_argument("--sub-challenge", dest='sub_challenge', 
                          default=None, type=str,
                          help="Name of the data files")
@@ -316,6 +303,10 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
                          help="submission/filename to score.")
         group.add_argument("--filename", dest='filename',
                          help="submission/filename to score.")
+        group.add_argument("--download-template", dest='download_template',
+                         help="download template. Templates for challenge may be downloaded using this option. It returns the path to template.", action='store_true')
+
+
         #group.add_argument("--help", dest='help',
         #                 action="store_true",
         #                 help="this help.")

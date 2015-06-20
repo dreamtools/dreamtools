@@ -70,3 +70,25 @@ class Challenge(object):
     def _pj(self, listdir):
         return os.sep.join(listdir)
 
+    def import_scoring_class(self):
+        """Dynamic import of the challenge class
+        
+        c = Challenge('D7C1')
+        inst_class = c.download_template('topology')
+
+        """
+        import imp
+        import dreamtools
+
+        pathname = os.path.split(dreamtools.__file__)[0] 
+        pathname += os.sep + self._get_challenge_directory() 
+        pathname += os.sep + self.nickname
+        pathname += os.sep + 'scoring.py'
+        py_mod = imp.load_source('scoring', pathname)
+        class_inst = getattr(py_mod, self.nickname)()
+
+        return class_inst
+                                                                                                                
+        
+
+

@@ -18,6 +18,7 @@ def create_dreamtools_config_directories(maindir, subdirectories):
             print(" - creating %s" % subdir)
             os.mkdir(subdir)
 
+from dreamtools.core.challenge import Challenge
 
 from dream3.D3C1.scoring import D3C1
 from dream7.D7C1.scoring import D7C1
