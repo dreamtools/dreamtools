@@ -5,8 +5,8 @@ Overview
 :Title: DREAM 8 - NIEHS-NCATS-UNC DREAM Toxicogenetics Challenge
 :Nickname: D8C2
 :Summary: Participants were provided with genetics and transcriptomics information of the 1000 Genomes Project (www.1000genomes.org), as well as cytotoxicity measures derived from compound exposure to over a hundred toxic agents using the 1000 genomes lymphoblastoid cell lines and tasked with solving two related subchallenges.
-
-:synapse entry: https://www.synapse.org/#!Synapse:syn1761567/wiki/
+:SubChallenges: sc1, sc2
+:Synapse page: https://www.synapse.org/#!Synapse:syn1761567
 
 .. contents::
 
