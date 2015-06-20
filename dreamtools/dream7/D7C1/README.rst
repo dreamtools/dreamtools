@@ -1,15 +1,29 @@
-This directory contains resources related to D7C1 challenge
-============================================================
+Overview
+===========
 
 
-* generator: contains data and models used to provide test data to participants
-* goldstandard: contains 4 gold standard files for model1 and model2
-* misc: old code used during the challenge by organisers
-* templates: 4 templates for testing and as example for users
+:Title: DREAM7 - Parameter estimation and network topology prediction
+:Nickname: D7C1
+:Summary: 
+:Challenge:
+:SubChallenges: parameter, topology, timecourse            
+:Synapse page: https://www.synapse.org/#!Synapse:syn2821735
 
-scoring.py contains the scoring functions for 3 sub-challenge, which are also 
-in **dreamtools-scoring** standalone application.
+
+.. contents::
 
 
-:Challenge nickname:  D7C1
-:Sub challenges names: parameter, topology, timecourse            
+Scoring
+---------
+
+::
+
+    from dreamtools import D7C1
+    s = D7C1()
+    filename = s.download_templates() 
+    s.score(filename) 
+
+
+
+
+
