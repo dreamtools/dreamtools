@@ -1,10 +1,11 @@
 
 import os
+import StringIO
 from dreamtools.core.challenge import Challenge
 
+import pandas as pd
 class D4C1(Challenge):
     """A class dedicated to D4C1 challenge
-
 
     ::
 
@@ -23,16 +24,44 @@ class D4C1(Challenge):
         super(D4C1, self).__init__('D4C1')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
+        self._load_golddata()
+
     def score(self, prediction_file):
         raise NotImplementedError
-
 
     def read_section(self):
         pass
 
+    def _load_golddata(self):
+        filename = self._pj([self._path2data, 'goldstandard', 'D4C1_goldstandard.txt'])
+        data = open(filename).read()
+        # in principle, the file contains 13 matrices with an empty line in between (hence the
+        # \n\n and there is a line before each matrix that is not a header hence header=None
+        self.golddata = []
+        for i in range(0,13):
+            df = pd.read_csv(StringIO.StringIO(data.split("\n\n")[0]), header=None, sep='\t', 
+                skiprows=1, index_col=0)
+            assert all(df.sum() == [1]*10), 'sum over a column must be equal to 1'
+            self.golddata.append(df)
 
-    def load_gold_standard(self):
-        pass
+    def _load_prediction(self, filename):
+        data = open(filename).read()
+        # in principle, the file contains 13 matrices with an empty line in between (hence the
+        # \n\n and there is a line before each matrix that is not a header hence header=None
+        self.prediction = []
+        for i in range(0,13):
+            df = pd.read_csv(StringIO.StringIO(data.split("\n\n")[0]), header=None, sep='\t', 
+                skiprows=1, index_col=0)
+            if all(df.apply(lambda x: abs(x.sum()-1)<1e-12)) is False:
+                print all(df.apply(lambda x: abs(x.sum()-1)<1e-12))
+                print('In Matrix %s, the sum over a column is not equal to 1!!' % (i+1))
+                print df.sum()
+                raise ValueError
+            self.prediction.append(df)
+
+    def download_template(self):
+        filename = self._pj([self._path2data, 'templates', 'D4C1_templates.txt'])
+        return filename
 
 
 
@@ -210,6 +239,7 @@ sh3.overall_score = overall;
 sh3.pvals = PVAL;
 sh3.offsets = OFFSET;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 function F = frobenius_norm_3d(X)
 
 %% Frobenius Norm
@@ -220,7 +250,8 @@ for ii = 1:size(X,3)
 	%% unpack
 	x = X(:,:,ii);
 
-	%% Frobenius
+    %% Frobenius:1
+
 	f = sqrt(sum(diag(x * x')));
 
 	%% remember
@@ -228,60 +259,8 @@ for ii = 1:size(X,3)
 
 end
 %
-% This script demonstrates how to call the function 
-% DREAM4_Challenge1_Evaluation().
-%
 % Gustavo A. Stolovitzky, Ph.D.
-% Adj. Assoc Prof of Biomed Informatics, Columbia Univ
-% Mngr, Func Genomics & Sys Biology, IBM  Research
-% P.O.Box 218 					Office :  (914) 945-1292
-% Yorktown Heights, NY 10598 	Fax     :  (914) 945-4217
-% http://www.research.ibm.com/people/g/gustavo
-% http://domino.research.ibm.com/comm/research_projects.nsf/pages/fungen.index.html 
-% gustavo@us.ibm.com
-%
 % Robert Prill, Ph.D.
-% Postdoctoral Researcher
-% Computational Biology Center, IBM Research
-% P.O.Box 218
-% Yorktown Heights, NY 10598 	
-% Office :  914-945-1377
-% http://domino.research.ibm.com/comm/research_people.nsf/pages/rjprill.index.html
-% rjprill@us.ibm.com
-%
-%% directory for the predictions
-DATADIR = '../INPUT/my_splitted_predictions/';
-
-%% directory for the gold standards
-GOLDDIR = '../INPUT/gold_standards/';
-
-%% directory for the precomputed probability densities
-PDFDIR = '../INPUT/probability_densities/';
-
-[kinase, pdz, sh3] = DREAM4_Challenge1_Evaluation(DATADIR,GOLDDIR,PDFDIR)
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function X = load_matrices(DATADIR)
-%% X is 3D
-
-files = directory_list(DATADIR);
-
-for fi = 1:length(files)
-	file = [ DATADIR files{fi} ];
-	d = importdata(file);
-	A = d.data;
-	X(:,:,fi) = A;
-	%header = d.textdata(1);
-end
-%rownames = d.textdata(2:end);
-% P(X<=x)
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function P = probability(X,Y,x)
-
-dx = X(2)-X(1);
-P = sum( double(X<=x) .* Y * dx );
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [score offset] = slide(G,T)
