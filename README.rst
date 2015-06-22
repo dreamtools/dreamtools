@@ -79,6 +79,10 @@ implemented in the future. Here is the list of challenges available
 
     * D5C2 (transcription factor)  
 
+#. DREAM4
+ 
+    * D4C3 (Predictive Signaling Network Modeling)
+
 #. DREAM3
 
     * D3C1 (Signaling Cascade Challenge)
