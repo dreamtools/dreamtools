@@ -24,8 +24,14 @@ class D4C3(Challenge):
 
     Data and templates are downloaded from Synapse. You must have a login.
 
+
+    A parameter called cost_per_link is hardcoded for the challenge. IT was compute as the = min {Prediction Score / Edge Count}
+    amongst all submissions. For this scoring function, :attr:cost_per_link` is set to 0.0827 and may be changed by the user.
+
+
+
     """
-    def __init__(self):
+    def __init__(self, edge_count=20, cost_per_link=0.0827):
         """.. rubric:: constructor
 
         """
@@ -34,7 +40,12 @@ class D4C3(Challenge):
 
         # cost_per_link Was determined empirically from all the teams' submissions
         # as r = min(prediction_score / edge_count).
-        self.cost_per_link = 0.0827;
+        self.cost_per_link = cost_per_link
+        self.edge_count = edge_count
+        self.species = ['AKT', 'ERK12', 'Ikb', 'JNK12', 'p38', 'HSP27', 'MEK12']
+
+        self.load_gold_standard()
+        self.fetch_normalisation()
 
     def load_gold_standard(self):
         filename = self._pj([self._path2data, 'goldstandard', 'D4C3_goldstandard.csv'])
@@ -57,7 +68,7 @@ class D4C3(Challenge):
     def load_prediction(self, filename):
         df = pd.read_csv(filename)
         df.replace('NOT AVAILABLE', np.nan, inplace=True)
-        self.templates = df.copy()
+        self.prediction = df.copy()
         # load prediction 
         #files = directory_list(DATADIR)
         #file = [ DATADIR files{1} ]
@@ -65,115 +76,122 @@ class D4C3(Challenge):
         #T = T(G_idx_30,2:end)
         pass
 
-    def score(self, prediction_file):
-        raise NotImplementedError
+    def score(self, filename):
 
-        """
-%
-% This function produces the DREAM4 scores for Challenge 3.
-%
-% See go.m for an example of how to call it.
-%
+        self.load_prediction(filename)
 
-%PDFDIR  = '../INPUT/probability_densities/';
-%edge_count = 20;
-
-goldfile = [ GOLDDIR 'DREAM4_GoldStandard_SignalingNetworkPredictions_Test.csv' ];
-PDF_ROOT = 'pdf_score_';
+        # compute error and pval for each molecular species
 
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% compute error and pval for each molecular species
+        # some columns have NA that were originally string (NOT AVAILABLE) so
+        # those columns are not float type. We need to cast them to float.
+        # Besides, we care only about species and time 30
+        T = self.prediction[self.species][self.prediction.Time==30].astype(float)
+        G = self.goldstandard[self.species][self.goldstandard.Time==30].astype(float)
 
-figure(1)
-pn = 4;
-pm = 3;
-pj = 0;
+        self.errors = {}
+        self.x_norm_log = {}
+        self.y_log = {}
+        self.pvals = {}
+        for i, species in enumerate(self.species):
+            m, b, rho = self.fit_line(species)
 
-%% for each molecular species (column)
-for si = 1:size(G,2)
-%for si = 1;
+            t = T[species]
+            g = G[species]
 
-	%% fetch normalization based on common experiments
-	[m b rho] = fetch_normalization(si);
+            # zero counting correction prevents log(0)
+            x_log = pylab.log10(t + 1)
+            y_log = pylab.log10(g + 1)
 
-	%% one column at a time
-	t = T(:,si);
-	g = G(:,si);
+            # normalise
+            x_norm_log = m * x_log + b
 
-	%% zero counting correction prevents log(0)
-	x_log = log10(t + 1);
-	y_log = log10(g + 1);
+            # transform back to original space
+            x_norm_lin = 10 ** x_norm_log
+            y_lin = 10 ** y_log
 
-	%% normalize
-	x_norm_log = m * x_log + b;
+            # the same prediction score from DREAM3
+            numerator = (y_lin - x_norm_lin) ** 2	# cancels +1 correction
+            denominator = 300**2 + (0.08*g) ** 2
+            error_individual = numerator / denominator
 
-	%% transform back to original space
-	x_norm_lin = 10.^x_norm_log;
-	y_lin = 10.^y_log;
+            # add the individual scores
+            self.errors[species] = error_individual.sum()
 
-	%% the same prediction score from DREAM3
-	numerator = (y_lin - x_norm_lin).^2;	%% cancels +1 correction
-	denominator = 300^2 + (0.08*g).^2;
-	error_individual = numerator ./ denominator;
+            # load prob density function
+            import scipy.io
+            filename = self._pj([self._path2data, 'data', 'pdf_score_%s.mat' % str(i+1)])
+            proba = scipy.io.loadmat(filename)
+            X, Y, C = proba['X'][0], proba['Y'][0], proba['C'][0]
 
-	%% add the individual scores
-	idx = find(~isnan(error_individual));
-	errors(si) = sum(error_individual(idx));
+            # save some information
+            self.x_norm_log[species] = x_norm_log.copy()
+            self.y_log[species] = y_log.copy()
+            self.pvals[species] = self.probability(X, Y, self.errors[species])
 
-	%% load prob density function
-	pdffile = [ PDFDIR PDF_ROOT num2str(si) ];
-	load(pdffile)		%% sets X, Y, C
+        self.prediction_score = -pylab.mean(pylab.log10(self.pvals.values()))
+        self.overall_score = self.prediction_score - self.cost_per_link * self.edge_count
 
-	%% compute pval
-	x = errors(si);
-	p = probability(X,Y,x);
-	pvals(si) = p;
 
-	%% show something
-	pj = pj + 1;
-	subplot(pn,pm,pj)
-	plot(x_norm_log,y_log,'.')
-	LIM = [ min(axis) max(axis) ];
-	axis square; axis equal; axis([LIM LIM]);
-	grid on
-	lsline
-	hold on
-	plot(LIM,LIM,'k--')
-	hold off
-	title(labels{si})
+        df = pd.DataFrame()
+        df['Edge_count'] = [self.edge_count]
+        df['Overall_score'] = [self.overall_score]
+        df['Prediction_score'] = [self.prediction_score]
+        for species in self.species:
+            df[species+'_pvalue'] = [self.pvals[species]]
+        return df
 
-end
+        #return a final data dataframe
 
-prediction_score = -mean(log10(pvals)')';
-overall_score = prediction_score - COST_PER_LINK .* edge_count;
-    """
 
     def plot(self):
-        # %% annotate plot
-        # subplot(pn,pm,1)
-        # xlabel('norm. prediction (log_1_0)')
-        # ylabel('gold (log_1_0)')
-        pass
 
-    def loader(self, filename):
-        # function [A rowlabels collabels] = loader(filename)
-        # d = importdata(filename);
-        # A = d.data;
-        # collabels = d.textdata(1,:);
-        # rowlabels = [ d.textdata(:,1) d.textdata(:,2) ];
-        pass
+        if hasattr(self, 'x_norm_log') is False:
+            print('Call score() method first. Nothing to plot.')
+            return
+        pylab.clf()
 
-    def probability(self):
-        # % P(X<=x)
-        # function P = probability(X,Y,x)
+        for i, species in enumerate(self.species):
+            pylab.subplot(3, 3, i+1)
+            pylab.plot(self.x_norm_log[species], self.y_log[species], '.')
+            pylab.grid(True)
+            pylab.axis('equal')
 
-        # dx = X(2)-X(1);
-        # P = sum( double(X<=x) .* Y * dx );
-        pass
+
+            Xlim = np.array(pylab.xlim())
+            Xlim[1] = max([Xlim[1], self.y_log[species].max()])
+            Xlim[0]-= 0.5
+            Xlim[1]+=0.5
+
+
+            pylab.plot(Xlim, Xlim, 'k--')
+
+
+            X = self.x_norm_log[species]
+            mask = X.isnull() == False
+            N = mask.sum()
+            Y = self.y_log[species]
+            b, m = np.linalg.lstsq(np.vstack([np.ones(N), X[mask]]).T, Y[mask])[0]
+            pylab.plot(Xlim, np.array(Xlim*m+b), 'g-')
+            pylab.xlim(Xlim[0])
+            #pylab.ylim([x0,x1])
+            #print x0,x1
+
+
+            pylab.title(species)
+        pylab.tight_layout()
+
+
+
+    def probability(self, X, Y, x):
+        dx = X[1]-X[0]
+        P = sum(Y[X <= x])*dx
+        return P
+
 
     def fetch_normalisation(self):
-
+        # x is training
+        # y is gold
         filename = self._pj([self._path2data, 'data', 'common_training.csv'])
         training = pd.read_csv(filename)
 
@@ -183,7 +201,7 @@ overall_score = prediction_score - COST_PER_LINK .* edge_count;
         #"""function [m b rho] = fetch_normalization(jj)
         #%% jj is the index of the molecule (1-7)
 
-        colnames = ['AKT', 'ERK12', 'Ikb', 'JNK12', 'p38', 'HSP27', 'MEK12']
+        colnames = self.species
 
         self.norm_training = pylab.log10(training[colnames] + 1)
         self.norm_gold = pylab.log10(goldfile[colnames] + 1)
@@ -192,54 +210,20 @@ overall_score = prediction_score - COST_PER_LINK .* edge_count;
         #[m b rho] = fit_line(x,y);
 
     def fit_line(self, species):
-        """
-        function [m b rho] = fit_line(x,y)
 
-        %% remove Nan
-        idx = find(~isnan(x));
-        x = x(idx,:);
-        y = y(idx);
+        x = self.norm_training[species].dropna().values
+        y = self.norm_gold[species].dropna().values
+        N = len(x)
 
-        %% linear fit
-        X = [ ones(length(x),1) x ];
-        myfit = X \ y;
-        b = myfit(1);
-        m = myfit(2);
+        # equivalent to X/y in matlab
+        [solution, residuals, ranks, s] = np.linalg.lstsq(np.vstack([np.ones(N), x]).T, y)
 
-        %% corr coeff
-        rho = corr(x,y);
-        """
-
-        x = np.array(self.norm_gold[species])
-        y = np.array(self.norm_training[species])
-        N = 30
-        b = np.array([1]*30)  / y
-        m = x / y
+        b,m =  solution
         rho = np.corrcoef(x,y)[1,0]
-        return b,m,rho
+        return m,b,rho
 
 
-    def preprocess_prediction(self):
-        """
-cd my_prediction
-for f in *
-    do
 
-        outfile="../my_processed_prediction/$f"
-
-            echo
-                echo "Processing prediction file in INPUT/my_prediction"
-                    echo
-
-                        ## change these strings to NaN (what Matlab likes)
-                            cat $f | sed 's/NOT AVAILABLE/NaN/g' | sed 's/NA/NaN/g' | sed 's/"//g' > $outfile
-
-                                echo "Wrote output file to INPUT/my_processed_prediction"
-                                    echo
-
-                                    done
-
-    """
 
 
 
