@@ -60,6 +60,12 @@ D3C1
 DREAM4 challenges
 --------------------
 
+D4C3
+~~~~~~
+.. automodule:: dreamtools.dream4.D4C3.scoring
+    :members:
+    :undoc-members:
+
 DREAM5 challenges
 --------------------
 

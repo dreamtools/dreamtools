@@ -26,6 +26,7 @@ registered = {
         'D8C2': ['sc1', 'sc2'],
         'D7C1':['parameter', 'topology', 'timecourse'],
         'D5C2': [],
+        'D4C3':[],
         'D3C1':[],
         'D9dot5C1': ['sc1', 'sc2']}
 
@@ -229,7 +230,7 @@ def scoring(args=None):
     txt += " is :\n"
 
     for k in sorted(res.keys()):
-        txt += darkgreen("     %s: %s\n" %(k, res[k]))
+        txt += darkgreen("     %s:\n %s\n" %(k, res[k]))
 
     print(txt)
 

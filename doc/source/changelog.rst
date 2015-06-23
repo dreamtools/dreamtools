@@ -1,4 +1,10 @@
 ChangeLog
+==============
+
+0.1.3
+------
+
+ * NEWS: add D4C3 challenge in Dreamtools
 
 0.1.2
 ---------

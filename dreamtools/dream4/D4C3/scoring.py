@@ -22,11 +22,12 @@ class D4C3(Challenge):
         filename = s.download_template() 
         s.score(filename) 
 
-    Data and templates are downloaded from Synapse. You must have a login.
+    Data and templates are inside Dreamtools.
 
 
-    A parameter called cost_per_link is hardcoded for the challenge. IT was compute as the = min {Prediction Score / Edge Count}
-    amongst all submissions. For this scoring function, :attr:cost_per_link` is set to 0.0827 and may be changed by the user.
+    .. note:: A parameter called cost_per_link is hardcoded for the challenge. IT was compute as
+        the = min {Prediction Score / Edge Count} amongst all submissions. For this scoring
+        function, :attr:`cost_per_link` is set to 0.0827 and may be changed by the user.
 
 
 
@@ -44,10 +45,10 @@ class D4C3(Challenge):
         self.edge_count = edge_count
         self.species = ['AKT', 'ERK12', 'Ikb', 'JNK12', 'p38', 'HSP27', 'MEK12']
 
-        self.load_gold_standard()
-        self.fetch_normalisation()
+        self._load_gold_standard()
+        self._fetch_normalisation()
 
-    def load_gold_standard(self):
+    def _load_gold_standard(self):
         filename = self._pj([self._path2data, 'goldstandard', 'D4C3_goldstandard.csv'])
         df = pd.read_csv(filename)
         df.replace('NOT AVAILABLE', np.nan, inplace=True)
@@ -65,7 +66,7 @@ class D4C3(Challenge):
         filename = self._pj([self._path2data, 'templates', 'D4C3_templates.csv'])
         return filename
 
-    def load_prediction(self, filename):
+    def _load_prediction(self, filename):
         df = pd.read_csv(filename)
         df.replace('NOT AVAILABLE', np.nan, inplace=True)
         self.prediction = df.copy()
@@ -77,8 +78,13 @@ class D4C3(Challenge):
         pass
 
     def score(self, filename):
+        """Compute the score
 
-        self.load_prediction(filename)
+        See synapse page for details about the scoring function.
+
+        """
+
+        self._load_prediction(filename)
 
         # compute error and pval for each molecular species
 
@@ -94,7 +100,7 @@ class D4C3(Challenge):
         self.y_log = {}
         self.pvals = {}
         for i, species in enumerate(self.species):
-            m, b, rho = self.fit_line(species)
+            m, b, rho = self._fit_line(species)
 
             t = T[species]
             g = G[species]
@@ -127,7 +133,7 @@ class D4C3(Challenge):
             # save some information
             self.x_norm_log[species] = x_norm_log.copy()
             self.y_log[species] = y_log.copy()
-            self.pvals[species] = self.probability(X, Y, self.errors[species])
+            self.pvals[species] = self._probability(X, Y, self.errors[species])
 
         self.prediction_score = -pylab.mean(pylab.log10(self.pvals.values()))
         self.overall_score = self.prediction_score - self.cost_per_link * self.edge_count
@@ -145,6 +151,19 @@ class D4C3(Challenge):
 
 
     def plot(self):
+        """Plots prediction versus gold standard for each species
+
+        .. plot::
+            :include-source:
+            :width: 80%
+
+            from dreamtools import D4C3
+            s = D4C3()
+            filename = s.download_template()
+            s.score(filename)
+            s.plot()
+
+        """
 
         if hasattr(self, 'x_norm_log') is False:
             print('Call score() method first. Nothing to plot.')
@@ -183,13 +202,13 @@ class D4C3(Challenge):
 
 
 
-    def probability(self, X, Y, x):
+    def _probability(self, X, Y, x):
         dx = X[1]-X[0]
         P = sum(Y[X <= x])*dx
         return P
 
 
-    def fetch_normalisation(self):
+    def _fetch_normalisation(self):
         # x is training
         # y is gold
         filename = self._pj([self._path2data, 'data', 'common_training.csv'])
@@ -209,7 +228,7 @@ class D4C3(Challenge):
         #which one is x/y?
         #[m b rho] = fit_line(x,y);
 
-    def fit_line(self, species):
+    def _fit_line(self, species):
 
         x = self.norm_training[species].dropna().values
         y = self.norm_gold[species].dropna().values
