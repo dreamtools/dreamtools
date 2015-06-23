@@ -89,6 +89,16 @@ class Challenge(object):
 
         return class_inst
                                                                                                                 
-        
+
+    def _download_data(self, name, synid):
+        from dreamtools.core.downloader import  Downloader
+        filename = self.directory + os.sep + name
+        if os.path.exists(filename) is False:
+            # must download the data now
+            print("File %s not found. Downloading from Synapse. You must have a login." % filename)
+            d = Downloader(self.nickname)
+            d.download(synid)
+
+        return filename
 
 

@@ -27,6 +27,7 @@ registered = {
         'D7C1':['parameter', 'topology', 'timecourse'],
         'D5C2': [],
         'D4C3':[],
+        'D4C1':[],
         'D3C1':[],
         'D9dot5C1': ['sc1', 'sc2']}
 

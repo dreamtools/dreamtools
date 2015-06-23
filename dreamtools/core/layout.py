@@ -30,7 +30,6 @@ Overview
 :Title: 
 :Nickname: %(nickname)s
 :Summary: 
-:Challenge:
 :SubChallenges: 
 :Synapse page: https://www.synapse.org/#!Synapse:synXXXXXXX
 
@@ -55,6 +54,7 @@ scoring_templates = '''
 import os
 from dreamtools.core.challenge import Challenge
 
+
 class %(nickname)s(Challenge):
     """A class dedicated to %(nickname)s challenge
 
@@ -75,9 +75,18 @@ class %(nickname)s(Challenge):
         """
         super(%(nickname)s, self).__init__('%(nickname)s')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
+        self._init()
+
+    def _init(self):
+        # should download files from synapse if required.
+        pass
 
     def score(self, prediction_file):
         raise NotImplementedError
+
+    def download_template(self):
+        # should return full path to a template file
+        pass
 '''
 
 
