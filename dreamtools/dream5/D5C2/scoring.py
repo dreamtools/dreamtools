@@ -137,15 +137,14 @@ class D5C2(Challenge):
         filename = self._download_data('templates.txt.gz', 'syn4483192')
         return filename
 
-    def _download_data(self, name, synid):
-        filename = self.directory + os.sep + name
-        if os.path.exists(filename) is False:
-            # must download the data now
-            print("File %s not found. Downloading from Synapse. You must have a login." % filename)
-            d = Downloader(self.nickname)
-            d.download(synid)
-
-        return filename
+    #def _download_data(self, name, synid):
+    #    filename = self.directory + os.sep + name
+    #    if os.path.exists(filename) is False:
+    #        # must download the data now
+    #        print("File %s not found. Downloading from Synapse. You must have a login." % filename)
+    #        d = Downloader(self.nickname)
+    #        d.download(synid)
+    #   return filename
 
     def _split_data(self, precision=6):
         """precision is to get same results as in the original perl script"""

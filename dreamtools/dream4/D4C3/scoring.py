@@ -200,13 +200,10 @@ class D4C3(Challenge):
             pylab.title(species)
         pylab.tight_layout()
 
-
-
     def _probability(self, X, Y, x):
         dx = X[1]-X[0]
         P = sum(Y[X <= x])*dx
         return P
-
 
     def _fetch_normalisation(self):
         # x is training

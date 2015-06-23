@@ -80,7 +80,8 @@ implemented in the future. Here is the list of challenges available
     * D5C2 (transcription factor)  
 
 #. DREAM4
- 
+
+    * D4C1 (Peptide Recognition Domain (PRD) Specificity Prediction) 
     * D4C3 (Predictive Signaling Network Modeling)
 
 #. DREAM3
