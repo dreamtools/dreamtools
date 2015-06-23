@@ -44,7 +44,7 @@ class D8C2(Challenge):
             df = self.score_sc1(filename)
             return df
         elif sub_challenge_name == 'sc2':
-            df = self.score_sc1(filename)
+            df = self.score_sc2(filename)
             return df
         else:
             ValueError("Invalid sub challenge. Use one of %s" % self.sub_challenges)
