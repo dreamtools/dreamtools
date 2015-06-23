@@ -53,6 +53,7 @@ implemented in the future. Here is the list of challenges available
 * Dream 7 (D7C1) (Network topology and parameter estimation)
 * Dream 5 (D5C2) (Transcription factor)
 * Dream 4 (D4C3) (Predictive Signaling Network Modeling)
+* Dream 4 (D4C1) (Peptide Recognition Domain (PRD) Specificity Prediction)
 * Dream 3 (D3C1) (Signalling cascade)
 
 

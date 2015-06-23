@@ -60,6 +60,11 @@ D3C1
 DREAM4 challenges
 --------------------
 
+D4C1
+~~~~~~
+.. automodule:: dreamtools.dream4.D4C1.scoring
+    :members:
+
 D4C3
 ~~~~~~
 .. automodule:: dreamtools.dream4.D4C3.scoring
@@ -155,6 +160,10 @@ D8C2
 
 NIEHS-NCATS-UNC DREAM Toxicogenetics 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: dreamtools.dream8.D8C2.scoring
+    :members:
+    :undoc-members:
 
 .. automodule:: dreamtools.dream8.D8C2.sc1
     :members:
