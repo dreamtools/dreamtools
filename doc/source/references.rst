@@ -65,6 +65,12 @@ D4C1
 .. automodule:: dreamtools.dream4.D4C1.scoring
     :members:
 
+D4C2
+~~~~~~
+.. automodule:: dreamtools.dream4.D4C2.scoring
+    :members:
+
+
 D4C3
 ~~~~~~
 .. automodule:: dreamtools.dream4.D4C3.scoring

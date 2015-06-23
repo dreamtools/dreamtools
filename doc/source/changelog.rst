@@ -4,6 +4,7 @@ ChangeLog
 0.1.4
 -------
 
+ * NEWS: add :class:`dreamtools.dream4.scoring.D4C2` challenge in Dreamtools
  * NEWS: add :class:`dreamtools.dream4.scoring.D4C1` challenge in Dreamtools
  * CHANGES: move a download_data method from D5C2 into the :class:`Challenge` main class
    to factorise some code.
