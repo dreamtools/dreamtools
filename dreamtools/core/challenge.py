@@ -88,9 +88,10 @@ class Challenge(object):
         class_inst = getattr(py_mod, self.nickname)()
 
         return class_inst
-                                                                                                                
 
     def _download_data(self, name, synid):
+        # name is not strictly required but if already found, it will not be downloaded again
+        #
         from dreamtools.core.downloader import  Downloader
         filename = self.directory + os.sep + name
         if os.path.exists(filename) is False:

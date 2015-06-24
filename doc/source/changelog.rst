@@ -1,6 +1,12 @@
 ChangeLog
 ==============
 
+0.1.5
+----------
+
+
+ * NEWS: add :class:`dreamtools.dream4.scoring.D3C2` challenge in Dreamtools
+
 0.1.4
 -------
 

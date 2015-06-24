@@ -55,6 +55,7 @@ implemented in the future. Here is the list of challenges available
 * Dream 4 (D4C3) (Predictive Signaling Network Modeling)
 * Dream 4 (D4C1) (Peptide Recognition Domain (PRD) Specificity Prediction)
 * Dream 3 (D3C1) (Signalling cascade)
+* Dream 3 (D3C2) (Signaling Response Prediction)
 
 
 Installation

@@ -29,6 +29,7 @@ registered = {
         'D4C3':[],
         'D4C1':[],
         'D3C1':[],
+        'D3C2': ['cytokine', 'phospho'],
         'D9dot5C1': ['sc1', 'sc2']}
 
 

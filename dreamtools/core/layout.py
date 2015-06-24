@@ -76,6 +76,7 @@ class %(nickname)s(Challenge):
         super(%(nickname)s, self).__init__('%(nickname)s')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
+        self.sub_challenges = []
 
     def _init(self):
         # should download files from synapse if required.

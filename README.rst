@@ -82,11 +82,13 @@ implemented in the future. Here is the list of challenges available
 #. DREAM4
 
     * D4C1 (Peptide Recognition Domain (PRD) Specificity Prediction) 
+    * DREAM4 In Silico Network Challenge
     * D4C3 (Predictive Signaling Network Modeling)
 
 #. DREAM3
 
     * D3C1 (Signaling Cascade Challenge)
+    * D3C2 (Signaling Response Prediction)
 
 
 **Format** of the template for each challenge should be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 

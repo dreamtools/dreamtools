@@ -56,6 +56,12 @@ D3C1
 .. automodule:: dreamtools.dream3.D3C1.scoring
     :members:
     :undoc-members:
+D3C2
+~~~~~~~
+.. automodule:: dreamtools.dream3.D3C2.scoring
+    :members:
+    :undoc-members:
+
 
 DREAM4 challenges
 --------------------

@@ -1,4 +1,11 @@
+"""
 
+
+Implementation in Python from Thomas Cokelaer.
+Original code in matlab (Gustavo Stolovitzky and Robert Prill).
+
+
+"""
 import os
 from dreamtools.core.challenge import Challenge
 
@@ -62,7 +69,6 @@ class D4C2(Challenge):
 
     def load_prob(self, filename):
         import scipy.io
-
         data = scipy.io.loadmat(filename)
         return data
 
@@ -210,14 +216,11 @@ class D4C2(Challenge):
 
         return AUC, AUROC, prec, rec, tpr, fpr, p_auroc, p_aupr
 
-
     def _probability(self, X, Y, x):
         ## Not that here X>=x in D4C1 and D4C3, X<=x
         dx = X[1]-X[0]
         P = sum(Y[X >= x])*dx
         return P
-
-
 
     def plot(self, filename=None):
         aupr, auroc, prec, rec, tpr, fpr, p_auroc, p_aupr = self.score_prediction()

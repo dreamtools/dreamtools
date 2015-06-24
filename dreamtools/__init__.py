@@ -24,6 +24,7 @@ from dreamtools.core.challenge import Challenge
 
 
 from dream3.D3C1.scoring import D3C1
+from dream3.D3C2.scoring import D3C2
 
 from dream4.D4C1.scoring import D4C1
 from dream4.D4C2.scoring import D4C2
