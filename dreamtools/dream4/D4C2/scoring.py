@@ -103,18 +103,7 @@ class D4C2(Challenge):
         L = len(test_data)          # length of prediction list
 
         # append rank small to large
-        test_data['rank'] = range(1,L+1)
 
-        # order the edgelist for test the same as the edgelist for gold
-        test = [0] * T
-        for index, row in test_data.iterrows():
-            indices = row[[0,1]]
-            rank = row['rank']
-            try:
-                idx = list((gold_data[[0,1]].values == indices.values).sum(axis=1)).index(2)
-            except:
-                raise ValueError('Did not find this edge (%s) in the gold standard network' % indices.values)
-            test[idx] = rank
 
         # counters
         k = 0
