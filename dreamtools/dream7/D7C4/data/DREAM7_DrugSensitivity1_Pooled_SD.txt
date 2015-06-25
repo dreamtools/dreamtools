@@ -1,0 +1,39 @@
+# This file contains the pooled standard deviation calculated for each	
+# drug.  The SD is pooled because for many drug/cell line	
+# combinations, there was only one replicate run.  When there was at	
+# least 10 replicates for a drug, the pooled standard deviation was	
+# calculated for that drug.  There were 7 drugs that had less than 10 
+# replicates, thus we used the global pooled standard deviation.  These 
+# drugs include Drug4, 6, 12, 13, 25, 26, and 27.
+AnonID	pooledSD
+Drug1	0.297427146
+Drug2	0.576863979
+Drug3	0.27254993
+Drug4	0.324436768
+Drug5	0.345586768
+Drug6	0.324436768
+Drug7	0.60926752
+Drug8	0.19412205
+Drug9	0.127364648
+Drug10	0.485803965
+Drug11	0.113514597
+Drug12	0.324436768
+Drug13	0.324436768
+Drug14	1.153326557
+Drug15	0.18230786
+Drug16	0.247107509
+Drug17	0.568791387
+Drug18	0.286073236
+Drug19	0.204777913
+Drug20	0.287802756
+Drug21	0.374211833
+Drug22	0.246423271
+Drug23	0.17843844
+Drug24	0.077336919
+Drug25	0.324436768
+Drug26	0.324436768
+Drug27	0.324436768
+Drug28	0.334909265
+Drug29	0.257699155
+Drug30	0.456920085
+Drug31	0.253031898
