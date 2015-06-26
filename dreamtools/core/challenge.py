@@ -35,6 +35,7 @@ class Challenge(object):
         #: directory where is stored the configuration file and possibly data files.
         self.mainpath = cfg.user_config_dir
         self.sub_challenges = []
+        self.mkdir()
 
     def _get_directory(self):
         """Gets directory where data will be stored."""
@@ -57,9 +58,14 @@ class Challenge(object):
 
     def mkdir(self):
         """Creates directory if does not exist already"""
-        directory = self.get_directory()
+        directory = self._get_challenge_directory()
+        directory = os.sep.join([self.mainpath, directory])
         if os.path.exists(directory) is False:
             os.mkdir(directory)
+        directory = self._get_directory()
+        if os.path.exists(directory) is False:
+            os.mkdir(directory)
+            
 
     def download_template(self, sub_challenge=None):
         raise NotImplementedError
@@ -93,6 +99,7 @@ class Challenge(object):
         # name is not strictly required but if already found, it will not be downloaded again
         #
         from dreamtools.core.downloader import  Downloader
+
         filename = self.directory + os.sep + name
         if os.path.exists(filename) is False:
             # must download the data now
