@@ -21,7 +21,7 @@ to use scikit-learn in the future."""
 import numpy as np
 
 
-__all__ = ['ROC', 'ROCDiscovery']
+__all__ = ['ROC', 'ROCDiscovery', 'D3D4ROC']
 
 
 class ROCBase(object):
@@ -294,6 +294,140 @@ class ROCDiscovery(ROCBase):
         P = np.sum(self.discovery)
         return AUPR / (1-1./P)
 
+
+
+class D3D4ROC(ROCBase):
+    def __init__(self):
+        super(D3D4ROC, self).__init__()
+
+
+    def plot(self, metrics):
+        import pylab
+        fpr = metrics['fpr']
+        tpr = metrics['tpr']
+        rec = metrics['rec']
+        prec = metrics['prec']
+
+
+        pylab.figure(1)
+        pylab.subplot(1,2,1)
+        pylab.plot(fpr,tpr)
+        pylab.title('ROC')
+        pylab.xlabel('FPR')
+        pylab.ylabel('TPR')
+        pylab.subplot(1,2,2)
+        pylab.plot(rec,prec)
+        pylab.title('P-R')
+        pylab.xlabel('Recall')
+        pylab.ylabel('Precision')
+
+
+
+    def get_statistics(self, gold_data, test_data, gold_index):
+
+
+
+        T = len(gold_data)          # Total potential edges n(n-1)
+        P = gold_data[2].sum()      # positives
+        N = T - P                   # negatives
+        L = len(test_data)          # length of prediction list
+
+        # counters
+        k = 0
+        Ak = 0
+        TPk = 0
+        FPk = 0
+
+        rec = []
+        prec = []
+        tpr=[]
+        fpr = []
+        while k < L:
+
+            k = k + 1
+            # index of the kth predicted edge
+            #idx = test.index(k)
+            #if gold[idx] == 1:
+            if gold_index[k-1] == 1:
+                #%% the edge IS present in the gold standard
+
+                #%% increment TPk
+                TPk = TPk + 1.
+
+                #%% update area under precision-recall curve
+                if k == 1:
+                    delta = 1. / P
+                else:
+                    delta = (1. - FPk * np.log(k/(k-1.))) / P
+                Ak = Ak + delta
+
+            else: # the edge is NOT present in the gold standard
+                #%% icrement FPk
+		        FPk = FPk + 1.
+
+            # do NOT update area under P-R
+	        #remember
+            rec.append(TPk/float(P))
+            prec.append(TPk/float(k))
+            tpr.append(rec[k-1])
+            fpr.append(FPk/float(N))
+
+        # Done with the positive predictions.
+
+        # If the number of predictions (L) is less than the total possible edges (T),
+        # we assume that they would achieve the accuracy of the null model (random guessing).
+
+        TPL = TPk
+
+        # rho
+        if L < T:
+            rh = (P-TPL)/float(T-L)
+        else:
+            rh = 0.
+
+        # recall at L
+        if L > 0:
+            recL = rec[L-1]   # note -1 to use python syntax
+        else:
+            recL = 0
+
+        # the remaining positives would eventually be predicted
+        while TPk < P:
+            k = k + 1
+            TPk = TPk + 1.
+            rec.append(TPk/float(P))
+            if ((rec[k-1]-recL) * P + L * rh) != 0:
+                prec.append( rh * P * rec[k-1]/((rec[k-1]-recL)*P + L * rh))
+            else:
+                prec.append(0)
+
+            tpr.append(rec[k-1])
+            FPk = TPk * (1-prec[k-1])/prec[k-1]
+            fpr.append(FPk/float(N))
+
+        # Now, update the area under the P-R curve
+        # %% rh = (P-TPk)/(T-L);  % BP: I removed this line because it is an error in logic to redefine this here.
+        AL = Ak
+
+        #if ~isnan(rh) and rh != 0 and L != 0:
+        if rh != 0 and L != 0:
+            AUC = AL + rh * (1.-recL) + rh * (recL - L * rh / P) * np.log((L * rh + P * (1-recL) )/(L *rh))
+        elif L == 0:
+            AUC = P/float(T)
+        else:
+            AUC = Ak
+
+        # Integrate area under ROC
+        lc = fpr[0] * tpr[0] /2.
+        for n in range(1,int(L+P-TPL-1 + 1)):
+            lc = lc + ( fpr[n] + fpr[n-1]) * (tpr[n]-tpr[n-1]) / 2.
+
+        AUROC = 1. - lc
+
+        auroc = AUROC
+        aupr = AUC
+
+        return AUC, AUROC, prec, rec, tpr, fpr
 
 
 
