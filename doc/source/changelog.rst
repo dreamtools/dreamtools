@@ -5,7 +5,10 @@ ChangeLog
 ----------
 
 
- * NEWS: add :class:`dreamtools.dream4.scoring.D3C2` challenge in Dreamtools
+ * NEWS: add :class:`dreamtools.dream3.scoring.D3C2` challenge in Dreamtools
+ * NEWS: add :class:`dreamtools.dream3.scoring.D3C3` challenge in Dreamtools
+ * NEWS: add :class:`dreamtools.dream3.scoring.D3C4` challenge in Dreamtools
+ * Changes: fix :class:`dreamtools.dream4.scoring.D4C2` challenge in Dreamtools
 
 0.1.4
 -------
