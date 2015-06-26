@@ -134,7 +134,6 @@ class D4C1(Challenge):
         self.results['pdz']['pvals'] = pvals
         self.results['pdz']['distances'] = mydists
 
-
     def score_sh3(self):
 
         all_pvals = []
@@ -172,21 +171,19 @@ class D4C1(Challenge):
         return [np.linalg.norm(self.golddata[i]-self.prediction[i]) for i in range(0,13)]
 
     def _init(self):
-        self._download_data('pdf_1.mat', 'syn4552308' )
-        self._download_data('pdf_2.mat', 'syn4552309' )
-        self._download_data('pdf_3.mat', 'syn4552310' )
-        self._download_data('pdf_4.mat', 'syn4552311' )
-        self._download_data('pdf_5.mat', 'syn4552312' )
-        self._download_data('pdf_6.mat', 'syn4552313' )
-        self._download_data('pdf_7.mat', 'syn4552314' )
-        self._download_data('pdf_8.mat', 'syn4552315' )
-        self._download_data('pdf_9.mat', 'syn4552316' )
-        self._download_data('pdf_10.mat', 'syn4552317' )
-        self._download_data('pdf_11.mat', 'syn4552318' )
-        self._download_data('pdf_12.mat', 'syn4552319' )
-        self._download_data('pdf_13.mat', 'syn4552320' )
-
-
+        self._download_data('pdf_1.mat', 'syn4552308')
+        self._download_data('pdf_2.mat', 'syn4552309')
+        self._download_data('pdf_3.mat', 'syn4552310')
+        self._download_data('pdf_4.mat', 'syn4552311')
+        self._download_data('pdf_5.mat', 'syn4552312')
+        self._download_data('pdf_6.mat', 'syn4552313')
+        self._download_data('pdf_7.mat', 'syn4552314')
+        self._download_data('pdf_8.mat', 'syn4552315')
+        self._download_data('pdf_9.mat', 'syn4552316')
+        self._download_data('pdf_10.mat', 'syn4552317')
+        self._download_data('pdf_11.mat', 'syn4552318')
+        self._download_data('pdf_12.mat', 'syn4552319')
+        self._download_data('pdf_13.mat', 'syn4552320')
 
     def _slide(self, G, T):
         # FIXME: this code could be simplified (two loops into 1 ?)

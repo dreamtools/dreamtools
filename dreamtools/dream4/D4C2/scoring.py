@@ -8,12 +8,13 @@ Original code in matlab (Gustavo Stolovitzky and Robert Prill).
 """
 import os
 from dreamtools.core.challenge import Challenge
+from dreamtools.core.rocs import D3D4ROC
 
 import pandas as pd
 import numpy as np
 import pylab
 
-class D4C2(Challenge):
+class D4C2(Challenge, D3D4ROC):
     """A class dedicated to D4C2 challenge
 
 
@@ -21,7 +22,7 @@ class D4C2(Challenge):
 
         from dreamtools import D4C2
         s = D4C2()
-        filename = s.download_template() 
+        filename = s.download_template(10, )
         s.score(filename) 
 
     Data and templates are downloaded from Synapse. You must have a login.
@@ -44,21 +45,50 @@ class D4C2(Challenge):
 
     def _init(self):
         # should download files from synapse if required.
-        pass
+        self._download_data('pdf_size100_1.mat', 'syn4558445')
+        self._download_data('pdf_size100_2.mat', 'syn4558446')
+        self._download_data('pdf_size100_3.mat', 'syn4558447')
+        self._download_data('pdf_size100_4.mat', 'syn4558448')
+        self._download_data('pdf_size100_5.mat', 'syn4558449')
 
-    def score(self, prediction_file):
+        self._download_data('pdf_size100_multifactorial_1.mat', 'syn4558450')
+        self._download_data('pdf_size100_multifactorial_2.mat', 'syn4558451')
+        self._download_data('pdf_size100_multifactorial_3.mat', 'syn4558452')
+        self._download_data('pdf_size100_multifactorial_4.mat', 'syn4558453')
+        self._download_data('pdf_size100_multifactorial_5.mat', 'syn4558454')
 
-        raise NotImplementedError
+        self._download_data('pdf_size10_1.mat', 'syn4558440')
+        self._download_data('pdf_size10_2.mat', 'syn4558441')
+        self._download_data('pdf_size10_3.mat', 'syn4558442')
+        self._download_data('pdf_size10_4.mat', 'syn4558443')
+        self._download_data('pdf_size10_5.mat', 'syn4558444')
+
+
+    def score(self, filename, tag):
+        print('Your filename must end with the batch value in 1,2,3,4,5 ')
+        print('E.G. template_Ecoli1.txt')
+        vals = os.path.split(filename)[-1].split('.')[0].split("_")
+        results = self.score_prediction(filename, tag=tag, batch=vals[-1])
+        AUC, AUROC, prec, rec, tpr, fpr, p_auroc, p_aupr = results
+        return {'AUROC': AUROC, 'AUC':AUC, 'p_auroc':p_auroc, 'p_aupr':p_aupr}
 
     def _check_sub_challenge_name(self, name):
         assert name in [100, '100', 10, '10', '100_multifactorial']
 
-    def download_template(self, name):
-        self._check_sub_challenge(name)
+    def download_template(self, name, batch):
+        self._check_sub_challenge_name(name)
         name = str(name)
         filename = self._pj([self._path2data, 'templates', name,
-            'DREAM4_Example_InSilico_Size%s_%s.txt' % (name, 1)])
+            'DREAM4_Example_InSilico_Size%s_%s.txt' % (name, batch)])
         return filename
+
+    def download_goldstandard(self, tag, batch):
+        self._check_sub_challenge_name(tag)
+        if tag in [100, 10]:
+            tag = str(tag)
+        gs_filename = self._pj([self._path2data, 'goldstandard', tag,
+                                'DREAM4_GoldStandard_InSilico_Size%s_%s.tsv' % (tag, batch)])
+        return gs_filename
 
     def _load_network(self, filename):
         df = pd.read_csv(filename, header=None, sep='[ \t]')
@@ -75,132 +105,37 @@ class D4C2(Challenge):
     def score_prediction(self, filename=None, tag=10, batch=1):
         """This is a longish scoring function translated from the matlab original code of D4C2
 
+        :param filename:
+        :param tag:
+        :param batch:
+        :return:
 
+
+        .. todo:: merge this function with the one from D4C2
         """
-        #, filename, challenge_name):
-        self._check_sub_challenge_name(tag)
-        if tag in [100, 10]:
-            tag = str(tag)
-
-        gs_filename = self._pj([self._path2data, 'goldstandard', tag,
-                                'DREAM4_GoldStandard_InSilico_Size%s_%s.tsv' % (tag, batch)])
+        gs_filename = self.download_goldstandard(tag, batch)
 
         # keep this it is used for testing.
-        if filename is None:
-            filename = self._pj([self._path2data, 'templates', tag,
-                                'DREAM4_Example_InSilico_Size%s_%s.txt' % (tag, batch)])
-
         pdf_filename = self._pj([self._path2data, 'data', 'pdf_size%s_%s.mat' % (tag, batch)])
+
+
+        self.test_data = self._load_network(filename)
+        self.gold_data = self._load_network(gs_filename)
+        self.pdf_data = self.load_prob(pdf_filename)
 
         test_data = self._load_network(filename)
         gold_data = self._load_network(gs_filename)
         pdf_data = self.load_prob(pdf_filename)
 
 
-        T = len(gold_data)          # Total potential edges n(n-1)
-        P = gold_data[2].sum()      # positives
-        N = T - P                   # negatives
-        L = len(test_data)          # length of prediction list
-
         # append rank small to large
+        newtest = pd.merge(self.test_data, self.gold_data, how='inner', on=[0,1])
+        test = list(newtest['2_x'])
+        gold_index = list(newtest['2_y'])
 
-
-        # counters
-        k = 0
-        Ak = 0
-        TPk = 0
-        FPk = 0
-
-        gold = list(gold_data[2].values)
-        rec = []
-        prec = []
-        tpr=[]
-        fpr = []
-        while k < L:
-
-            k = k + 1
-            # index of the kth predicted edge
-            idx = test.index(k)
-            if gold[idx] == 1:
-                #%% the edge IS present in the gold standard
-
-                #%% increment TPk
-                TPk = TPk + 1.
-
-                #%% update area under precision-recall curve
-                if k == 1:
-                    delta = 1. / P
-                else:
-                    delta = (1. - FPk * np.log(k/(k-1.))) / P
-                Ak = Ak + delta
-
-            else: # the edge is NOT present in the gold standard
-                #%% icrement FPk
-		        FPk = FPk + 1.
-
-            # do NOT update area under P-R
-	        #remember
-            rec.append(TPk/float(P))
-            prec.append(TPk/float(k))
-            tpr.append(rec[k-1])
-            fpr.append(FPk/float(N))
-
-        # Done with the positive predictions.
-
-        # If the number of predictions (L) is less than the total possible edges (T),
-        # we assume that they would achieve the accuracy of the null model (random guessing).
-
-        TPL = TPk
-
-        # rho
-        if L < T:
-            rh = (P-TPL)/float(T-L)
-        else:
-            rh = 0.
-
-        # recall at L
-        if L > 0:
-            recL = rec[L-1]   # note -1 to use python syntax
-        else:
-            recL = 0
-
-        # the remaining positives would eventually be predicted
-        while TPk < P:
-            k = k + 1
-            TPk = TPk + 1.
-            rec.append(TPk/float(P))
-            if ((rec[k-1]-recL) * P + L * rh) != 0:
-                prec.append( rh * P * rec[k-1]/((rec[k-1]-recL)*P + L * rh))
-            else:
-                prec.append(0)
-
-            tpr.append(rec[k-1])
-            FPk = TPk * (1-prec[k-1])/prec[k-1]
-            fpr.append(FPk/float(N))
-
-        # Now, update the area under the P-R curve
-        # %% rh = (P-TPk)/(T-L);  % BP: I removed this line because it is an error in logic to redefine this here.
-        AL = Ak
-
-        #if ~isnan(rh) and rh != 0 and L != 0:
-        if rh != 0 and L != 0:
-            AUC = AL + rh * (1.-recL) + rh * (recL - L * rh / P) * np.log((L * rh + P * (1-recL) )/(L *rh))
-        elif L == 0:
-            AUC = P/float(T)
-        else:
-            AUC = Ak
-
-        # Integrate area under ROC
-        lc = fpr[0] * tpr[0] /2.
-        for n in range(1,int(L+P-TPL-1 + 1)):
-            lc = lc + ( fpr[n] + fpr[n-1]) * (tpr[n]-tpr[n-1]) / 2.
-
-        AUROC = 1. - lc
-
-        auroc = AUROC
-        aupr = AUC
-        p_auroc = self._probability(pdf_data['auroc_X'][0], pdf_data['auroc_Y'][0], auroc)
-        p_aupr = self._probability(pdf_data['aupr_X'][0], pdf_data['aupr_Y'][0], aupr)
+        AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_data, self.test_data, gold_index)
+        p_auroc = self._probability(self.pdf_data['auroc_X'][0], self.pdf_data['auroc_Y'][0], AUROC)
+        p_aupr = self._probability(self.pdf_data['aupr_X'][0], self.pdf_data['aupr_Y'][0], AUC)
 
 
         return AUC, AUROC, prec, rec, tpr, fpr, p_auroc, p_aupr
@@ -211,20 +146,11 @@ class D4C2(Challenge):
         P = sum(Y[X >= x])*dx
         return P
 
-    def plot(self, filename=None):
-        aupr, auroc, prec, rec, tpr, fpr, p_auroc, p_aupr = self.score_prediction()
+    def plot(self, filename, tag, batch):
+        aupr, auroc, prec, rec, tpr, fpr, p_auroc, p_aupr = \
+            self.score_prediction(filename, tag, batch)
+        super(D4C2, self).plot(metrics={'prec':prec, 'rec':rec, 'tpr':tpr, 'fpr':fpr})
 
-        pylab.figure(1)
-        pylab.subplot(1,2,1)
-        pylab.plot(fpr,tpr)
-        pylab.title('ROC')
-        pylab.xlabel('FPR')
-        pylab.ylabel('TPR')
-        pylab.subplot(1,2,2)
-        pylab.plot(rec,prec)
-        pylab.title('P-R')
-        pylab.xlabel('Recall')
-        pylab.ylabel('Precision')
 
 
     def directed_to_undirected(self):
