@@ -37,7 +37,42 @@ class D3C4(Challenge, D3D4ROC):
 
     def _init(self):
         # should download files from synapse if required.
-        pass
+        # First the PDF
+        self._download_data('PDF_InSilicoSize100_Ecoli1.mat', 'syn4558484')
+        self._download_data('PDF_InSilicoSize100_Ecoli2.mat', 'syn4558485')
+        self._download_data('PDF_InSilicoSize100_Yeast1.mat', 'syn4558486')
+        self._download_data('PDF_InSilicoSize100_Yeast2.mat', 'syn4558487')
+        self._download_data('PDF_InSilicoSize100_Yeast3.mat', 'syn4558488')
+
+        self._download_data('PDF_InSilicoSize10_Ecoli1.mat', 'syn4558474')
+        self._download_data('PDF_InSilicoSize10_Ecoli2.mat', 'syn4558475')
+        self._download_data('PDF_InSilicoSize10_Yeast1.mat', 'syn4558476')
+        self._download_data('PDF_InSilicoSize10_Yeast2.mat', 'syn4558477')
+        self._download_data('PDF_InSilicoSize10_Yeast3.mat', 'syn4558478')
+
+        self._download_data('PDF_InSilicoSize50_Ecoli1.mat', 'syn4558479')
+        self._download_data('PDF_InSilicoSize50_Ecoli2.mat', 'syn4558480')
+        self._download_data('PDF_InSilicoSize50_Yeast1.mat', 'syn4558481')
+        self._download_data('PDF_InSilicoSize50_Yeast1.mat', 'syn4558482')
+        self._download_data('PDF_InSilicoSize50_Yeast1.mat', 'syn4558483')
+        # Then, the gold standard
+        self._download_data('DREAM3GoldStandard_InSilicoSize100_Ecoli1.txt', 'syn4558558')
+        self._download_data('DREAM3GoldStandard_InSilicoSize100_Ecoli2.txt', 'syn4558560')
+        self._download_data('DREAM3GoldStandard_InSilicoSize100_Yeast1.txt', 'syn4558562')
+        self._download_data('DREAM3GoldStandard_InSilicoSize100_Yeast2.txt', 'syn4558564')
+        self._download_data('DREAM3GoldStandard_InSilicoSize100_Yeast3.txt', 'syn4558565')
+
+        self._download_data('DREAM3GoldStandard_InSilicoSize10_Ecoli1.txt', 'syn4558540')
+        self._download_data('DREAM3GoldStandard_InSilicoSize10_Ecoli2.txt', 'syn4558542')
+        self._download_data('DREAM3GoldStandard_InSilicoSize10_Yeast1.txt', 'syn4558544')
+        self._download_data('DREAM3GoldStandard_InSilicoSize10_Yeast2.txt', 'syn4558545')
+        self._download_data('DREAM3GoldStandard_InSilicoSize10_Yeast3.txt', 'syn4558547')
+
+        self._download_data('DREAM3GoldStandard_InSilicoSize50_Ecoli1.txt', 'syn4558549')
+        self._download_data('DREAM3GoldStandard_InSilicoSize50_Ecoli2.txt', 'syn4558551')
+        self._download_data('DREAM3GoldStandard_InSilicoSize50_Yeast1.txt', 'syn4558553')
+        self._download_data('DREAM3GoldStandard_InSilicoSize50_Yeast2.txt', 'syn4558554')
+        self._download_data('DREAM3GoldStandard_InSilicoSize50_Yeast3.txt', 'syn4558556')
 
     def score(self, filename, size):
         print('Your filename must end with the batch name that is Ecoli1, Ecoli2, Yeast1, Yeast2, Yeast3 ')
@@ -65,11 +100,8 @@ class D3C4(Challenge, D3D4ROC):
     def download_goldstandard(self, size, name):
         self._check_sub_challenge_size(size)
         self._check_sub_challenge_name(name)
-
         subname = str(size)
-        gs_filename = self._pj([self._path2data, 'goldstandard',
-                                'DREAM3GoldStandard_InSilicoSize%s_%s.txt' % (subname, name)])
-        return gs_filename
+        return self.get_pathname('DREAM3GoldStandard_InSilicoSize%s_%s.txt' % (subname, name))
 
     def _load_network(self, filename):
         df = pd.read_csv(filename, header=None, sep='[ \t]')
@@ -96,7 +128,7 @@ class D3C4(Challenge, D3D4ROC):
         .. todo:: merge this function with the one from D4C2
         """
         gs_filename = self.download_goldstandard(size, name)
-        pdf_filename = self._pj([self._path2data, 'data', "PDF_InSilicoSize%s_%s.mat" % (size, name)])
+        pdf_filename = self.get_pathname("PDF_InSilicoSize%s_%s.mat" % (size, name))
 
         self.gold_data = self._load_network(gs_filename)
         self.test_data = self._load_network(filename)
