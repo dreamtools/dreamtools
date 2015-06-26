@@ -16,17 +16,27 @@
 # for further questions.
 #
 #################################################################
+
+sub catch (&) { $_[0] }
+
+print "Error may appear with respect to Erf module. Please Ignore it";
 use Games::Go::Erf qw(erf);
 
-my $infile = lc($ARGV[0]);
-print STDERR "file \"$infile\" will be scored\n";
+# Thomas Cokelaer modif; in order to call this script from python
+# we need to read/save files in generic directory hence the 
+# $datadir and $outfile variables.
+my $infile = $ARGV[0];
+my $datadir = $ARGV[1];
+my $outfile = $ARGV[2];
+
+#print STDERR "file \"$infile\" will be scored\n";
 
 ######
 # define some global variables
-my $rand_dir = "random_predictions/";
-my $sdfile = "datatemp/DREAM7_DrugSensitivity1_Pooled_SD.txt";
-my $testdatafile = "datatemp/DREAM7_DrugSensitivity1_test_data.txt";
-my $zscorefile = "datatemp/DREAM7_DrugSensitivity1_drug_zscores.txt";
+my $sdfile = "$datadir/DREAM7_DrugSensitivity1_Pooled_SD.txt";
+my $testdatafile = "$datadir/DREAM7_DrugSensitivity1_test_data.txt";
+my $zscorefile = "$datadir/DREAM7_DrugSensitivity1_drug_zscores.txt";
+
 
 
 ######
@@ -63,7 +73,7 @@ while(<FILE>) {
     $pooledSD{$anonId} = $sd;
 }
 close FILE;
-print STDERR "The standard deviations for " . keys(%pooledSD) . " drugs have been read\n";
+print STDOUT "The standard deviations for " . keys(%pooledSD) . " drugs have been read\n";
 
 ######
 # The test data is parsed and used for scoring
@@ -76,29 +86,24 @@ while(<FILE>) {
     if ($cellLine eq 'CellLine') {
 	@header = @vals;
 
-    #print STDERR "@header\n";
     } else {
 # read in all the values and set the NA values to 0
 	for(my $i=0; $i<=30; $i++) {
-        #print "beginning $i\n";
 	    die "$header[$i]" if !defined($header[$i]);
 	    if ($vals[$i] eq 'NA') {
 		$gi50{$cellLine}{$header[$i]} = 0;
 	    } else {
 		$gi50{$cellLine}{$header[$i]} = $vals[$i];
 	    }
-        #print STDERR "end $i $vals[$i]\n ";
-        #print STDERR "\n";
 	}
-    #print STDERR "----------------\n";
     }
 }
 
-print STDERR "$gi50{'HCC3153'}{'Drug31'}\n"; 
+
 
 close FILE;
 my $arraysize = $#header + 1;
-print STDERR keys(%gi50) . " cell lines and $arraysize drugs have been read in from the test data\n";
+print STDOUT keys(%gi50) . " cell lines and $arraysize drugs have been read in from the test data\n";
 
 ######
 # Parse and hash the data for the submission file to test
@@ -107,15 +112,20 @@ my %preds = ();
 open(FILE, "$ARGV[0]") || die "Please enter a file to score\n";
 while(<FILE>) {
     chomp;
-    my ($cellLine, @vals) = split(/\,/, $_);
 
-    #print STDERR "$cellLine @vals\n";
+    # Correction Thomas Cokelaer. Under Linux, some ending are not interepreted
+    # correctly. Need to clean ending of the line. Hopefully this does not
+    # happen elsewhere.
+    my $line = $_;
+    $line =~ s/\R//g;
+    my ($cellLine, @vals) = split(/\,/, $line);
+
     if ($cellLine eq 'DrugAnonID') {
 	@drugs = @vals;
+
     } else {
 	for(my $i=0; $i<=30; $i++) {
 	    $preds{$cellLine}{$drugs[$i]} = $vals[$i];
-
 	}
     }    
 }
@@ -126,11 +136,10 @@ close FILE;
 
 
 my $arraysize = $#drugs + 1;
-print STDERR "There are " . keys(%preds) . " cell lines and $arraysize drugs in the predictions file entered\n";
+print STDOUT "There are " . keys(%preds) . " cell lines and $arraysize drugs in the predictions file entered\n";
 
 # some sanity checks
 die "There is an error in your submission file.  Please make sure the first id in the first row (header row) is \"DrugAnonID\"\n" if $#drugs < 30;
-die "Please make sure the submission file is titled \"dream7_drugsensitivity1_predictions_<team name>.csv\"\n" if $infile !~ /dream7\_drugsensitivity1\_predictions/;
 
 print "DrugID\tprobabalistic c-index\tweighted probabalistic c-index\n";
 
@@ -142,9 +151,12 @@ print "DrugID\tprobabalistic c-index\tweighted probabalistic c-index\n";
 my $overallscore = 0; # running sum 
 my $weightsum = 0; # running sum 
 my $weightctr = 0; # running counter
+
+
+open my $fh, ">", $outfile or die("Could not open file $!");
+
 foreach my $drug (@drugs) {    
 
-    print STDERR "AAAAAAAAAAAAAA $drug\n";
     # select the cell lines to score, for a given drug, there will be a variable number of cell lines
     my @cell_lines = ();
     foreach my $line(keys %preds) {
@@ -152,7 +164,6 @@ foreach my $drug (@drugs) {
 	push(@cell_lines, $line);
     }
 
-    print STDERR "@cell_lines\n";
 
     my $score = calculate_prob_cindex(\@cell_lines,$drug,\%gi50,\%preds,\%pooledSD);
     $overallscore += $score;
@@ -160,8 +171,12 @@ foreach my $drug (@drugs) {
     $weightsum += $weight;
     $weightctr += $zscores{$drug};
     print "$drug\t$score\t$weight\n";
+    print $fh "$drug\t$score\t$weight\n";
 
 } 
+close $fh;
+
+
 my $oas = sprintf("%.5f", ($overallscore / 31));
 my $ws = sprintf("%.5f", ($weightsum/$weightctr));
 my $pv = 1 -  (.5 * (erf(($ws - $overall_mean)/(sqrt(2*$overall_var))) + 1));

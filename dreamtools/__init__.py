@@ -25,6 +25,8 @@ from dreamtools.core.challenge import Challenge
 
 from dream3.D3C1.scoring import D3C1
 from dream3.D3C2.scoring import D3C2
+from dream3.D3C3.scoring import D3C3
+from dream3.D3C4.scoring import D3C4
 
 from dream4.D4C1.scoring import D4C1
 from dream4.D4C2.scoring import D4C2
@@ -33,6 +35,7 @@ from dream4.D4C3.scoring import D4C3
 from dream5.D5C2.scoring import D5C2
 
 from dream7.D7C1.scoring import D7C1
+from dream7.D7C4.scoring import D7C4
 
 from dream8.D8C2.scoring import D8C2
 

@@ -3,10 +3,10 @@ Overview
 ===========
 
 
-:Title: 
+:Title: DREAM3 Gene Expression Prediction
 :Nickname: D3C3
 :Summary: 
-:SubChallenges: 
+:SubChallenges: Predict missing gene expression measurements
 :Synapse page: https://www.synapse.org/#!Synapse:syn3033083
 
 .. contents::

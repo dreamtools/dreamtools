@@ -3,12 +3,11 @@ Overview
 ===========
 
 
-:Title: 
+:Title: DREAM 3 In Silico Network Challenge
 :Nickname: D3C4
-:Summary: 
+:Summary: Infer simulated gene regulation networks
 :SubChallenges: 
-:Synapse page: https://www.synapse.org/#!Synapse:synXXXXXXX
-
+:Synapse page: https://www.synapse.org/#!Synapse:syn2853594
 
 .. contents::
 

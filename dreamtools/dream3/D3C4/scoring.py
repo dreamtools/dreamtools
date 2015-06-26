@@ -1,9 +1,16 @@
+"""
 
+Implementation in Python from Thomas Cokelaer.
+Original code in matlab (Gustavo Stolovitzky and Robert Prill, Bernd Jagla).
+
+"""
 import os
 from dreamtools.core.challenge import Challenge
+import pandas as pd
+import numpy as np
+from dreamtools.core.rocs import D3D4ROC
 
-
-class D3C4(Challenge):
+class D3C4(Challenge, D3D4ROC):
     """A class dedicated to D3C4 challenge
 
 
@@ -16,6 +23,8 @@ class D3C4(Challenge):
 
     Data and templates are downloaded from Synapse. You must have a login.
 
+    Insilico size 10 Ecoli1 gives 0.3295
+
     """
     def __init__(self):
         """.. rubric:: constructor
@@ -24,168 +33,93 @@ class D3C4(Challenge):
         super(D3C4, self).__init__('D3C4')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
-        self.sub_challenges = []
+        self.sub_challenges = [10,50,100]
 
     def _init(self):
         # should download files from synapse if required.
         pass
 
-    def score(self, prediction_file):
-        raise NotImplementedError
-
-    def download_template(self):
-        # should return full path to a template file
-        pass
-
-    def load_gs(self):
-        """ % read goldfile
-        maxN = 10000000;
-        fid1 = fopen(goldfile, 'r');
-        gold=textscan(fid1,'%s%s%f', maxN);
-        gold{1} = strcat('A',gold{1},'___',gold{2});
-        gold{2} = gold{3};
-        fclose(fid1);
-
-        for i=1:length(gold{1})
-            goldstruct.(char(gold{1}(i))) = i;
-        end
-        """
-        pass
-
-    def load_test(self):
-        """% read testfile
-        fid2 = fopen(testfile, 'r');
-        test=textscan(fid2,'%s%s%f', maxN);
-        % test{1} can be a number so lets add some character before
-        test{1} = strcat('A', test{1}, '___', test{2});
-        test{2} = test{3};
-        fclose(fid2);
-        """
-        pass
+    def score(self, filename, size):
+        print('Your filename must end with the batch name that is Ecoli1, Ecoli2, Yeast1, Yeast2, Yeast3 ')
+        print('E.G. template_Ecoli1.txt')
+        vals = os.path.split(filename)[-1].split('.')[0].split("_")
+        results =  self.score_prediction(filename, size, vals[-1])
+        AUC, AUROC, prec, rec, tpr, fpr, p_auroc, p_aupr = results
+        return {'AUROC': AUROC, 'AUC':AUC, 'p_auroc':p_auroc, 'p_aupr':p_aupr}
 
 
-"""
-% remove all entries from test that are not in the goldstandard
-% (e.g., self-edges)
-keepme = [];
-j = 1;
-for i=1:length(test{1})
-    if isfield(goldstruct,test{1}(i))
-        keepme(j) = i;
-        j = j + 1;
-    end
-end
-test{1} = test{1}(keepme);
-test{2} = test{2}(keepme);
+    def _check_sub_challenge_size(self, name):
+        assert name in [100, '100', 10, '10', '50', 50]
 
-% Analysis
+    def _check_sub_challenge_name(self, name):
+        assert name in ['Ecoli1', 'Ecoli2', 'Yeast1', 'Yeast2', 'Yeast3']
 
-    % Initialization
-    k = 0
-    Ak = 0
-    TPk = 0
-    FPk = 0
+    def download_template(self, size, name):
+        self._check_sub_challenge_size(size)
+        self._check_sub_challenge_name(name)
+        subname = str(size)
+        filename = self._pj([self._path2data, 'templates',
+            'example_InSilicoSize%s_%s.txt' % (subname, name)])
+        return filename
 
-    P = sum(gold{2})
-    N = length(gold{1}) - P
-    T = length(gold{1})
-    L = length(test{1})
+    def download_goldstandard(self, size, name):
+        self._check_sub_challenge_size(size)
+        self._check_sub_challenge_name(name)
 
-    % do the calculations
-    while k < L
-        k = k + 1
-        #if mod(k, 1000) == 0
-        #    disp(sprintf('%d of %d',k,L))
-        #end
-        p = goldstruct.(char(test{1}(k)))
-        %this should not happen
-        if len(p) >1:
-            error(char(test{1}(kk)) , ' not found');
-        end
+        subname = str(size)
+        gs_filename = self._pj([self._path2data, 'goldstandard',
+                                'DREAM3GoldStandard_InSilicoSize%s_%s.txt' % (subname, name)])
+        return gs_filename
 
-        if gold{2}[p] == 1:
-            TPk = TPk + 1.
+    def _load_network(self, filename):
+        df = pd.read_csv(filename, header=None, sep='[ \t]')
+        df[0] = df[0].apply(lambda x: x.replace('g','').replace('G',''))
+        df[1] = df[1].apply(lambda x: x.replace('g','').replace('G',''))
+        df = df.astype(float) # imoprtant for later to check for equality
+        return df
 
-            if k == 1:
-                delta = 1. / P  
-            else:            
-                delta = (1. - FPk*np.log(k/(k-1.))) / P
-            
-            Ak = Ak + delta
-
-        elif gold{2}[p] == 0
-            FPk = FPk + 1.
-        else:
-            #  for challange 5 ignore unknown interactions
-            print('could not find ' + 'test{1}(k)')
-        
-        rec.append(TPk/float(P))
-        prec.append(TPk/float(k))
-        tpr.append(rec[k-1])
-        fpr.append(FPk/float(N))
-    
-
-    # assume random accuracy for remainder of links
-    TPL = TPk
-    if L < T:
-        rh = (P-TPL) / float(T-L)
-    else:
-        rh = 0.
-
-
-    if L>0
-        recL = rec[L-1]
-    else
-        recL = 0;
-
-    while TPk < P:
-        k = k + 1
-        TPk = TPk + 1.
-        rec.append(TPk / float(P))
-        if ((rec[k-1]-recL)*P + L * rh) != 0:
-            prec.append( rh * P * rec[k-1]/((rec[k-1]-recL)*P + L * rh))
-        else:
-            prec.append(0)
-        
-        tpr.append(rec[k-1])
-        FPk = TPk * (1-prec[k-1])/prec[k-1];
-        fpr(k) = FPk/float(N)
-
-    AL = Ak
-    #if ~isnan(rh) && rh ~= 0  && L ~= 0 
-    if rh != 0  and L != 0:
-        AUC = AL + rh * (1.-recL) + rh * (recL - L * rh / P) 
-                    * np.log((L * rh + P * (1-recL) )/(L *rh))
-    elif L == 0:
-        AUC = P / float(T)
-    else
-        AUC = Ak
-    
-
-    # Integrate area under ROC
-    lc = fpr[0] * tpr[0] /2.
-    for n in range(1,int(L+P-TPL-1 + 1)):
-        lc = lc + ( fpr[n] + fpr[n-1]) * (tpr[n]-tpr[n-1]) / 2.
-    AUROC = 1. - lc
-
-
+    def _load_prob(self, filename):
         import scipy.io
-        temp = scipy.io.loadmat(pdffile)
-        x_auroc = temp.x_auroc
-        y_auroc = temp.y_auroc
-        x_aupr = temp.x_aupr
-        y_aupr = temp.y_aupr
+        data = scipy.io.loadmat(filename)
+        return data
 
-        P_AUC   = self.probability(x_aupr, y_aupr, AUC);
-        P_AUROC = self.probability(x_auroc, y_auroc, AUROC);
+    def score_prediction(self, filename, size, name):
+        """
 
-        return AUC, AUROC, prec, rec, tpr, fpr, P_AUROC, p_AUC
 
-    """
+        :param filename:
+        :param size:
+        :param name:
+        :return:
 
-    def probability(self, X, Y, x):
+
+        .. todo:: merge this function with the one from D4C2
+        """
+        gs_filename = self.download_goldstandard(size, name)
+        pdf_filename = self._pj([self._path2data, 'data', "PDF_InSilicoSize%s_%s.mat" % (size, name)])
+
+        self.gold_data = self._load_network(gs_filename)
+        self.test_data = self._load_network(filename)
+        self.pdf_data = self._load_prob(pdf_filename)
+
+
+        # we want to remove all entries for test that are not in GS
+        # This can be done with a merge !
+        newtest = pd.merge(self.test_data, self.gold_data, how='inner', on=[0,1])
+        test = list(newtest['2_x'])
+        gold_index = list(newtest['2_y'])
+
+        AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_data, self.test_data, gold_index)
+        p_auroc = self._probability(self.pdf_data['x_auroc'][0], self.pdf_data['y_auroc'][0], AUROC)
+        p_aupr = self._probability(self.pdf_data['x_aupr'][0], self.pdf_data['y_aupr'][0], AUC)
+
+        return AUC, AUROC, prec, rec, tpr, fpr, p_auroc, p_aupr
+
+    def _probability(self, X, Y, x):
         dx = X[2] - X[1]
-        P = sum( np.double(self.X >= x) * Y * dx )
+        P = sum( Y[X>=x] * dx )
         return P
 
-
+    def plot(self, filename, size, batch):
+        aupr, auroc, prec, rec, tpr, fpr, p_auroc, p_aupr = self.score_prediction(filename, size, batch)
+        super(D3C4, self).plot(metrics={'prec':prec, 'rec':rec, 'tpr':tpr, 'fpr':fpr})
