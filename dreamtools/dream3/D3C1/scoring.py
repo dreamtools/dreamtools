@@ -35,27 +35,33 @@ class D3C1(Challenge):
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
         # read data required for the scoring.
+        self._init()
+
+    def _init(self):
         self._load_proba()
-        goldfile = "DREAM3GoldStandard_SignalingCascadeChallenge.txt"
-        goldfile = self._path2data + os.sep + 'goldstandard' + os.sep + goldfile
-        self.G = self.read_challenge1_file(goldfile)
+        self.G = self._read_challenge1_file(self.download_goldstandard())
+
+    def download_goldstandard(self):
+        filename = "D3C1_goldstandard.txt"
+        filename = self._path2data + os.sep + 'goldstandard' + os.sep + filename
+        return filename
 
     def score(self, filename):
-        """
+        """Scoring function
 
         :return: tuple with first element being the number of correct
             predictions and second element being the pvalue
 
         """
-        data = self.read_challenge1_file(filename)
+        data = self._read_challenge1_file(filename)
         #  add-up the correct predictions
         num_correct = np.logical_and(self.G == 1, data==1).sum().sum()
         pval = self.probability(num_correct)
         return num_correct, pval
 
-    def read_challenge1_file(self, filename):
+    def _read_challenge1_file(self, filename):
         d = pd.read_csv(filename, sep="\t", index_col=0)
-    	assert d.shape == (4, 7), 'Problem parsing file'
+        assert d.shape == (4, 7), 'Problem parsing file'
         return d
 
     def _load_proba(self):
@@ -69,14 +75,12 @@ class D3C1(Challenge):
             0.00119048])
 
     def probability(self,x):
-    	dx = self.X[2] - self.X[1]
-        P = sum( np.double(self.X>=x) * self.Y * dx )
-        return P
+        dx = self.X[2] - self.X[1]
+        return sum( np.double(self.X>=x) * self.Y * dx )
 
     def download_template(self):
         """Return filename of a template to be used for testing"""
-        filename = self._path2data + os.sep + 'templates' + os.sep 
-        filename += 'example_SignalingCascadeChallenge.txt'
+        filename = self._pj([self._path2data, 'templates', 'D3C1_template.txt'])
         return filename
 
 
