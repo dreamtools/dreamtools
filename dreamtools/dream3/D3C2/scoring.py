@@ -42,9 +42,6 @@ class D3C2(Challenge):
         self._download_data('D3C2_proba_cytokine.mat', 'syn4555587')
         self._download_data('D3C2_proba_phospho.mat', 'syn4555588')
 
-    def score(self, prediction_file):
-        raise NotImplementedError
-
     def _check_sub_challenge_name(self, name):
         assert name in self.sub_challenges
 
@@ -58,13 +55,17 @@ class D3C2(Challenge):
         data = scipy.io.loadmat(filename)
         return data
 
+    def download_goldstandard(self, subname):
+        gs_filename = self._pj([self._path2data, 'goldstandard', 'D3C2_goldstandard_%s.txt' % subname])
+        return gs_filename
+
     def score(self, filename, subname):
         """This is a longish scoring function translated from the matlab original code of D4C2
 
         """
         self._check_sub_challenge_name(subname)
 
-        gs_filename = self._pj([self._path2data, 'goldstandard', 'D3C2_goldstandard_%s.txt' % subname])
+        gs_filename = self.download_goldstandard(subname)
 
 
         pdf_filename = self._pj([self._path2data, 'data', 'D3C2_proba_%s.mat' % subname])
