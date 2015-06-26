@@ -265,7 +265,8 @@ class ROCDiscovery(ROCBase):
             self.discovery = np.array(discovery)
 
         # sanity checks
-        assert set(np.unique(self.discovery)) == set([0,1]), 'ERROR: discovery is only allowed to have (0,1) entries.'
+        assert set(np.unique(self.discovery)) == set([0,1]),\
+            'ERROR: discovery is only allowed to have (0,1) entries.'
 
     def get_statistics(self):
         """Return dictionary with FPR, TPR and other metrics"""

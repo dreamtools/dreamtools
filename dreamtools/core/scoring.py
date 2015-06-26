@@ -30,6 +30,7 @@ registered = {
         'D7C1':['parameter', 'topology', 'timecourse'],
         'D7C4': [],
 
+        'D5C1': [],
         'D5C2': [],
 
         'D4C3':[],

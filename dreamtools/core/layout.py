@@ -89,7 +89,7 @@ class %(nickname)s(Challenge):
         # should return full path to a template file
         raise NotImplementedError
 
-    def download_template(self):
+    def download_goldstandard(self):
         # should return full path to a gold standard file
         raise NotImplementedError
 '''

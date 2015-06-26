@@ -37,6 +37,8 @@ class Challenge(object):
         self.sub_challenges = []
         self.mkdir()
 
+        self.client = None
+
     def _get_directory(self):
         """Gets directory where data will be stored."""
         name_dir = self._get_challenge_directory()
@@ -103,10 +105,18 @@ class Challenge(object):
         filename = self.directory + os.sep + name
         if os.path.exists(filename) is False:
             # must download the data now
-            print("File %s not found. Downloading from Synapse. You must have a login." % filename)
-            d = Downloader(self.nickname)
+            print("File %s not found. Downloading from Synapse." % filename)
+            d = Downloader(self.nickname, self.client)
             d.download(synid)
+            # save the login if needed again, it will be faster
+            self.client = d.client
 
         return filename
 
+    def get_pathname(self, filename):
+        """Return pathname of a file to be found on ./config/dreamtools if available"""
+        filename = self.directory + os.sep + filename
+        if os.path.exists(filename) is False:
+            raise ValueError("Could not find the file %s in %s" % (filename, self.directory))
+        return filename
 

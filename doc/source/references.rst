@@ -82,11 +82,13 @@ D4C1
 ~~~~~~
 .. automodule:: dreamtools.dream4.D4C1.scoring
     :members:
+    :undoc-members:
 
 D4C2
 ~~~~~~
 .. automodule:: dreamtools.dream4.D4C2.scoring
     :members:
+    :undoc-members:
 
 
 D4C3
@@ -97,6 +99,12 @@ D4C3
 
 DREAM5 challenges
 --------------------
+
+D5C1
+~~~~~~
+.. automodule:: dreamtools.dream5.D5C1.scoring
+    :members:
+    :undoc-members:
 
 D5C2
 ~~~~~~~

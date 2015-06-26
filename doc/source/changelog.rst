@@ -5,6 +5,7 @@ ChangeLog
 ----------
 
 
+ * NEWS: add :class:`dreamtools.dream5.scoring.D5C1` challenge in Dreamtools
  * NEWS: add :class:`dreamtools.dream3.scoring.D3C2` challenge in Dreamtools
  * NEWS: add :class:`dreamtools.dream3.scoring.D3C3` challenge in Dreamtools
  * NEWS: add :class:`dreamtools.dream3.scoring.D3C4` challenge in Dreamtools
