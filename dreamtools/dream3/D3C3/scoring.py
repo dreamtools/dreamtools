@@ -3,11 +3,10 @@
 Python code implemented by Thomas Cokelaer from matlab version (Gustavo A. Stolovitzky, Ph.D.
 Robert Prill).
 """
-import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
 import numpy as np
-
+import os
 
 class D3C3(Challenge):
     """A class dedicated to D3C3 challenge
@@ -22,19 +21,10 @@ class D3C3(Challenge):
 
     Data and templates are downloaded from Synapse. You must have a login.
 
-    outputs are	::
-    
-        overall_gene_profile_pval:	geometric mean of the gene-profile p-values
-
-    	overall_time_profile_pval:	geometric mean of the time-profile p-values
-
-    	rho_gene_profile:		Spearman correlation coeff of gene-profiles
-
-    	pval_gene_profile:		p-value of Spearman correlation coeff
-
-    	rho_time_profile:		Spearman correlation coeff of time-profiles
-
-    	pval_time_profile:		p-value of Spearman correlation coeff
+    .. note:: the spearman pvalues are computed using R and are slightly different
+        from the official code that used matlab. The reason being that the 2 implementations
+        are different. Pleasee see cor.test in R and corr() function in matlab for details.
+        The scipy.stats.stats.spearman has a very different implementation for small size cases.
 
     """
     def __init__(self):
@@ -46,12 +36,7 @@ class D3C3(Challenge):
         #self._init()
 
     def _init(self):
-        # should download files from synapse if required.
-        #self._download_data('DREAM3GoldStandard_ExpressionChallenge.txt', 'syn3033096')
-        #s.get('syn3033092', downloadLocation='data')
-        #s.get('syn3033091', downloadLocation='data')
-        #s.get('syn3033093', downloadLocation='data')
-        pass
+       pass
 
     def download_goldstandard(self):
         return self._pj([self._path2data, 'goldstandard', 'D3C3_goldstandard.txt'])
@@ -98,8 +83,6 @@ class D3C3(Challenge):
             rtool.session.run("results = cor.test(t, g, method='spearman', alternative='greater', exact=F)")
             rho_col.append(rtool.session.results['estimate'])
             pval_col.append(rtool.session.results['p.value'])
-
-
 
 
         print("""
