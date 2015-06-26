@@ -22,15 +22,27 @@ from dreamtools import Challenge
 
 
 registered = {
+        'D9dot5C1': ['sc1', 'sc2'],
+
         'D8C1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
         'D8C2': ['sc1', 'sc2'],
+
         'D7C1':['parameter', 'topology', 'timecourse'],
+        'D7C4': [],
+
         'D5C2': [],
+
         'D4C3':[],
         'D4C1':[],
+        'D4C2':['10','100','100_multifactorial'],
+
+
         'D3C1':[],
         'D3C2': ['cytokine', 'phospho'],
-        'D9dot5C1': ['sc1', 'sc2']}
+        'D3C3':[],
+        'D3C4':['10','100','50']
+
+        }
 
 
 # Define the simple scoring functions here below
