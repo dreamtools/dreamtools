@@ -1,8 +1,9 @@
 from dreamtools.dream8.D8C1 import aggregation
+from nose.plugins.attrib import attr
 
 
 
-
+@attr('skip')
 def test_sc2a():
     a = aggregation.SC2A_aggregation()
     a.load_submissions()
@@ -11,6 +12,7 @@ def test_sc2a():
     aucs = a.plot_aggr_random(N=2, Nmax=2)
 
 
+@attr('skip')
 def test_sc2b():
     b = aggregation.SC2B_aggregation()
     b.load_submissions()
@@ -18,6 +20,7 @@ def test_sc2b():
     assert aucs == [0.24554824475398279, 0.25530788468348198]    
     aucs = b.plot_aggr_random(N=2, Nmax=2)
 
+@attr('skip')
 def test_sc1a():
     b = aggregation.SC1A_aggregation()
     b.load_submissions()
@@ -27,6 +30,7 @@ def test_sc1a():
 
 
 
+@attr('skip')
 def test_sc1b():
     b = aggregation.SC1B_aggregation()
     b.load_submissions()
