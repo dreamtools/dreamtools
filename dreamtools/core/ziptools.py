@@ -43,6 +43,9 @@ class ZIP(object):
             self.zip_filenames = self.zip_data.namelist()
             self.filenames = self.zip_filenames # keep zip_filenames for back compat
 
-
     def read(self, filename):
         return self.zip_data.read(filename)
+
+    def extractall(self, path):
+        # must load a ZIP file first.
+        self.zip_data.extractall(path=path)

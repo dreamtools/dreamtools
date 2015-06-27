@@ -120,3 +120,13 @@ class Challenge(object):
             raise ValueError("Could not find the file %s in %s" % (filename, self.directory))
         return filename
 
+    def loadmat(self, filename):
+        import scipy.io
+        return scipy.io.loadmat(filename)
+
+    def unzip(self, filename):
+        from dreamtools.core.ziptools import ZIP
+        z = ZIP()
+        z.loadZIPFile(self.get_pathname(filename)), z.extractall(self.directory)
+
+

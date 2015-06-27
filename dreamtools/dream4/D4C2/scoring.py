@@ -1,6 +1,5 @@
 """
 
-
 Implementation in Python from Thomas Cokelaer.
 Original code in matlab (Gustavo Stolovitzky and Robert Prill).
 
@@ -13,6 +12,7 @@ from dreamtools.core.rocs import D3D4ROC
 import pandas as pd
 import numpy as np
 import pylab
+
 
 class D4C2(Challenge, D3D4ROC):
     """A class dedicated to D4C2 challenge
@@ -29,7 +29,6 @@ class D4C2(Challenge, D3D4ROC):
 
 
     So far only 1 network at a time is scored using scor_prediction.
-
 
 
     """
@@ -62,7 +61,6 @@ class D4C2(Challenge, D3D4ROC):
         self._download_data('pdf_size10_3.mat', 'syn4558442')
         self._download_data('pdf_size10_4.mat', 'syn4558443')
         self._download_data('pdf_size10_5.mat', 'syn4558444')
-
 
     def score(self, filename, tag):
         print('Your filename must end with the batch value in 1,2,3,4,5 ')
@@ -118,7 +116,6 @@ class D4C2(Challenge, D3D4ROC):
         # keep this it is used for testing.
         pdf_filename = self._pj([self._path2data, 'data', 'pdf_size%s_%s.mat' % (tag, batch)])
 
-
         self.test_data = self._load_network(filename)
         self.gold_data = self._load_network(gs_filename)
         self.pdf_data = self.load_prob(pdf_filename)
@@ -127,15 +124,18 @@ class D4C2(Challenge, D3D4ROC):
         gold_data = self._load_network(gs_filename)
         pdf_data = self.load_prob(pdf_filename)
 
-
         # append rank small to large
         newtest = pd.merge(self.test_data, self.gold_data, how='inner', on=[0,1])
         test = list(newtest['2_x'])
         gold_index = list(newtest['2_y'])
 
-        AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_data, self.test_data, gold_index)
-        p_auroc = self._probability(self.pdf_data['auroc_X'][0], self.pdf_data['auroc_Y'][0], AUROC)
-        p_aupr = self._probability(self.pdf_data['aupr_X'][0], self.pdf_data['aupr_Y'][0], AUC)
+        AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_data, 
+                self.test_data, gold_index)
+
+        p_auroc = self._probability(self.pdf_data['auroc_X'][0], 
+                self.pdf_data['auroc_Y'][0], AUROC)
+        p_aupr = self._probability(self.pdf_data['aupr_X'][0], 
+                self.pdf_data['aupr_Y'][0], AUC)
 
 
         return AUC, AUROC, prec, rec, tpr, fpr, p_auroc, p_aupr

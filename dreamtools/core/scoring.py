@@ -32,11 +32,11 @@ registered = {
 
         'D5C1': [],
         'D5C2': [],
+        'D5C3': ['A', 'B'],
 
         'D4C3':[],
         'D4C1':[],
         'D4C2':['10','100','100_multifactorial'],
-
 
         'D3C1':[],
         'D3C2': ['cytokine', 'phospho'],
@@ -167,6 +167,8 @@ def scoring(args=None):
     else:
         options = user_options.parse_args(args[1:])
 
+
+    # Check on the challenge name
     if options.challenge is None:
         if len(registered[options.challenge])!=0 and options.sub_challenge is None:
             print_color('--challenge and --sub-challenge must be provided', red)
@@ -175,6 +177,7 @@ def scoring(args=None):
         options.challenge = options.challenge.upper()
         options.challenge = options.challenge.replace('DOT', 'dot')
 
+    # Checks name of the sub-challenges
     try:
         d.check_param_in_list(options.challenge, registered.keys())
     except ValueError as err:
@@ -217,8 +220,17 @@ def scoring(args=None):
         print_color(txt, red)
         sys.exit()
 
-    if os.path.exists(options.filename) is False:
-        raise IOError("file %s does not seem to exists" % options.filename)
+
+    # filename 
+    # filename in general is a single string but could be a list of filenames
+    # Because on the parser, we must convert the string into a single string
+    # if the list haa a length of 1
+    for filename in options.filename:
+        if os.path.exists(filename) is False:
+            raise IOError("file %s does not seem to exists" % filename)
+    if len(options.filename) == 1:
+        options.filename = options.filename[0]
+    
 
     print_color("Dreamtools scoring", purple, underline=True)
     print('Challenge %s (sub challenge %s)\n\n' % (options.challenge, options.sub_challenge))
@@ -308,17 +320,14 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
         group.add_argument("--verbose", dest='verbose',
                          action="store_true",
                          help="verbose option.")
-        group.add_argument("--submission", dest='filename',
+        group.add_argument("--submission", dest='filename', nargs='*',
                          help="submission/filename to score.")
-        group.add_argument("--filename", dest='filename',
+        group.add_argument("--filename", dest='filename', nargs='*',
                          help="submission/filename to score.")
         group.add_argument("--download-template", dest='download_template',
-                         help="download template. Templates for challenge may be downloaded using this option. It returns the path to template.", action='store_true')
+                         help="Download template. Templates for challenge may be downloaded using this option. It returns the path to template.", action='store_true')
 
-
-        #group.add_argument("--help", dest='help',
-        #                 action="store_true",
-        #                 help="this help.")
+    
 
 if __name__ == "__main__":
     scoring(sys.argv)

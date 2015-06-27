@@ -309,7 +309,6 @@ class D3D4ROC(ROCBase):
         rec = metrics['rec']
         prec = metrics['prec']
 
-
         pylab.figure(1)
         pylab.subplot(1,2,1)
         pylab.plot(fpr,tpr)
@@ -322,11 +321,7 @@ class D3D4ROC(ROCBase):
         pylab.xlabel('Recall')
         pylab.ylabel('Precision')
 
-
-
     def get_statistics(self, gold_data, test_data, gold_index):
-
-
 
         T = len(gold_data)          # Total potential edges n(n-1)
         P = gold_data[2].sum()      # positives
