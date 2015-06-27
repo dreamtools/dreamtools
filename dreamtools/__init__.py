@@ -21,7 +21,9 @@ def create_dreamtools_config_directories(maindir, subdirectories):
 from dreamtools.core.challenge import Challenge
 
 
+from dream2.D2C1.scoring import D2C1
 from dream2.D2C2.scoring import D2C2
+from dream2.D2C3.scoring import D2C3
 
 from dream3.D3C1.scoring import D3C1
 from dream3.D3C2.scoring import D3C2
