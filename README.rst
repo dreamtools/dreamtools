@@ -5,8 +5,6 @@ DreamTools
 .. image:: https://badge.fury.io/py/dreamtools.svg
     :target: https://pypi.python.org/pypi/dreamtools
 
-.. image:: https://pypip.in/d/dreamtools/badge.png
-    :target: https://crate.io/packages/dreamtools/
 
 .. image:: https://secure.travis-ci.org/dreamtools/dreamtools.png
     :target: http://travis-ci.org/dreamtools/dreamtools
