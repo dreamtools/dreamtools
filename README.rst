@@ -5,15 +5,13 @@ DreamTools
 .. image:: https://badge.fury.io/py/dreamtools.svg
     :target: https://pypi.python.org/pypi/dreamtools
 
-
 .. image:: https://secure.travis-ci.org/dreamtools/dreamtools.png
     :target: http://travis-ci.org/dreamtools/dreamtools
 
 .. image:: https://coveralls.io/repos/dreamtools/dreamtools/badge.png?branch=master 
    :target: https://coveralls.io/r/dreamtools/dreamtools?branch=master 
 
-
-.. image:: https://badge.waffle.io/dreamtools/dreamtools.png?label=ready&title=Ready 
+.. image:: https://badge.waffle.io/dreamtools/dreamtools.png?label=backlog&title=issues
    :target: https://waffle.io/dreamtools/dreamtools
 
 :note: DreamTools is tested for Python 2.7
