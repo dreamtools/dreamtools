@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 import pylab
 
+
 class D4C3(Challenge):
     """A class dedicated to D4C3 challenge
 
@@ -47,9 +48,13 @@ class D4C3(Challenge):
 
         self._load_gold_standard()
         self._fetch_normalisation()
+        
+    def download_goldstandard(self):
+        filename = self._pj([self._path2data, 'goldstandard', 'D4C3_goldstandard.csv'])
+        return filename
 
     def _load_gold_standard(self):
-        filename = self._pj([self._path2data, 'goldstandard', 'D4C3_goldstandard.csv'])
+        filename = self.download_goldstandard()
         df = pd.read_csv(filename)
         df.replace('NOT AVAILABLE', np.nan, inplace=True)
         self.goldstandard = df.copy()
