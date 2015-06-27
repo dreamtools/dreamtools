@@ -32,6 +32,7 @@ class D2C1(Challenge):
 
     def score(self, filename):
         raise NotImplementedError
+        # SEE one of later challenges. Same methodology!
         # gold standard edges only
         goldfile = self.get_pathname('DREAM5_SysGenA100_Edges_Network1.tsv')
 
