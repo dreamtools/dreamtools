@@ -68,7 +68,7 @@ class D3C2(Challenge):
         gs_filename = self.download_goldstandard(subname)
 
 
-        pdf_filename = self._pj([self._path2data, 'data', 'D3C2_proba_%s.mat' % subname])
+        pdf_filename = self.get_pathname('D3C2_proba_%s.mat' % subname)
         #%% Read the probability density function that we computed (empirically) elsewhere
         #%% NOTE: This loads: X, Y, and C, where C is a constant that scales the pdf to the histogram
         temp = self._load_prob(pdf_filename)
@@ -101,5 +101,4 @@ class D3C2(Challenge):
         denom = ACC**2 + (GAMMA * G)**2
         score = (numer/denom).sum().sum()
         return score
-
 

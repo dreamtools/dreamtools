@@ -87,6 +87,7 @@ setup(
 
     entry_points = {
         'console_scripts': [
+            'dreamtools=dreamtools.core.scoring:scoring',
             'dreamtools-scoring=dreamtools.core.scoring:scoring',
             'dreamtools-layout=dreamtools.core.layout:layout',
         ]

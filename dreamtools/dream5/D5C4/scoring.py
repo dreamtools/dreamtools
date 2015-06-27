@@ -55,9 +55,6 @@ class D5C4(Challenge, D3D4ROC):
         df = df.astype(float) # imoprtant for later to check for equality
         return df
 
-    def score(self, prediction_file):
-        raise NotImplementedError
-
     def download_template(self):
         # should return full path to a template file
         filenames = []
@@ -74,13 +71,14 @@ class D5C4(Challenge, D3D4ROC):
             filenames.append(self.get_pathname(filename))
         return filenames
     
-    def score_prediction(self):
+    def score(self, filename):
         #goldfile = self.get_pathname('DREAM5_NetworkInference_Edges_Network1.tsv')
         goldfile = self.get_pathname('DREAM5_NetworkInference_Edges_Network1.tsv')
 
         # predicted edges
         #predictionfile = self.get_pathname('DREAM5_NetworkInference_myteam_Network1.txt')
-        predictionfile = 'templates/DREAM5_NetworkInference_myteam_Network1.txt'
+        #predictionfile = 'templates/DREAM5_NetworkInference_myteam_Network1.txt'
+        predictionfile = filename
 
         # precomputed probability densities for various metrics
         #pdffile_aupr  = self.get_pathname('A100_Network1_AUPR.mat')

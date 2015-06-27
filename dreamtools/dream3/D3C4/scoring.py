@@ -104,7 +104,7 @@ class D3C4(Challenge, D3D4ROC):
         return self.get_pathname('DREAM3GoldStandard_InSilicoSize%s_%s.txt' % (subname, name))
 
     def _load_network(self, filename):
-        df = pd.read_csv(filename, header=None, sep='[ \t]')
+        df = pd.read_csv(filename, header=None, sep='[ \t]', engine='python')
         df[0] = df[0].apply(lambda x: x.replace('g','').replace('G',''))
         df[1] = df[1].apply(lambda x: x.replace('g','').replace('G',''))
         df = df.astype(float) # imoprtant for later to check for equality

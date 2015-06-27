@@ -53,7 +53,49 @@ __all__ = ["HPNScoringNetwork", "HPNScoring", "HPNScoringNetworkInsilico",
     "HPNScoringNetwork_ranking", "HPNScoringPrediction",
     "HPNScoringPrediction_ranking", "ScoringError",
     "HPNScoringPredictionInsilico_ranking",
-    "HPNScoringPredictionInsilico"]
+    "HPNScoringPredictionInsilico", "D8C1"]
+
+
+class D8C1(Challenge):
+
+    def __init__(self):
+        super(D8C1, self).__init__('D8C1')
+        self._path2data = os.path.split(os.path.abspath(__file__))[0]
+        self.sub_challenges = ['SC1A','SC1B','SC2A','SC2B']
+
+    def download_template(self, subname):
+        if subname == 'SC1A':
+            filename = 'alphabeta-Network.zip'
+        elif subname == 'SC1B':
+            filename = 'alphabeta-Network-Insilico.zip'
+        elif subname == 'SC2A':
+            filename = 'alphabeta-Prediction.zip'
+        elif subname == 'SC2B':
+            filename = 'alphabeta-Prediction-Insilico.zip'
+        else:
+            raise ValueError('Invalid name. Use one of %s' % self.sub_challenges)
+        return self._pj([self._path2data, 'templates', filename])
+
+    def score(self, filename, subname):
+        if subname == 'SC1A':
+            s = HPNScoringNetwork(filename)
+            s.compute_all_aucs()
+            auc = s.get_auc_final_scoring()
+            return {'AUC': auc}
+        elif subname == 'SC1B':
+            s = HPNScoringNetworkInsilico(filename)
+            s.compute_score()
+            return {'AUC': s.auc}
+        elif subname == 'SC2A':
+            s = HPNScoringPrediction(filename)
+            s.compute_all_rmse()
+            return {'meanRMSE': s.get_mean_rmse()}
+        elif subname == 'SC2B':
+            s = HPNScoringPredictionInsilico(filename)
+            s.compute_all_rmse()
+            return {'meanRMSE': s.get_mean_rmse()}
+        else:
+            raise ValueError('Invalid name. Use one of %s' % self.sub_challenges)
 
 
 class ScoringError(Exception):

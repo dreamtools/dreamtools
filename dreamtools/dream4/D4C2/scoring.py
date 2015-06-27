@@ -89,7 +89,7 @@ class D4C2(Challenge, D3D4ROC):
         return gs_filename
 
     def _load_network(self, filename):
-        df = pd.read_csv(filename, header=None, sep='[ \t]')
+        df = pd.read_csv(filename, header=None, sep='[ \t]', engine='python')
         df[0] = df[0].apply(lambda x: x.replace('g','').replace('G',''))
         df[1] = df[1].apply(lambda x: x.replace('g','').replace('G',''))
         df = df.astype(float) # imoprtant for later to check for equality
@@ -114,15 +114,12 @@ class D4C2(Challenge, D3D4ROC):
         gs_filename = self.download_goldstandard(tag, batch)
 
         # keep this it is used for testing.
-        pdf_filename = self._pj([self._path2data, 'data', 'pdf_size%s_%s.mat' % (tag, batch)])
+        pdf_filename = self.get_pathname('pdf_size%s_%s.mat' % (tag, batch))
 
         self.test_data = self._load_network(filename)
         self.gold_data = self._load_network(gs_filename)
         self.pdf_data = self.load_prob(pdf_filename)
 
-        test_data = self._load_network(filename)
-        gold_data = self._load_network(gs_filename)
-        pdf_data = self.load_prob(self.get_pathname(pdf_filename))
 
         # append rank small to large
         newtest = pd.merge(self.test_data, self.gold_data, how='inner', on=[0,1])
@@ -150,8 +147,6 @@ class D4C2(Challenge, D3D4ROC):
         aupr, auroc, prec, rec, tpr, fpr, p_auroc, p_aupr = \
             self.score_prediction(filename, tag, batch)
         super(D4C2, self).plot(metrics={'prec':prec, 'rec':rec, 'tpr':tpr, 'fpr':fpr})
-
-
 
     def directed_to_undirected(self):
         raise NotImplementedError
