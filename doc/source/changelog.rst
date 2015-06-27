@@ -1,6 +1,11 @@
 ChangeLog
 ==============
 
+0.1.6
+--------
+
+Add a bunch of other challenges mostly D2/D3/D4/D5 and fixes + tests
+
 0.1.5
 ----------
 
