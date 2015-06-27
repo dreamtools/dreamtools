@@ -1,0 +1,27 @@
+language: python
+# python 3.4 fails for now because of gevents dependencies, which cannot be installed via pip
+python:
+#  - "3.4"
+#  - "3.3"
+  - "2.7"
+
+
+before_install:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sudo apt-get install -q libatlas3gf-base libatlas-dev liblapack-dev gfortran 
+
+
+# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
+install: 
+  - pip install numpy pyparsing matplotlib 
+  - pip install nose coverage
+  - pip install pandas
+  - pip install scipy
+
+# # command to run tests, e.g. python setup.py test
+script:  
+  - python setup.py nosetests --with-coverage --cover-package dreamtools --logging-level ERROR --attr '!skip'
+    
+after_success:
+  coveralls

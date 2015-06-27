@@ -1,6 +1,30 @@
 DreamTools
 ==========
 
+
+.. image:: https://badge.fury.io/py/dreamtools.svg
+    :target: https://pypi.python.org/pypi/dreamtools
+
+.. image:: https://pypip.in/d/dreamtools/badge.png
+    :target: https://crate.io/packages/dreamtools/
+
+.. image:: https://secure.travis-ci.org/cokelaer/dreamtools.png
+    :target: http://travis-ci.org/cokelaer/dreamtools
+
+.. image:: https://coveralls.io/repos/cokelaer/dreamtools/badge.png?branch=master 
+   :target: https://coveralls.io/r/cokelaer/dreamtools?branch=master 
+
+.. image:: https://landscape.io/github/cokelaer/dreamtools/master/landscape.png
+   :target: https://landscape.io/github/cokelaer/dreamtools/master
+
+.. image:: https://badge.waffle.io/cokelaer/dreamtools.png?label=ready&title=Ready 
+   :target: https://waffle.io/cokelaer/dreamtools
+
+:note: DreamTools is tested for Python 2.7
+
+
+:Contributions: Please join https://github.com/dreamtools/dreamtools and share your notebooks https://github.com/dreamtools/dreamtools/notebooks
+
 :Online documentation: `On pypi website <http://pythonhosted.org/dreamtools/>`_,
 :Issues and bug reports: `On github <https://github.com/dreamtools/dreamtools/issues>`_,
 
