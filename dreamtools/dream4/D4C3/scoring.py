@@ -176,7 +176,7 @@ class D4C3(Challenge):
         pylab.clf()
 
         for i, species in enumerate(self.species):
-            pylab.subplot(3, 3, i+1)
+            pylab.subplot(4, 2, i+1)
             pylab.plot(self.x_norm_log[species], self.y_log[species], '.')
             pylab.grid(True)
             pylab.axis('equal')
