@@ -1,3 +1,11 @@
+"""
+
+
+Based on matlab code from
+Gustavo A. Stolovitzky, Ph.D.
+Bernd Jagla, Ph.D.
+
+"""
 import pandas as pd
 import numpy as np
 import os
@@ -21,3 +29,50 @@ class D2C1(Challenge):
 
         df = df.sort(columns=['scores'], ascending=[False])
         df.to_csv(filename, sep='\t', header=None, index=False)
+
+    def score(self, filename):
+        raise NotImplementedError
+        # gold standard edges only
+        goldfile = self.get_pathname('DREAM5_SysGenA100_Edges_Network1.tsv')
+
+        # predicted edges
+        predictionfile = self.get_pathname('DREAM5_SysGenA100_myteam_Network1.txt')
+        predictionfile = filename
+
+        # precomputed probability densities for various metrics
+        pdffile_aupr  = self.get_pathname('A100_Network1_AUPR.mat')
+        pdffile_auroc = self.get_pathname('A100_Network1_AUROC.mat')
+
+        # load gold standard
+        self.gold_edges = self._load_network(goldfile)
+
+        # load predictions
+        self.prediction = self._load_network(predictionfile)
+
+        # load probability densities
+        self.pdf_aupr  = self.loadmat(pdffile_aupr)
+        self.pdf_auroc = self.loadmat(pdffile_auroc)
+
+        # 
+        newtest = pd.merge(self.prediction, self.gold_edges, how='inner', on=[0,1])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
