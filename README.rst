@@ -31,6 +31,12 @@ Installation
 installed with **dreamtools** using pip executable::
 
     pip install dreamtools
+    
+From source, download the source code and install the package with Python::
+
+   git clone 
+   cd 
+   sudo python setup.py install
 
 
 The **dreamtools-scoring** executable
