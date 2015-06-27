@@ -34,8 +34,8 @@ installed with **dreamtools** using pip executable::
     
 From source, download the source code and install the package with Python::
 
-   git clone 
-   cd 
+   git clone git@github.com:dreamtools/dreamtools.git
+   cd dreamtools
    sudo python setup.py install
 
 
