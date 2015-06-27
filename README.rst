@@ -14,8 +14,6 @@ DreamTools
 .. image:: https://coveralls.io/repos/cokelaer/dreamtools/badge.png?branch=master 
    :target: https://coveralls.io/r/cokelaer/dreamtools?branch=master 
 
-.. image:: https://landscape.io/github/cokelaer/dreamtools/master/landscape.png
-   :target: https://landscape.io/github/cokelaer/dreamtools/master
 
 .. image:: https://badge.waffle.io/cokelaer/dreamtools.png?label=ready&title=Ready 
    :target: https://waffle.io/cokelaer/dreamtools
