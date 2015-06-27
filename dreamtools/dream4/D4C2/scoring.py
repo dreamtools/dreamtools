@@ -122,7 +122,7 @@ class D4C2(Challenge, D3D4ROC):
 
         test_data = self._load_network(filename)
         gold_data = self._load_network(gs_filename)
-        pdf_data = self.load_prob(pdf_filename)
+        pdf_data = self.load_prob(self.get_pathname(pdf_filename))
 
         # append rank small to large
         newtest = pd.merge(self.test_data, self.gold_data, how='inner', on=[0,1])
