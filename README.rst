@@ -11,7 +11,7 @@ DreamTools
 .. image:: https://coveralls.io/repos/dreamtools/dreamtools/badge.png?branch=master 
    :target: https://coveralls.io/r/dreamtools/dreamtools?branch=master 
 
-.. image:: https://badge.waffle.io/dreamtools/dreamtools.png?label=backlog&title=issues
+.. image:: https://badge.waffle.io/dreamtools/dreamtools.png?label=issues&title=issues
    :target: https://waffle.io/dreamtools/dreamtools
 
 :note: DreamTools is tested for Python 2.7
