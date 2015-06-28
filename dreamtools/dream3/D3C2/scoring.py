@@ -50,10 +50,6 @@ class D3C2(Challenge):
         filename = self._pj([self._path2data, 'templates', 'D3C2_template_%s.txt' % name])
         return filename
 
-    def _load_prob(self, filename):
-        import scipy.io
-        data = scipy.io.loadmat(filename)
-        return data
 
     def download_goldstandard(self, subname):
         gs_filename = self._pj([self._path2data, 'goldstandard', 'D3C2_goldstandard_%s.txt' % subname])
@@ -71,7 +67,7 @@ class D3C2(Challenge):
         pdf_filename = self.get_pathname('D3C2_proba_%s.mat' % subname)
         #%% Read the probability density function that we computed (empirically) elsewhere
         #%% NOTE: This loads: X, Y, and C, where C is a constant that scales the pdf to the histogram
-        temp = self._load_prob(pdf_filename)
+        temp = self.loadmat(pdf_filename)
         X = temp['X'][0]
         Y = temp['Y'][0]
 

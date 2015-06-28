@@ -45,7 +45,7 @@ class D3C3(Challenge):
         self.G = self._read_challenge(self.download_goldstandard())
         self.T = self._read_challenge(filename)
 
-        from scipy.stats.stats import pearsonr, spearmanr
+        #from scipy.stats.stats import pearsonr, spearmanr
         
         G = self.G[self.G.columns[2:]].values
         T = self.T[self.T.columns[2:]].values

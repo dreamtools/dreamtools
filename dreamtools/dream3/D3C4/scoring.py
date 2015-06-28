@@ -110,11 +110,6 @@ class D3C4(Challenge, D3D4ROC):
         df = df.astype(float) # imoprtant for later to check for equality
         return df
 
-    def _load_prob(self, filename):
-        import scipy.io
-        data = scipy.io.loadmat(filename)
-        return data
-
     def score_prediction(self, filename, size, name):
         """
 
@@ -132,7 +127,7 @@ class D3C4(Challenge, D3D4ROC):
 
         self.gold_data = self._load_network(gs_filename)
         self.test_data = self._load_network(filename)
-        self.pdf_data = self._load_prob(pdf_filename)
+        self.pdf_data = self.loadmat(pdf_filename)
 
 
         # we want to remove all entries for test that are not in GS
