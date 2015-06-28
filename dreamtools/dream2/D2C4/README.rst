@@ -7,7 +7,7 @@ Overview
 :Nickname: D2C4
 :Summary: Reconstruct a genome scale regulatory network from a large collection of microarrays
 :SubChallenges: ?
-:Synapse page: https://www.synapse.org/#!Synapse:syn3034869
+:Synapse page: https://www.synapse.org/#!Synapse:syn2825394
 
 
 .. contents::

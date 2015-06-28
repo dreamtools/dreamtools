@@ -5,5 +5,6 @@ def test_d2c3():
 
     s = D2C3()
     filename = s.download_template()
-    d = s.score(filename)
+    gs = s.download_goldstandard()
+    d = s.score(filename, goldstandard=gs)
     assert d['AUPR']> 0.5

@@ -82,14 +82,14 @@ class %(nickname)s(Challenge):
         # should download files from synapse if required.
         pass
 
-    def score(self, prediction_file):
+    def score(self, filename, subname=None, goldstandard=None):
         raise NotImplementedError
 
-    def download_template(self):
+    def download_template(self, subname=None):
         # should return full path to a template file
         raise NotImplementedError
 
-    def download_goldstandard(self):
+    def download_goldstandard(self, subname=None):
         # should return full path to a gold standard file
         raise NotImplementedError
 '''

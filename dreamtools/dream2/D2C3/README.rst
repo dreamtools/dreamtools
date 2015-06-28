@@ -7,7 +7,7 @@ Overview
 :Nickname: D2C3
 :Summary: Infer a gene regulation network from qPCR and microarray measurements
 :SubChallenges: 
-:Synapse page: https://www.synapse.org/#!Synapse:synXXXXXXX
+:Synapse page: https://www.synapse.org/#!Synapse:syn3034869
 
 
 .. contents::

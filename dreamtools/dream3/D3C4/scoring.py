@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 from dreamtools.core.rocs import D3D4ROC
 
+
 class D3C4(Challenge, D3D4ROC):
     """A class dedicated to D3C4 challenge
 
@@ -33,7 +34,11 @@ class D3C4(Challenge, D3D4ROC):
         super(D3C4, self).__init__('D3C4')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
-        self.sub_challenges = [10,50,100]
+
+        self.sub_challenges = []
+        for x in ['10', '100', '50']:
+            for y in ['Yeast3', 'Yeast1', 'Yeast2', 'Ecoli2', 'Ecoli1']:
+                self.sub_challenges.append(x + '_' + y)
 
     def _init(self):
         # should download files from synapse if required.
@@ -55,6 +60,7 @@ class D3C4(Challenge, D3D4ROC):
         self._download_data('PDF_InSilicoSize50_Yeast1.mat', 'syn4558481')
         self._download_data('PDF_InSilicoSize50_Yeast1.mat', 'syn4558482')
         self._download_data('PDF_InSilicoSize50_Yeast1.mat', 'syn4558483')
+
         # Then, the gold standard
         self._download_data('DREAM3GoldStandard_InSilicoSize100_Ecoli1.txt', 'syn4558558')
         self._download_data('DREAM3GoldStandard_InSilicoSize100_Ecoli2.txt', 'syn4558560')
@@ -74,34 +80,33 @@ class D3C4(Challenge, D3D4ROC):
         self._download_data('DREAM3GoldStandard_InSilicoSize50_Yeast2.txt', 'syn4558554')
         self._download_data('DREAM3GoldStandard_InSilicoSize50_Yeast3.txt', 'syn4558556')
 
-    def score(self, filename, size):
-        print('Your filename must end with the batch name that is Ecoli1, Ecoli2, Yeast1, Yeast2, Yeast3 ')
-        print('E.G. template_Ecoli1.txt')
-        vals = os.path.split(filename)[-1].split('.')[0].split("_")
-        results =  self.score_prediction(filename, size, vals[-1])
+    def score(self, filename, subname=None, goldstandard=None):
+        name1, name2 = self._check_subname(subname)
+        results =  self.score_prediction(filename, subname)
         AUC, AUROC, prec, rec, tpr, fpr, p_auroc, p_aupr = results
         return {'AUROC': AUROC, 'AUC':AUC, 'p_auroc':p_auroc, 'p_aupr':p_aupr}
 
+    def _check_subname(self, subname):
+        name1, name2 = subname.split("_")
+        names = ['Ecoli1', 'Ecoli2', 'Yeast1', 'Yeast2', 'Yeast3']
+        error = "The sub challenge name must be X_Y where X is in 10 50 100"
+        error += "\nand Y is in  %s" % names
+        if name1 not in ['100', '10', '50']:
+            txt = 0.368
+            raise ValueError(error)
+        if name2 not in names:
+            raise ValueError(error)
+        return name1, name2
 
-    def _check_sub_challenge_size(self, name):
-        assert name in [100, '100', 10, '10', '50', 50]
-
-    def _check_sub_challenge_name(self, name):
-        assert name in ['Ecoli1', 'Ecoli2', 'Yeast1', 'Yeast2', 'Yeast3']
-
-    def download_template(self, size, name):
-        self._check_sub_challenge_size(size)
-        self._check_sub_challenge_name(name)
-        subname = str(size)
+    def download_template(self, subname):
+        name1, name2 = self._check_subname(subname)
         filename = self._pj([self._path2data, 'templates',
-            'example_InSilicoSize%s_%s.txt' % (subname, name)])
+            'example_InSilicoSize%s_%s.txt' % (name1, name2)])
         return filename
 
-    def download_goldstandard(self, size, name):
-        self._check_sub_challenge_size(size)
-        self._check_sub_challenge_name(name)
-        subname = str(size)
-        return self.get_pathname('DREAM3GoldStandard_InSilicoSize%s_%s.txt' % (subname, name))
+    def download_goldstandard(self, subname):
+        name1, name2 = self._check_subname(subname)
+        return self.get_pathname('DREAM3GoldStandard_InSilicoSize%s_%s.txt' % (name1, name2))
 
     def _load_network(self, filename):
         df = pd.read_csv(filename, header=None, sep='[ \t]', engine='python')
@@ -110,25 +115,22 @@ class D3C4(Challenge, D3D4ROC):
         df = df.astype(float) # imoprtant for later to check for equality
         return df
 
-    def score_prediction(self, filename, size, name):
+    def score_prediction(self, filename, subname):
         """
-
 
         :param filename:
         :param size:
         :param name:
         :return:
 
-
-        .. todo:: merge this function with the one from D4C2
         """
-        gs_filename = self.download_goldstandard(size, name)
-        pdf_filename = self.get_pathname("PDF_InSilicoSize%s_%s.mat" % (size, name))
+        name1, name2 = self._check_subname(subname)
+        gs_filename = self.download_goldstandard(subname)
+        pdf_filename = self.get_pathname("PDF_InSilicoSize%s_%s.mat" % (name1, name2))
 
         self.gold_data = self._load_network(gs_filename)
         self.test_data = self._load_network(filename)
         self.pdf_data = self.loadmat(pdf_filename)
-
 
         # we want to remove all entries for test that are not in GS
         # This can be done with a merge !

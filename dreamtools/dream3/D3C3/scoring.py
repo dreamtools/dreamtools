@@ -90,19 +90,12 @@ WARNING: the spearman correlation pvalue are computed using R. Pvalues are sligh
 those computed using matlab and therefore the final values may differ by a few percents to
 the pvlues reported in the original challenge. """)
 
-
-
         self.rho_col = rho_col
         self.pval_col = pval_col
         self.rho_row = rho_row
         self.pval_row = pval_row
 
-        #assert int(sum(rho_row)*1000000)/1000000. == 2.105420
-        #assert int(sum(rho_col)*1000000)/1000000. == -0.406626
-
-        #this differs from matlab
         score1 = np.exp(np.nansum(np.log(pval_row))/50)
-        # this is exact as in matlab
         score2 = np.exp(np.nansum(np.log(pval_col))/8.)
 
         score = sum(-np.log10([score1, score2]))/2.

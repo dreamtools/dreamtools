@@ -4,11 +4,10 @@ Overview
 
 
 :Title: 
-:Nickname: D7C4
+:Nickname: D2C5
 :Summary: 
-:Challenge:
 :SubChallenges: 
-:Synapse page: https://www.synapse.org/#!Synapse:syn2785778
+:Synapse page: https://www.synapse.org/#!Synapse:syn3034894
 
 
 .. contents::
@@ -19,8 +18,8 @@ Scoring
 
 ::
 
-    from dreamtools import D7C4
-    s = D7C4()
+    from dreamtools import D2C5
+    s = D2C5()
     filename = s.download_template() 
     s.score(filename) 
 

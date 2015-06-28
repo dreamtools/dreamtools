@@ -42,8 +42,10 @@ registered = {
         'D3C1':[],
         'D3C2': ['cytokine', 'phospho'],
         'D3C3':[],
-        'D3C4':['10','100','50'],
-
+        'D3C4': [
+            '10_Yeast3', '10_Yeast1', '10_Yeast2', '10_Ecoli2', '10_Ecoli1', 
+            '100_Yeast3', '100_Yeast1', '100_Yeast2', '100_Ecoli2', '100_Ecoli1', 
+            '50_Yeast3', '50_Yeast1', '50_Yeast2', '50_Ecoli2', '50_Ecoli1'],
         'D2C2': [],
         'D2C3': [],
 
@@ -51,13 +53,19 @@ registered = {
 
 
 # Define the simple scoring functions here below
-def generic_scoring( challenge_name, sub_challenge_name, filename):
+def generic_scoring(challenge_name, filename, subname=None, goldstandard=None):
     c = Challenge(challenge_name)
     class_inst = c.import_scoring_class()
-    if sub_challenge_name is None:
-        score = class_inst.score(filename)
-    else:
-        score = class_inst.score(filename, sub_challenge_name)
+    try:
+        score = class_inst.score(filename, subname=subname, 
+            goldstandard=goldstandard)
+    except:
+        try:
+            score = class_inst.score(filename,  
+                goldstandard=goldstandard)
+        except:
+            score = class_inst.score(filename)
+
     return {'Results': score}
 
 
@@ -137,8 +145,6 @@ def d8c2_sc2(filename, verbose=False, verboseR=False):
 
 
 
-
-
 # -------------------------------------------------- The User Interface
 def print_color(txt, func_color, underline=False):
     import easydev
@@ -205,15 +211,12 @@ def scoring(args=None):
     if options.download_template is True:
         c = Challenge(options.challenge)
         class_inst = c.import_scoring_class()
-        if options.sub_challenge is None:
-            try:
-                filename = class_inst.download_template()
-            except:
-                print_color('could not download template. Missing sub challenge name', red)
-                print_color(registered[options.challenge], red)
-                return
-        else:
+        try:
             filename = class_inst.download_template(options.sub_challenge)
+        except:
+            print_color('could not download template. Missing sub challenge name', red)
+            print_color(registered[options.challenge], red)
+            return
         print(filename)
         return
 
@@ -223,7 +226,6 @@ def scoring(args=None):
         txt += "https://github.com/dreamtools/dreamtools, or http://dreamchallenges.org\n"
         print_color(txt, red)
         sys.exit()
-
 
     # filename 
     # filename in general is a single string but could be a list of filenames
@@ -252,7 +254,10 @@ def scoring(args=None):
         elif options.sub_challenge == 'sc2b':
             res = d8c1_sc2b(options.filename, verbose=options.verbose)
     else:
-        res = generic_scoring(options.challenge, options.sub_challenge, options.filename)
+        res = generic_scoring(options.challenge, 
+                options.filename, 
+                subname=options.sub_challenge, 
+                goldstandard=options.goldstandard)
 
 
     txt = "Solution for %s in challenge %s" % (options.filename, options.challenge)
@@ -328,6 +333,8 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
                          help="submission/filename to score.")
         group.add_argument("--filename", dest='filename', nargs='*',
                          help="submission/filename to score.")
+        group.add_argument("--gold-standard", dest='goldstandard',
+                         help="a gold standard filename. This may be required in some challenges e.g. D2C3")
         group.add_argument("--download-template", dest='download_template',
                          help="Download template. Templates for challenge may be downloaded using this option. It returns the path to template.", action='store_true')
 
