@@ -20,11 +20,13 @@ before_install:
 
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: 
+install: travis_wait 
   - pip install numpy matplotlib 
   - pip install nose coverage
   - pip install pandas
-  - pip install scipy
+
+#install: travis_wait 
+#  - pip install scipy
 
 # # command to run tests, e.g. python setup.py test
 script:  
