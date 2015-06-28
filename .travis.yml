@@ -2,10 +2,10 @@ language: python
 
 # with site-packagses work only for 2.7 and 3.3 not 3.4 or 2.6
 python:
-#  - "3.4"
-#  - "3.3"
-  - "2.7_with_site_packages"
-  - "3.2_with_site_packages"
+  - 2.7
+  - "2.7_with_system_site_packages"
+  - 3.2
+  - "3.2_with_system_site_packages"
 
 cache: 
   directories: 
