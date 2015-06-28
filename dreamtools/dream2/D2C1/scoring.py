@@ -22,7 +22,7 @@ class D2C1(Challenge):
         filename = self._path2data + os.sep + "data" + os.sep +"BCL6_targets_and_decoys.xls"
         return filename
 
-    def create_templates(self, filename='test_BCL6targets.txt'):
+    def _create_templates(self, filename='test_BCL6targets.txt'):
         templates = self.decoys.copy()
         templates['scores'] = np.random.random(200)
         df = templates[['Entrez GeneID', 'scores']]
@@ -30,15 +30,17 @@ class D2C1(Challenge):
         df = df.sort(columns=['scores'], ascending=[False])
         df.to_csv(filename, sep='\t', header=None, index=False)
 
+    def download_template(self):
+        return self._pj([self._path2data, 'templates', 'D2C1_template.tsv'])
+
     def score(self, filename):
-        raise NotImplementedError
         # SEE one of later challenges. Same methodology!
         # gold standard edges only
         goldfile = self.get_pathname('DREAM5_SysGenA100_Edges_Network1.tsv')
 
         # predicted edges
-        predictionfile = self.get_pathname('DREAM5_SysGenA100_myteam_Network1.txt')
-        predictionfile = filename
+        #predictionfile = self.get_pathname('DREAM5_SysGenA100_myteam_Network1.txt')
+        #predictionfile = filename
 
         # precomputed probability densities for various metrics
         pdffile_aupr  = self.get_pathname('A100_Network1_AUPR.mat')
