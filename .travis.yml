@@ -30,6 +30,8 @@ install:
   - pip install numpy matplotlib 
   - pip install nose coverage
   - pip install cython
+  - pip install biokit
+  - pip install synapseclient
   
 # - travis_wait pip install pandas
 
