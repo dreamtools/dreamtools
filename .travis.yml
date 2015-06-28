@@ -1,5 +1,5 @@
 language: python
-# python 3.4 fails for now because of gevents dependencies, which cannot be installed via pip
+
 python:
 #  - "3.4"
 #  - "3.3"
@@ -11,13 +11,13 @@ cache:
    - $HOME/.config/dreamtools
    - $HOME/.cache/pip
 
+
+# installing numpy/scipy from source takes a long time.
+# we do not need latest version so let us just try the ubuntu releases
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-  - sudo apt-get install -q libatlas3gf-base libatlas-dev liblapack-dev gfortran 
-
-
-
+  - sudo apt-get install -q libatlas3gf-base libatlas-dev liblapack-dev gfortran python-numpy python-scipy
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
@@ -25,6 +25,7 @@ install:
   - pip install nose coverage
   - travis_wait pip install pandas
   - travis_wait pip install scipy
+  - pip install cython
 
 # # command to run tests, e.g. python setup.py test
 script:  
