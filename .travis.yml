@@ -24,10 +24,15 @@ install:
   - pip install numpy matplotlib 
   - pip install nose coverage
   - travis_wait pip install pandas
-  - travis_wait pip install scipy
   - pip install cython
 
+cache: 
+  directories: 
+   - $HOME/.config
+   - $HOME/.config/dreamtools
+   - $HOME/.cache/pip
 # # command to run tests, e.g. python setup.py test
+
 script:  
   - python setup.py nosetests --with-coverage --cover-package dreamtools --logging-level ERROR --attr '!skip'
     
