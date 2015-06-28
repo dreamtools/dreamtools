@@ -7,12 +7,6 @@ python:
   - 3.2
   - "3.2_with_system_site_packages"
 
-cache: 
-  directories: 
-   - $HOME/.config
-   - $HOME/.config/dreamtools
-   - $HOME/.cache/pip
-
 
 # installing numpy/scipy from source takes a long time.
 # we do not need latest version so let us just try the ubuntu releases
@@ -43,7 +37,11 @@ cache:
 # # command to run tests, e.g. python setup.py test
 
 script:  
-  - python setup.py nosetests --with-coverage --cover-package dreamtools --logging-level ERROR --attr '!skip'
+
+  - python setup.py sdist 
+
+# nosetests would require a login/password
+# python setup.py nosetests --with-coverage --cover-package dreamtools --logging-level ERROR --attr '!skip'
     
-after_success:
-  coveralls
+#after_success:
+#  coveralls
