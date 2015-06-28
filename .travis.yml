@@ -5,6 +5,11 @@ python:
   - 2.7
   - "2.7_with_system_site_packages"
 
+cache: 
+  directories: 
+   - $HOME/.config
+   - $HOME/.config/dreamtools
+   - $HOME/.cache/pip
 
 # installing numpy/scipy from source takes a long time.
 # we do not need latest version so let us just try the ubuntu releases
@@ -22,16 +27,12 @@ install:
   - pip install numpy matplotlib 
   - pip install nose coverage
   - pip install cython
+  - pip install easydev
   - pip install biokit
   - pip install synapseclient
   
 # - travis_wait pip install pandas
 
-cache: 
-  directories: 
-   - $HOME/.config
-   - $HOME/.config/dreamtools
-   - $HOME/.cache/pip
 # # command to run tests, e.g. python setup.py test
 
 script:  
