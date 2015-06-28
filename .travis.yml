@@ -14,17 +14,24 @@ cache:
 
 # installing numpy/scipy from source takes a long time.
 # we do not need latest version so let us just try the ubuntu releases
+virtualenv:
+    system_site_package: true
+
+
 before_install:
+  - export SITE_PKG_DIR=$VIRTUAL_ENV/lib/python$TRAVIS_PYTHON_VERSION/site-packages
+  - rm -f $VIRTUAL_ENV/lib/python$TRAVIS_PYTHON_VERSION/no-global-site-packages.txt 
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-  - sudo apt-get install -q libatlas3gf-base libatlas-dev liblapack-dev gfortran python-numpy python-scipy
+  - sudo apt-get install -q libatlas3gf-base libatlas-dev liblapack-dev gfortran python-numpy python-scipy python-pandas
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
   - pip install numpy matplotlib 
   - pip install nose coverage
-  - travis_wait pip install pandas
   - pip install cython
+  
+# - travis_wait pip install pandas
 
 cache: 
   directories: 
