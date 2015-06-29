@@ -2,10 +2,10 @@
 import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
-from dreamtools.core.rocs import D3D4ROC
+from dreamtools.core.rocs import D3D4ROC, DREAM2
 
 
-class D2C3(Challenge, D3D4ROC):
+class D2C3(Challenge, D3D4ROC, DREAM2):
     """A class dedicated to D2C3 challenge
 
 
@@ -29,26 +29,49 @@ class D2C3(Challenge, D3D4ROC):
         super(D2C3, self).__init__('D2C3')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
-        self.sub_challenges = []
+
+        # although there is no sub challenges per se,
+        # 12 different GS were used to score 12 types
+        # of network. We use those TAGS 
+        self.sub_challenges = [
+            "DIRECTED-SIGNED_EXCITATORY_chip",
+            "DIRECTED-SIGNED_EXCITATORY_qPCR",
+            "DIRECTED-SIGNED_INHIBITORY_chip",
+            "DIRECTED-SIGNED_INHIBITORY_qPCR",
+            "DIRECTED-UNSIGNED_chip",
+            "DIRECTED-UNSIGNED_qPCR",
+            "UNDIRECTED-SIGNED_EXCITATORY_chip",
+            "UNDIRECTED-SIGNED_EXCITATORY_qPCR",
+            "UNDIRECTED-SIGNED_INHIBITORY_chip",
+            "UNDIRECTED-SIGNED_INHIBITORY_qPCR",
+            "UNDIRECTED-UNSIGNED_chip",
+            "UNDIRECTED-UNSIGNED_qPCR"]
+
+
 
     def _init(self):
         # should download files from synapse if required.
         pass
 
+    def _check_subname(self, subname):
+        if subname not in self.sub_challenges:
+            raise ValueError("Choose a sub challenge name amongst %s" %
+                    self.sub_challenges)
+
     def download_goldstandard(self, subname=None):
-        print("This is just one instance amongst 12 other filenames to be found in the same directory")
+        self._check_subname(subname)
         gold = self._pj([self._path2data, 'goldstandard', 
-            'D2C3_goldstandard_DIRECTED-SIGNED_EXCITATORY_chip.txt'])
+            'D2C3_goldstandard_%s.txt' % subname])
         return gold
 
     def download_template(self, subname=None):
-        print("This is just one instance amongst 12 other filenames to be found in the same directory")
-        filename = 'D2C3_templates_DIRECTED-SIGNED_EXCITATORY_chip.txt'
+        self._check_subname(subname)
+        filename = 'D2C3_templates_%s.txt' % subname
         return self._pj([self._path2data, 'templates', filename])
 
     def score(self, filename, subname=None, goldstandard=None):
         if goldstandard is None:
-            raise ValueError("GS must be provided with --goldstandard")
+            goldstandard = self.download_goldstandard(subname)
 
         self.gold_edges =  pd.read_csv(goldstandard, sep='\t', header=None)
         self.prediction =  pd.read_csv(filename, sep='\t', header=None)
@@ -60,18 +83,16 @@ class D2C3(Challenge, D3D4ROC):
         AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_edges, 
             self.prediction, gold_index)
 
-        results = {'AUPR':AUC, 'AUROC':AUROC}
-
-        # specific precision values
         P = self.gold_edges[2].sum()
-        spec_prec = {}
-                                                          
-        for x in [1, 2, 5]:
-            if x > P:
-                break
-            rec0 = x / float(P)
-            i = rec.index(rec0)
-            spec_prec[x] = rec[i]
-        results['precision a nth correct prediction'] = spec_prec
+        spec_prec = self.compute_specific_precision_values(P, rec)
 
+        # for plotting
+        self.metrics = {'AUPR':AUC, 'AUROC':AUROC ,
+            'tpr':  tpr, 'fpr':  fpr,
+            'rec':  rec, 'prec':  prec,
+            'precision at nth correct prediction': spec_prec}
+
+        results = {'AUPR':AUC, 'AUROC':AUROC }
+        results['precision at nth correct prediction'] =spec_prec
         return results
+

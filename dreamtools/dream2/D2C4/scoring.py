@@ -60,6 +60,10 @@ class D2C4(Challenge, D3D4ROC, DREAM2):
     def download_template(self, subname=None):
         # not template found when developing this code.
         # We will use the GS instead
+        msg = "! Note that there is no template per se. Here is the "
+        msg += "goldstandard that would work as well."
+        print(msg)
+
         self._check_subname(subname)
         return self.download_goldstandard(subname)
 

@@ -62,25 +62,26 @@ class D3C4(Challenge, D3D4ROC):
         self._download_data('PDF_InSilicoSize50_Yeast1.mat', 'syn4558483')
 
         # Then, the gold standard
-        self._download_data('DREAM3GoldStandard_InSilicoSize100_Ecoli1.txt', 'syn4558558')
-        self._download_data('DREAM3GoldStandard_InSilicoSize100_Ecoli2.txt', 'syn4558560')
-        self._download_data('DREAM3GoldStandard_InSilicoSize100_Yeast1.txt', 'syn4558562')
-        self._download_data('DREAM3GoldStandard_InSilicoSize100_Yeast2.txt', 'syn4558564')
-        self._download_data('DREAM3GoldStandard_InSilicoSize100_Yeast3.txt', 'syn4558565')
+        tag = "DREAM3GoldStandard"
+        self._download_data('%s_InSilicoSize100_Ecoli1.txt' % tag, 'syn4558558')
+        self._download_data('%s_InSilicoSize100_Ecoli2.txt' % tag, 'syn4558560')
+        self._download_data('%s_InSilicoSize100_Yeast1.txt' % tag, 'syn4558562')
+        self._download_data('%s_InSilicoSize100_Yeast2.txt' % tag, 'syn4558564')
+        self._download_data('%s_InSilicoSize100_Yeast3.txt' % tag, 'syn4558565')
 
-        self._download_data('DREAM3GoldStandard_InSilicoSize10_Ecoli1.txt', 'syn4558540')
-        self._download_data('DREAM3GoldStandard_InSilicoSize10_Ecoli2.txt', 'syn4558542')
-        self._download_data('DREAM3GoldStandard_InSilicoSize10_Yeast1.txt', 'syn4558544')
-        self._download_data('DREAM3GoldStandard_InSilicoSize10_Yeast2.txt', 'syn4558545')
-        self._download_data('DREAM3GoldStandard_InSilicoSize10_Yeast3.txt', 'syn4558547')
+        self._download_data('%s_InSilicoSize10_Ecoli1.txt' % tag, 'syn4558540')
+        self._download_data('%s_InSilicoSize10_Ecoli2.txt' % tag, 'syn4558542')
+        self._download_data('%s_InSilicoSize10_Yeast1.txt' % tag, 'syn4558544')
+        self._download_data('%s_InSilicoSize10_Yeast2.txt' % tag, 'syn4558545')
+        self._download_data('%s_InSilicoSize10_Yeast3.txt' % tag, 'syn4558547')
 
-        self._download_data('DREAM3GoldStandard_InSilicoSize50_Ecoli1.txt', 'syn4558549')
-        self._download_data('DREAM3GoldStandard_InSilicoSize50_Ecoli2.txt', 'syn4558551')
-        self._download_data('DREAM3GoldStandard_InSilicoSize50_Yeast1.txt', 'syn4558553')
-        self._download_data('DREAM3GoldStandard_InSilicoSize50_Yeast2.txt', 'syn4558554')
-        self._download_data('DREAM3GoldStandard_InSilicoSize50_Yeast3.txt', 'syn4558556')
+        self._download_data('%s_InSilicoSize50_Ecoli1.txt' % tag, 'syn4558549')
+        self._download_data('%s_InSilicoSize50_Ecoli2.txt' % tag, 'syn4558551')
+        self._download_data('%s_InSilicoSize50_Yeast1.txt' % tag, 'syn4558553')
+        self._download_data('%s_InSilicoSize50_Yeast2.txt' % tag, 'syn4558554')
+        self._download_data('%s_InSilicoSize50_Yeast3.txt' % tag, 'syn4558556')
 
-    def score(self, filename, subname=None, goldstandard=None):
+    def score(self, filename, subname=None):
         name1, name2 = self._check_subname(subname)
         results =  self.score_prediction(filename, subname)
         AUC, AUROC, prec, rec, tpr, fpr, p_auroc, p_aupr = results
@@ -92,7 +93,6 @@ class D3C4(Challenge, D3D4ROC):
         error = "The sub challenge name must be X_Y where X is in 10 50 100"
         error += "\nand Y is in  %s" % names
         if name1 not in ['100', '10', '50']:
-            txt = 0.368
             raise ValueError(error)
         if name2 not in names:
             raise ValueError(error)
@@ -100,8 +100,12 @@ class D3C4(Challenge, D3D4ROC):
 
     def download_template(self, subname):
         name1, name2 = self._check_subname(subname)
-        filename = self._pj([self._path2data, 'templates',
-            'example_InSilicoSize%s_%s.txt' % (name1, name2)])
+        if name1 == '10':
+            filename = self._pj([self._path2data, 'templates',
+                'example_InSilicoSize%s_%s.txt' % (name1, name2)])
+        else:
+            # no template/examples for those cases were provided
+            filename = self.download_goldstandard(subname)
         return filename
 
     def download_goldstandard(self, subname):

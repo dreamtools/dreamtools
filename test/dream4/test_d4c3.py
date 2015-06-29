@@ -6,6 +6,7 @@ import os
 def test_d4c3():
     # load data first
     s = D4C3()  # temporary directory will be created
+    s.edge_count = 20 # must be provided otherwise waits for raw_input 
     filename = s.download_template()
 
     s.plot()

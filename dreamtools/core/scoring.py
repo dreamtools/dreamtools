@@ -19,42 +19,23 @@ import argparse
 import sys
 from easydev.console import red, purple, darkgreen
 from dreamtools import Challenge
+import dreamtools
 
 
-registered = {
-        'D9dot5C1': ['sc1', 'sc2'],
-
-        'D8C1': ['sc1a', 'sc1b', 'sc2a', 'sc2b'],
-        'D8C2': ['sc1', 'sc2'],
-
-        'D7C1':['parameter', 'topology', 'timecourse'],
-        'D7C4': [],
-
-        'D5C1': [],
-        'D5C2': [],
-        'D5C3': ['A', 'B'],
-        'D5C4': [],
-
-        'D4C3':[],
-        'D4C1':[],
-        'D4C2':['10','100','100_multifactorial'],
-
-        'D3C1':[],
-        'D3C2': ['cytokine', 'phospho'],
-        'D3C3':[],
-        'D3C4': [
-            '10_Yeast3', '10_Yeast1', '10_Yeast2', '10_Ecoli2', '10_Ecoli1', 
-            '100_Yeast3', '100_Yeast1', '100_Yeast2', '100_Ecoli2', '100_Ecoli1', 
-            '50_Yeast3', '50_Yeast1', '50_Yeast2', '50_Ecoli2', '50_Ecoli1'],
-        'D2C2': [],
-        'D2C3': [],
-
-        }
+def get_challenge(challenge_name):
+    try:
+        c = Challenge(challenge_name)
+    except:
+        txt ="The challenge %s could not be found. " % challenge_name
+        txt += "See --help for valid names"
+        print_color(txt, red)
+        sys.exit()
+    return c
 
 
 # Define the simple scoring functions here below
 def generic_scoring(challenge_name, filename, subname=None, goldstandard=None):
-    c = Challenge(challenge_name)
+    c = get_challenge(challenge_name)
     class_inst = c.import_scoring_class()
     try:
         score = class_inst.score(filename, subname=subname, 
@@ -62,24 +43,25 @@ def generic_scoring(challenge_name, filename, subname=None, goldstandard=None):
     except:
         try:
             score = class_inst.score(filename,  
-                goldstandard=goldstandard)
+                subname=subname)
         except:
-            score = class_inst.score(filename)
+            try:
+                score = class_inst.score(filename)
+            except Exception as err:
+                msg = "Error was caught in dreamtools.\n"
+                msg += "Most probably an incorrect file format.\n"
+                msg += "Here is the full error message to report it if needed\n"
+                print_color(msg, red)
+                raise err
+
 
     return {'Results': score}
 
-
-def d5c2(filename):
-    """wrapper to score D5C2 submission"""
-    from dreamtools import D5C2
-    s = D5C2(Ntf=2)
-    s.score(filename)
-
-    df = s.get_table()
-    results = {}
-    results['table']  = df
-    results['user model'] = df.ix[20] # 20 is the user id
-    return results
+# Figure out if the challenge exists and what are the sub challenges
+def get_subchallenges(challenge_name):
+    c = get_challenge(challenge_name)
+    class_inst = c.import_scoring_class()
+    return class_inst.sub_challenges
 
 
 def d8c1_sc1a(filename, verbose=False):
@@ -127,22 +109,6 @@ def d8c1_sc2b(filename, verbose=False):
             'Rank LB': rank.get_rank_your_submission()}
 
 
-# DREAM8 Challenge 2
-def d8c2_sc1(filename, verbose=False, verboseR=False):
-    """wrapper to score D8C2 submission(SC1 sub challenge)"""
-    from dreamtools.dream8.D8C2 import sc1
-    s = sc1.D8C2_sc1(filename, verboseR=verboseR)
-    s.run()
-    return {'results': s.df}
-
-
-def d8c2_sc2(filename, verbose=False, verboseR=False):
-    """wrapper to score D8C2 submission(SC2 sub challenge)"""
-    from dreamtools.dream8.D8C2 import sc2
-    s = sc2.D8C2_sc2(filename, verboseR=verboseR)
-    s.run()
-    return {'results': s.df}
-
 
 
 # -------------------------------------------------- The User Interface
@@ -180,45 +146,54 @@ def scoring(args=None):
 
     # Check on the challenge name
     if options.challenge is None:
-        if len(registered[options.challenge])!=0 and options.sub_challenge is None:
-            print_color('--challenge and --sub-challenge must be provided', red)
-            sys.exit()
+        print_color('--challenge and --sub-challenge must be provided', red)
+        sys.exit()
     else:
         options.challenge = options.challenge.upper()
         options.challenge = options.challenge.replace('DOT', 'dot')
 
-    # Checks name of the sub-challenges
-    try:
-        d.check_param_in_list(options.challenge, registered.keys())
-    except ValueError as err:
-        txt = "DreamScoring error: unknown challenge name (%s) or not yet implemented\n" % options.challenge
-        txt += "--->" + err.message
-        print_color(txt, red)
-        sys.exit()
+    # Check that the challenge can be loaded
+    challenge = get_challenge(options.challenge)
 
-    if options.sub_challenge is not None:
-        try: 
-            d.check_param_in_list(options.sub_challenge, registered[options.challenge])
+    # Checks name of the sub-challenges
+    subchallenges = get_subchallenges(options.challenge)
+
+    if len(subchallenges) and options.sub_challenge is None:
+        txt = "This challenge requires a sub challenge name."
+        txt += "Please provide one amongst %s " % subchallenges
+        print_color(txt, red)
+        sys.exit(0)
+
+    if options.sub_challenge is not None and len(subchallenges)!=0:
+        try:
+            d.check_param_in_list(options.sub_challenge, subchallenges)
         except ValueError as err:
             txt = "DreamScoring error: unknown sub challenge or not yet implemented"
             txt += "--->" + err.message
             print_color(txt, red)
             sys.exit()
 
-    if options.challenge not in registered.keys():
-        raise ValueError('Invalid challenge name. Choose one of %s' % registered.keys())
-
     if options.download_template is True:
         c = Challenge(options.challenge)
         class_inst = c.import_scoring_class()
-        try:
-            filename = class_inst.download_template(options.sub_challenge)
-        except:
-            print_color('could not download template. Missing sub challenge name', red)
-            print_color(registered[options.challenge], red)
-            return
-        print(filename)
+        if options.sub_challenge is None:
+            print(class_inst.download_template())
+        else:
+            print(class_inst.download_template(options.sub_challenge))
         return
+
+    # similary for the GS
+    if options.download_goldstandard is True:
+        c = Challenge(options.challenge)
+        class_inst = c.import_scoring_class()
+        if options.sub_challenge is None:
+            print(class_inst.download_goldstandard())
+        else:
+            print(class_inst.download_goldstandard(options.sub_challenge))
+        return
+
+
+
 
     if options.filename is None:
         txt = "---> filename not provided. You must provide a filename with correct format\n"
@@ -279,10 +254,11 @@ class Options(argparse.ArgumentParser):
         usage += """      python %s --challenge d5c2 --submission <filename>""" % prog
         epilog="""Author(s):
 
-        - Thomas Cokelaer: DreamTools package and framework including tests and docs
-        - Thomas Cokelaer: D8C1, Parameter Estimation D6 and D7
-        - Federica Eduati: original R scripts for D8C2
-        - Pablo Meyer: Parameter Estimation D6 and D7
+        - Thomas Cokelaer: DreamTools package and framework.
+        - Challenges have been developed by numerous authors from the DREAM
+          consortium. Please see the credits in the GitHub
+          repository on
+          http://github.com/dreamtools/dreamtools/doc/source/credits.rst
 
 
 Source code on: https://github.com/dreamtools/dreamtools
@@ -300,10 +276,12 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
     Registered challenge so far (and sub-challenges) are:
     """
         description +="\n"
-        for c in registered.keys():
+
+        # FIXME : not robust but will work for now
+        registered = sorted([x for x in dir(dreamtools) if x.startswith('D')
+                 and 'C' in x])
+        for c in registered:
             description +=  "    - " + c + ": "
-            for s in registered[c]:
-                description += s + " "
             description += "\n"
 
         super(Options, self).__init__(usage=usage, version=version, prog=prog, 
@@ -334,9 +312,20 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
         group.add_argument("--filename", dest='filename', nargs='*',
                          help="submission/filename to score.")
         group.add_argument("--gold-standard", dest='goldstandard',
-                         help="a gold standard filename. This may be required in some challenges e.g. D2C3")
-        group.add_argument("--download-template", dest='download_template',
-                         help="Download template. Templates for challenge may be downloaded using this option. It returns the path to template.", action='store_true')
+                         help="""a gold standard filename. This may be 
+                         required in some challenges e.g. D2C3""")
+        group.add_argument("--download-template", 
+                dest='download_template',
+                help="""Download template. Templates for challenge may be 
+                downloaded using this option. It returns the path to 
+                template.""", 
+                action='store_true')
+        group.add_argument("--download-gold-standard",
+                dest='download_goldstandard',
+                help="""Download a gold standard, which can be used as a
+                submissions as well. It returns the location of the file.""", 
+                action='store_true')
+
 
     
 

@@ -20,7 +20,8 @@ Scoring
 
     from dreamtools import D2C4
     s = D2C4()
-    filename = s.download_template() 
-    s.score(filename) 
+    subname = s.sub_challenges[0]
+    filename = s.download_template(subname) 
+    s.score(filename, subname) 
 
 

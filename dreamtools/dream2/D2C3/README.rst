@@ -18,9 +18,11 @@ Scoring
 
 ::
 
-    from dreamtools import D2C3
-    s = D2C3()
-    filename = s.download_template() 
-    s.score(filename) 
+     from dreamtools import D2C3
+     s = D2C3()
+     subname = s.sub_challenges[0]
+     filename = s.download_template(subname)
+     s.score(filename, subname)
+
 
 
