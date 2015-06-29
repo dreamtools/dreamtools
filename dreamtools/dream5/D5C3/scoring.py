@@ -15,7 +15,6 @@ from dreamtools.core.rocs import D3D4ROC
 class D5C3(Challenge, D3D4ROC):
     """A class dedicated to D5C3 challenge
 
-
     ::
 
         from dreamtools import D5C3
@@ -25,6 +24,31 @@ class D5C3(Challenge, D3D4ROC):
 
     Data and templates are downloaded from Synapse. You must have a login.
 
+    3 subchallenges (A100, A300, A999) but also 3 others simpler with B1, B2, B3
+
+For A series, 5 networks are required. For B, only one is needed.
+
+For A100, Network 1:
+
+auroc =
+
+    0.7111
+
+
+aupr =
+
+    0.0073
+
+
+p_auroc =
+
+   2.6335e-35
+
+
+p_aupr =
+
+    0.9990
+
     """
     def __init__(self):
         """.. rubric:: constructor
@@ -33,7 +57,7 @@ class D5C3(Challenge, D3D4ROC):
         super(D5C3, self).__init__('D5C3')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
-        self.sub_challenges = []
+        self.sub_challenges = ['A100', 'A300', 'A999', 'B1', 'B2', 'B3']
         self.N_pvalues = 10
 
     def _init(self):
@@ -52,27 +76,55 @@ class D5C3(Challenge, D3D4ROC):
         # the probabilities
         self._download_data('D5C3_probabilities.zip', 'syn4562041')
         self.unzip('D5C3_probabilities.zip')
-        
+
+    def _check_filename(self, filename):
+        end = filename[-5:]
+        if end[1] != '.':
+            raise ValueError("File must end with a suffix of 3 letters e.g. .csv")
+        end = end[0]
+        if end not in ['1','2','3', '4', '5']:
+            raise ValueError("File must end with a valid batch value in 1,2,3,4,5")
+        return end
+
+    def _check_subname(self, subname):
+        if subname not in self.sub_challenges:
+            raise ValueError("sub-challenge must be in %s" % self.sub_challenges)
+
+    def _check_sub_challenge_name(self, name):
+        assert name in self.sub_challenges
+
     def download_template(self, subname):
-        # should return full path to a template file
-        if subname == 'A':
-            print('There were 15 combo of network and number of RILS.')
-            print('Here is one of them for 100 RILS and network 1. ')
-            print('Other files are in the same directory')
-            return self.get_pathname('DREAM5_SysGenA100_myteam_Network1.txt')
-        elif subname == 'B':
-            filenames = [] 
-            for tag in [1, 2, 3]:
-                filename = 'DREAM5_SysGenB%s_your_Predictions.txt' % tag
-                filename = self._pj([self._path2data, 'templates', filename])
-                filenames.append(filename)
-            return filenames
-        else: 
-            raise ValueError('Sub challenge must be either A or B')
+        # for B1, B2, B3, returns a single file
+        # for A100, A300, A999 as well but to indicate the network, append _1, _2, ..._5
+        # if not, the network _1 is returned only
+        if subname in self.sub_challenges and subname.startswith("B"):
+            return self._pj([self._path2data, 'templates', "DREAM5_SysGen%s_your_Predictions.txt" % subname])
+
+
+        # subname should be "10_1" concat of size and a batch in 1..5
+        if subname in self.sub_challenges:
+            name1, name2 = subname, 1
+        else:
+            name1, name2 = subname.rsplit("_", 1)
+        self._check_sub_challenge_name(name1)
+        name = str(name1)
+        filename = self.get_pathname('DREAM5_SysGen%s_myteam_Network%s.txt' % (name1, name2))
+        return filename
 
     def download_goldstandard(self, subname):
-        # should return full path to a gold standard file
-        raise NotImplementedError
+        # for B1, B2, B3, returns a single file
+        # for A100, A300, A999 as well but to indicate the network, append _1, _2, ..._5
+        # if not, the network _1 is returned only
+        if subname in self.sub_challenges and subname.startswith("B"):
+            return self._pj([self._path2data, 'goldstandard', "DREAM5_SysGen%s_TestPhenotypeData.txt" % subname])
+
+        if subname in self.sub_challenges:
+            name1, name2 = subname, 1
+        else:
+            name1, name2 = subname.rsplit("_", 1)
+        self._check_sub_challenge_name(name1)
+        gs_filename = self.get_pathname('DREAM5_SysGen%s_Edges_Network%s.tsv' % (name1, name2))
+        return gs_filename
 
     def _load_network(self, filename):
         df = pd.read_csv(filename, header=None, sep='[ \t]', engine='python')
@@ -81,26 +133,27 @@ class D5C3(Challenge, D3D4ROC):
         df = df.astype(float) # imoprtant for later to check for equality
         return df
 
-    def score(self, filename, subchallenge):
-        if subchallenge == 'A':
+    def score(self, filename, subname):
+        self._check_subname(subname)
+        if subname == 'A100':
             return self.score_challengeA(filename)
-        elif subchallenge == 'B':
+        elif subname == 'B':
             return self.score_challengeB(filename)
         else:
             raise ValueError('Sub challenge must be either A or B')
 
-    def score_challengeA(self, filename):
-        raise NotImplementedError
-        # gold standard edges only
-        goldfile = self.get_pathname('DREAM5_SysGenA100_Edges_Network1.tsv')
+    def score_challengeA(self, filename, subname):
 
-        # predicted edges
-        predictionfile = self.get_pathname('DREAM5_SysGenA100_myteam_Network1.txt')
+
+        name1, name2 = subname.rsplit("_",1)
+        goldfile = self.download_goldstandard(subname)
+
+        # gold standard edges only
         predictionfile = filename
 
         # precomputed probability densities for various metrics
-        pdffile_aupr  = self.get_pathname('A100_Network1_AUPR.mat')
-        pdffile_auroc = self.get_pathname('A100_Network1_AUROC.mat')
+        pdffile_aupr  = self.get_pathname('%s_Network%s_AUPR.mat' % (name1, name2))
+        pdffile_auroc = self.get_pathname('%s_Network%s_AUROC.mat'% (name1, name2))
 
         # load gold standard
         self.gold_edges = self._load_network(goldfile)
@@ -112,22 +165,68 @@ class D5C3(Challenge, D3D4ROC):
         self.pdf_aupr  = self.loadmat(pdffile_aupr)
         self.pdf_auroc = self.loadmat(pdffile_auroc)
 
-        # 
-        newtest = pd.merge(self.prediction, self.gold_edges, how='inner', on=[0,1])
+        # DISCOVERY
 
-        test = list(newtest['2_x'])
-        gold_index = list(newtest['2_y'])
 
-        AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_edges, 
-                                        self.prediction, gold_index)
+        #random
 
-        p_auroc = self._probability(self.pdf_data['auroc_X'][0], 
-                self.pdf_data['auroc_Y'][0], AUROC)
-                
-        p_aupr = self._probability(self.pdf_data['aupr_X'][0], 
-                self.pdf_data['aupr_Y'][0], AUC)
+    def _get_G(self, gold):
 
-        return AUC, AUROC, prec, rec, tpr, fpr, p_auroc, p_aupr
+        df = gold[[0,1]]
+        nodes = set(df[0]).union(set(df[1]))
+
+        regulators = list(nodes)
+        targets = list(nodes)
+
+
+        """# lookup matrix for positive edges
+        A = edgelist2sparse(gold_positives(:,1:2));
+
+        #  build gold standard matrix for positives (1) AND negatives (-1)
+        G = zeros(length(regulators),length(targets));
+        for k = 1:length(regulators)
+	        i = regulators(k);
+	        for l = 1:length(targets)
+		        j = targets(l);
+		            if A(i,j)
+			            G(i,j) = 1;		%% Positive
+		            elseif i~=j			%% no self edges
+			            G(i,j) = -1;	%% Negative
+		        end
+	        end
+        end
+
+        H = sparse(G>0)
+
+
+%% total, positive, negative
+P = full(sum(sum(G>0)));
+N = full(sum(sum(G<0)));
+T = P + N;
+>>
+>>
+>>
+>> P
+
+P =
+
+        2037
+
+>> N
+
+N =
+
+      996963
+
+>> T
+
+T =
+
+      999000
+
+        """
+
+
 
     def score_challengeB(self, filenames):
         # Ideally provide 3 filenames but if only 1 is given, try
@@ -145,8 +244,7 @@ class D5C3(Challenge, D3D4ROC):
         self.golds = []
         self.preds = []
         for tag in [1,2,3]:
-            filename = 'DREAM5_SysGenB%s_TestPhenotypeData.txt' % tag
-            filename = self._pj([self._path2data, 'goldstandard', filename])
+            filename = self.download_goldstandard('B' + str(tag))
             gold = pd.read_csv(filename, sep='[ \t]', engine='python')
             self.golds.append(gold)
 

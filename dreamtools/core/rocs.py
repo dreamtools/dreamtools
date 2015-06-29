@@ -302,7 +302,8 @@ class D3D4ROC(ROCBase):
         super(D3D4ROC, self).__init__()
 
 
-    def plot(self, metrics):
+    def plot(self):
+        metrics = self.metrics
         import pylab
         fpr = metrics['fpr']
         tpr = metrics['tpr']
@@ -426,5 +427,19 @@ class D3D4ROC(ROCBase):
         return AUC, AUROC, prec, rec, tpr, fpr
 
 
+class DREAM2(object):
 
+    def __init__(self):
+        pass
 
+    def compute_specific_precision_values(self, P, rec):
+
+        spec_prec = {}
+        for x in [1, 2, 3, 20, 100, 500, 1000]:
+            if x > P:
+                break
+            rec0 = x / float(P)
+            i = rec.index(rec0)
+            spec_prec[x] = rec[i]
+
+        return spec_prec

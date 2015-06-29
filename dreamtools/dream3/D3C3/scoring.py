@@ -16,8 +16,8 @@ class D3C3(Challenge):
 
         from dreamtools import D3C3
         s = D3C3()
-        filename = s.download_template() 
-        s.score(filename) 
+        filename = s.download_template()
+        s.score(filename)
 
     Data and templates are downloaded from Synapse. You must have a login.
 
@@ -33,7 +33,7 @@ class D3C3(Challenge):
         """
         super(D3C3, self).__init__('D3C3')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
-        #self._init()
+        self._init()
 
     def _init(self):
        pass
@@ -46,7 +46,6 @@ class D3C3(Challenge):
         self.T = self._read_challenge(filename)
 
         #from scipy.stats.stats import pearsonr, spearmanr
-        
         G = self.G[self.G.columns[2:]].values
         T = self.T[self.T.columns[2:]].values
 
@@ -86,9 +85,10 @@ class D3C3(Challenge):
 
 
         print("""
-WARNING: the spearman correlation pvalue are computed using R. Pvalues are slightly different from
-those computed using matlab and therefore the final values may differ by a few percents to
-the pvlues reported in the original challenge. """)
+WARNING: the spearman correlation pvalue are computed using R. Pvalues are
+slightly different from those computed using matlab and therefore the final
+values may differ by a few percents to the pvlues reported in the original
+challenge. \n""")
 
         self.rho_col = rho_col
         self.pval_col = pval_col

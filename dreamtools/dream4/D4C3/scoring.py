@@ -33,8 +33,10 @@ class D4C3(Challenge):
 
 
     """
-    def __init__(self, edge_count=20, cost_per_link=0.0827):
+    def __init__(self, edge_count=None, cost_per_link=0.0827):
         """.. rubric:: constructor
+
+        edge count is required. Itf not provided,a prompt will ask for its value
 
         """
         super(D4C3, self).__init__('D4C3')
@@ -75,11 +77,7 @@ class D4C3(Challenge):
         df = pd.read_csv(filename)
         df.replace('NOT AVAILABLE', np.nan, inplace=True)
         self.prediction = df.copy()
-        # load prediction 
-        #files = directory_list(DATADIR)
-        #file = [ DATADIR files{1} ]
-        #[T T_rowlabels T_collabels] = self.loader(file)
-        #T = T(G_idx_30,2:end)
+
         pass
 
     def score(self, filename):
@@ -141,11 +139,17 @@ class D4C3(Challenge):
             self.pvals[species] = self._probability(X, Y, self.errors[species])
 
         self.prediction_score = -pylab.mean(pylab.log10(self.pvals.values()))
-        self.overall_score = self.prediction_score - self.cost_per_link * self.edge_count
+
+        if self.edge_count is None:
+            edge_count = int(raw_input("Please enter an edge count that is the number of edges in your network: "))
+            assert edge_count >= 0
+        else:
+            edge_count = self.edge_count
+        self.overall_score = self.prediction_score - self.cost_per_link * edge_count
 
 
         df = pd.DataFrame()
-        df['Edge_count'] = [self.edge_count]
+        df['Edge_count'] = [edge_count]
         df['Overall_score'] = [self.overall_score]
         df['Prediction_score'] = [self.prediction_score]
         for species in self.species:

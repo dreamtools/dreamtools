@@ -11,7 +11,6 @@ from dreamtools.core.rocs import D3D4ROC
 
 import pandas as pd
 import numpy as np
-import pylab
 
 
 class D4C2(Challenge, D3D4ROC):
@@ -39,8 +38,7 @@ class D4C2(Challenge, D3D4ROC):
         super(D4C2, self).__init__('D4C2')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
-        self._sub_challenges = [100,10,'100', '10', '100_multifactorial']
-
+        self.sub_challenges = ['10', '100', '100_multifactorial']
 
     def _init(self):
         # should download files from synapse if required.
@@ -62,30 +60,96 @@ class D4C2(Challenge, D3D4ROC):
         self._download_data('pdf_size10_4.mat', 'syn4558443')
         self._download_data('pdf_size10_5.mat', 'syn4558444')
 
-    def score(self, filename, tag):
-        print('Your filename must end with the batch value in 1,2,3,4,5 ')
-        print('E.G. template_Ecoli1.txt')
-        vals = os.path.split(filename)[-1].split('.')[0].split("_")
-        results = self.score_prediction(filename, tag=tag, batch=vals[-1])
-        AUC, AUROC, prec, rec, tpr, fpr, p_auroc, p_aupr = results
-        return {'AUROC': AUROC, 'AUC':AUC, 'p_auroc':p_auroc, 'p_aupr':p_aupr}
+    def _check_filename(self, filename):
+        end = filename[-5:]
+        if end[1] != '.':
+            raise ValueError("File must end with a suffix of 3 letters e.g. .csv")
+        end = end[0]
+        if end not in ['1','2','3', '4', '5']:
+            raise ValueError("File must end with a valid batch value in 1,2,3,4,5")
+        return end
+
+    def score(self, filename, subname=None):
+        # here subname must be a valid sub challenge (10,100,100_multifactorial
+        # the batch will be infered from the file name
+
+
+        # if a list, return the overall score otherwise just score for that filename
+        if isinstance(filename, str):
+            end = self._check_filename(filename)
+
+            assert subname is not None, "If one file provided, subname must be provided e.g., 10"
+            subname = subname+"_"+end
+            results = self.score_prediction(filename, subname=subname)
+            del results['tpr']
+            del results['fpr']
+            del results['rec']
+            del results['prec']
+            return results
+        elif isinstance(filename, list):
+            assert len(filename) == 5, "if a list of gilenames is provide, it must contains 5 names"
+
+            results = {}
+            for i in [1,2,3,4,5]:
+                tag = subname+"_"+str(i)
+                assert tag in filename[i-1], "files must be sorted and ending in Size10_1, Size10_2, ...Size10_5"
+                results['Net%s' % i] = self.score_prediction(filename[i-1], subname=tag)
+            df = pd.DataFrame(results).T
+
+            # get rid of non important data
+            df = df[['AUROC', 'AUPR', 'p_aupr', 'p_auroc']]
+            df = df.astype('float64')
+
+            final_score =  -np.mean(np.log10(df[['p_auroc', 'p_aupr']]))
+
+            results = {}
+            results['AUPR_SCORE'] = final_score['p_aupr']
+            results['AUROC_SCORE'] = final_score['p_auroc']
+            overall_score = np.mean(final_score)
+
+            for index in df.index:
+                results['%s_AUROC' % index] = df.ix[index]['AUROC']
+            for index in df.index:
+                results['%s_AUPR' % index] = df.ix[index]['AUPR']
+
+            final_score = 10**-(final_score)
+            results['AUPR_PVAL'] = final_score['p_aupr']
+            results['AUROC_PVAL'] = final_score['p_auroc']
+
+            results['SCORE'] = overall_score
+            results = pd.TimeSeries(results)
+
+            results = results[['SCORE', 'AUPR_PVAL', 'AUPR_SCORE', 'AUROC_PVAL', 'AUROC_SCORE',
+                    'Net1_AUPR',  'Net2_AUPR', 'Net3_AUPR', 'Net4_AUPR', 'Net5_AUPR',
+                    'Net1_AUROC', 'Net2_AUROC',   'Net3_AUROC', 'Net4_AUROC', 'Net5_AUROC']]
+
+
+            return results
 
     def _check_sub_challenge_name(self, name):
-        assert name in [100, '100', 10, '10', '100_multifactorial']
+        assert name in self.sub_challenges
 
-    def download_template(self, name, batch):
-        self._check_sub_challenge_name(name)
-        name = str(name)
-        filename = self._pj([self._path2data, 'templates', name,
-            'DREAM4_Example_InSilico_Size%s_%s.txt' % (name, batch)])
+    def download_template(self, subname):
+        # subname should be "10_1" concat of size and a batch in 1..5
+        if subname in self.sub_challenges:
+            name1, name2 = subname, 1
+        else:
+            name1, name2 = subname.rsplit("_", 1)
+        self._check_sub_challenge_name(name1)
+        name = str(name1)
+        filename = self._pj([self._path2data, 'templates', name1,
+            'DREAM4_Example_InSilico_Size%s_%s.txt' % (name1, name2)])
         return filename
 
-    def download_goldstandard(self, tag, batch):
-        self._check_sub_challenge_name(tag)
-        if tag in [100, 10]:
-            tag = str(tag)
-        gs_filename = self._pj([self._path2data, 'goldstandard', tag,
-                                'DREAM4_GoldStandard_InSilico_Size%s_%s.tsv' % (tag, batch)])
+    def download_goldstandard(self, subname):
+        # subname should be "10_1" concat of size and a batch in 1..5
+        if subname in self.sub_challenges:
+            name1, name2 = subname, 1
+        else:
+            name1, name2 = subname.rsplit("_", 1)
+        self._check_sub_challenge_name(name1)
+        gs_filename = self._pj([self._path2data, 'goldstandard', name1,
+                                'DREAM4_GoldStandard_InSilico_Size%s_%s.tsv' % (name1, name2)])
         return gs_filename
 
     def _load_network(self, filename):
@@ -100,7 +164,7 @@ class D4C2(Challenge, D3D4ROC):
         data = scipy.io.loadmat(filename)
         return data
 
-    def score_prediction(self, filename=None, tag=10, batch=1):
+    def score_prediction(self, filename=None, subname=None):
         """This is a longish scoring function translated from the matlab original code of D4C2
 
         :param filename:
@@ -111,10 +175,11 @@ class D4C2(Challenge, D3D4ROC):
 
         .. todo:: merge this function with the one from D4C2
         """
-        gs_filename = self.download_goldstandard(tag, batch)
+        name1, name2 = subname.rsplit("_",1)
+        gs_filename = self.download_goldstandard(subname)
 
         # keep this it is used for testing.
-        pdf_filename = self.get_pathname('pdf_size%s_%s.mat' % (tag, batch))
+        pdf_filename = self.get_pathname('pdf_size%s_%s.mat' % (name1, name2))
 
         self.test_data = self._load_network(filename)
         self.gold_data = self._load_network(gs_filename)
@@ -134,8 +199,9 @@ class D4C2(Challenge, D3D4ROC):
         p_aupr = self._probability(self.pdf_data['aupr_X'][0], 
                 self.pdf_data['aupr_Y'][0], AUC)
 
-
-        return AUC, AUROC, prec, rec, tpr, fpr, p_auroc, p_aupr
+        return {'AUPR': AUC, 'AUROC':AUROC, 'prec':prec,
+                'rec':rec, 'tpr':tpr, 'fpr':fpr,
+                'p_auroc':p_auroc, 'p_aupr':p_aupr}
 
     def _probability(self, X, Y, x):
         ## Not that here X>=x in D4C1 and D4C3, X<=x
@@ -143,58 +209,12 @@ class D4C2(Challenge, D3D4ROC):
         P = sum(Y[X >= x])*dx
         return P
 
-    def plot(self, filename, tag, batch):
+    def plot(self, filename, subname):
         aupr, auroc, prec, rec, tpr, fpr, p_auroc, p_aupr = \
-            self.score_prediction(filename, tag, batch)
-        super(D4C2, self).plot(metrics={'prec':prec, 'rec':rec, 'tpr':tpr, 'fpr':fpr})
+            self.score_prediction(filename, subname)
+        self.metrics = {'prec':prec, 'rec':rec, 'tpr':tpr, 'fpr':fpr}
+        super(D4C2, self).plot()
 
     def directed_to_undirected(self):
         raise NotImplementedError
         pass
-        """
-        function test_data_undirected = directed_2_undirected_predictions(test_data,N)
-%% test data is an edge list ranked from high to low confidence
-%% N is the number of nodes in the network
-
-D = sparse(N,N,0);
-E = test_data(:,1:2);	%% edgelist
-R = 1:size(E,1);		%% rank (low to high)
-for k = 1:size(E,1)
-	i = E(k,1);
-	j = E(k,2);
-	r = R(k);
-	D(i,j) = r;			%% add link denoted by rank
-end
-
-%% take the smallest rank greater than zero as the
-%% undirected rank
-count = 0;
-for i = 1:N
-	for j = (i+1):N		%% upper triangular
-		count = count + 1;
-		r_ij = D(i,j);
-		r_ji = D(j,i);
-		if (r_ij > 0) & (r_ji > 0)
- 			%% they are both greater than zero
-			if r_ij < r_ji
-				E_undirected(count,:) = [ i j r_ij ];
-			else
-				E_undirected(count,:) = [ i j r_ji ];
-			end
-		elseif r_ij > 0
-			E_undirected(count,:) = [ i j r_ij ];
-		else
-			E_undirected(count,:) = [ i j r_ji ];
-		end
-	end
-end
-
-%% finally, sort the edge list to produce the prediction
-R = E_undirected(:,3);		%% ranks
-idx = find(R);				%% just the nonzero ranks
-E_nonzero_rank = E_undirected(idx,:);
-R_nonzero = R(idx);
-[ temp myorder ] = sort(R_nonzero);
-test_data_undirected = E_nonzero_rank(myorder,:);
-        """
-

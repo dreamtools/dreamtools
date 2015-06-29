@@ -40,10 +40,8 @@ function DreamEvaluationScript(testfile, goldfile)
 
 % Read and understand file name in order to check for challenge 1 or
 % directed/undirected
-[pathstr, name, ext] = fileparts(testfile);
-testfile = name;
 undirected = regexp(testfile, '_UNDIRECTED');
-bcl6 = regexp(testfile, 'BCL6targets');
+bcl6 = regexp(testfile, 'D2C1_')
 
 % read in data
 % Gold standard
@@ -74,9 +72,10 @@ for i=1:length(gold{1})
 end
 
 %test/sample data
-fid2 = fopen([pathstr testfile ext], 'r');
+fid2 = fopen(testfile, 'r')
+
 if isempty(bcl6)
-    test=textscan(fid2,'%s%s%f', maxN);
+    test = textscan(fid2,'%s%s%f', maxN);
     if (isempty(undirected))
         % test{1} can be a number so lets add some character before
         test{1} = strcat('A', test{1}, '___', test{2});
@@ -100,8 +99,14 @@ for i=1:length(test{1})
         j = j + 1;
     end
 end
+
+goldstruct
+
+
 test{1} = test{1}(keepme);
 test{2} = test{2}(keepme);
+
+
 
 % Analysis
 % initialization

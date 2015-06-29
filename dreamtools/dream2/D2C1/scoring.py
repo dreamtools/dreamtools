@@ -36,18 +36,6 @@ class D2C1(Challenge):
     def score(self, filename):
         # SEE one of later challenges. Same methodology!
         # gold standard edges only
-        goldfile = self.get_pathname('DREAM5_SysGenA100_Edges_Network1.tsv')
-
-        # predicted edges
-        #predictionfile = self.get_pathname('DREAM5_SysGenA100_myteam_Network1.txt')
-        #predictionfile = filename
-
-        # precomputed probability densities for various metrics
-        pdffile_aupr  = self.get_pathname('A100_Network1_AUPR.mat')
-        pdffile_auroc = self.get_pathname('A100_Network1_AUROC.mat')
-
-        # load gold standard
-        self.gold_edges = self._load_network(goldfile)
 
         # load predictions
         self.prediction = self._load_network(predictionfile)

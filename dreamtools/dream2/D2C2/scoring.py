@@ -6,10 +6,10 @@ The algorithm was developed by Gustavo Stolovitzky and originally implemented by
 import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
-from dreamtools.core.rocs import D3D4ROC
+from dreamtools.core.rocs import D3D4ROC, DREAM2
 
 
-class D2C2(Challenge, D3D4ROC):
+class D2C2(Challenge, D3D4ROC, DREAM2):
     """A class dedicated to D2C2 challenge
 
     ::
@@ -35,16 +35,21 @@ class D2C2(Challenge, D3D4ROC):
         # should download files from synapse if required.
         pass
 
-    def download_template(self):
+    def download_template(self, subname=None):
         return self._pj([self._path2data, 'templates', 'D2C2_template.txt'])
 
-    def score(self, filename, subname=None, goldstandard=None):
-        gold = self._pj([self._path2data, 'goldstandard', 'D2C2_goldstandard.txt'])
+    def download_goldstandard(self, subname=None):
+        return  self._pj([self._path2data, 'goldstandard', 
+            'D2C2_goldstandard.txt'])
+
+    def score(self, filename, subname=None):
+        gold = self.download_goldstandard(subname)
         prediction = filename
 
         self.gold_edges =  pd.read_csv(gold, sep='\t', header=None)
         self.prediction =  pd.read_csv(prediction, sep='\t', header=None)
         newtest = pd.merge(self.prediction, self.gold_edges, how='inner', on=[0,1])
+
 
         test = list(newtest['2_x'])
         gold_index = list(newtest['2_y'])
@@ -52,20 +57,19 @@ class D2C2(Challenge, D3D4ROC):
         AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_edges, 
             self.prediction, gold_index)
 
-        results = {'AUPR':AUC, 'AUROC':AUROC }
-
         # specific precision values
         P = self.gold_edges[2].sum()
-        spec_prec = {}
-        
-        for x in [1, 2, 3, 20]:
-            if x > P:
-                break
-            rec0 = x / float(P)
-            i = rec.index(rec0)
-            spec_prec[x] = rec[i]
-        
-        results['precision a nth correct prediction'] = spec_prec
+        spec_prec = self.compute_specific_precision_values(P, rec)
+
+        # for plotting
+        self.metrics = {'AUPR':AUC, 'AUROC':AUROC ,
+            'tpr':  tpr, 'fpr':  fpr,
+            'rec':  rec, 'prec':  prec,
+            'precision at nth correct prediction':  spec_prec}
+
+        results = {'AUPR':AUC, 'AUROC':AUROC }
+        results['precision at nth correct prediction'] = spec_prec
+
         return results
 
 
