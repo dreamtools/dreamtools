@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 from dreamtools.core.rocs import D3D4ROC
 
+
 class D5C3(Challenge, D3D4ROC):
     """A class dedicated to D5C3 challenge
 
@@ -255,7 +256,6 @@ class D5C3(Challenge, D3D4ROC):
 
         results = {'auroc':auroc, 'aupr':aupr, 'p_auroc':p_auroc, 'p_aupr':p_aupr}
         return results
-
 
     def score_challengeB(self, filenames):
         # Ideally provide 3 filenames but if only 1 is given, try

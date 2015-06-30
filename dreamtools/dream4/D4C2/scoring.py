@@ -205,8 +205,8 @@ class D4C2(Challenge, D3D4ROC):
 
     def _probability(self, X, Y, x):
         ## Not that here X>=x in D4C1 and D4C3, X<=x
-        dx = X[1]-X[0]
-        P = sum(Y[X >= x])*dx
+        dx = X[1] - X[0]
+        P = sum(Y[X >= x]) * dx
         return P
 
     def plot(self, filename, subname):
