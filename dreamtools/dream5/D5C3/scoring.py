@@ -26,28 +26,8 @@ class D5C3(Challenge, D3D4ROC):
 
     3 subchallenges (A100, A300, A999) but also 3 others simpler with B1, B2, B3
 
-For A series, 5 networks are required. For B, only one is needed.
+    For A series, 5 networks are required. For B, 3  are needed.
 
-For A100, Network 1:
-
-auroc =
-
-    0.7111
-
-
-aupr =
-
-    0.0073
-
-
-p_auroc =
-
-   2.6335e-35
-
-
-p_aupr =
-
-    0.9990
 
     """
     def __init__(self):
@@ -57,8 +37,8 @@ p_aupr =
         super(D5C3, self).__init__('D5C3')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
-        self.sub_challenges = ['A100', 'A300', 'A999', 'B1', 'B2', 'B3']
-        self.N_pvalues = 10
+        self.sub_challenges = ['A100', 'A300', 'A999', 'B']
+        self.N_pvalues = 100
 
     def _init(self):
         # should download files from synapse if required.
@@ -73,7 +53,7 @@ p_aupr =
         self._download_data('D5C3_goldstandard.zip', 'syn4561554')
         self.unzip('D5C3_goldstandard.zip')
 
-        # the probabilities
+        # the probabilities for sub challenge A
         self._download_data('D5C3_probabilities.zip', 'syn4562041')
         self.unzip('D5C3_probabilities.zip')
 
@@ -97,34 +77,37 @@ p_aupr =
         # for B1, B2, B3, returns a single file
         # for A100, A300, A999 as well but to indicate the network, append _1, _2, ..._5
         # if not, the network _1 is returned only
-        if subname in self.sub_challenges and subname.startswith("B"):
-            return self._pj([self._path2data, 'templates', "DREAM5_SysGen%s_your_Predictions.txt" % subname])
-
-
-        # subname should be "10_1" concat of size and a batch in 1..5
-        if subname in self.sub_challenges:
-            name1, name2 = subname, 1
+        self._check_subname(subname)
+        if subname == 'B':
+            filenames = [self._pj([self._path2data, 'templates',
+                                   "DREAM5_SysGenB1_your_Predictions.txt" ])]
+            filenames.append(self._pj([self._path2data, 'templates',
+                                   "DREAM5_SysGenB2_your_Predictions.txt" ]))
+            filenames.append(self._pj([self._path2data, 'templates',
+                                   "DREAM5_SysGenB3_your_Predictions.txt" ]))
         else:
-            name1, name2 = subname.rsplit("_", 1)
-        self._check_sub_challenge_name(name1)
-        name = str(name1)
-        filename = self.get_pathname('DREAM5_SysGen%s_myteam_Network%s.txt' % (name1, name2))
-        return filename
+            filenames = []
+            for i in range(1,6):
+                gs_filename = self.get_pathname('DREAM5_SysGen%s_myteam_Network%s.txt' % (subname, i))
+                filenames.append(gs_filename)
+        return filenames
 
     def download_goldstandard(self, subname):
         # for B1, B2, B3, returns a single file
         # for A100, A300, A999 as well but to indicate the network, append _1, _2, ..._5
         # if not, the network _1 is returned only
-        if subname in self.sub_challenges and subname.startswith("B"):
-            return self._pj([self._path2data, 'goldstandard', "DREAM5_SysGen%s_TestPhenotypeData.txt" % subname])
-
-        if subname in self.sub_challenges:
-            name1, name2 = subname, 1
+        self._check_subname(subname)
+        if subname == 'B':
+            filenames = [self._pj([self._path2data, 'goldstandard', "DREAM5_SysGenB1_TestPhenotypeData.txt" ])]
+            filenames.append(self._pj([self._path2data, 'goldstandard', "DREAM5_SysGenB2_TestPhenotypeData.txt"]))
+            filenames.append(self._pj([self._path2data, 'goldstandard', "DREAM5_SysGenB3_TestPhenotypeData.txt"]))
+            return filenames
         else:
-            name1, name2 = subname.rsplit("_", 1)
-        self._check_sub_challenge_name(name1)
-        gs_filename = self.get_pathname('DREAM5_SysGen%s_Edges_Network%s.tsv' % (name1, name2))
-        return gs_filename
+            filenames = []
+            for i in range(1,6):
+                gs_filename = self.get_pathname('DREAM5_SysGen%s_Edges_Network%s.tsv' % (subname, i))
+                filenames.append(gs_filename)
+            return filenames
 
     def _load_network(self, filename):
         df = pd.read_csv(filename, header=None, sep='[ \t]', engine='python')
@@ -136,24 +119,59 @@ p_aupr =
     def score(self, filename, subname):
         self._check_subname(subname)
         if subname == 'A100':
-            return self.score_challengeA(filename)
+            return self._score_challengeA_bunch(filename, subname)
         elif subname == 'B':
+            if isinstance(filename, list) is False:
+                raise TypeError('Challenge B expects 3 input files B1, B2, B3')
+            if len(filename)!=3:
+                raise TypeError('Challenge B expects 3 input files B1, B2, B3')
             return self.score_challengeB(filename)
         else:
             raise ValueError('Sub challenge must be either A or B')
 
+    def _score_challengeA_bunch(self, filenames, subname):
+
+        from easydev import Progress
+        pb = Progress(5,1)
+        pb.animate(0)
+        results = []
+        for i, filename in enumerate(filenames):
+            res  = self.score_challengeA(filename, subname+"_" + str(i+1))
+            pb.animate(i+1)
+            results.append(res)
+
+        aupr_score = -np.mean(np.log10([x['p_auroc'] for x in results]))
+        auroc_score = -np.mean(np.log10([x['p_aupr'] for x in results]))
+        score = (aupr_score + auroc_score)/2.
+
+        df = pd.TimeSeries()
+        df['Overall Score'] = score
+        df['AUPR score (pval)'] = aupr_score
+        df['AUROC score (pval)'] = aupr_score
+        for i in range(1,6):
+            df['AUPR Net %s' % i] = results[i-1]['aupr']
+        for i in range(1,6):
+            df['AUROC Net %s' % i] = results[i-1]['auroc']
+
+        return df
+
     def score_challengeA(self, filename, subname):
 
-
         name1, name2 = subname.rsplit("_",1)
-        goldfile = self.download_goldstandard(subname)
+        goldfile = self.download_goldstandard(name1)[int(name2)-1]
 
         # gold standard edges only
         predictionfile = filename
 
         # precomputed probability densities for various metrics
-        pdffile_aupr  = self.get_pathname('%s_Network%s_AUPR.mat' % (name1, name2))
-        pdffile_auroc = self.get_pathname('%s_Network%s_AUROC.mat'% (name1, name2))
+        pdffile_aupr  = self.get_pathname(name1 + os.sep+ 'Network%s_AUPR.mat' % (name2))
+        pdffile_auroc = self.get_pathname(name1+os.sep+ 'Network%s_AUROC.mat'% (name2))
+        # load probability densities
+        pdf_aupr  = self.loadmat(pdffile_aupr)
+        pdf_auroc = self.loadmat(pdffile_auroc)
+
+        self.pdf_auroc = self.loadmat(pdffile_auroc)
+        self.pdf_aupr = self.loadmat(pdffile_aupr)
 
         # load gold standard
         self.gold_edges = self._load_network(goldfile)
@@ -161,71 +179,82 @@ p_aupr =
         # load predictions
         self.prediction = self._load_network(predictionfile)
 
-        # load probability densities
-        self.pdf_aupr  = self.loadmat(pdffile_aupr)
-        self.pdf_auroc = self.loadmat(pdffile_auroc)
-
         # DISCOVERY
+        # In principle we could resuse ROCDiscovery class but
+        # here the pvaluse were also computed. let us do it here for now
 
+        merged = pd.merge(self.gold_edges, self.prediction, how='inner', on=[0,1])
+        self.merged = merged
 
-        #random
+        TPF = len(merged)
+        # unique species should be 1000
+        N = len(set(self.gold_edges[0]).union(self.gold_edges[1]))
+        # positive
+        Pos = len(self.gold_edges)
+        # negative
+        Neg = N*N-N-Pos
+        # total
+        Ntot = Pos + Neg
 
-    def _get_G(self, gold):
+        L = len(self.prediction)
 
-        df = gold[[0,1]]
-        nodes = set(df[0]).union(set(df[1]))
+        discovery = np.zeros(L)
+        values_gs =  [tuple(x) for x in merged[[0,1]].values]
+        values_pred = [tuple(x) for x in self.prediction[[0,1]].values]
+        count = 0
+        for i in range(0, L):
+            if values_pred[i] in values_gs:
+                discovery[count] = 1
+                # else nothing to do (vector is filled with zeros
+            count += 1
+        TPL = sum(discovery)
 
-        regulators = list(nodes)
-        targets = list(nodes)
+        self.discovery = discovery
 
+        if L < Ntot:
+            p = (Pos - TPL) / float(Ntot - L)
+        else:
+            p = 0
 
-        """# lookup matrix for positive edges
-        A = edgelist2sparse(gold_positives(:,1:2));
+        random_positive_discovery = [p] * (Ntot - L)
+        random_negative_discovery = [1-p] * (Ntot - L)
 
-        #  build gold standard matrix for positives (1) AND negatives (-1)
-        G = zeros(length(regulators),length(targets));
-        for k = 1:length(regulators)
-	        i = regulators(k);
-	        for l = 1:length(targets)
-		        j = targets(l);
-		            if A(i,j)
-			            G(i,j) = 1;		%% Positive
-		            elseif i~=j			%% no self edges
-			            G(i,j) = -1;	%% Negative
-		        end
-	        end
-        end
+        # append discovery + random using lists
+        positive_discovery = np.array(list(discovery) + random_positive_discovery)
+        negative_discovery = np.array(list(1-discovery) + random_negative_discovery)
 
-        H = sparse(G>0)
+        #  true positives (false positives) at depth k
+        TPk = np.cumsum(positive_discovery)
+        FPk = np.cumsum(negative_discovery)
 
+        #  metrics
+        TPR = TPk / float(Pos)
+        FPR = FPk / float(Neg)
+        REC = TPR  # same thing
+        PREC = TPk / range(1,Ntot+1)
 
-%% total, positive, negative
-P = full(sum(sum(G>0)));
-N = full(sum(sum(G<0)));
-T = P + N;
->>
->>
->>
->> P
+        #  sanity check
+        #if ( (P ~= round(TPk(end))) | (N ~= round(FPk(end))) )
+        #	        disp('ERROR. There is a problem with the completion of the prediction list.')
+        #  end
 
-P =
+        # finishing touch
+        #TPk(end) = round(TPk(end));
+        #FPk(end) = round(FPk(end));
 
-        2037
+        from dreamtools.core.rocs import ROCBase
+        roc = ROCBase()
+        auroc = roc.compute_auc(roc={'tpr':TPR, 'fpr':FPR})
+        aupr = roc.compute_aupr(roc={'precision':PREC, 'recall':REC})
 
->> N
+        # normalise by max possible value
+        aupr /= (1.-1./Pos)
 
-N =
+        p_aupr = self._probability(pdf_aupr['X'][0], pdf_aupr['Y'][0], aupr)
+        p_auroc = self._probability(pdf_auroc['X'][0], pdf_auroc['Y'][0], auroc)
 
-      996963
-
->> T
-
-T =
-
-      999000
-
-        """
-
+        results = {'auroc':auroc, 'aupr':aupr, 'p_auroc':p_auroc, 'p_aupr':p_aupr}
+        return results
 
 
     def score_challengeB(self, filenames):
@@ -243,9 +272,12 @@ T =
 
         self.golds = []
         self.preds = []
+        gold_filenames = self.download_goldstandard('B')
+        print("Warning: your 3 submissions should be ordered as B1, B2, B3 files")
+
         for tag in [1,2,3]:
-            filename = self.download_goldstandard('B' + str(tag))
-            gold = pd.read_csv(filename, sep='[ \t]', engine='python')
+            #assumeing data and gs are sorted in the same way !!
+            gold = pd.read_csv(gold_filenames[tag-1], sep='[ \t]', engine='python')
             self.golds.append(gold)
 
             #filename = 'DREAM5_SysGenB%s_your_Predictions.txt' % tag
@@ -319,3 +351,7 @@ T =
         df.columns = ['SysGenB1', 'SysGenB2', 'SysGenB3']
 
         return df
+
+    def _probability(self, X, Y, x):
+        dx = X[1]-X[0]
+        return  sum(Y[X >= x])*dx
