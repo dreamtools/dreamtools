@@ -45,6 +45,31 @@ class D7C4(Challenge):
     def __init__(self):
         """.. rubric:: constructor
 
+        This challenge uses PERL script that requires the 
+
+        It can be installed using a tool such as cpanm
+
+        Project URL : http://search.cpan.org/dist/App-cpanminus/
+
+        Download the perl package available in  ./misc
+
+        This should work out of the box under Fedora::
+            
+            sudo cpanm install Math::Libm
+            sudo cpanm install Algorithm::Pair::Best2
+            sudo cpanm install Digest::SHA1
+            sudo cpanm install Tk
+            sudo cpanm install Games::Go::AGATourn
+            #sudo cpanm install Games::Go::goPair
+
+        Then, untar file in ./misc
+        cd to the directory and type:;
+
+            perl Makefile.PL 
+            make 
+            sudo make install
+
+
         """
         super(D7C4, self).__init__('D7C4')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]

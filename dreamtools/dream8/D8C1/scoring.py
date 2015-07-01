@@ -62,6 +62,10 @@ class D8C1(Challenge):
         super(D8C1, self).__init__('D8C1')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.sub_challenges = ['SC1A','SC1B','SC2A','SC2B']
+        self._init()
+
+    def _init(self):
+        self._download_data('experimental.zip', 'syn1920412')
 
     def download_template(self, subname):
         if subname == 'SC1A':
@@ -106,7 +110,7 @@ class ScoringError(Exception):
         return repr("ScoringError(HPN-DREAM8): %s " % self.value )
 
 
-class HPNScoring(ZIP):
+class HPNScoring( ZIP):
     """Base class common to all scoring classes
 
     The HPN challenges use data from 32 types of combinaison of cell lines (4) and
@@ -192,7 +196,10 @@ class HPNScoring(ZIP):
 
     def load_species(self):
         """Loads names of the expected phospho names for each cell line from the synapse files provided to the users"""
-        from dreamtools.dream8.D8C1 import experimental_filename as filename
+        # need to refactor that...
+        c = Challenge('D8C1')
+        filename = c.get_pathname('experimental.zip')
+
         z = zipfile.ZipFile(filename)
         self.species = {}
         for cell in self.valid_cellLines:

@@ -101,20 +101,6 @@ class SubmissionsDownloader(Login):
             print "downloading %s/%s"  % (i+1, len(s.submissions))
 
 
-class GSDownloader(Login):
-    """Factory to download gold standard files
-
-    .. todo:: could be replaced with the dreamtools.core.download.Downloader class
-    """
-    def __init__(self, client=None):
-        super(GSDownloader, self).__init__(client=client)
-        from dreamtools import configuration as cfg
-        mainpath = cfg.user_config_dir
-        self.directory = os.sep.join([mainpath, "dream8", "D8C1"])
-
-
-    def download_experimental(self):
-        self.client.get("syn1920412", downloadLocation=self.directory)
 
 
 
