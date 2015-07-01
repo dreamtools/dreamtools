@@ -129,4 +129,7 @@ class Challenge(object):
         z = ZIP()
         z.loadZIPFile(self.get_pathname(filename)), z.extractall(self.directory)
 
+    def _check_subname(self, subname):
+        from easydev import check_param_in_list
+        check_param_in_list(subname, self.sub_challenges)
 
