@@ -51,6 +51,16 @@ Scoring
 '''
 
 scoring_templates = '''
+"""
+
+:Title: 
+:Nickname: %(nickname)s
+:Summary: 
+:SubChallenges: 
+:Synapse page: https://www.synapse.org/#!Synapse:synXXXXXXX
+
+
+"""
 import os
 from dreamtools.core.challenge import Challenge
 
