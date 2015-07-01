@@ -171,16 +171,16 @@ foreach my $drug (@drugs) {
     $weightsum += $weight;
     $weightctr += $zscores{$drug};
     print "$drug\t$score\t$weight\n";
-    print $fh "$drug\t$score\t$weight\n";
+    print $fh "$drug\t$score\t$weight\t$zscores{$drug}\n";
 
 } 
 close $fh;
 
 
+
 my $oas = sprintf("%.5f", ($overallscore / 31));
 my $ws = sprintf("%.5f", ($weightsum/$weightctr));
 my $pv = 1 -  (.5 * (erf(($ws - $overall_mean)/(sqrt(2*$overall_var))) + 1));
-print "##############################################\n";
 print "Submission: $infile\n";
 print "average probablistic c-index: $oas\n";
 print "weighted average probablistic c-index: $ws\n";
