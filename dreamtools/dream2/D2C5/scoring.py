@@ -42,11 +42,6 @@ class D2C5(Challenge, D3D4ROC, DREAM2):
         self._download_data('D2C5_goldstandard.zip', 'syn4565584')
         self.unzip('D2C5_goldstandard.zip')
 
-    def _check_subname(self, subname):
-        if subname not in self.sub_challenges:
-            raise ValueError("Choose a sub challenge name amongst %s" %
-                    self.sub_challenges)
-
     def download_goldstandard(self, subname=None):
         self._check_subname(subname)
         gold = self.get_pathname('D2C5_goldstandard_%s_GenomeScale.txt' % subname)
@@ -86,4 +81,5 @@ class D2C5(Challenge, D3D4ROC, DREAM2):
         results = {'AUPR':AUC, 'AUROC':AUROC }
         results['precision at nth correct prediction'] =spec_prec
         return results
+
 
