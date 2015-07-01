@@ -48,6 +48,37 @@ Downloader
 DREAM2 challenges
 --------------------
 
+D2C1
+~~~~~~~
+.. automodule:: dreamtools.dream2.D2C1.scoring
+    :members:
+    :undoc-members:
+
+D2C2
+~~~~~~~
+.. automodule:: dreamtools.dream2.D2C2.scoring
+    :members:
+    :undoc-members:
+
+D2C3
+~~~~~~~
+.. automodule:: dreamtools.dream2.D2C3.scoring
+    :members:
+    :undoc-members:
+
+D2C4
+~~~~~~~
+.. automodule:: dreamtools.dream2.D2C4.scoring
+    :members:
+    :undoc-members:
+
+D2C5
+~~~~~~~
+.. automodule:: dreamtools.dream2.D2C5.scoring
+    :members:
+    :undoc-members:
+
+
 DREAM3 challenges
 --------------------
 
