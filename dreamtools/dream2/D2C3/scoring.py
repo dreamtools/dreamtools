@@ -1,4 +1,13 @@
+"""D2C3 scoring functions
 
+:Title: DREAM2 - Synthetic Five-Gene Network Inference
+:Nickname: D2C3
+:Summary: Infer a gene regulation network from qPCR and microarray measurements
+:SubChallenges: 
+:Synapse page: https://www.synapse.org/#!Synapse:syn3034869
+
+
+"""
 import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
@@ -33,6 +42,7 @@ class D2C3(Challenge, D3D4ROC, DREAM2):
         # although there is no sub challenges per se,
         # 12 different GS were used to score 12 types
         # of network. We use those TAGS 
+        #: sub challenges
         self.sub_challenges = [
             "DIRECTED-SIGNED_EXCITATORY_chip",
             "DIRECTED-SIGNED_EXCITATORY_qPCR",
@@ -47,18 +57,15 @@ class D2C3(Challenge, D3D4ROC, DREAM2):
             "UNDIRECTED-UNSIGNED_chip",
             "UNDIRECTED-UNSIGNED_qPCR"]
 
-
-
     def _init(self):
         # should download files from synapse if required.
         pass
 
-    def _check_subname(self, subname):
-        if subname not in self.sub_challenges:
-            raise ValueError("Choose a sub challenge name amongst %s" %
-                    self.sub_challenges)
-
     def download_goldstandard(self, subname=None):
+        """Returns one of the 12 gold standard file
+
+        :param subname: one of the sub challenge name. See :attr:`sub_challenges`
+        """
         self._check_subname(subname)
         gold = self._pj([self._path2data, 'goldstandard', 
             'D2C3_goldstandard_%s.txt' % subname])

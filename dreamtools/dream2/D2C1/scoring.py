@@ -65,7 +65,7 @@ class D2C1(Challenge, D3D4ROC, DREAM2):
         gold_index = list(newtest['1_y'])
 
         AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_edges,
-                                            self.prediction, gold_index)
+            self.prediction, gold_index)
 
         # specific precision values
         P = self.gold_edges[1].sum()
@@ -78,29 +78,6 @@ class D2C1(Challenge, D3D4ROC, DREAM2):
             'precision at nth correct prediction':  spec_prec}
 
         results = {'AUPR':AUC, 'AUROC':AUROC }
-
         results['precision at nth correct prediction'] = spec_prec
 
         return results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
