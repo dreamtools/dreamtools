@@ -83,11 +83,28 @@ class D5C4(Challenge, D3D4ROC):
         auroc = -np.mean(np.log10([res1['p_auroc'], res3['p_auroc'], res4['p_auroc']]))
         print aupr, auroc, np.mean([aupr, auroc])
 
+        df = pd.TimeSeries()
+        df['Overall Score'] = np.mean([aupr, auroc])
+        df['AUPR (pvalue)'] = aupr
+        df['AUROC pvalue)'] = auroc
+        df['Net1 AUPR'] = res1['aupr']
+        df['Net3 AUPR'] = res3['aupr']
+        df['Net4 AUPR'] = res4['aupr']
+        df['Net1 AUROC'] = res1['auroc']
+        df['Net3 AUROC'] = res3['auroc']
+        df['Net4 AUROC'] = res4['auroc']
+        df['Net1 p-aupr'] = res1['p_aupr']
+        df['Net3 p-aupr'] = res3['p_aupr']
+        df['Net4 p-aupr'] = res4['p_aupr']
+        df['Net1 p-auroc'] = res1['p_aupr']
+        df['Net3 p-auroc'] = res3['p_aupr']
+        df['Net4 p-auroc'] = res4['p_aupr']
+
+        return df
 
     # copy and paste from D5C3 ' FIXME use classes to factorise code
     def score_challengeA(self, filename, tag):
         """
-
 
         :param filename:
         :param tag:
@@ -151,7 +168,6 @@ class D5C4(Challenge, D3D4ROC):
         # cleanup the prediction that are in the GS
         self.newpred = self._remove_edges_not_in_gs(self.prediction, G)
         L = len(self.newpred)
-        print "length prediction:", L
 
         discovery = np.zeros(L)
         X = [tuple(x) for x in self.newpred[[0,1]].values-1]

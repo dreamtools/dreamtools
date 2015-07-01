@@ -325,7 +325,10 @@ class D3D4ROC(ROCBase):
     def get_statistics(self, gold_data, test_data, gold_index):
 
         T = len(gold_data)          # Total potential edges n(n-1)
-        P = gold_data[2].sum()      # positives
+        try:
+            P = gold_data[2].sum()      # positives
+        except:
+            P = gold_data[1].sum()      # positives
         N = T - P                   # negatives
         L = len(test_data)          # length of prediction list
 

@@ -20,8 +20,9 @@ class D4C3(Challenge):
 
         from dreamtools import D4C3
         s = D4C3()
-        filename = s.download_template() 
-        s.score(filename) 
+        filename = s.download_template()
+        s.edge_count = 20
+        s.score(filename)
 
     Data and templates are inside Dreamtools.
 
@@ -50,7 +51,7 @@ class D4C3(Challenge):
 
         self._load_gold_standard()
         self._fetch_normalisation()
-        
+
     def download_goldstandard(self):
         filename = self._pj([self._path2data, 'goldstandard', 'D4C3_goldstandard.csv'])
         return filename
@@ -60,15 +61,8 @@ class D4C3(Challenge):
         df = pd.read_csv(filename)
         df.replace('NOT AVAILABLE', np.nan, inplace=True)
         self.goldstandard = df.copy()
-        # load gold standard
-        # [G G_rowlabels G_collabels] = self.loader(goldfile)
-        # G_time = G(:,1)  df.Time_of_Data
-        # G = G(:,2:end)   # get rid ot time ?
-        # G_idx_30 = find(G_time == 30)  index where time==30
-        # G = G(G_idx_30,:)              keep only time 30
-        # labels = G_collabels(4:end)    ?
         pass
-    
+
     def download_template(self):
         filename = self._pj([self._path2data, 'templates', 'D4C3_templates.csv'])
         return filename
@@ -77,7 +71,6 @@ class D4C3(Challenge):
         df = pd.read_csv(filename)
         df.replace('NOT AVAILABLE', np.nan, inplace=True)
         self.prediction = df.copy()
-
         pass
 
     def score(self, filename):
@@ -86,11 +79,8 @@ class D4C3(Challenge):
         See synapse page for details about the scoring function.
 
         """
-
         self._load_prediction(filename)
-
         # compute error and pval for each molecular species
-
 
         # some columns have NA that were originally string (NOT AVAILABLE) so
         # those columns are not float type. We need to cast them to float.
@@ -120,7 +110,7 @@ class D4C3(Challenge):
             y_lin = 10 ** y_log
 
             # the same prediction score from DREAM3
-            numerator = (y_lin - x_norm_lin) ** 2	# cancels +1 correction
+            numerator = (y_lin - x_norm_lin) ** 2    # cancels +1 correction
             denominator = 300**2 + (0.08*g) ** 2
             error_individual = numerator / denominator
 
@@ -147,7 +137,6 @@ class D4C3(Challenge):
             edge_count = self.edge_count
         self.overall_score = self.prediction_score - self.cost_per_link * edge_count
 
-
         df = pd.DataFrame()
         df['Edge_count'] = [edge_count]
         df['Overall_score'] = [self.overall_score]
@@ -169,6 +158,7 @@ class D4C3(Challenge):
             from dreamtools import D4C3
             s = D4C3()
             filename = s.download_template()
+            s.edge_count = 20
             s.score(filename)
             s.plot()
 
