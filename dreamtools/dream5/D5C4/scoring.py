@@ -4,6 +4,7 @@ Based on original matlab code from Gustavo A. Stolovitzky and Robert Prill
 
 
 """
+import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
 from dreamtools.core.rocs import D3D4ROC
@@ -70,34 +71,22 @@ class D5C4(Challenge, D3D4ROC):
             filenames.append(self.get_pathname(filename))
         return filenames
 
+    def score(self, filenames):
+
+        assert len(filenames) == 3
+        print("Ther 3 files must be ordered as network 1, 3 and 4")
+        res1 = self.score_challengeA(filenames[0], 1)
+        res3 = self.score_challengeA(filenames[1], 3)
+        res4 = self.score_challengeA(filenames[2], 4)
+
+        aupr = -np.mean(np.log10([res1['p_aupr'], res3['p_aupr'], res4['p_aupr']]))
+        auroc = -np.mean(np.log10([res1['p_auroc'], res3['p_auroc'], res4['p_auroc']]))
+        print aupr, auroc, np.mean([aupr, auroc])
+
+
     # copy and paste from D5C3 ' FIXME use classes to factorise code
     def score_challengeA(self, filename, tag):
         """
-
-
-
-auroc =
-
-    0.6818
-
-
-aupr =
-
-    0.0271
-
-
-p_auroc =
-
-    0.6268
-
-
-p_aupr =
-
-    0.9999
-
-
-    all
-
 
 
         :param filename:
@@ -145,35 +134,32 @@ p_aupr =
         # unique species should be 1000
         N = len(set(self.gold_edges[0]).union(self.gold_edges[1]))
         # positive
-        Pos = len(self.gold_edges)  #4012
-        # this can be computed using self._get_P_N_Z(self.gold_edges)
-        # but slow computation, so let us hard code it
-        Neg = 274380     #
-        # total
+        print('Scanning gold standard')
+        # should be 4012, 274380 and 178 on template
+        G = self._get_G(self.gold_edges)
+
+        # get back the sparse version for later
+        # keep it local to speed up import
+        import scipy.sparse
+        H = scipy.sparse.csr_matrix(G>0)
+
+        Pos = sum(sum(G > 0))
+        Neg = sum(sum(G < 0))
         Ntot = Pos + Neg
 
-        L = len(self.prediction)
 
-        print N
-        print Pos
-        print Neg
-        print TPF
-        print "length prediction:",L
-
-        # should be 86225
+        # cleanup the prediction that are in the GS
+        self.newpred = self._remove_edges_not_in_gs(self.prediction, G)
+        L = len(self.newpred)
+        print "length prediction:", L
 
         discovery = np.zeros(L)
-        values_gs =  [tuple(x) for x in merged[[0,1]].values]
-        values_pred = [tuple(x) for x in self.prediction[[0,1]].values]
-        count = 0
-        for i in range(0, L):
-            if values_pred[i] in values_gs:
-                discovery[count] = 1
-                # else nothing to do (vector is filled with zeros
-            count += 1
+        X = [tuple(x) for x in self.newpred[[0,1]].values-1]
+        discovery = [H[x] for x in X]
         TPL = sum(discovery)
 
-        self.discovery = discovery
+
+        discovery = np.array([int(x) for x in discovery])
 
         if L < Ntot:
             p = (Pos - TPL) / float(Ntot - L)
@@ -224,49 +210,53 @@ p_aupr =
         dx = X[1]-X[0]
         return  sum(Y[X >= x])*dx
 
+    def _remove_edges_not_in_gs(self, prediction, G):
+        regulators = list(set(prediction[0]))
+        targets = list(set(prediction[[0,1]].stack()))
 
-    def _get_P_N_Z(self, gold):
+        N, M = G.shape
+
+        # for speeding up, let us get the numpy array values
+        data_pred = [tuple(x) for x in prediction[[0,1]].values]
+
+        count = 0
+        tokeep = []
+        for ikeep, row in enumerate(data_pred):
+            i, j = row
+            if (i <= N) and (j <= M):
+                if G[i-1, j-1] != 0:
+                    count += 1
+                    tokeep.append(ikeep)
+
+        return prediction.copy().ix[tokeep]
+
+    def _get_G(self, gold):
         from easydev import Progress
-
+        import scipy.sparse
         regulators = list(set(gold[0]))
         targets = list(set(gold[[0,1]].stack()))
-        gs = gold[[0,1]].values
-        gs = [tuple(x) for x in gs]
+
+        N, M = gold[0].max(), gold[1].max()
+        
+        ## A will store indices goind from 0 (not 1) to N-1
+        # hence the -1 indices when handling A if i,j are the
+        # values of the gene 
+        A = np.zeros((N, M))
+        for row in gold[[0,1]].values:
+            i, j = row
+            A[i-1, j-1] = 1
+        A_sparse = scipy.sparse.csr_matrix(A)
+
+        #N, M = len(regulators), len(targets)
+        G = np.zeros((N, M))
 
         pb = Progress(len(regulators), 1)
-        P, Z, N = 0,0,0
-        for i, regulator in enumerate(regulators):
-            for l in range(0, len(targets)):
-                j = targets[l]
-                if (regulator, j) in gs:
-                    P +=1
-                elif regulator!=j:
-                    N+=1
-                else:
-                    Z+=1
+        for i, x in enumerate(regulators):
+            for j, y in enumerate(targets):
+                if A[x-1, y-1] == 1:
+                    G[x-1, y-1] = 1
+                elif x != y:
+                    G[x-1, y-1] = -1
             pb.animate(i+1)
-        return P, N, Z
-
-    def _get_cleaned_prediction(self, prediction, gold):
-        from easydev import Progress
-
-        regulators = list(set(prediction[0]))
-
-        pred = prediction[[0,1]].values
-        data = [tuple(x) for x in pred]
-
-        gs = gold[[0,1]].values
-        gs = [tuple(x) for x in gs]
-
-
-        pb = Progress(len(data), 1)
-        #for this in data:
-
-        #    i, j = this
-        #    if (i,j) in gs
-
-
-144.0 1466.0
-
-
+        return G
 
