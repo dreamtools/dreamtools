@@ -14,19 +14,24 @@
 #
 ##############################################################################
 """Common utility to all challenges"""
-
 import os
 import re
 from dreamtools import configuration as cfg
 
 
 class Challenge(object):
-    """Handler for the creation of config directory for each challenge"""
+    """Common class to all challenges
+    
+    
+    
+    """
 
     def __init__(self, challenge_name):
         """.. rubric:: constructor
 
-        :param str challenge_name:
+        :param str challenge_name: Must be formatted as DXCY
+            where X and Y are numbers. Intermediate challenges from
+            e.g. D9.5 should be encoded as D9dot5CY
 
         """
         #: nickname of the challenge. Must be DXCY form with X, Y being 2 numbers
@@ -59,7 +64,7 @@ class Challenge(object):
         return "dream" + str(version)
 
     def mkdir(self):
-        """Creates directory if does not exist already"""
+        """Creates local dreamtools directory"""
         directory = self._get_challenge_directory()
         directory = os.sep.join([self.mainpath, directory])
         if os.path.exists(directory) is False:
@@ -68,21 +73,25 @@ class Challenge(object):
         if os.path.exists(directory) is False:
             os.mkdir(directory)
             
-
     def download_template(self, sub_challenge=None):
+        """Must be provided"""
         raise NotImplementedError
 
     def score(self, filename, sub_challenge=None):
+        """Must be provided"""
         raise NotImplementedError
 
     def _pj(self, listdir):
         return os.sep.join(listdir)
 
     def import_scoring_class(self):
-        """Dynamic import of the challenge class
+        """Dynamic import of a challenge class
         
-        c = Challenge('D7C1')
-        inst_class = c.download_template('topology')
+        ::
+
+            c = Challenge('D7C1')
+            inst_class = c.import_scoring_class()
+        
 
         """
         import imp
@@ -121,10 +130,12 @@ class Challenge(object):
         return filename
 
     def loadmat(self, filename):
+        """Load a MATLAB matrix"""
         import scipy.io
         return scipy.io.loadmat(filename)
 
     def unzip(self, filename):
+        """Simple method to extract all files contained in an archive"""
         from dreamtools.core.ziptools import ZIP
         z = ZIP()
         z.loadZIPFile(self.get_pathname(filename)), z.extractall(self.directory)
