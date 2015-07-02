@@ -13,8 +13,13 @@ def test_d4c3():
     results = s.score(filename)
 
 
-    assert_almost_equal(s.prediction_score, 1.7067596171386146)
-    assert_almost_equal(s.overall_score, 0.052759617138614656)
+    #assert_almost_equal(s.prediction_score, 1.7067596171386146)
+    #assert_almost_equal(s.overall_score, 0.052759617138614656)
+    #s.plot()
+
+
+
+    
+    assert_almost_equal(s.prediction_score, 1.8417941451247148)
+    assert_almost_equal(s.overall_score, 0.18779414512471493)
     s.plot()
-
-
