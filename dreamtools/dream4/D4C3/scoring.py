@@ -93,14 +93,15 @@ class D4C3(Challenge):
         self.y_log = {}
         self.pvals = {}
         for i, species in enumerate(self.species):
+
             m, b, rho = self._fit_line(species)
 
             t = T[species]
             g = G[species]
 
             # zero counting correction prevents log(0)
-            x_log = pylab.log10(t + 1)
-            y_log = pylab.log10(g + 1)
+            x_log = pylab.log10(t + 1.)
+            y_log = pylab.log10(g + 1.)
 
             # normalise
             x_norm_log = m * x_log + b
@@ -173,30 +174,31 @@ class D4C3(Challenge):
             pylab.subplot(4, 2, i+1)
             pylab.plot(self.x_norm_log[species], self.y_log[species], '.')
             pylab.grid(True)
-            pylab.axis('equal')
-
+            #pylab.axis('equal')
 
             Xlim = np.array(pylab.xlim())
             Xlim[1] = max([Xlim[1], self.y_log[species].max()])
             Xlim[0]-= 0.5
             Xlim[1]+=0.5
 
-
             pylab.plot(Xlim, Xlim, 'k--')
-
 
             X = self.x_norm_log[species]
             mask = X.isnull() == False
             N = mask.sum()
             Y = self.y_log[species]
-            b, m = np.linalg.lstsq(np.vstack([np.ones(N), X[mask]]).T, Y[mask])[0]
-            pylab.plot(Xlim, np.array(Xlim*m+b), 'g-')
-            pylab.xlim(Xlim[0])
-            #pylab.ylim([x0,x1])
-            #print x0,x1
-
-
+            b, m = np.linalg.lstsq(np.vstack([np.ones(N), X[mask]]).T, 
+                    Y[mask])[0]
+            ax = pylab.plot(Xlim, np.array(Xlim*m+b), 'g-')
+            pylab.xlim(Xlim)
+            pylab.ylim(Xlim)
             pylab.title(species)
+        pylab.subplot(4,2,8)
+        pylab.text(.05,.5,
+                '- Prediction (y-axis) versus gold \n' +\
+                "  standard (x-axis).\n" +\
+                '- Dashed lines shows the y=x best fit')
+        pylab.axis('off')
         pylab.tight_layout()
 
     def _probability(self, X, Y, x):
@@ -210,7 +212,8 @@ class D4C3(Challenge):
         filename = self._pj([self._path2data, 'data', 'common_training.csv'])
         training = pd.read_csv(filename)
 
-        filename = self._pj([self._path2data, 'data', 'common_gold.csv'])
+        #filename = self._pj([self._path2data, 'data', 'common_gold.csv'])
+        self.download_goldstandard()
         goldfile = pd.read_csv(filename)
 
         #"""function [m b rho] = fetch_normalization(jj)
