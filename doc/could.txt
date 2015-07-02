@@ -1,0 +1,48 @@
+BCL7 
+Transcriptional Target Prediction Predict   genes for transcription factor
+binding. Ye t Protein-Protein Interaction Network Inference Predict a PPI
+network   47 proteins Microarray Syn tic Five-Gene Network Inference Infer a
+gene regulation network from qPCR   microarray measurements Insilico AGCT In
+Silico Network Challenge Infer various network topologies from simulated
+measurements Ecoli Genome-Scale Network Inference Reconstruct a genome scale
+regulatory network from a large collection   microarrays Signaling C cade
+Identification Infer a signaling network from flow cytometery data Signaling
+Response Prediction Predict missing protein concentrations from a large corpus
+measurements DNA Model Gene Expression Prediction Predict missing gene
+expression measurements Insilico AGCT In Silico Network Challenge
+ Infer simulated gene regulation networks Peptide Recognition Domain (PRD) Specificity Prediction Predict protein-protein interactions at   level   binding domains   peptides Insilico AGCT Silico Network Challenge
+ Infer simulated gene regulation networks   predict gene expression measurements
+Predictive Signaling Network Modeling Predict phosphoprotein measurements using an interpretable, predictive network Epitope-Antibody Recognition (EAR) Challenge
+ Predict   binding specificity   peptide-antibody interactions. DNA TF-DNA Motif Recognition Challenge
+ Predict   specificity   a Transcription Factor binding to a 35-mer probe. Systems Genetics Challenge
+ Predict dise e phenotypes   infer Gene Networks from Systems Genetics data AGCT Network Inference Challenge
+ Infer simulated   in-vivo gene regulation networks Alternative Splicing Alternative Splicing Challenge
+ Goal w  to reconstruct   alternatively spliced mRNA transcripts from short-read mRNA-seq data Estimation Model Estimation   Model Parameters Challenge
+ Inference     kinetic parameters   three gene regulatory networks by iterative optimization   experimental design. Eukaryote Gene Expression Prediction Challenge
+ Predict gene expression levels from promoter sequences in eukaryotes Leukemia FlowCAP2 Molecular Cl sification    diagnose Acute Myeloid Leukemia from patient samples using flow cytometry data. Network Topology   Parameter Inference Challenge
+ Participants were  ked to develop  /or apply optimization methods, including
+selection     most informative experiments, to accurately estimate parameters
+predict outcomes   perturbations in Systems Biology models, given   complete
+incomplete structure     model for a gene regulatory network. Breast Prognosis
+Sage Bionetworks-DREAM Breast Cancer Prognosis Challenge
+     breast cancer prognosis challenge  accuracy   computational models designed to predict bre t cancer survival, b ed on clinical information about   patient's tumor   well   genome-wide molecular pr iling data including gene expression   copy number Results were published in Margolin, et al. Science Trans Med 2013 Prize4life   DREAM Phil Bowen ALS Prediction Prize4Life   w  to predict   future progression   dise e in ALS patients b ed on   patient’s current dise e status.   data available to make this prediction includes demographics, medical   family history data, functional me ures, vital signs,   lab data. Results are published in Küffner, et al. Nature Biotech 2014. NCI Drug NCI-DREAM Drug Sensitivity Prediction Challenge
+   connection between molecular measurements   cellular drug response is central
+to precision medicine.   first challenge w  to integrate multiple omics  predict drug sensitivity in breast cancer cell lines.   second challenge w  to use gene expression   copy number to predict drug
+synergies in B cell lymphoma.  HPN-DREAM Breast Cancer Network Inference Challenge
+ Participants in this Challenge
+ were provided with extensive proteomics time-course on four breast cancer cell lines   t ked with analyzing  se data to solve 3 sub-challenges. Lympho NIEHS-NCATS-UNC DREAM Toxicogenetics Challenge
+ Participants were provided with genetics   transcriptomics information     1000 Genomes Project (www.1000genomes.org),   well   cytotoxicity me ures derived from compound exposure to over a hundred toxic agents using   1000 genomes lymphobl toid cell lines   t ked with solving two related subchallenges. Mycopl ma   Whole-Cell Parameter Estimation DREAM Challenge
+ Participants were provided with a whole cell model   Mycopl ma genitalium   t ked with estimating   model parameters for specific biological processes from simulated data.   Broad-DREAM Gene Essentiality Prediction Challenge
+ Develop predictive models to infer genes that are essential to cancer cell viability using gene expression  /or gene copy number features. challenge dream 9 Acute Myeloid Leukemia (AML) Outcome Prediction Predict   outcome   treatment   AML patients (resistant or remission),  ir remission duration   overall survival b ed on clinical cytogentics, known genetics markers   phosphoproteomic data. challenge alzheimers Alzheimer’s Dise e Big Data DREAM Challenge
+ #1 Predict   best biomarkers for early AD-related cognitive decline   for   mismatch between high amyloid levels   cognitive decline.hallenge
+ ICGC-TCGA-DREAM Somatic Mutation Calling Challenge
+ Predict cancer- sociated mutations from whole-genome sequencing data. Rheumatoid Arthritis   Rheumatoid Arthritis Responder Challenge
+ This Challenge
+d validated molecular predictors   anti-TNF response in RA. ALS Stratification Prize4Life Challenge
+ This challenge is a follow on to   DREAM 7 ALS Prize 4 Life Challenge
+. This Challenge
+ focuses on predicting   progression   survival   ALS patients.   Challenge
+ will leverage   PRO-ACT datab e   more than 8,000 c es     Challenge
+ training set,   feature several unpublished dat ets that will be used for model validation. Challenge
+ Prostate Prostate Cancer DREAM Challenge
+ This challenge will focus on predicting survival for prostate cancer patients b ed on patients’ clinical variables. 
