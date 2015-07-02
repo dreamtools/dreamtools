@@ -22,7 +22,7 @@ DreamTools
 
 
 .. image:: doc/dreamtools_logo.png
-
+    :width: 50%
 
 .. contents::
 
