@@ -15,12 +15,14 @@ DreamTools
    :target: https://waffle.io/dreamtools/dreamtools
 
 :note: DreamTools is tested for Python 2.7
-
-
 :Contributions: Please join https://github.com/dreamtools/dreamtools and share your notebooks https://github.com/dreamtools/dreamtools/notebooks
 
 :Online documentation: `On pypi website <http://pythonhosted.org/dreamtools/>`_,
 :Issues and bug reports: `On github <https://github.com/dreamtools/dreamtools/issues>`_,
+
+
+.. image:: doc/dreamtools_logo.png
+
 
 .. contents::
 
