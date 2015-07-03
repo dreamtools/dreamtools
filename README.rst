@@ -85,6 +85,8 @@ implemented in the future. Here is the list of challenges available
 
     * D9dot5C1 olfaction challenge
 
+#. DREAM9
+#. DREAM8.5
 #. DREAM8
 
     * D8C1 (HPN breat cancer)  sub challenges named sc1a, sc1b, sc2a, sc2b. 
@@ -96,26 +98,16 @@ implemented in the future. Here is the list of challenges available
 #. DREAM7
 
     * D7C1 (Network Parameter Estimation)
+    * D7C4 (Network Parameter Estimation)
 
 #. DREAM6
 
     * D6C1 (Network Parameter Estimation) WONT be included (see D7C1 instead)
     
-#. DREAM5    
-
-    * D5C2 (transcription factor)  
-
-#. DREAM4
-
-    * D4C1 (Peptide Recognition Domain (PRD) Specificity Prediction) 
-    * DREAM4 In Silico Network Challenge
-    * D4C3 (Predictive Signaling Network Modeling)
-
-#. DREAM3
-
-    * D3C1 (Signaling Cascade Challenge)
-    * D3C2 (Signaling Response Prediction)
-
+#. DREAM5  : all challenges available
+#. DREAM4: all challenges available
+#. DREAM3: all challenges available
+#. DREAM2: all challenges available
 
 **Format** of the template for each challenge should be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 
 please see ./dreamtools/dream8/D8C1/README.rst
