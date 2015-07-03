@@ -7,7 +7,9 @@ Overview
 :Nickname: D2C1
 :Summary: Predict the genes for transcription factor binding.
 :SubChallenges: None
+:SCoring metric: AUPR and AUC
 :Synapse page: https://www.synapse.org/#!Synapse:syn3034857
+
 
 
 .. contents::
