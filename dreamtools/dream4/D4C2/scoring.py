@@ -90,8 +90,8 @@ class D4C2(Challenge, D3D4ROC):
             assert len(filename) == 5, "if a list of gilenames is provide, it must contains 5 names"
 
             results = {}
-            for i in [1,2,3,4,5]:
-                tag = subname+"_"+str(i)
+            for i in [1, 2, 3, 4, 5]:
+                tag = subname + "_" + str(i)
                 assert tag in filename[i-1], "files must be sorted and ending in Size10_1, Size10_2, ...Size10_5"
                 results['Net%s' % i] = self.score_prediction(filename[i-1], subname=tag)
             df = pd.DataFrame(results).T

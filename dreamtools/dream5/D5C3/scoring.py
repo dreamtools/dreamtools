@@ -20,12 +20,13 @@ class D5C3(Challenge, D3D4ROC):
 
         from dreamtools import D5C3
         s = D5C3()
-        filename = s.download_template() 
-        s.score(filename) 
+        filename = s.download_template()
+        s.score(filename)
 
     Data and templates are downloaded from Synapse. You must have a login.
 
-    3 subchallenges (A100, A300, A999) but also 3 others simpler with B1, B2, B3
+    3 subchallenges (A100, A300, A999) but also 3 others simpler with
+    B1, B2, B3
 
     For A series, 5 networks are required. For B, 3  are needed.
 
@@ -63,7 +64,7 @@ class D5C3(Challenge, D3D4ROC):
         if end[1] != '.':
             raise ValueError("File must end with a suffix of 3 letters e.g. .csv")
         end = end[0]
-        if end not in ['1','2','3', '4', '5']:
+        if end not in ['1', '2', '3', '4', '5']:
             raise ValueError("File must end with a valid batch value in 1,2,3,4,5")
         return end
 
@@ -76,8 +77,15 @@ class D5C3(Challenge, D3D4ROC):
 
     def download_template(self, subname):
         # for B1, B2, B3, returns a single file
-        # for A100, A300, A999 as well but to indicate the network, append _1, _2, ..._5
+        # for A100, A300, A999 as well but to indicate the network,
+        # append _1, _2, ..._5
         # if not, the network _1 is returned only
+        # there is no A300 or a999 template
+        if subname in ['A300', 'A999']:
+            print("Warning:: there is no A300 or A999 template per se. " +
+                    "Use the goldstandard instead")
+            subname = 'A100'
+
         self._check_subname(subname)
         if subname == 'B':
             filenames = [self._pj([self._path2data, 'templates',
@@ -99,9 +107,12 @@ class D5C3(Challenge, D3D4ROC):
         # if not, the network _1 is returned only
         self._check_subname(subname)
         if subname == 'B':
-            filenames = [self._pj([self._path2data, 'goldstandard', "DREAM5_SysGenB1_TestPhenotypeData.txt" ])]
-            filenames.append(self._pj([self._path2data, 'goldstandard', "DREAM5_SysGenB2_TestPhenotypeData.txt"]))
-            filenames.append(self._pj([self._path2data, 'goldstandard', "DREAM5_SysGenB3_TestPhenotypeData.txt"]))
+            filenames = [self._pj([self._path2data, 'goldstandard',
+                "DREAM5_SysGenB1_TestPhenotypeData.txt" ])]
+            filenames.append(self._pj([self._path2data, 'goldstandard',
+                "DREAM5_SysGenB2_TestPhenotypeData.txt"]))
+            filenames.append(self._pj([self._path2data, 'goldstandard',
+                "DREAM5_SysGenB3_TestPhenotypeData.txt"]))
             return filenames
         else:
             filenames = []
@@ -112,14 +123,14 @@ class D5C3(Challenge, D3D4ROC):
 
     def _load_network(self, filename):
         df = pd.read_csv(filename, header=None, sep='[ \t]', engine='python')
-        df[0] = df[0].apply(lambda x: x.replace('g','').replace('G',''))
-        df[1] = df[1].apply(lambda x: x.replace('g','').replace('G',''))
+        df[0] = df[0].apply(lambda x: x.replace('g', '').replace('G', ''))
+        df[1] = df[1].apply(lambda x: x.replace('g', '').replace('G', ''))
         df = df.astype(float) # imoprtant for later to check for equality
         return df
 
     def score(self, filename, subname):
         self._check_subname(subname)
-        if subname == 'A100':
+        if subname in ['A100', 'A300', 'A999']:
             return self._score_challengeA_bunch(filename, subname)
         elif subname == 'B':
             if isinstance(filename, list) is False:
@@ -133,7 +144,7 @@ class D5C3(Challenge, D3D4ROC):
     def _score_challengeA_bunch(self, filenames, subname):
 
         from easydev import Progress
-        pb = Progress(5,1)
+        pb = Progress(5, 1)
         pb.animate(0)
         results = []
         for i, filename in enumerate(filenames):
@@ -149,8 +160,10 @@ class D5C3(Challenge, D3D4ROC):
         df['Overall Score'] = score
         df['AUPR score (pval)'] = aupr_score
         df['AUROC score (pval)'] = aupr_score
+
         for i in range(1,6):
             df['AUPR Net %s' % i] = results[i-1]['aupr']
+
         for i in range(1,6):
             df['AUROC Net %s' % i] = results[i-1]['auroc']
 
@@ -221,8 +234,10 @@ class D5C3(Challenge, D3D4ROC):
         random_negative_discovery = [1-p] * (Ntot - L)
 
         # append discovery + random using lists
-        positive_discovery = np.array(list(discovery) + random_positive_discovery)
-        negative_discovery = np.array(list(1-discovery) + random_negative_discovery)
+        positive_discovery = np.array(list(discovery)
+                + random_positive_discovery)
+        negative_discovery = np.array(list(1-discovery)
+                + random_negative_discovery)
 
         #  true positives (false positives) at depth k
         TPk = np.cumsum(positive_discovery)
@@ -232,16 +247,7 @@ class D5C3(Challenge, D3D4ROC):
         TPR = TPk / float(Pos)
         FPR = FPk / float(Neg)
         REC = TPR  # same thing
-        PREC = TPk / range(1,Ntot+1)
-
-        #  sanity check
-        #if ( (P ~= round(TPk(end))) | (N ~= round(FPk(end))) )
-        #	        disp('ERROR. There is a problem with the completion of the prediction list.')
-        #  end
-
-        # finishing touch
-        #TPk(end) = round(TPk(end));
-        #FPk(end) = round(FPk(end));
+        PREC = TPk / range(1, Ntot+1)
 
         from dreamtools.core.rocs import ROCBase
         roc = ROCBase()
@@ -252,9 +258,11 @@ class D5C3(Challenge, D3D4ROC):
         aupr /= (1.-1./Pos)
 
         p_aupr = self._probability(pdf_aupr['X'][0], pdf_aupr['Y'][0], aupr)
-        p_auroc = self._probability(pdf_auroc['X'][0], pdf_auroc['Y'][0], auroc)
+        p_auroc = self._probability(pdf_auroc['X'][0], pdf_auroc['Y'][0],
+                auroc)
 
-        results = {'auroc':auroc, 'aupr':aupr, 'p_auroc':p_auroc, 'p_aupr':p_aupr}
+        results = {'auroc':auroc, 'aupr':aupr, 'p_auroc':p_auroc,
+                'p_aupr':p_aupr}
         return results
 
     def score_challengeB(self, filenames):
@@ -291,7 +299,7 @@ class D5C3(Challenge, D3D4ROC):
             rtool.session.g = gold.ix[0].values
             rtool.session.run("results = cor.test(t, g, method='spearman', alternative='greater')")
             T1 = rtool.session.results.copy()
-    
+
             rtool.session.t = pred1.ix[1].values
             rtool.session.g = gold.ix[1].values
             rtool.session.run("results = cor.test(t, g, method='spearman', alternative='greater')")
@@ -316,7 +324,7 @@ class D5C3(Challenge, D3D4ROC):
 
         from easydev import Progress
         pb = Progress(self.N_pvalues, interval=1)
-        
+
         for ii in range(1, self.N_pvalues):
             for tag in [0,1,2]:
                 #generate random coordinates
@@ -335,13 +343,13 @@ class D5C3(Challenge, D3D4ROC):
 
                 random_scores[tag].append(-(np.log(T1['p.value']) + np.log(T2['p.value'])))
             pb.animate(ii+1)
-        self.random_scores = random_scores 
+        self.random_scores = random_scores
         #Obtaining p-values
-        pvals = [sum(self.random_scores[k]>= self.scores[k])/float(self.N_pvalues) for k in [0,1,2]]
+        pvals = [sum(self.random_scores[k]>= self.scores[k])/float(self.N_pvalues)
+                for k in [0,1,2]]
         self.pvals = pvals
 
-
-        df = pd.DataFrame({'scores':self.scores, 
+        df = pd.DataFrame({'scores':self.scores,
             'correlation_phenotype1':cor_pheno1,
             'correlation_phenotype2':cor_pheno2,
             'pvalues_phenotype1':pval_pheno1,
@@ -353,5 +361,5 @@ class D5C3(Challenge, D3D4ROC):
         return df
 
     def _probability(self, X, Y, x):
-        dx = X[1]-X[0]
-        return  sum(Y[X >= x])*dx
+        dx = X[1] - X[0]
+        return  sum(Y[X >= x]) * dx

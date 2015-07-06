@@ -6,7 +6,8 @@ Overview
 :Title:  DREAM4 Predictive Signaling Network Modeling
 :Nickname: D4C3
 :Summary:  Predict phosphoprotein measurements using an interpretable, predictive network
-:SubChallenges: None
+:Scoring metric: difference between prediction and measuremnts.
+    then log-transformed average of the pvalues for the  each protein.
 :Synapse page: https://www.synapse.org/#!Synapse:syn2825304
 
 

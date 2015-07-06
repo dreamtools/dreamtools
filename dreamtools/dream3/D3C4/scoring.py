@@ -7,7 +7,6 @@ Original code in matlab (Gustavo Stolovitzky and Robert Prill, Bernd Jagla).
 import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
-import numpy as np
 from dreamtools.core.rocs import D3D4ROC
 
 
@@ -22,9 +21,11 @@ class D3C4(Challenge, D3D4ROC):
         filename = s.download_template() 
         s.score(filename) 
 
-    Data and templates are downloaded from Synapse. You must have a login.
 
-    Insilico size 10 Ecoli1 gives 0.3295
+    .. note:: AUROC/AUPR and p-values are returned for a 
+        given sub-challenge. In the DREAM LB, the 5 networks 
+        are combined together. We should have same implemntatin
+        as in D4C2
 
     """
     def __init__(self):
@@ -43,6 +44,7 @@ class D3C4(Challenge, D3D4ROC):
     def _init(self):
         # should download files from synapse if required.
         # First the PDF
+        #TODO create a zip on synapse to simplify the follwoing?
         self._download_data('PDF_InSilicoSize100_Ecoli1.mat', 'syn4558484')
         self._download_data('PDF_InSilicoSize100_Ecoli2.mat', 'syn4558485')
         self._download_data('PDF_InSilicoSize100_Yeast1.mat', 'syn4558486')
@@ -139,7 +141,7 @@ class D3C4(Challenge, D3D4ROC):
         # we want to remove all entries for test that are not in GS
         # This can be done with a merge !
         newtest = pd.merge(self.test_data, self.gold_data, how='inner', on=[0,1])
-        test = list(newtest['2_x'])
+        #test = list(newtest['2_x'])
         gold_index = list(newtest['2_y'])
 
         AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_data, self.test_data, gold_index)

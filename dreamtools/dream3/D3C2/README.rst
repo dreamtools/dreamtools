@@ -7,6 +7,7 @@ Overview
 :Nickname: D3C2
 :Summary: Predict missing protein concentrations from a large corpus of measurements
 :SubChallenges: cytokine, phospho 
+:Scoring metric: distance to prediction.
 :Synapse page: https://www.synapse.org/#!Synapse:syn2825325
 
 

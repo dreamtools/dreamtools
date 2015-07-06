@@ -24,6 +24,44 @@ import numpy as np
 __all__ = ['ROC', 'ROCDiscovery', 'D3D4ROC']
 
 
+
+class BinaryClassifier(object):
+    """The roc module coontains lots of duplicated code that
+    will be cleanup in the future. To do so, we will 
+    use this class
+
+    """
+    def __init__(self):
+        pass
+
+    def roc(self):
+        pass
+
+    def compute_auc(self):
+        """Compute AUC given a ROC data set (recomputed otherwise)
+
+        :param str roc: The roc data structure must be a dictionary with "tpr"
+            key. Could be a variable returned by :meth:`get_statistics`. If not
+            provided, compute the ROC.
+        :return: the AUC
+        """
+        import scipy.integrate
+        value = scipy.integrate.trapz(self.tpr, x=self.fpr)
+        return value
+
+    def compute_aupr(self):
+        """Compute AUPR given a ROC data set (recomputed otherwise)
+
+        :param str roc: The roc data structure must be a dictionary with "tpr"
+            key. Could be a variable returned by :meth:`get_statistics`. If not
+            provided, compute the ROC.
+        :return: the AUPR
+        """
+        import scipy.integrate
+        value = scipy.integrate.trapz(self.precision, x=self.recall)
+        return value
+
+
 class ROCBase(object):
     """An ABC class"""
 

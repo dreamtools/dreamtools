@@ -10,6 +10,7 @@ import pandas as pd
 from dreamtools.core.rocs import D3D4ROC
 import numpy as np
 
+
 class D5C4(Challenge, D3D4ROC):
     """A class dedicated to D5C4 challenge
 

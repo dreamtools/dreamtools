@@ -31,13 +31,10 @@ from easydev import progress_bar
 from dreamtools.core.ziptools import ZIP
 from dreamtools.core.challenge import Challenge
 from dreamtools.core.rocs import ROCDiscovery
-from dreamtools.core.downloader import Downloader
-
 
 
 class D5C2(Challenge):
     """A class dedicated to D5C2 challenge
-
 
     ::
 
@@ -45,7 +42,7 @@ class D5C2(Challenge):
         s = D5C2()
 
         # You can get a template from www.synapse.org page (you need to register)
-        filename = s.download_template() 
+        filename = s.download_template()
         s.score(filename) # takes about 5 minutes
         s.get_table()
         s.plot()
@@ -55,14 +52,15 @@ class D5C2(Challenge):
     """
     def __init__(self, tmpdir=None, Ntf=66):
         """.. rubric:: constructor
-        
+
         :param Ntf: not to be used. Used for fast testing and debugging
-        :param tmpdir: a local temporary file if provided. 
+        :param tmpdir: a local temporary file if provided.
         """
         super(D5C2, self).__init__('D5C2')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.Ntf = Ntf
-        self.tmpdir = tmpdir               # directory where to save the results
+        self.Ntf=2
+        self.tmpdir = tmpdir # directory where to save the results
 
         self._dvs = {}
         self._dvps = {}
@@ -70,8 +68,8 @@ class D5C2(Challenge):
 
     def score(self, prediction_file):
         """Compute all results and compare user prediction with all official participants
-        
-        This scoring function can take a long time (about 5-10 minutes). 
+
+        This scoring function can take a long time (about 5-10 minutes).
         """
 
         self.init() # this provides a temporary file
@@ -88,6 +86,9 @@ class D5C2(Challenge):
         self._preprocessing()
         print('\nComputing performances (step 5 out of 5)')
         self._processing()
+
+        results = self.get_table().ix[20]
+        return results
 
     def init(self):
         """Creates the temporary directory and the sub directories.
@@ -112,7 +113,8 @@ class D5C2(Challenge):
         """Download all large data sets from Synapse"""
         pb = progress_bar(5)
         # load the large gold standard file from D5C2 synapse main page
-        filename = self._download_data('DREAM5_GoldStandard_probes.zip', 'syn2898469')
+        filename = self._download_data('DREAM5_GoldStandard_probes.zip', 
+                'syn2898469')
         pb.animate(1)
         z = ZIP()
         z.loadZIPFile(filename)
@@ -128,7 +130,7 @@ class D5C2(Challenge):
         pb.animate(4)
         self._download_data('probes35.txt', 'syn4483183')
         pb.animate(5)
-    
+
     def download_template(self):
         """Download a template from synapse into ~/config/dreamtools/dream5/D5C2
 
@@ -136,15 +138,6 @@ class D5C2(Challenge):
         """
         filename = self._download_data('templates.txt.gz', 'syn4483192')
         return filename
-
-    #def _download_data(self, name, synid):
-    #    filename = self.directory + os.sep + name
-    #    if os.path.exists(filename) is False:
-    #        # must download the data now
-    #        print("File %s not found. Downloading from Synapse. You must have a login." % filename)
-    #        d = Downloader(self.nickname)
-    #        d.download(synid)
-    #   return filename
 
     def _split_data(self, precision=6):
         """precision is to get same results as in the original perl script"""
@@ -158,7 +151,7 @@ class D5C2(Challenge):
 
         pb = progress_bar(self.Ntf, interval=1)
         for tf_index in range(1, self.Ntf + 1):
-            this_tf = 'TF_%s'  % tf_index
+            this_tf = 'TF_%s' % tf_index
             tf_gs = gs.query("Id == @this_tf").Answer
             tf_user = user_data.query("TF_Id == @this_tf").Signal_Mean
             df = pd.concat([tf_gs, tf_user], axis=1)
@@ -172,7 +165,7 @@ class D5C2(Challenge):
         # could be either gz or zip
         import mimetypes
         itemtype = mimetypes.guess_type(self.prediction_file)[1]
-        
+
         if itemtype == 'gzip':
             import gzip
             fh = gzip.open(self.prediction_file, 'rb')
@@ -199,7 +192,7 @@ class D5C2(Challenge):
         filename = self.directory + os.sep + '8mers_gs.txt'
         self.octomers_gs = pd.read_csv(filename, sep='\t', header=None)
 
-        # Read file octomers 
+        # Read file octomers
         filename = self.directory + os.sep + 'all_8mers.txt'
         self.octomers = pd.read_csv(filename, sep='\t', header=None)  # contains reverse complemtn
         self.octomers.columns = ['octomer','octomerRC']
@@ -232,7 +225,8 @@ class D5C2(Challenge):
             sequence = data[['Sequence']].ix[self.gs.Id==tag]
             answer = data.Signal_Mean[data.TF_Id == tag]
             df = pd.concat([sequence, answer], axis=1)
-            df.sort(columns=['Signal_Mean', 'Sequence'], ascending=[False, False], inplace=True)
+            df.sort(columns=['Signal_Mean', 'Sequence'], 
+                    ascending=[False, False], inplace=True)
             df['Signal_Mean'] = df['Signal_Mean'].map(lambda x: round(x,6))
 
             self._probes[i] = df
@@ -316,9 +310,9 @@ class D5C2(Challenge):
 
     def compute_statistics(self):
         """Returns final results of the user predcition
-        
+
         :return: a dataframe with various metrics for each transcription factor.
-        
+
         Must call :meth:`score` before.
 
         """
@@ -341,10 +335,8 @@ class D5C2(Challenge):
             data['Pearson_Log'].append(pearsonLog)
             data['Spearman'].append(spearman)
 
-
             dvdata = self._dvs[tf_index]
 
-            #dvdata = pd.read_csv(self._setfile(tf_index, "DV"), index_col=False, header=None)
             r = ROCDiscovery(dvdata.values)
             rocdata = r.get_statistics()
             auroc = r.compute_auc(roc=rocdata)
@@ -352,8 +344,7 @@ class D5C2(Challenge):
             data['AUROC_8mer'].append(auroc)
             data['AUPR_8mer'].append(aupr)
 
-            dvdata = self._dvps[tf_index] 
-            #dvdata = pd.read_csv(self._setfile(tf_index, 'DVP'), index_col=False, header=None)
+            dvdata = self._dvps[tf_index]
             r = ROCDiscovery(dvdata.values)
             rocdata = r.get_statistics()
             auroc = r.compute_auc(roc=rocdata)
@@ -362,15 +353,16 @@ class D5C2(Challenge):
             data['AUPR_probe'].append(aupr)
             pb.animate(tf_index)
 
-        df =  pd.DataFrame(data)
-        df = df[['Pearson', u'Spearman', u'Pearson_Log', u'AUROC_8mer', u'AUPR_8mer', u'AUROC_probe', u'AUPR_probe']]
+        df = pd.DataFrame(data)
+        df = df[['Pearson', u'Spearman', u'Pearson_Log', u'AUROC_8mer', 
+            u'AUPR_8mer', u'AUROC_probe', u'AUPR_probe']]
 
         return df
 
     def get_table(self):
         """Return table with user results from the user and participants
 
-        There are 14 participants as in the Leaderboard found here 
+        There are 14 participants as in the Leaderboard found here
         https://www.synapse.org/#!Synapse:syn2887863/wiki/72188
 
 
@@ -396,7 +388,8 @@ class D5C2(Challenge):
         participants = pd.read_csv(filename, sep='\t', index_col=0)
         table = pd.concat([participants, userdf])
 
-        # compute ranks based on those columns. Using method first to be in agreement with the server
+        # compute ranks based on those columns. Using method first to 
+        # be in agreement with the server
         rank_columns = ['Pearson', 'Pearson_Log', 'Spearman', 'AUPR_8mer', 'AUROC_8mer']
         ranks = table[rank_columns]
         mean_ranks = ranks.rank(ascending=False, method='first').mean(axis=1)

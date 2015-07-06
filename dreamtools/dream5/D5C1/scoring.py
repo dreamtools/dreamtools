@@ -55,7 +55,12 @@ class D5C1(Challenge):
         self.aupr = scipy.io.loadmat(self.get_pathname("AUPR.mat"))
 
     def score(self, filename):
+        """
 
+        :return: dictionay with AUC/AUPR metrics and score.
+
+
+        """
         self._load_proba()
         prediction = pd.read_csv(filename, sep='[ \t]', engine='python', header=None)
         gold = pd.read_csv(self.download_goldstandard(), sep='[ \t]', 
@@ -78,21 +83,14 @@ class D5C1(Challenge):
         auroc = self.roc.compute_auc()
         aupr = self.roc.compute_aupr()
 
-
         P_AUPR = self._probability(self.aupr['X'][0], self.aupr['Y'][0], aupr)
         P_AUROC = self._probability(self.auroc['X'][0], self.auroc['Y'][0], auroc)
 
-        # overall dream score
-        #i#P = [ p_auroc p_aupr ];
-        #o#verall_score = mean(-log10(P)')';
-
         score = np.mean(-np.log10([P_AUROC, P_AUPR]))
 
-        return {'auroc':auroc, 'aupr':aupr, 'pval_aupr': P_AUPR, 'pval_auroc':P_AUROC,
-                'score':score}
-
+        return {'auroc':auroc, 'aupr':aupr, 'pval_aupr': P_AUPR, 
+                'pval_auroc':P_AUROC, 'score':score}
 
     def _probability(self, X, Y, x):
         dx = X[2] - X[1]
         return  sum( Y[X>=x] * dx )
-
