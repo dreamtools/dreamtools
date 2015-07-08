@@ -60,6 +60,14 @@ class D9C1(Challenge):
         self._init()
         self.sub_challenges = ['sc1','sc3','sc2']
 
+    def _read_gct(self, filename):
+        gct = pd.read_csv(filename, sep='[ \t]',  skiprows=2, engine='python')
+        gct.drop(['Description'], axis=1, inplace=True)
+        gct.set_index('Name', inplace=True)
+        gct.columns = [x.strip() for x in gct.columns]
+        return gct
+
+
     def _init(self):
         # should download files from synapse if required.
         self._download_data('D9C1_goldstandard.gct.zip', 'syn4595275')
@@ -71,11 +79,19 @@ class D9C1(Challenge):
         data = z.read('D9C1_goldstandard.gct')
         self.goldstandard = pd.read_csv(StringIO.StringIO(data), sep='[ \t]', 
                 skiprows=2, engine='python')
-        self.goldstandard.drop(['Name', 'Description'], axis=1, inplace=True)
+        self.goldstandard.drop(['Description'], axis=1, inplace=True)
+        self.goldstandard.set_index('Name', inplace=True)
+        self.goldstandard.columns = [x.strip() for x in self.goldstandard.columns]
 
         # get template for SC1A
         self._download_data('D9C1_template_sc1.gct.zip', 'syn4595283')
         self.unzip('D9C1_template_sc1.gct.zip')
+
+        filename = self._pj([self._path2data, 'goldstandard', 'D9C1_goldstandard_sc2.txt'])
+        self.gs_priority = pd.read_csv(filename, sep='\t', header=None)
+
+    def _read_feature(self, filename):
+        return pd.read_csv(filename, sep='\t', header=None)
 
     def score(self, filename, subname=None):
         self._check_subname(subname)
@@ -87,13 +103,7 @@ class D9C1(Challenge):
             return self._score_sc3(filename)
 
     def _score_sc1(self, filename):
-        self.prediction = pd.read_csv(filename, sep='[ \t]', skiprows=2, 
-                engine='python')
-        self.prediction.drop(['Name', 'Description'], axis=1, inplace=True)
-
-        self.goldstandard.columns = [x.strip() for x in self.goldstandard.columns]
-        self.prediction.columns = [x.strip() for x in self.prediction.columns]
-
+        self.prediction = self._read_gct(filename)
         assert all(self.goldstandard.columns == self.prediction.columns)
         assert self.goldstandard.shape == self.prediction.shape
 
@@ -110,7 +120,24 @@ class D9C1(Challenge):
         return {'score': final_score}
 
     def _score_sc2(self, filename):
-        raise NotImplementedError
+        self.prediction = self._read_gct(filename)
+        assert all(self.goldstandard.columns == self.prediction.columns)
+        assert self.goldstandard.shape == self.prediction.shape
+
+        # in SC2, only a subset of predictive features (2647 out of 17.000) are used
+        df1 = self.goldstandard.ix[s.gs_priority[0]
+
+        scores = []
+        df2 = self.prediction
+        N = len(df1)
+        
+        scores = [df1.ix[i].corr(df2.ix[i], method='spearman') for i in range(0, N)]
+
+        final_score = sum(scores)/float(len(scores))
+        return {'score': final_score}
+
+
+        #0.003495996
 
     def _score_sc3(self, filename):
         raise NotImplementedError
