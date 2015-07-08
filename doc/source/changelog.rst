@@ -1,10 +1,20 @@
 ChangeLog
 ==============
 
+0.9.1
+---------
+
+* NEWS: add :class:`dreamtools.dream9.scoring.D9C1` challenge
+
+0.9.0
+---------
+
+* Upgrade version to higher number to reflect the fact that the package is now more robust
+
 0.1.6
 --------
 
-Add a bunch of other challenges mostly D2/D3/D4/D5 and fixes + tests
+* Add a bunch of other challenges mostly D2/D3/D4/D5 and fixes + tests
 
 0.1.5
 ----------

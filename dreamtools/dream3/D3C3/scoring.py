@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import os
 
+
 class D3C3(Challenge):
     """A class dedicated to D3C3 challenge
 
