@@ -9,6 +9,7 @@ Overview
 :SubChallenges: 3 sub challenges
 :Synapse page: https://www.synapse.org/#!Synapse:syn2384331
 
+:Other resources: https://github.com/Sage-Bionetworks/DREAM9_Broad_Challenge_Scoring
 
 .. contents::
 
