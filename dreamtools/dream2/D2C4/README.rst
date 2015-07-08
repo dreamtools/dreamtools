@@ -3,10 +3,11 @@ Overview
 ===========
 
 
-:Title: Genome-Scale Network Inference
+:Title: In-silico Network Inference
 :Nickname: D2C4
 :Summary: Reconstruct a genome scale regulatory network from a large collection of microarrays
-:SubChallenges: ?
+:SubChallenges: InSilico1, InSilico2, Insilico3
+:Scoring metric: AUPR and AUROC curves for each sub-challenge
 :Synapse page: https://www.synapse.org/#!Synapse:syn2825394
 
 
