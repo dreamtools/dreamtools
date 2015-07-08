@@ -35,14 +35,16 @@ class D2C1(Challenge, D3D4ROC, DREAM2):
         df.to_csv(filename, sep='\t', header=None, index=False)
 
     def download_template(self):
+        """Returns D2C1 template location"""
         return self._pj([self._path2data, 'templates', 'D2C1_template.tsv'])
 
     def download_goldstandard(self):
-        return  self._pj([self._path2data, 'goldstandard',
-                             'D2C1_goldstandard.tsv'])
+        """Returns D2C1 gold standard file location"""
+        return self._pj([self._path2data, 'goldstandard',
+                        'D2C1_goldstandard.tsv'])
 
     def score(self, filename):
-        """Returns statistics (e.g. AUROC)
+        """Returns statistics (e.g. AUPR/AUROC)
 
         :param str filename: a valid filename as returned by
             :meth:`download_template`
