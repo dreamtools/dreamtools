@@ -1,4 +1,10 @@
+"""
 
+
+Original code in MATLAB by Gustavo Stolovitzky
+
+
+"""
 import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd

@@ -19,14 +19,14 @@ scoring function.
 
 
 If data file or templates are too large, we strongly recommend to store them in a project on synapse.
-I have created a synapse project called `**dreamtools** <https://www.synapse.org/#!Synapse:syn4483180>`_
+I have created a synapse project called `dreamtools <https://www.synapse.org/#!Synapse:syn4483180>`_
 where for example the D5C2 data files have been stored.
 
 Naming conventions
 -------------------
 
-Put a template that filename starts with  **D3C1_template** in the templates/ directory
-Similarly for goldstandard, start the filename with D3C1_goldstandard tag.
+Put a template that filename starts with  **D3C1_template** in the templates/
+directory. Similarly for gold standards: start the filename with D3C1_goldstandard tag.
 
 
 

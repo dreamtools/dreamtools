@@ -73,7 +73,7 @@ class D9C3(Challenge):
         # brier metric
         pass
 
-    def score_q3(self, filename):
+    def _score_q3(self, filename):
         # Question 3 - Predict change in MMSE from image features
         # -----------------
 

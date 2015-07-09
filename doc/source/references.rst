@@ -240,3 +240,12 @@ NIEHS-NCATS-UNC DREAM Toxicogenetics
 
 DREAM9 challenges
 --------------------
+
+.. automodule:: dreamtools.dream9.D9C1.scoring
+    :members:
+    :undoc-members:
+
+.. automodule:: dreamtools.dream9.D9C3.scoring
+    :members:
+    :undoc-members:
+

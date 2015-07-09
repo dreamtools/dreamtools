@@ -59,7 +59,6 @@ class D5C2(Challenge):
         super(D5C2, self).__init__('D5C2')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.Ntf = Ntf
-        self.Ntf=2
         self.tmpdir = tmpdir # directory where to save the results
 
         self._dvs = {}

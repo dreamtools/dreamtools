@@ -9,7 +9,6 @@ dreampath = configuration.user_config_dir
 
 from dreamtools.core.challenge import Challenge
 
-
 from dream2.D2C1.scoring import D2C1
 from dream2.D2C2.scoring import D2C2
 from dream2.D2C3.scoring import D2C3
@@ -38,7 +37,7 @@ from dream8.D8C1.scoring import D8C1
 from dream8.D8C2.scoring import D8C2
 
 from dream9.D9C1.scoring import D9C1
+from dream9.D9C3.scoring import D9C3
 
 from dream9dot5.D9dot5C1.scoring import D9dot5C1
 
-# from dream10

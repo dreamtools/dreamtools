@@ -14,8 +14,7 @@ Overview
 
 The main goals are to provide:
 
-#. scoring functions for the Dream challenges for **end-users** via the **dreamtools-scoring** standalone
-   application.
+#. scoring functions for the Dream challenges for **end-users** via the **dreamtools** standalone application.
 #. a place for **developers** involved in the dream challenges to share code
 
 
@@ -25,13 +24,12 @@ guaranteed to be found in dreamtools even though it may be in some challenges
 Some challenges will require to download public data sets from
 `Synapse <www.synapse.org>`_ (in which case you will need to register).
 
-dreamtools-scoring executable
+The **dreamtools** executable
 -------------------------------
 
-For users, **dreamtools** provide one executable called **dreamtools-scoring**, which should be installed automatically
-when installing dreamtools. Knowing the name of the challenge (and possibly sub-challenge), it works as  follows::
+For users, **dreamtools** package provides one executable called **dreamtools**, which should be installed automatically during the installation. Knowing the name of the challenge (and possibly sub-challenge), it works as follows::
 
-    dreamtools-scoring --challenge d8c1 --sub-challenge sc1a --submission example.zip
+    dreamtools --challenge d8c1 --sub-challenge sc1a --submission example.zip
     
 It prints some information and the score of the submision for instance for the example above::
 
@@ -42,21 +40,11 @@ Available challenges
 -------------------------
 
 
-**Dreamtools** software does not include all scoring functions but more will be
-implemented in the future. Here is the list of challenges available
+The goal of **Dreamtools** is to cover all challenges. 
+So far 27 challenges out of the 33 closed challenges are included. 
 
-
-* Dream8 HPN (D8C1) sub challenges named sc1a, sc1b, sc2a, sc2b. 
-  See `Synapse page <https://www.synapse.org/#!Synapse:syn1720047>`_ for details
-* Dream8 Tox (D8C2) sub challenges named sc1, sc2 
-  See `Synapse page <https://www.synapse.org/#!Wiki:syn1761567>`_ for details
-* Dream 7 (D7C1) (Network topology and parameter estimation)
-* Dream 5 (D5C2) (Transcription factor)
-* Dream 4 (D4C3) (Predictive Signaling Network Modeling)
-* Dream 4 (D4C1) (Peptide Recognition Domain (PRD) Specificity Prediction)
-* Dream 3 (D3C1) (Signalling cascade)
-* Dream 3 (D3C2) (Signaling Response Prediction)
-
+Most of them are implemented in pure Python. A couple rely on Perl script and
+5-6 call R behind the scene. However, the user interface is identical for all of them.
 
 Installation
 ---------------
@@ -88,6 +76,7 @@ contains basic usage and information about the challenge.
 .. toctree::
     :maxdepth: 1
 
+    userguide.rst
     developers.rst
     credits.rst
     references.rst

@@ -43,7 +43,7 @@ import pylab
 import numpy as np
 
 from dreamtools.core import rocs
-import cython_scoring
+from dreamtools.dream8.D8C1 import cython_scoring
 from dreamtools.core.ziptools import ZIP
 from dreamtools.core.rocs import ROC
 from dreamtools.core.challenge import Challenge
