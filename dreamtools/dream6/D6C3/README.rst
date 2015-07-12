@@ -3,10 +3,10 @@ Overview
 ===========
 
 
-:Title: 
+:Title: Gene Expression Prediction 
 :Nickname: D6C3
 :Summary: 
-:SubChallenges: 
+:SubChallenges: None 
 :Synapse page: https://www.synapse.org/#!Synapse:syn2820426
 
 
