@@ -178,16 +178,6 @@ D8C1
     :undoc-members:
 
 
-DREAM9.5
-------------
-
-D9dot5C1
-~~~~~~~~~~~~~
-
-.. automodule:: dreamtools.dream9dot5.D9dot5C1.scoring
-    :members:
-    :undoc-members:
-
 
 Scoring
 ^^^^^^^^^^^^^^^^
@@ -241,11 +231,28 @@ NIEHS-NCATS-UNC DREAM Toxicogenetics
 DREAM9 challenges
 --------------------
 
+D9C1
+~~~~~~~~
 .. automodule:: dreamtools.dream9.D9C1.scoring
     :members:
     :undoc-members:
 
+D9C2
+~~~~~~~~~~~~
 .. automodule:: dreamtools.dream9.D9C3.scoring
     :members:
     :undoc-members:
+
+
+DREAM9.5
+------------
+
+D9dot5C1
+~~~~~~~~~~~~~
+
+.. automodule:: dreamtools.dream9dot5.D9dot5C1.scoring
+    :members:
+    :undoc-members:
+
+
 

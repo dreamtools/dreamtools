@@ -5,6 +5,7 @@ ChangeLog
 ---------
 
 * NEWS: add :class:`dreamtools.dream9.scoring.D9C1` challenge
+* NEWS: add :class:`dreamtools.dream6.scoring.D6C3` challenge
 
 0.9.0
 ---------
