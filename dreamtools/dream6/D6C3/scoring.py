@@ -18,6 +18,15 @@ class D6C3(Challenge):
     Absolute score in the Pearson coeff but other scores such as
     chi-square and rank are based on the 21st participants.
 
+    Pearson and spearman gives sema values as in final LB but X2 and R2 
+    are slightly different. Same results as in the original matlab scripts
+    so the different with th eLB is probably coming fron a different
+    set of predictions files, which is stored in ./data/predictions
+    and was found in http://genome.cshlp.org/content/23/11/1928/suppl/DC1
+
+    The final score in the official leaderboard computed the p-values for
+    each score (chi-square, r-square, spearman and pearson correlation
+    coefficient) and took -0.25 log ( product of p-values) as the final score.
 
     """
     def __init__(self):
