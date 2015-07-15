@@ -1,0 +1,13 @@
+ 
+=========================================================================
+The Protein-Protein Subnetwork Challenge: Description
+=========================================================================
+
+For a large number of combination of baits and prey genes, a high throuput panel of Y2H interactions were tested for yeast proteins. From all the protein-protein interactions found in these experiments, we extracted a set of gene pairs that were found to interact in at least three repetitions of the experiment. We also identified a set of gene-pairs that were never found to interact. Given the list of genes participating in the afore-mentioned pairs, the challenge consists of indentifying the gene pairs that interact and those that don't interact.
+
+File(s):
+
+  - Prot-Prot_Genes.xls
+
+
+[ http://wiki.c2b2.columbia.edu/dream/index.php/The_Protein-Protein_Subnetwork_Challenge._Description ]
