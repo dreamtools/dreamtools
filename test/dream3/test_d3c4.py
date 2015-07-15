@@ -10,7 +10,7 @@ def test_d3c4_10():
     for batch in ['Ecoli1', 'Ecoli2', 'Yeast1']:
         filename = s.download_template('10_'+ batch)
         print filename
-        aurocs.append(s.score(filename, '10_%s' % batch)['AUC'])
+        aurocs.append(s.score(filename, '10')['AUPR'])
 
     assert_list_almost_equal(aurocs,
          [0.3294927, 0.6283442, 0.368482140], 7)
