@@ -1,0 +1,14 @@
+
+=========================================================================
+The Five-Gene Network Challenge: Description
+=========================================================================
+
+A synthetic-biology network consisting of 5 interacting genes was created and transfected to an in-vivo model organism. The challenge consists of predicting the connectivity of the five-gene network from in-vivo measurements.
+
+File(s):
+
+  - FiveGene_qPCR.xls
+  - FiveGene_chip.xls
+
+
+[ http://wiki.c2b2.columbia.edu/dream/index.php/The_Five-Gene_Network_Challenge._Description ]
