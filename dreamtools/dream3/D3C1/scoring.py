@@ -1,7 +1,8 @@
 """
-% Gustavo A. Stolovitzky, Ph.D.
-% Robert Prill, Ph.D.
-%
+
+
+Original matlab code from Gustavo A. Stolovitzky and Robert Prill.
+
 """
 import os
 import numpy as np
@@ -12,14 +13,7 @@ __all__ = ["D3C1"]
 
 
 class D3C1(Challenge):
-    """D3C1 scoring function to evaluate the accuracy of a prediction 
-    
-    
-    This is a Python implementation of the matlab code from  Gustavo A. Stolovitzky, Ph.D.
-    Robert Prill, Ph.D. here
-    https://www.synapse.org/#!Synapse:syn3033068/files/.
-    The gold standard and example are provided within the D3C1 directory in
-    dreamtools.
+    """D3C1 scoring function to evaluate the accuracy of a prediction
 
 
     ::
@@ -72,8 +66,10 @@ class D3C1(Challenge):
         self.X = np.array([0,1,2,3,4])
         self.Y = np.array([0.55357143,  0.33809524,  0.09285714,  0.01428571,
             0.00119048])
+        # 4 proteins, 7 assignements. P(4 correct) = 1/ (7*6*5*4)
+        # P3 = C^4_1, P2 = C^4_2, P1 = C^4_3, P0 = ...
 
-    def probability(self,x):
+    def probability(self, x):
         dx = self.X[2] - self.X[1]
         return sum( np.double(self.X>=x) * self.Y * dx )
 

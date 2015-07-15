@@ -1,7 +1,7 @@
 """
 
-Python code implemented by Thomas Cokelaer from matlab version (Gustavo A. Stolovitzky, Ph.D.
-Robert Prill).
+Original matlab version (Gustavo A. Stolovitzky, Ph.D. Robert Prill) translated
+into Python by Thomas Cokelaer.
 """
 from dreamtools.core.challenge import Challenge
 import pandas as pd
@@ -22,10 +22,12 @@ class D3C3(Challenge):
 
     Data and templates are downloaded from Synapse. You must have a login.
 
-    .. note:: the spearman pvalues are computed using R and are slightly different
-        from the official code that used matlab. The reason being that the 2 implementations
-        are different. Pleasee see cor.test in R and corr() function in matlab for details.
-        The scipy.stats.stats.spearman has a very different implementation for small size cases.
+    .. note:: the spearman pvalues are computed using R and are slightly 
+        different from the official code that used matlab. The reason 
+        being that the 2 implementations are different. Pleasee see cor.test 
+        in R and corr() function in matlab for details.
+        The scipy.stats.stats.spearman has a very different implementation 
+        for small size cases.
 
     """
     def __init__(self):
@@ -40,7 +42,8 @@ class D3C3(Challenge):
        pass
 
     def download_goldstandard(self):
-        return self._pj([self._path2data, 'goldstandard', 'D3C3_goldstandard.txt'])
+        return self._pj([self._path2data, 'goldstandard', 
+            'D3C3_goldstandard.txt'])
 
     def score(self, filename):
         self.G = self._read_challenge(self.download_goldstandard())
