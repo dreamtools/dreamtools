@@ -158,8 +158,18 @@ class D3C4(Challenge, D3D4ROC):
     def download_template(self, subname):
         # no template per se, so we return GS
         # self._check_subname(subname)
-        self._warning()
-        filename = self.download_goldstandard(subname)
+        #self._warning()
+        if subname.startswith('10'):
+            if subname in self.sub_challenges:
+                subname2 = subname + "_Yeast1"
+            else:
+                subname2, netname = subname.split("_", 1)
+                self._check_subname(subname2)
+                subname2 = subname
+            filename = self._pj([self._path2data, 'templates',
+                'example_InSilicoSize%s.txt' % subname2])
+        else:
+            filename = self.download_goldstandard(subname)
         return filename
 
     def download_goldstandard(self, subname):
