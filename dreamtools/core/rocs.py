@@ -80,7 +80,7 @@ class ROCBase(object):
         :return: the AUC
 
         """
-        if roc == None:
+        if roc is None:
             roc = self.get_statistics()
         import scipy.integrate
         value = scipy.integrate.trapz(roc['tpr'], roc['fpr'])

@@ -1,4 +1,8 @@
+"""
 
+
+Original scoring function: Kelly Norel
+"""
 import os
 from dreamtools.core.challenge import Challenge
 

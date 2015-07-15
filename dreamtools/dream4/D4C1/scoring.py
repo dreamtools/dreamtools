@@ -2,9 +2,7 @@
 
 
 
-Based on original matlab code from  Gustavo A. Stolovitzky, and Robert Prill, Ph.D.
-available on Synapse
-
+Based on original matlab code from  Gustavo A. Stolovitzky, and Robert Prill.
 
 """
 import os

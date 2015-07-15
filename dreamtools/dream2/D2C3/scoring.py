@@ -6,12 +6,7 @@
 :SubChallenges: 
 :Synapse page: https://www.synapse.org/#!Synapse:syn3034869
 
-The original algorithm was developed in MATLAB by Gustavo Stolovitzky and
-implemented by  Bernd Jagla, Columbia University (baj2107_A_T_columbia.edu). All
-questions/suggestions should be directed to both, Gustavo and Bernd.
-
-
-
+The original algorithm was developed in MATLAB by Gustavo Stolovitzky
 """
 import os
 from dreamtools.core.challenge import Challenge

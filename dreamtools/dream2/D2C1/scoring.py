@@ -7,7 +7,7 @@
 :Synapse page: https://www.synapse.org/#!Synapse:syn3034857
 
 Implementation in Python based on a MATLAB code from
-Gustavo A. Stolovitzky and Bernd Jagla.
+Gustavo A. Stolovitzky
 
 """
 import pandas as pd

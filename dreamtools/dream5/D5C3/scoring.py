@@ -1,6 +1,5 @@
 """
 
-Based on DREAM5_Challenge3A_Evaluation().
 from Gustavo A. Stolovitzky,  Robert Prill, Ph.D.
 sub challenge B original code in R from A. de la Fuente
 

@@ -1,4 +1,7 @@
+"""
 
+scoring author: bobby prill
+"""
 import os
 from dreamtools.core.challenge import Challenge
 

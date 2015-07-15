@@ -7,7 +7,7 @@
 :Synapse page: https://www.synapse.org/#!Synapse:syn2825374
 
 Implementation in Python based on a MATLAB code from
-Gustavo A. Stolovitzky and Bernd Jagla.
+Gustavo A. Stolovitzky
 
 """
 import os

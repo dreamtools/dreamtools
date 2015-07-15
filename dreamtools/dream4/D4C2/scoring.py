@@ -119,11 +119,11 @@ class D4C2(Challenge, D3D4ROC):
             results['SCORE'] = overall_score
             results = pd.TimeSeries(results)
 
-            results = results[['SCORE', 'AUPR_PVAL', 'AUPR_SCORE', 'AUROC_PVAL', 'AUROC_SCORE',
-                    'Net1_AUPR',  'Net2_AUPR', 'Net3_AUPR', 'Net4_AUPR', 'Net5_AUPR',
-                    'Net1_AUROC', 'Net2_AUROC',   'Net3_AUROC', 'Net4_AUROC', 'Net5_AUROC']]
-
-
+            results = results[['SCORE', 'AUPR_PVAL', 'AUPR_SCORE', 
+                'AUROC_PVAL', 'AUROC_SCORE', 'Net1_AUPR',  'Net2_AUPR', 
+                'Net3_AUPR', 'Net4_AUPR', 'Net5_AUPR',
+                'Net1_AUROC', 'Net2_AUROC',   'Net3_AUROC', 
+                'Net4_AUROC', 'Net5_AUROC']]
             return results
 
     def _check_sub_challenge_name(self, name):
@@ -139,6 +139,7 @@ class D4C2(Challenge, D3D4ROC):
         name = str(name1)
         filename = self._pj([self._path2data, 'templates', name1,
             'DREAM4_Example_InSilico_Size%s_%s.txt' % (name1, name2)])
+        print("\nNote that there are 5 networks ending in 1,2,3,4,5.")
         return filename
 
     def download_goldstandard(self, subname):

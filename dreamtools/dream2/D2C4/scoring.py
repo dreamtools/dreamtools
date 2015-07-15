@@ -1,6 +1,6 @@
 """
 
-original code in MATLAB by gustavo Stolovitzky
+original code in MATLAB by Gustavo Stolovitzky
 
 """
 import os

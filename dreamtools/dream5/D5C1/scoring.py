@@ -1,9 +1,7 @@
 """
 
 
-Gustavo A. Stolovitzky, Ph.D.
-Robert Prill, Ph.D.
-
+From an original matlab code from Gustavo A. Stolovitzky, Robert Prill
 """
 import os
 from dreamtools.core.challenge import Challenge
