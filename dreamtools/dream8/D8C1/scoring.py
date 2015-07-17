@@ -48,6 +48,8 @@ from dreamtools.core.ziptools import ZIP
 from dreamtools.core.rocs import ROC
 from dreamtools.core.challenge import Challenge
 
+from cno.misc.profiler import do_profile
+import bottleneck as bn
 
 __all__ = ["HPNScoringNetwork", "HPNScoring", "HPNScoringNetworkInsilico",
     "HPNScoringNetwork_ranking", "HPNScoringPrediction",
@@ -660,7 +662,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         N = float(classes.count(0))
 
         roc = {"fpr":[], "tpr":[], "precision":[], "FP":[], "TP":[],
-            "recall":[], "accuracy":[], "Fmeasure":[], 'threshold':[]}
+            "recall":[], "Fmeasure":[], 'threshold':[]}
 
         for i in range(0, len(scores)):
             threshold = sorted_scores[i]
@@ -671,7 +673,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             #print classes[i], sorted_scores[i], threshold, TP, FP, TPR, FPR, TP+FP
             precision = TP / (TP+FP)
             recall = TP / P
-            accuracy = (TP+FP)/(P+N)
             if recall >0 and precision >0 :
                 Fmeasure = 2./(1./precision+1./recall)
             else:
@@ -684,7 +685,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             roc['fpr'].append(FPR)
             roc['precision'].append(precision)
             roc['recall'].append(recall)
-            roc['accuracy'].append(accuracy)
             roc['Fmeasure'].append(Fmeasure)
 
         return roc
@@ -728,7 +728,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         TP = 0
         #
         roc = {"fpr":[], "tpr":[], "precision":[], "FP":[], "TP":[],
-            "recall":[], "accuracy":[], "Fmeasure":[], 'threshold':[]}
+            "recall":[], "Fmeasure":[], 'threshold':[]}
         fprev = 1.1 # scores are less than 1
 
         # an efficient algorithm to compute ROC based on T.Fawcett Pattern
@@ -1449,7 +1449,7 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
 class HPNScoringPredictionBase(HPNScoring):
     def __init__(self, filename=None, verbose=False):
         super(HPNScoringPredictionBase, self).__init__(verbose=verbose)
-        self.times = [0,5,15,30,60,120,240]
+        self.times = [0, 5, 15, 30, 60, 120,240]
         self.load_species()
         self.filename = filename
 
@@ -1462,7 +1462,10 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         super(HPNScoringPrediction, self).__init__(filename)
         self.loadZIPFile(self.filename)
 
-        filename = os.sep.join([self._path2data, "goldstandard", "TruePrediction.zip"])
+        self._filter_species = True
+
+        filename = os.sep.join([self._path2data, "goldstandard", 
+            "TruePrediction.zip"])
         self.true_desc_filename = filename
 
         # same as species_to_ignore + mTOR + target of the inhibitors email
@@ -1548,7 +1551,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
                 this_stimulus = self.valid_ligands[this_stimuli.index(1)] # get the unique ligand name
 
                 for ip, phospho in enumerate(phosphos):
-                    datum = row[10+ip]
+                    datum = row[10 + ip]
                     #print cell, phospho, this_stimulus, itime
                     if datum == "NA":
                         datum = np.nan
@@ -1657,6 +1660,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         for key in self.valid_length.keys():
             assert self.valid_length_extended[key]-len(self.phosphos_to_exclude[key]) == len(self.true_prediction[key].keys())
 
+    #@do_profile()
     def get_rmse(self, cellLine, phospho):
         """
 
@@ -1675,8 +1679,9 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
             # so remove the infinite caused by log(0).
             #RMSE += nansum( [x for x in (log2(true)-log2(user))**2 if x!=inf]  )
             data = [x for x in (np.log2(true)-np.log2(user))**2 if x!=np.inf]
-            N = len([x for x in data if np.isnan(x)==False])
-            RMSE += np.nansum(data)
+            N = len([x for x in data if np.isnan(x) == False])
+            RMSE += bn.nansum(data)
+            #RMSE += np.nansum(data)
             counter += N
         # TODO: if nans are include, do we need to change T ?
         if counter != 0:
@@ -1687,17 +1692,24 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         return RMSE
 
     def compute_all_rmse(self):
+        """Some species were removed on purpose during the analysis
+
+        Those are hardcoded. To compute null distribution, we can keep 
+        all the species, in which case, filter_species parameter 
+        must be set to False.
+        """
         self.rmse = {}
         for c in self.valid_cellLines:
             self.rmse[c] = {}
             for l in self.species[c]:
 
-                if c == "MCF7" and l in [ 'c-Met_pY1235', "YB-1_PS102"]:
-                    continue
-                if c == "BT20" and l in ["4EBP1_pS65", '4EBP1_pT37_pT46', "c-Met_pY1235"]:
-                    continue
-                if c == "UACC812" and l in ["4EBP1_pT37_pT46", "4EBP1_pS65"]:
-                    continue
+                if self._filter_species is True:
+                    if c == "MCF7" and l in [ 'c-Met_pY1235', "YB-1_PS102"]:
+                        continue
+                    if c == "BT20" and l in ["4EBP1_pS65", '4EBP1_pT37_pT46', "c-Met_pY1235"]:
+                        continue
+                    if c == "UACC812" and l in ["4EBP1_pT37_pT46", "4EBP1_pS65"]:
+                        continue
 
                 if l not in self.phosphos_to_exclude[c]:
                     rmse = self.get_rmse(c, l)
@@ -1768,24 +1780,40 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
                     self.training[cell][phospho].append(datum)
 
     def get_null(self, N=100, tag="sc2a"):
+        """
+
+        s = HPNScoringPrediction()
+        nulls = s.get_null(1000)
+        # the nulls contains the 4 cell lines
+        # let us save the first one
+        for name in ['UACC812', 'BT549', 'MCF7', 'BT20']:
+            data = [x[name] for x in nulls]
+            fh = open('%s.json' % name, 'w')
+            import json
+            json.dump(data, fh)
+            fh.close()
+
+        """
         self.get_training_data()
 
         all_rmses = []
         for i in range(0, N):
-            print(tag+" " + str(i))
+            print(tag + " " + str(i))
+            self._filter_species = False
             self.user_prediction = self.create_random_data()
             self.compute_all_rmse()
+            self._filter_species = True
             all_rmses.append(copy.deepcopy(self.rmse))
         return all_rmses
 
+    #@do_profile()
     def create_random_data(self):
-
         """ Here, we don't want the true prediction that contains only what is
-        requested (AZD8055) but the orignal training data with 2 or 3 inhibitors such as
-        GSK and PD17 so that we can shuffle them.
+        requested (AZD8055) but the orignal training data with 2 or 3 
+        inhibitors such as GSK and PD17 so that we can shuffle them.
 
         We want to select for a given cell line and phosphos a data set to fill
-        at a given time. The datum is slected accross the 8 stimuli, inhibitors
+        at a given time. The datum is selected accross the 8 stimuli, inhibitors
         +DMSO, and time points.
 
         TAZ and FOX were asked to be excluded so this cause some trouble now but
@@ -1793,12 +1821,16 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         ginore them. Does not matter to compute the null distribution
         """
         import random
-        data = copy.deepcopy(self.user_prediction)
+        #data = copy.deepcopy(self.user_prediction)
+        data = {}
         self.compute_all_rmse()
 
         for c in self.rmse.keys():
+            data[c] = {}
             for p in self.rmse[c].keys():
-                for s in data[c][p].keys():
+                data[c][p] = {}
+                #for s in data[c][p].keys():
+                for s in self.ligands_names_steven:
                     # select 7 random values for 7 time points for each stimuli
                     data[c][p][s] = random.sample(self.training[c][p], 7)[:]
         return data
@@ -1817,15 +1849,6 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
                 mu[c][p] = mu_sigma[c][p]['mu']
                 sigma[c][p] = mu_sigma[c][p]['sigma']
         return mu, sigma
-
-    # not used
-    def __get_mean_zscores(self):
-        zscores = {}
-        for i,k in enumerate(self.participants):
-            zscore = self.get_zscores(self.rmse[i])
-            mu = np.mean([zscore[k1][k2] for k1 in zscore.keys() for k2 in zscore[k1].keys()])
-            zscores[k] = mu
-        return zscores
 
     def get_mean_rmse(self):
         return np.nanmean([self.rmse[k1][k2] for k1 in self.rmse.keys()
