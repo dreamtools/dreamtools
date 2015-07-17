@@ -1,0 +1,47 @@
+CORE modules
+==============
+
+.. contents::
+
+
+Rocs
+-----------
+
+.. automodule:: dreamtools.core.rocs
+    :members:
+    :undoc-members:
+
+settings
+-----------
+.. automodule:: dreamtools.core.settings
+    :members:
+    :undoc-members:
+
+scoring
+-----------
+.. automodule:: dreamtools.core.scoring
+    :members:
+    :undoc-members:
+
+
+Synapse utilities
+----------------------
+.. automodule:: dreamtools.core.sageutils
+    :members:
+    :undoc-members:
+
+Ziptools 
+----------------------
+.. automodule:: dreamtools.core.ziptools
+    :members:
+    :undoc-members:
+
+Downloader 
+----------------------
+.. automodule:: dreamtools.core.downloader
+    :members:
+    :undoc-members:
+
+
+
+
