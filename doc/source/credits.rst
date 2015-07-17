@@ -1,6 +1,7 @@
 Credits
 ----------
-:status: draft
 
-Contributions to dreamtools are direct (e.g. by contributing to this github repository) or indirect (e.g., by developing original scoring functions). For details about the credits, please see the README.rst or scoring.py module of each challenge.
+Contributions to **DreamTools** are direct (e.g. by contributing to the code in  the github repository github.com.dreamtools) or indirectly (e.g., by developing an original scoring functions in DREAM challenges). Since **DreamTools** framework is dynamic by nature, we won't keep a list of contributors here but one should look at each scoring module (e.g., dreamtools/dream5/D5C2/scoring.py). This will then be parsed automatically to generate on-line documentation. 
+
+
 
