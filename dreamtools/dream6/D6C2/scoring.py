@@ -30,6 +30,10 @@ class D6C2(Challenge):
         self._init()
         self.sub_challenges = []
 
+         msg = "This challenge was re done in DREAM7. "
+         msg += "Please, D7C1 challenge instead"
+         raise NotImplementedError(msg)
+
     def _init(self):
         # should download files from synapse if required.
         pass

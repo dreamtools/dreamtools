@@ -1,6 +1,11 @@
 ChangeLog
 ==============
 
+0.9.2
+-------
+
+* CHANGES: some changes in dream2/dream3 to finalise all those challenges.
+
 0.9.1
 ---------
 

@@ -166,13 +166,13 @@ class D4C2(Challenge, D3D4ROC):
         return data
 
     def score_prediction(self, filename=None, subname=None):
-        """This is a longish scoring function translated from the matlab original code of D4C2
+        """This is a longish scoring function translated from the 
+        matlab original code of D4C2
 
         :param filename:
         :param tag:
         :param batch:
         :return:
-
 
         .. todo:: merge this function with the one from D4C2
         """
@@ -188,7 +188,8 @@ class D4C2(Challenge, D3D4ROC):
 
 
         # append rank small to large
-        newtest = pd.merge(self.test_data, self.gold_data, how='inner', on=[0,1])
+        newtest = pd.merge(self.test_data, self.gold_data, how='inner', 
+                on=[0,1])
         test = list(newtest['2_x'])
         gold_index = list(newtest['2_y'])
 

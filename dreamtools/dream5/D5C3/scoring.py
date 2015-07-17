@@ -95,7 +95,7 @@ class D5C3(Challenge, D3D4ROC):
                                    "DREAM5_SysGenB3_your_Predictions.txt" ]))
         else:
             filenames = []
-            for i in range(1,6):
+            for i in range(1, 6):
                 gs_filename = self.get_pathname('DREAM5_SysGen%s_myteam_Network%s.txt' % (subname, i))
                 filenames.append(gs_filename)
         return filenames
@@ -115,7 +115,7 @@ class D5C3(Challenge, D3D4ROC):
             return filenames
         else:
             filenames = []
-            for i in range(1,6):
+            for i in range(1, 6):
                 gs_filename = self.get_pathname('DREAM5_SysGen%s_Edges_Network%s.tsv' % (subname, i))
                 filenames.append(gs_filename)
             return filenames
@@ -160,10 +160,10 @@ class D5C3(Challenge, D3D4ROC):
         df['AUPR score (pval)'] = aupr_score
         df['AUROC score (pval)'] = aupr_score
 
-        for i in range(1,6):
+        for i in range(1, 6):
             df['AUPR Net %s' % i] = results[i-1]['aupr']
 
-        for i in range(1,6):
+        for i in range(1, 6):
             df['AUROC Net %s' % i] = results[i-1]['auroc']
 
         return df
@@ -196,7 +196,8 @@ class D5C3(Challenge, D3D4ROC):
         # In principle we could resuse ROCDiscovery class but
         # here the pvaluse were also computed. let us do it here for now
 
-        merged = pd.merge(self.gold_edges, self.prediction, how='inner', on=[0,1])
+        merged = pd.merge(self.gold_edges, self.prediction, 
+                how='inner', on=[0,1])
         self.merged = merged
 
         TPF = len(merged)
@@ -282,9 +283,10 @@ class D5C3(Challenge, D3D4ROC):
         gold_filenames = self.download_goldstandard('B')
         print("Warning: your 3 submissions should be ordered as B1, B2, B3 files")
 
-        for tag in [1,2,3]:
+        for tag in [1, 2, 3]:
             #assumeing data and gs are sorted in the same way !!
-            gold = pd.read_csv(gold_filenames[tag-1], sep='[ \t]', engine='python')
+            gold = pd.read_csv(gold_filenames[tag-1], sep='[ \t]', 
+                    engine='python')
             self.golds.append(gold)
 
             #filename = 'DREAM5_SysGenB%s_your_Predictions.txt' % tag

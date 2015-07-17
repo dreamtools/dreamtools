@@ -36,6 +36,7 @@ from dream7.D7C4.scoring import D7C4
 
 from dream8.D8C1.scoring import D8C1
 from dream8.D8C2.scoring import D8C2
+from dream8.D8C3.scoring import D8C3
 
 from dream9.D9C1.scoring import D9C1
 from dream9.D9C3.scoring import D9C3

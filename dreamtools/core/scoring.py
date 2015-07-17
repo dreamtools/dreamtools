@@ -13,11 +13,12 @@
 #  website: http://github.org/dreamtools
 #
 ##############################################################################
-"""Main standalone application dreamtools-scoring"""
+"""Main standalone application dreamtools"""
 import os
 import argparse
 import sys
 from easydev.console import red, purple, darkgreen
+from easydev import DevTools
 from dreamtools import Challenge
 import dreamtools
 
@@ -26,7 +27,7 @@ def get_challenge(challenge_name):
     try:
         c = Challenge(challenge_name)
     except:
-        txt ="The challenge %s could not be found. " % challenge_name
+        txt = "The challenge %s could not be found. " % challenge_name
         txt += "See --help for valid names"
         print_color(txt, red)
         sys.exit()
@@ -38,12 +39,11 @@ def generic_scoring(challenge_name, filename, subname=None, goldstandard=None):
     c = get_challenge(challenge_name)
     class_inst = c.import_scoring_class()
     try:
-        score = class_inst.score(filename, subname=subname, 
-            goldstandard=goldstandard)
+        score = class_inst.score(filename, subname=subname,
+                                 goldstandard=goldstandard)
     except:
         try:
-            score = class_inst.score(filename,  
-                subname=subname)
+            score = class_inst.score(filename, subname=subname)
         except:
             try:
                 score = class_inst.score(filename)
@@ -53,9 +53,8 @@ def generic_scoring(challenge_name, filename, subname=None, goldstandard=None):
                 msg += "Here is the full error message to report it if needed\n"
                 print_color(msg, red)
                 raise err
-
-
     return {'Results': score}
+
 
 # Figure out if the challenge exists and what are the sub challenges
 def get_subchallenges(challenge_name):
@@ -128,21 +127,19 @@ def scoring(args=None):
 
     ::
 
-        dreamscoring-scoring --help
+        dreamscoring --help
 
     """
-    import easydev
-    d = easydev.DevTools()
+    d = DevTools()
 
     if args == None:
         args = sys.argv[:]
-    user_options = Options(prog="dreamtools-scoring")
+    user_options = Options(prog="dreamtools")
 
     if len(args) == 1:
         user_options.parse_args(["prog", "--help"])
     else:
         options = user_options.parse_args(args[1:])
-
 
     # Check on the challenge name
     if options.challenge is None:
@@ -153,7 +150,13 @@ def scoring(args=None):
         options.challenge = options.challenge.replace('DOT', 'dot')
 
     # Check that the challenge can be loaded
-    challenge = get_challenge(options.challenge)
+    class_inst = get_challenge(options.challenge)
+    try:
+        class_inst.import_scoring_class()
+    except NotImplementedError as err:
+        print("\n"+err.message)
+        sys.exit()
+        
 
     # Checks name of the sub-challenges
     subchallenges = get_subchallenges(options.challenge)
@@ -164,11 +167,11 @@ def scoring(args=None):
         print_color(txt, red)
         sys.exit(0)
 
-    if options.sub_challenge is not None and len(subchallenges)!=0:
+    if options.sub_challenge is not None and len(subchallenges) != 0:
         try:
             d.check_param_in_list(options.sub_challenge, subchallenges)
         except ValueError as err:
-            txt = "DreamScoring error: unknown sub challenge or not yet implemented"
+            txt = "DreamTools error: unknown sub challenge or not implemented"
             txt += "--->" + err.message
             print_color(txt, red)
             sys.exit()
@@ -191,9 +194,6 @@ def scoring(args=None):
         else:
             print(class_inst.download_goldstandard(options.sub_challenge))
         return
-
-
-
 
     if options.filename is None:
         txt = "---> filename not provided. You must provide a filename with correct format\n"
