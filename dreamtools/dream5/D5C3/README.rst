@@ -5,8 +5,8 @@ Overview
 
 :Title: DREAM5 - Systems Genetics challenges
 :Nickname: D5C3
-:Summary: 
-:SubChallenges: A B 
+:Summary: Predict disease phenotypes and infer Gene Networks from Systems Genetics data
+:SubChallenges: A100, A300, A999, B 
 :Synapse page: https://www.synapse.org/#!Synapse:syn2820440
 
 
