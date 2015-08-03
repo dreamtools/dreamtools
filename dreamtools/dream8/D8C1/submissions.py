@@ -20,12 +20,8 @@ import dateutil.parser
 import json
 import scoring
 
-from datetime import datetime, date
-from dateutil.relativedelta import *
-from dateutil import tz
 
 import numpy as np
-import pylab
 
 from dreamtools.core.sageutils import Login
 
@@ -542,10 +538,16 @@ class SC2ASubmissions(SubmissionTools):
 
 
 class SC2BSubmissions(SubmissionTools):
-    def __init__(self, client=None):
+    def __init__(self, client=None, version='official'):
         super(SC2BSubmissions, self).__init__(client=client, name="SC2B")
         from hpn import HPNAdmin
         self.hpn = HPNAdmin(client=self.client)
+        self.version = version
+
+        # download missing file automatically if needed.
+        from dreamtools import Challenge
+        c = Challenge('D8C1')
+        c._download_data('experimental.zip', 'syn1920412')
 
     def load_submissions(self, startweek=0, endweek=9, keep_latest=True):
         """Loads all SCORED submissions from SC2A
@@ -571,7 +573,7 @@ class SC2BSubmissions(SubmissionTools):
         print("attaching submissions")
         self.submissions = self.attach_status_to_submissions(self.submissions)
 
-        print("remove soem users")
+        print("remove some users")
         self.remove_users()
 
         print("attaching scores and compute final ranking")
@@ -595,12 +597,11 @@ class SC2BSubmissions(SubmissionTools):
         self.submissions = submissions
 
     def _get_ranking(self):
-        import json
         ranking = scoring.HPNScoringPredictionInsilico_ranking()
         for i,sub in enumerate(self.submissions):
             rmse = json.loads(sub['substatus']['report'])
             filename = self.client.getSubmission(sub, downloadFile=True, ifcollision="keep.local")['filePath']
-            s = scoring.HPNScoringPredictionInsilico(filename)
+            s = scoring.HPNScoringPredictionInsilico(filename, version=self.version)
             s.compute_all_rmse()
             rmse = copy.deepcopy(s.rmse)
             ranking.add_rmse(rmse, sub['submitterAlias'] +"_"+ str(i))

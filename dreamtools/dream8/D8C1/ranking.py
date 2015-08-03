@@ -20,7 +20,7 @@ import os
 import pandas as pd
 from dreamtools.dream8.D8C1 import submissions
 from dreamtools.dream8.D8C1 import scoring
-from dreamtools.dream8.D8C1 import d8c1path
+
 
 class Ranking(object):
 
@@ -318,17 +318,16 @@ class SC2B_ranking(Ranking):
     ranking = SC1A_ranking(subs.submissions)
 
     """
-
-
     # 375805/alphabeta is a test from TC
     # 1991105/sakev from week 5 has different id from sakev week 6. renmove
     #      week5 that has a lower score anyway
     # 1971259/HD systems see SC1A function docstring
     userIds_toremove =  ["375805", "1991105"]
-    def __init__(self):
+    def __init__(self, version='official'):
         super(SC2B_ranking, self).__init__('SC2B')
         self.rmses = pd.read_json(self._getdata("SC2B_rmses.json"))
         self.ranked_df = pd.read_json(self._getdata("SC2B_results.json"))
+        self.version = version
 
     def _sort_df(self, df):
         df.sort('Mean Rank', inplace=True)
@@ -386,7 +385,7 @@ class SC2B_ranking(Ranking):
 
     def append_submission(self, res):
         try:
-            res = scoring.HPNScoringPredictionInsilico(res)
+            res = scoring.HPNScoringPredictionInsilico(res, version=self.version)
             res.compute_all_rmse()
         except:
             pass

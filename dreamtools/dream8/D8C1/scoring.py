@@ -48,7 +48,6 @@ from dreamtools.core.ziptools import ZIP
 from dreamtools.core.rocs import ROC
 from dreamtools.core.challenge import Challenge
 
-from cno.misc.profiler import do_profile
 import bottleneck as bn
 
 __all__ = ["HPNScoringNetwork", "HPNScoring", "HPNScoringNetworkInsilico",
@@ -1660,7 +1659,6 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         for key in self.valid_length.keys():
             assert self.valid_length_extended[key]-len(self.phosphos_to_exclude[key]) == len(self.true_prediction[key].keys())
 
-    #@do_profile()
     def get_rmse(self, cellLine, phospho):
         """
 
@@ -1806,7 +1804,6 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
             all_rmses.append(copy.deepcopy(self.rmse))
         return all_rmses
 
-    #@do_profile()
     def create_random_data(self):
         """ Here, we don't want the true prediction that contains only what is
         requested (AZD8055) but the orignal training data with 2 or 3 
@@ -1877,7 +1874,9 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
 
         .. note:: This code use the official gold standard used
             in https://www.synapse.org/#!Synapse:syn1720047/wiki/60532 . Note, 
-            however, that a corrected version is provided and can be used
+            however, that a new corrected version is now provided and may be used.
+            Differences with the official version should be small and have no effect on
+            the ranking shown in the synapse page.
         """
         super(HPNScoringPredictionInsilico, self).__init__(filename)
         # WRONG NETWORK as used in the official LB
@@ -1891,7 +1890,8 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         #self.loadZIPFile(self.filename)
         self.valid_cellLines = [""]
         self.times = [0, 1,2,4,6,10,15,30,60,120]
-        self.stimuli = ["loLIG1", "hiLIG1", "loLIG2", "hiLIG2",  "loLIG1_loLIG2", "loLIG1_hiLIG2", "hiLIG1_loLIG2", "hiLIG1_hiLIG2"]
+        self.stimuli = ["loLIG1", "hiLIG1", "loLIG2", "hiLIG2",  "loLIG1_loLIG2",
+                        "loLIG1_hiLIG2", "hiLIG1_loLIG2", "hiLIG1_hiLIG2"]
         self.inhibitors = ["AB%s"%x for x in range(1,21)]
         self.phosphos = ["AB%s"%x for x in range(1,21)]
 

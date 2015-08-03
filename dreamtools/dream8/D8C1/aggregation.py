@@ -822,7 +822,7 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
 
 
     """
-    def __init__(self, client=None, local_submissions=False):
+    def __init__(self, client=None, local_submissions=False, version='official'):
         """
 
         :param client: an existing synapse client
@@ -831,6 +831,7 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
         super(SC2B_aggregation, self).__init__(name="SC2B", client=client)
         self._individuals = {}
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc2b'])
+        self.version = version
 
         if local_submissions is False:
             self.df = self._load_submissions_from_synapse()
@@ -842,7 +843,7 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
             aggregate = copy.deepcopy(self._individuals[index])
         else:
             filename = self.df.ix[index].filename
-            aggregate = HPNScoringPredictionInsilico(filename=filename)
+            aggregate = HPNScoringPredictionInsilico(filename=filename, version=self.version)
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -864,7 +865,7 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
                     individual = copy.deepcopy(self._individuals[sub])
                 else:
                     filename = self.df.ix[sub].filename
-                    individual = HPNScoringPredictionInsilico(filename=filename)
+                    individual = HPNScoringPredictionInsilico(filename=filename, version=self.version)
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.user_prediction.keys():
                     for l in aggregate.user_prediction[c].keys():
