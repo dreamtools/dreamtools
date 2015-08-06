@@ -31,11 +31,13 @@ class DreamToolsConfig(object):
         #super(DreamToolsConfig, self).__init__(name="dreamtools",
         #        default_params=defaultParams)
         print("Welcome to DreamTools")
+        print("=====================")
         print("\nUsage example:")
-        print(">>> from dreamtools import D2C1")
-        print(">>> c = D2C1()")
-        print(">>> filename = c.download_template")
-        print(">>> c.score(filename)")
+        print(" >>> from dreamtools import D2C1")
+        print(" >>> c = D2C1()")
+        print(" >>> filename = c.download_template()")
+        print(" >>> c.score(filename)\n")
+        print(" Any issues/suggestions ? Visit http://github.com/dreamtools/\n\n")
         self.appdirs = appdirs.AppDirs("dreamtools")
     
     def _get_config_dir(self):
