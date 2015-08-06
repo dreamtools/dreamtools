@@ -194,7 +194,7 @@ class D5C3(Challenge, D3D4ROC):
 
         # DISCOVERY
         # In principle we could resuse ROCDiscovery class but
-        # here the pvaluse were also computed. let us do it here for now
+        # here the pvalues were also computed. let us do it here for now
 
         merged = pd.merge(self.gold_edges, self.prediction, 
                 how='inner', on=[0,1])
@@ -319,7 +319,6 @@ class D5C3(Challenge, D3D4ROC):
         self.pval2 = pval_pheno2
         self.scores = scores
 
-
         # This part now compute the pvalues using random prediction
         random_scores = {0:[],1:[],2:[]}
 
@@ -358,7 +357,6 @@ class D5C3(Challenge, D3D4ROC):
             'pvalues':self.pvals})
         df= df.T
         df.columns = ['SysGenB1', 'SysGenB2', 'SysGenB3']
-
         return df
 
     def _probability(self, X, Y, x):

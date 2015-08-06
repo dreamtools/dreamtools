@@ -110,7 +110,6 @@ class D6C3(Challenge):
         results['Pearson(Cp)'] = Cp
         return {'results':results}
 
-
     def read_all_participants(self):
         import glob
         path = self._pj([self._path2data, 'data', 'predictions'])

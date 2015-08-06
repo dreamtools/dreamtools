@@ -67,6 +67,8 @@ class D7C1(Challenge):
     draft version used to compute pvalues and report scores as in the final leaderboard.
 
     .. note:: the scoring functions were implemented following Pablo Meyer's matlab **codescore_dream7_c1s1.m**
+
+    For admin only: put the submissions in ./submissions/ directory and call the :meth:
     """
 
     def __init__(self, path='submissions'):
@@ -112,13 +114,11 @@ class D7C1(Challenge):
             return self._pj([self._path2data, 'templates', 'model1_timecourse_alphabeta.txt'])
         else:
             raise ValueError("Incorrect challenge name. Use one of %s " % self.sub_challenges)
-        
 
     def load_submissions(self):
         """Load a bunch of submissions to be found in the submissions directory
 
         The directory name is defined in :attr:`path`
-
 
         :return: nothing. Populates :attr:`data` attribute and :attr:`team_names`.
         """
@@ -171,18 +171,30 @@ class D7C1(Challenge):
         return df
 
     ###########################################################   standalone scoring functions:
-    def score(self, filename, sub_challenge):
+    def score(self, filename, subname=None):
         """Return score for a given sub challenge
 
         :param str filename: input filemame. 
         :return: name of a sub_challenge. See :attr:`sub_challenges` attribute.
         """
-        if sub_challenge == 'parameter':
-            return self.score_model1_parameters(filename)
-        elif sub_challenge == 'timecourse':
-            return self.score_model1_timecourse(filename)
-        elif sub_challenge == 'topology':
-            return self.score_topology(filename)
+        if subname == 'parameter':
+            score = self.score_model1_parameters(filename)
+            pvalue = self.get_pvalues_parameter(score)
+            over = -np.log10(pvalue)
+            return {'score':score,  'pvalue':pvalue, 'overallScore':over}
+        elif subname == 'timecourse':
+            score = self.score_model1_timecourse(filename)
+            pvalue = self.get_pvalues_timecourse(score)
+            over = -np.log10(pvalue)
+            return {'score':score,  'pvalue':pvalue, 'overallScore':over}
+        elif subname == 'topology':
+            print("Note: Null distribution used to compute p-value and overall score is stochastic" +
+                  "but should be close to the one used in the official LB.\n")
+            score =  self.score_topology(filename)
+            pvalue = self.get_pvalues_topology(score)
+            over = -np.log10(pvalue)
+            return {'score':score,  'pvalue':pvalue, 'overallScore':over}
+
         else:
             raise ValueError("Incorrect challenge name. Use one of %s " % self.sub_challenges)
 
@@ -299,14 +311,13 @@ class D7C1(Challenge):
             L = 0 so N may be updated. Here the regulon (2) is not correct, However, one gene (7) is correctly predicted
             with the good sign so N = 2.
 
-
         """
         data = self._read_df(filename, mode='topo')
         distance = self._compute_score_topology(data)
         return distance
 
     ##################################################################### Load gold standard files
-    def download_gs(self, name):
+    def download_goldstandard(self, name):
         if name == 'parameter':
             return self._get_gs('model1_parameters_answer.txt')
         elif name == 'timecourse':
@@ -412,9 +423,8 @@ class D7C1(Challenge):
         distance = np.sum(data) / (3*N)  # normalisation
         return distance
 
-
     ################################################# NULL distribution (draft do not use)
-    def get_null_parameters_model1(self, N=10000, Nbest=9):
+    def _get_random_parameters_model1(self, N=10000):
         """Null distribution for the model1 parameter
 
         :param N: number of distribution
@@ -438,7 +448,7 @@ class D7C1(Challenge):
             for key in best_teams]))
 
         nulls = []
-        for k in xrange(0,45):
+        for k in xrange(0, 45):
             null = p.ix[k][np.random.randint(0, Nbest, N)]
             nulls.append(null)
 
@@ -448,8 +458,9 @@ class D7C1(Challenge):
         df = df[self.gs['param1'].index]
         return df
 
-    def _compute_rdist_param1(self, N=10000):
-        df = self.get_null_parameters_model1(N=N)
+    def get_null_parameters_model1(self, N=10000):
+        """Returns score distribution (parameter model1)"""
+        df = self._get_random_parameters_model1(N=N)
 
         distances =[]
         from easydev import progress_bar
@@ -458,27 +469,30 @@ class D7C1(Challenge):
             df1 = df.ix[i].to_frame(name='values')
             distance = self._compute_score_model1_parameters(df1)
             distances.append(distance)
-            pb.animate(i, 0)
+            pb.animate(i+1)
         return distances
 
-    def _compute_pvalues_param1(self, N=10000):
-        rdist = self._compute_rdist_param1(N=N)
-        self.rdistance_param1.extend(rdist)
-        #pvalues = [len([x for x in self.rdistance_param1 if x <=score] )/float(N) 
-        #        for score in self.scores['param1'].scores]
-        #self.scores['param1']['pvalues'] = pvalues
+    def get_pvalues_parameter(self, score):
+        filename = self._pj([self._path2data, 'data', 'D7C1_param_proba.npy'])
+        data = np.load(filename)
+        X = data[:, 0]
+        Y = data[:, 1]
+        return sum(Y[X<score]) * (X[2]-X[1])
 
-    def get_null_timecourse_model1(self, N=10000, Nbest=9):
+
+    def _get_random_timecourse_model1(self, N=10000):
         """Null distributions for the model1 timecourse challenge
 
-        :param N: number of distributions
-        :param int Nbest: In the official challenge, 12 submissions wre provided. Here, we use only the 9 best submissions
-            like in the paper.
+        :param N: number of random models
         :return: a dataframe with the null distribution
         """
+        # In the official LB, 12 submissions wre provided. Here, we use only the 9 best submissions
+        # like in the paper.
 
+        self.load_submissions()
+        self.leaderboard_compute_score_timecourse_model1()
+        Nbest = 11
         best_teams = list(self.scores['pred1'].ix[0:Nbest].index)
-        print(best_teams)
 
         # data mangling to extract random values easily 
         p3 = pd.DataFrame(dict([(key, self.data['pred1'][key]['p3']) for key in best_teams]))
@@ -494,10 +508,8 @@ class D7C1(Challenge):
             data[ik,2] = p8.ix[k][np.random.randint(0,Nbest,N)]
         return data
            
-    #@do_profile()
-    def _compute_rdist_pred1(self, N=10000):
-        data = self.get_null_timecourse_model1() # numpy matrices
-
+    def get_null_timecourse_model1(self, N=10000):
+        data = self._get_random_timecourse_model1(N=N)
         distances = []
         from easydev import progress_bar
         pb = progress_bar(N)
@@ -506,15 +518,22 @@ class D7C1(Challenge):
             # FIXME those values 10,39 should not be hardcoded
             distance = self._compute_score_timecourse_model1(df, 10,39)
             distances.append(distance)
-            pb.animate(i, 0)
+            pb.animate(i)
         return distances
 
-    def _compute_pvalues_pred1(self ,N=10000):
-        rdist = self._compute_rdist_pred1(N=N)
-        self.rdistance_pred1.extend(rdist[:])
-        #pvalues = [len([x for x in self.rdistance_pred1 if x <=score] )/float(N) 
-        #        for score in self.scores['pred1'].scores]
-        #self.scores['pred1']['pvalues'] = pvalues
+    def get_pvalues_timecourse(self, score):
+        # The code that computs the p-values does not provide similiar results as in the LB
+        #
+        # for now, we use the LB scores and pvalues and interpolate
+        scores = np.array([0.002438361, 0.016023721, 0.035404398, 0.047495432, 0.09791128, 0.198785197,
+                      0.356429217, 0.362463945, 0.817972877, 3.222767988, 14.77443631, 19.32326868])
+        pvalues = np.array([1.21E-25, 3.39E-18, 4.45E-15, 6.28E-14, 4.01E-11, 1.93E-08,
+                            2.53E-06, 2.90E-06, 1.34E-03, 6.90E-01, 1.00E+00, 1.00E+00])
+        return np.interp(score, scores, pvalues)
+
+
+
+
 
     def _leaderboard_compute_overall_score(self, N=100):
         """Based on NULL distribution, compute overall score of model1
@@ -565,6 +584,9 @@ class D7C1(Challenge):
 
         return df
 
+
+    #### Topology related
+
     def _compute_score_topology(self, data, team=''):
         """see :meth:`score_topology` for details """
         data = data.copy() # make sure we do not change the data so use copy()
@@ -578,8 +600,8 @@ class D7C1(Challenge):
         cols2 = ['regulator', 'sign2', 'g2']
         # build list of existing genes and their signs from the GS
         # order does not matter, this is for th counting of Ni
-        genes =  pd.concat([gs.g1 , gs.g2]).values
-        signs =  pd.concat([gs.sign1 , gs.sign2]).values
+        genes =  np.hstack([gs.g1.values , gs.g2.values])
+        signs =  np.hstack([gs.sign1.values , gs.sign2.values])
 
         # make sure there are unique
         regulators_data = set(data.regulator)
@@ -590,14 +612,14 @@ class D7C1(Challenge):
                 # if all 5 values are correct, L = 12 and stops there
                 # Note that is the regulated gene is zero, it means 
                 # it does not exists so it is ignored.
-                if all(gs.ix[i][cols1] == data.ix[j][cols1]) is True:
+                if all(gs.values[i][[0,1,2]] == data.values[j][[0,1,2]]) is True:
                     # g1 should be different from 0
                     # regulator is tested as well although the GS are no such case
                     if gs.ix[i]['g1'] != 0 and gs.ix[i]['regulator'] != 0 :
                         Li[i] += 6
                         data.iloc[j,0] = 0 # index 0 means first columns that is the regulator
                         data.iloc[j,2] = 0 # index 4 means gene1
-                if all(gs.ix[i][cols2] == data.ix[j][cols2]) is True:
+                if all(gs.values[i][[0,3,4]] == data.values[j][[0,3,4]]) is True:
                     # g1 should be different from 0
                     # regulator is tested as well although the GS are no such case
                     if gs.ix[i]['g2'] != 0 and gs.ix[i]['regulator'] != 0 :
@@ -611,8 +633,10 @@ class D7C1(Challenge):
             if reg !=0 and reg in gs.regulator.values:
                 Ni[i] += 1
 
-        genes_data =  pd.concat([data.g1 , data.g2]).values
-        signs_data =  pd.concat([data.sign1 , data.sign2]).values
+        genes_data =  np.hstack([data.g1.values , data.g2.values])
+        signs_data =  np.hstack([data.sign1.values , data.sign2.values])
+
+
         import collections
 
         dgenes = collections.defaultdict(list)
@@ -627,8 +651,17 @@ class D7C1(Challenge):
         # this is arbitrary though.
         #for key in dgenes_data.keys():
         #  if dgenes_data.
-        del dgenes[0]
-        del dgenes_data[0]
+
+        # Why do we get rid of the gene 0 ? Probably gens are implemented as values
+        # from 1 to 11 and 0 means to interactions
+        try:
+            del dgenes[0]
+        except:
+            pass
+        try:
+            del dgenes_data[0]
+        except:
+            pass
 
         # any gene and sign found in GS?
         for gene, signs in dgenes_data.iteritems():
@@ -640,4 +673,52 @@ class D7C1(Challenge):
 
         Si = Li + Ni
         return sum(Si)
+
+    def get_random_topology(self):
+        # Create a random topology submission
+        data = pd.DataFrame()
+
+        sign1 = ["+" if x ==1 else "-" for x in np.random.randint(0,2,3)]
+        sign2 = ["+" if x ==1 else "-" for x in np.random.randint(0,2,3)]
+        regulator = np.random.randint(0,12,3)
+        g1 = np.random.randint(0,12,3)
+        g2 = np.random.randint(0,12,3)
+
+        data['regulator'] = regulator
+        data['sign1'] = sign1
+        data['g1'] = g1
+        data['sign2'] = sign2
+        data['g2'] = g2
+
+        return data
+
+    # NULL distribution and p-values for the topology challenge
+    def get_null_topology(self, N=10000):
+        """Return null distribution of the topology score"""
+        nulls = [self._compute_score_topology(self.get_random_topology()) for i in range(0, N)]
+        return nulls
+
+    def get_pvalues_topology(self, x):
+        """Return pvalues of a given score (topology challenge)"""
+
+        # pvalues are hardcoded and were computed using N=100000 values from :meth:`get_null_topo`
+        # nulls = s.get_null_prop(100000)
+        # Y, X = np.histogram(nulls, bins=range(0,20), normed=True)
+        # X  = X[1:]
+
+        Y = np.array([  1.65600000e-02,   7.03700000e-02,   1.54750000e-01,
+            2.15260000e-01,   2.12310000e-01,   1.53090000e-01,
+            8.32200000e-02,   3.86100000e-02,   2.12100000e-02,
+            1.48600000e-02,   9.95000000e-03,   5.78000000e-03,
+            2.32000000e-03,   8.60000000e-04,   3.90000000e-04,
+            3.00000000e-04,   1.00000000e-04,   4.00000000e-05,
+            2.00000000e-05])
+
+        X = np.array([ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
+
+        return sum(Y[X>=x] * 1)
+
+
+
+
 

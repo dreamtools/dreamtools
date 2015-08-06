@@ -30,6 +30,7 @@ from dream5.D5C3.scoring import D5C3
 from dream5.D5C4.scoring import D5C4
 
 from dream6.D6C3.scoring import D6C3
+from dream6.D6C4.scoring import D6C4
 
 from dream7.D7C1.scoring import D7C1
 from dream7.D7C4.scoring import D7C4

@@ -50,6 +50,7 @@ from dreamtools.core.challenge import Challenge
 
 import bottleneck as bn
 
+
 __all__ = ["HPNScoringNetwork", "HPNScoring", "HPNScoringNetworkInsilico",
     "HPNScoringNetwork_ranking", "HPNScoringPrediction",
     "HPNScoringPrediction_ranking", "ScoringError",
@@ -81,7 +82,7 @@ class D8C1(Challenge):
             raise ValueError('Invalid name. Use one of %s' % self.sub_challenges)
         return self._pj([self._path2data, 'templates', filename])
 
-    def score(self, filename, subname):
+    def score(self, filename, subname=None):
         if subname == 'SC1A':
             s = HPNScoringNetwork(filename)
             s.compute_all_aucs()
@@ -1457,11 +1458,14 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
     test_synapse_id = "syn2000886"
     true_synapse_id = "syn2009136"   # for now it is local in the SC2A file. Could use
                            # theMIDAS as well
-    def __init__(self, filename=None, verbose=False):
+    def __init__(self, filename=None, version=2, verbose=False):
         super(HPNScoringPrediction, self).__init__(filename)
         self.loadZIPFile(self.filename)
 
-        self._filter_species = True
+        # version 1 is the first LB before publication
+        # version 2 is the corrected and final LB after publication
+        assert version in [1, 2]
+        self._version = version
 
         filename = os.sep.join([self._path2data, "goldstandard", 
             "TruePrediction.zip"])
@@ -1693,7 +1697,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         """Some species were removed on purpose during the analysis
 
         Those are hardcoded. To compute null distribution, we can keep 
-        all the species, in which case, filter_species parameter 
+        all the species, in which case, _version parameter must be 0
         must be set to False.
         """
         self.rmse = {}
@@ -1701,13 +1705,29 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
             self.rmse[c] = {}
             for l in self.species[c]:
 
-                if self._filter_species is True:
+                if self._version == 1:
                     if c == "MCF7" and l in [ 'c-Met_pY1235', "YB-1_PS102"]:
                         continue
                     if c == "BT20" and l in ["4EBP1_pS65", '4EBP1_pT37_pT46', "c-Met_pY1235"]:
                         continue
                     if c == "UACC812" and l in ["4EBP1_pT37_pT46", "4EBP1_pS65"]:
                         continue
+                elif self._version == 2:
+                    if c == "MCF7" and l in ['c-Met_pY1235', "YB-1_PS102",
+                            "PDK1_pS241"]:
+                        continue
+                    if c == "BT20" and l in ["4EBP1_pS65", '4EBP1_pT37_pT46', "c-Met_pY1235"]:
+                        continue
+                    if c == "UACC812" and l in ["4EBP1_pT37_pT46", "4EBP1_pS65",
+                            "CHK1_pS345", "NDRG1_pT346", 'PDK1_pS241',
+                            'PKC-alpha_pS657', 'PKC-delta']:
+                        continue
+                    if c == 'BT549' and l in ['BAD_pS112', 'HER3_pY1298',
+                            'PKC-delta']:
+                        continue
+                    
+                else: # keep going don't skip anything (for null distro)
+                    pass
 
                 if l not in self.phosphos_to_exclude[c]:
                     rmse = self.get_rmse(c, l)
@@ -1797,10 +1817,10 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         all_rmses = []
         for i in range(0, N):
             print(tag + " " + str(i))
-            self._filter_species = False
+            temp = self._filter_species
             self.user_prediction = self.create_random_data()
             self.compute_all_rmse()
-            self._filter_species = True
+            self._filter_species = temp
             all_rmses.append(copy.deepcopy(self.rmse))
         return all_rmses
 
@@ -1815,7 +1835,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
 
         TAZ and FOX were asked to be excluded so this cause some trouble now but
         some user preidction still include them. Should add a if statement to
-        ginore them. Does not matter to compute the null distribution
+        ignore them. Does not matter to compute the null distribution
         """
         import random
         #data = copy.deepcopy(self.user_prediction)
@@ -2078,8 +2098,9 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
             true  = np.array(self.true_prediction[inhibitor][phospho][s])
             user  = np.array(self.user_prediction[inhibitor][phospho][s])
             data = [x for x in (np.log2(true)-np.log2(user))**2 if x!=np.inf]
-            N = len([x for x in data if np.isnan(x)==False])
-            RMSE += np.nansum(data)
+            #N = len([x for x in data if np.isnan(x) == False])
+            N = len(data)
+            RMSE += bn.nansum(data)
             counter += N
 
         # TODO: if nans are include, do we need to change T ?
@@ -2091,7 +2112,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
 
         return RMSE
 
-    def compute_all_rmse(self):
+    def compute_all_rmse(self, null=False):
         self.rmse = {}
         for c in self.inhibitors:
             if c == "AB9":
@@ -2108,19 +2129,23 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
                 # To get the same results for a new participants, those nodes
                 # should be keep the same. Although, we a entirely new set of
                 # participants, those should be updated. 
-                dummy_nodes = [(2,1), (6,1),(7,1), (6,4),(2,5), (6,5),(16,6),
+                if null is True:
+                    dummy_nodes = []
+                else:
+                    #computed using 100,000 null distributions
+                    dummy_nodes = [(2,1), (6,1),(7,1), (6,4),(2,5), (6,5),(16,6),
                         (16,7), (6,8),
                         (16,8),(6,9),(7,9),(16,9),(20,9), (6,10),(6,12),(2,14),(6,14),
                         (7,14), (2,15), (16,15), (5,16), (5,17), (5,19), (16,19)]
                 stop = False
                 for node in dummy_nodes:
-                    n1 = "AB"+str(node[0])
-                    n2 = "AB"+str(node[1])
-                    if c==n1 and l==n2:
+                    n1 = "AB" + str(node[0])
+                    n2 = "AB" + str(node[1])
+                    if c == n1 and l == n2:
                         stop = True
                 if stop:
                     continue
-                if l!=c:
+                if l != c:
                     rmse = self.get_rmse(c, l)
                     self.rmse[c][l] = rmse
 
@@ -2163,15 +2188,14 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
                     else:
                         datum = float(datum)
                     self.training[phospho].append(datum)
-
     def get_null(self, N=100, tag="sc2b"):
         self.get_training_data()
 
         all_rmses = []
         for i in range(0, N):
-            print(tag+" " + str(i))
+            print(tag + " " + str(i))
             self.user_prediction = self.create_random_data()
-            self.compute_all_rmse()
+            self.compute_all_rmse(null=True)
             all_rmses.append(copy.deepcopy(self.rmse))
         return all_rmses
 
@@ -2186,13 +2210,16 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         +DMSO, and time points.
         """
         import random
-        data = copy.deepcopy(self.true_prediction)
+        #data = copy.deepcopy(self.true_prediction)
+        data = {}
 
         for c in self.training.keys():
+            data[c] = {}
             for p in self.training.keys():
-                for s in data[c][p].keys():
-                    # select randomly for 10 time points for each inhibitor (8)
-                    # (no 45 minute point).
+                data[c][p] = {}
+                for s in self.true_prediction[c][p].keys():
+                    # select randomly for 10 time points for each 
+                    # inhibitor (8) (no 45 minute point).
                     data[c][p][s] = random.sample(self.training[c], 10)[:]
         return data
 
