@@ -1,0 +1,23 @@
+Data is available from two different sites:
+
+1) from the FlowCAP website, you can download the data files.
+
+–FCS: http://www.terryfoxlab.ca/flowsite/FlowCAP2/download/AML/FCS.zip
+–CSV: http://www.terryfoxlab.ca/flowsite/FlowCAP2/download/AML/CSV.zip
+
+2) from the EBI website, you can download b ftp the same data files and also some challenge specific files
+
+ftp://ftp-private.ebi.ac.uk/upload/DREAM6_FlowCAP
+username: dreamflo
+password: 3nakgEUQ
+
+Files:
+
+DREAM6_AML_FCS.zip
+DREAM6_AML_CSV.zip
+DREAM6_AML_FilesTubesAndSubjects.csv
+DREAM6_AML_TrainingSet.csv
+
+
+Please be aware that *.zip files are very large and download can take several hours.
+
