@@ -68,49 +68,6 @@ def get_subchallenges(challenge_name):
     return class_inst.sub_challenges
 
 
-def d8c1_sc1a(filename, verbose=False):
-    """wrapper to score D8C1 submission(SC1A sub challenge)"""
-    from dreamtools.dream8.D8C1 import scoring, ranking
-    sc1a = scoring.HPNScoringNetwork(filename,  verbose=verbose)
-    sc1a.compute_all_aucs()
-    rank = ranking.SC1A_ranking()
-    rank.append_submission(filename)
-
-    return {'AUROC': sc1a.get_auc_final_scoring(),
-            'Rank LB': rank.get_rank_your_submission()}
-
-
-def d8c1_sc1b(filename, verbose=False):
-    """wrapper to score D8C1 submission(SC1B sub challenge)"""
-    from dreamtools.dream8.D8C1 import scoring, ranking
-    sc1b = scoring.HPNScoringNetworkInsilico(filename,  verbose=verbose)
-    sc1b.compute_score()
-    rank = ranking.SC1B_ranking()
-    rank.append_submission(filename)
-    return {'AUROC': sc1b.auc,
-            'Rank LB': rank.get_rank_your_submission()}
-
-
-def d8c1_sc2a(filename, verbose=False):
-    """wrapper to score D8C1 submission(SC2A sub challenge)"""
-    from dreamtools.dream8.D8C1 import scoring, ranking
-    sc2a = scoring.HPNScoringPrediction(filename, verbose=verbose)
-    sc2a.compute_all_rmse()
-    rank = ranking.SC2A_ranking()
-    rank.append_submission(filename)
-    return {'RMSE': sc2a.get_mean_rmse(),
-            'Rank LB': rank.get_rank_your_submission()}
-
-
-def d8c1_sc2b(filename, verbose=False):
-    """wrapper to score D8C1 submission(SC2B sub challenge)"""
-    from dreamtools.dream8.D8C1 import scoring, ranking
-    sc2b = scoring.HPNScoringPredictionInsilico(filename, verbose=verbose)
-    sc2b.compute_all_rmse()
-    rank = ranking.SC2B_ranking()
-    rank.append_submission(filename)
-    return {'RMSE': sc2b.get_mean_rmse(),
-            'Rank LB': rank.get_rank_your_submission()}
 
 
 
@@ -221,24 +178,10 @@ def scoring(args=None):
     print_color("Dreamtools scoring", purple, underline=True)
     print('Challenge %s (sub challenge %s)\n\n' % (options.challenge, options.sub_challenge))
 
-    res = '??'
-
-
-    if options.challenge == 'D8C1':
-        if options.sub_challenge == 'sc1a':
-            res = d8c1_sc1a(options.filename, verbose=options.verbose)
-        elif options.sub_challenge == 'sc1b':
-            res = d8c1_sc1b(options.filename, verbose=options.verbose)
-        elif options.sub_challenge == 'sc2a':
-            res = d8c1_sc2a(options.filename, verbose=options.verbose)
-        elif options.sub_challenge == 'sc2b':
-            res = d8c1_sc2b(options.filename, verbose=options.verbose)
-    else:
-        res = generic_scoring(options.challenge, 
-                options.filename, 
-                subname=options.sub_challenge, 
-                goldstandard=options.goldstandard)
-
+    res = generic_scoring(options.challenge, 
+            options.filename, 
+            subname=options.sub_challenge, 
+            goldstandard=options.goldstandard)
 
     txt = "Solution for %s in challenge %s" % (options.filename, options.challenge)
     if options.sub_challenge is not None:

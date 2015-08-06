@@ -83,15 +83,31 @@ class D8C1(Challenge):
         return self._pj([self._path2data, 'templates', filename])
 
     def score(self, filename, subname=None):
+        print subname
         if subname == 'SC1A':
             s = HPNScoringNetwork(filename)
             s.compute_all_aucs()
             auc = s.get_auc_final_scoring()
-            return {'AUC': auc}
+
+            #from dreamtools.dream8.D8C1 import ranking
+            #sc1a = HPNScoringNetwork(filename,  verbose=verbose)
+            #sc1a.compute_all_aucs()
+            #rank = ranking.SC1A_ranking()
+            #rank.append_submission(filename)
+            #return {'AUROC': sc1a.get_auc_final_scoring(),
+            #        'Rank LB': rank.get_rank_your_submission()}
+            return {'meanAUROC': auc}
         elif subname == 'SC1B':
             s = HPNScoringNetworkInsilico(filename)
             s.compute_score()
-            return {'AUC': s.auc}
+            return {'meanAUROC': s.auc}
+            """
+from dreamtools.dream8.D8C1 import scoring, ranking
+sc1b = scoring.HPNScoringNetworkInsilico(filename, verbose=verbose)
+sc1b.compute_score()
+rank = ranking.SC1B_ranking()
+rank.append_submission(filename)
+return {'AUROC': sc1b.auc,'Rank LB':rank.get_rank_your_submission()}"""
         elif subname == 'SC2A':
             s = HPNScoringPrediction(filename)
             s.compute_all_rmse()
@@ -103,6 +119,27 @@ class D8C1(Challenge):
         else:
             raise ValueError('Invalid name. Use one of %s' % self.sub_challenges)
 
+
+"""If we want to add mean rank
+        
+from dreamtools.dream8.D8C1 import scoring, ranking
+     sc2a = scoring.HPNScoringPrediction(filename, verbose=verbose)
+     sc2a.compute_all_rmse()
+     rank = ranking.SC2A_ranking()
+     rank.append_submission(filename)
+     return {'RMSE': sc2a.get_mean_rmse(),
+             'Rank LB': rank.get_rank_your_submission()}
+             
+             
+     from dreamtools.dream8.D8C1 import scoring, ranking
+     sc2b = scoring.HPNScoringPredictionInsilico(filename, verbose=verbose)
+     sc2b.compute_all_rmse()
+     rank = ranking.SC2B_ranking()
+     rank.append_submission(filename)
+     return {'RMSE': sc2b.get_mean_rmse(),
+             'Rank LB': rank.get_rank_your_submission()}
+
+"""
 
 class ScoringError(Exception):
     """An exception class for scoring classes"""
@@ -2098,8 +2135,8 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
             true  = np.array(self.true_prediction[inhibitor][phospho][s])
             user  = np.array(self.user_prediction[inhibitor][phospho][s])
             data = [x for x in (np.log2(true)-np.log2(user))**2 if x!=np.inf]
-            #N = len([x for x in data if np.isnan(x) == False])
-            N = len(data)
+            N = len([x for x in data if np.isnan(x) == False])
+            #N = len(data)
             RMSE += bn.nansum(data)
             counter += N
 
