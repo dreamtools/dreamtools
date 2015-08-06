@@ -24,6 +24,11 @@ import dreamtools
 
 
 def get_challenge(challenge_name):
+    """Test validity of the challenge and returns an instance
+
+    :param challenge_name: a valid name e.g. D5C3, D9dot5C1
+    :return: instance of the challenge
+    """
     try:
         c = Challenge(challenge_name)
     except:
@@ -250,7 +255,7 @@ class Options(argparse.ArgumentParser):
     description = "tests"
     def __init__(self, version="1.0", prog=None):
 
-        usage = """usage: python %s --challenge d8c1 --sub-challenge sc1a --submission <filename>""" % prog
+        usage = """usage: python %s --challenge d8c1 --sub-challenge sc1a --submission <filename>\n""" % prog
         usage += """      python %s --challenge d5c2 --submission <filename>""" % prog
         epilog="""Author(s):
 
