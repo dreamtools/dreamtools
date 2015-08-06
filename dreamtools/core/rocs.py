@@ -21,7 +21,7 @@ to use scikit-learn in the future."""
 import numpy as np
 
 
-__all__ = ['ROC', 'ROCDiscovery', 'D3D4ROC']
+__all__ = ['ROC', 'ROCDiscovery', 'D3D4ROC', 'MCC']
 
 
 
@@ -484,3 +484,8 @@ class DREAM2(object):
             spec_prec[x] = rec[i]
 
         return spec_prec
+
+
+def MCC(TP, TN, FP, FN):
+    """Matthews correlation coefficient"""
+    return (TP*TN-FP*FN) / np.sqrt((TP+FP)*(TP+FN)*(TN+FP)*(TN+FN))
