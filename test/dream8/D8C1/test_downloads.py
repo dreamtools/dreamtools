@@ -8,10 +8,3 @@ def test_downloads_submissions():
     d.download_all() # takes some time
 
 
-
-@attr('skip')
-def test_downloads_gs():
-    d = downloads.GSDownloader()
-    d.download_experimental()
-
-

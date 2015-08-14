@@ -7,7 +7,7 @@ def test_sc1():
     s = D8C2()
     filename = s.download_template('sc1')
     df = s.score(filename, 'sc1')
-    assert df.ix['yourSubmission']['meanPCI'] == 0.513854
+    assert df.ix['yourSubmission']['meanPCI'] == 0.51382964639698103237
 
 def test_sc2():
     s = D8C2()

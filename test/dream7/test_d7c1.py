@@ -9,9 +9,9 @@ def test_scoring_model1():
     # best performer
     filename = s.download_template('parameter')
     score = s.score(filename, 'parameter')
-    nose.tools.assert_almost_equal(score,0.02286755)
+    nose.tools.assert_almost_equal(score['score'],0.02286755)
     # gold standard
-    filename = s.download_gs('parameter')
+    filename = s.download_goldstandard('parameter')
     score = s.score_model1_parameters(filename)
     assert score == 0
 
@@ -28,19 +28,19 @@ def test_scoring_topology_leaderboard():
 def test_scoring_topology():
     s = scoring.D7C1()
     filename = s.download_template('topology')
-    score = s.score(filename, 'topology')
+    score = s.score(filename, 'topology')['score']
     assert score == 4
 
 def test_scoring_parameters():
     s = scoring.D7C1()
     filename = s.download_template('parameter')
-    score = s.score(filename, 'parameter')
+    score = s.score(filename, 'parameter')['score']
     nose.tools.assert_almost_equal(score, 0.02286755501)
 
 def test_scoring_timecourse():
     s = scoring.D7C1()
     filename = s.download_template('timecourse')
-    score = s.score(filename, 'timecourse')
+    score = s.score(filename, 'timecourse')['score']
     nose.tools.assert_almost_equal(score, 0.002438361267)
 
 def _test_others():

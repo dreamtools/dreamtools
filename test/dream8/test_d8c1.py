@@ -6,23 +6,30 @@ from nose.tools import assert_almost_equal
 def test_score_sc1a():
     s = D8C1()
     res = s.score(s.download_template('SC1A'), 'SC1A')
-    assert_almost_equal(res['AUC'], 0.80362891940311265)
+    assert_almost_equal(res['meanAUROC'], 0.80362891940311265)
 
 def test_score_sc1b():
     s = D8C1()
     res = s.score(s.download_template('SC1B'), 'SC1B')
-    assert_almost_equal(res['AUC'], 0.80582052640876178)
+    assert_almost_equal(res['meanAUROC'], 0.80582052640876178)
 
 def test_score_sc2a():
-    s = D8C1()
+    s = D8C1(version=1)
     res = s.score(s.download_template('SC2A'), 'SC2A')
     assert_almost_equal(res['meanRMSE'],  0.48434056686051685)
 
+    s = D8C1(version=2)
+    res = s.score(s.download_template('SC2A'), 'SC2A')
+    assert_almost_equal(res['meanRMSE'],  0.50023848102569435)
+
 def test_score_sc2b():
-    s = D8C1()
+    s = D8C1(version=1)
     res = s.score(s.download_template('SC2B'), 'SC2B')
     assert_almost_equal(res['meanRMSE'], 0.27750290989139931)
 
+    s = D8C1(version=2)
+    res = s.score(s.download_template('SC2B'), 'SC2B')
+    assert_almost_equal(res['meanRMSE'], 0.24071058884458607)
 
 
 def _test_scoring_sc1a():
