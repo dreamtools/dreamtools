@@ -20,13 +20,14 @@ import dateutil.parser
 import json
 import scoring
 
-
 import numpy as np
+import pandas as pd
 
 from dreamtools.core.sageutils import Login
+from dreamtools.core.wikitools import dataframe_towiki
 
 __all__  = ["SubmissionTools", "SC1ASubmissions", "SC1BSubmissions",
-    "SC2BSubmissions", "SC2BSubmissions"]
+    "SC2BSubmissions", "SC2ASubmissions"]
 
 
 class SubmissionTools(Login):
@@ -109,7 +110,7 @@ class SubmissionTools(Login):
         self.submissions = []
 
     def attach_week_to_submissions(self, submissions , challenge):
-        for i,submission in enumerate(submissions):
+        for i, submission in enumerate(submissions):
             week = self.get_week_submission(submission, challenge=challenge)
             submission['week'] = week
         return submissions
@@ -178,23 +179,67 @@ class SubmissionTools(Login):
         return list(set([x['userId'] for x in self.submissions]))
 
 
+class ST2(object):
+    """common tool to SC2B classes"""
+    def save_df_to_json(self):
+        """For SC2 only"""
+        filename = "%s_results_v%s.json" % (self.name, self.version)
+        df = self.summary_final(show=False)
+        df.reset_index(inplace=True)
+        df.to_json(filename)
+
+    def save_rmse_to_json(self, N1, N2):
+        filename = "%s_rmses_v%s.json" % (self.name, self.version)
+        # loop over all submissions
+        # Build the list of keys once for all
+        Ni = len(self.submissions)
+        if self.version == 1:
+            rmses = np.zeros((Ni, N1))
+        elif self.version == 2:
+            rmses = np.zeros((Ni, N2))
+
+        # figure out the combo of cell/phospho
+        sub = self.submissions[0]
+        keys = []
+        cells = sub['rmses'].keys()
+        for cell in cells:
+            data = sub['rmses'][cell]
+            for key in data.keys():
+                keys.append(cell + "_" + key)
+            keys.sort()
+
+        df = pd.DataFrame()
+        teams = []
+        for i, sub in enumerate(self.submissions):
+            team = sub['submitterAlias']
+            teams.append(team)
+            for j, key in enumerate(keys):
+                cell, phospho = key.split("_", 1)
+                data = sub['rmses'][cell]
+                rmses[i][j] = data[phospho]
+        df = pd.DataFrame(rmses, index=teams, columns = keys)
+
+        df.to_json(filename)
+        return df
+
+
 class SC1ASubmissions(SubmissionTools):
     """Retrieve SCORED submissions and attach all relevant information
 
-    >>> s = SC1ASubmissions(final=True)
-    >>> s.load_submissions()
-    >>> len(s.submissions)
+    ::
 
+        >>> from dreamtools.dream8.D8C1.submissions import SC1ASubmissions
+        >>> s = SC1ASubmissions()
+        >>> s.load_submissions()
+        >>> len(s.submissions)
+        74
 
-    final = True means that 4 combi of cell line/ligands will be ignored. See
-    code
 
     """
-    def __init__(self, client=None, name="SC1A", final=True):
+    def __init__(self, client=None, name="SC1A"):
         super(SC1ASubmissions, self).__init__(client=client, name=name)
         from hpn import HPNAdmin
         self.hpn = HPNAdmin(client=self.client)
-        self.final = final
 
     def load_submissions(self, startweek=0, endweek=9, keep_latest=True):
         """Loads all SCORED submissions from SC1A
@@ -253,8 +298,6 @@ class SC1ASubmissions(SubmissionTools):
             * sfntt has same alias but 2 different userId. Remove 2197351 so that
               the latest remains only.
             * same with SBIT 375570
-
-
         """
         submissions = [x for x in self.submissions if x['userId'] not in userIds]
         self.submissions = submissions
@@ -314,7 +357,7 @@ class SC1ASubmissions(SubmissionTools):
         return results
 
 
-class SC1BSubmissions(SubmissionTools):
+class SC1BSubmissions(SubmissionTools, ST2):
     def __init__(self, client=None, name="SC1B"):
         super(SC1BSubmissions, self).__init__(client=client, name=name)
         from hpn import HPNAdmin
@@ -326,6 +369,7 @@ class SC1BSubmissions(SubmissionTools):
         Attaches the week, status, ranking and zscores
 
         """
+
         # load all scored submissions
         self.submissions = self.hpn.get_submissions_network_insilico(status="SCORED")
         print("Got %s SCORED submissions" % len(self.submissions))
@@ -411,12 +455,13 @@ class SC1BSubmissions(SubmissionTools):
         return results
 
 
-class SC2ASubmissions(SubmissionTools):
-    def __init__(self, client=None, name="SC2A"):
-        super(SC2ASubmissions, self).__init__(client=client)
+class SC2ASubmissions(SubmissionTools, ST2):
+    def __init__(self, client=None, version=2):
+        super(SC2ASubmissions, self).__init__(client=client, name='SC2A')
         # should be here to avoid import cycling
         from hpn import HPNAdmin
         self.hpn = HPNAdmin(client=self.client)
+        self.version = version
 
     def load_submissions(self, startweek=0, endweek=9, keep_latest=True):
         """Loads all SCORED submissions from SC2A
@@ -473,7 +518,7 @@ class SC2ASubmissions(SubmissionTools):
             rmse = json.loads(sub['substatus']['report'])
             filename = self.client.getSubmission(sub, downloadFile=True, ifcollision="keep.local")['filePath']
             print(i, filename)
-            s = scoring.HPNScoringPrediction(filename)
+            s = scoring.HPNScoringPrediction(filename, version=self.version)
             s.compute_all_rmse()
             rmse = copy.deepcopy(s.rmse)
 
@@ -521,28 +566,51 @@ class SC2ASubmissions(SubmissionTools):
             mu = np.mean(data)
             self.submissions[i]['mean_rmse'] =  mu
 
-    def summary_final(self):
-        ranks = np.argsort([sub['ranking'] for sub in self.submissions])
+    def summary_final(self, show=True):
+        # an alias
+        subs = self.submissions
 
+        # sorted indices of the mean ranks
+        ranks = np.argsort([sub['ranking'] for sub in subs])
+
+        teams = [subs[rank]['submitterAlias'] for rank in ranks]
+
+        df = pd.DataFrame(index=teams, data=ranks, columns=['mean Rank'])
+
+        # finally the ranks
+
+        df['Team Name'] = [subs[rank]['submitterAlias'] for rank in ranks]
+        df['Team Id'] = [subs[rank]['userId'] for rank in ranks]
+        df['Submission Id'] = [subs[rank]['substatus']['id'] for rank in ranks]
+        df['Entity Id'] = [subs[rank]['substatus']['entityId'] for rank in ranks]
+        df['Mean Rank'] = [subs[rank]['ranking'] for rank in ranks]
+        df['Mean RMSE'] = [subs[rank]['mean_rmse'] for rank in ranks]
+
+        ranks = df['Mean Rank'].rank()
+        df['Final Rank'] = ranks.values
+
+        df = df.set_index('Final Rank')
+        df = df[['Team Name', u'Team Id', u'Submission Id', 
+                u'Entity Id', 'Mean Rank', u'Mean RMSE']]
+
+        ranks = np.argsort([sub['ranking'] for sub in subs])
         header = ("| Final rank| Team name | Team Id | Synapse ID |  Entity ID | mean RMSE  | mean Rank | mean zscore |")
-        print(header)
-        print("|--------|--------|----------|-------|----|---------------|")
-        results = {}
-        for i, rank  in enumerate(ranks):
-            sub = self.submissions[rank]
-            print("|%s | %20s | %20s | %20s | %20s|  %10.6s  | %10.6s |%10.6s |" %
-                    (i+1, sub['submitterAlias'],sub['userId'],
-                        sub['substatus']['id'], sub['substatus']['entityId'],sub['mean_rmse'],sub['ranking'],sub['zscore']))
-            results[sub['submitterAlias']] =  i+1
-        return results
+        
+        if show is False:
+            return df
+        print(dataframe_towiki(df))
+        return df
+
+    def save_rmse_to_json(self):
+        super(SC2ASubmissions, self).save_rmse_to_json(N1=162, N2=153)
 
 
-class SC2BSubmissions(SubmissionTools):
-    def __init__(self, client=None, version='official'):
+class SC2BSubmissions(SubmissionTools, ST2):
+    def __init__(self, client=None, version=2):
         super(SC2BSubmissions, self).__init__(client=client, name="SC2B")
+        self.version = version
         from hpn import HPNAdmin
         self.hpn = HPNAdmin(client=self.client)
-        self.version = version
 
         # download missing file automatically if needed.
         from dreamtools import Challenge
@@ -555,6 +623,7 @@ class SC2BSubmissions(SubmissionTools):
         Attaches the week, status, ranking and zscores
 
         """
+
         # load all scored submissions
         self.submissions = self.hpn.get_submissions_prediction_insilico(status="SCORED")
         print("Got %s SCORED submissions" % len(self.submissions))
@@ -627,26 +696,38 @@ class SC2BSubmissions(SubmissionTools):
             mean_rmse = np.mean(all_rmse)
             self.submissions[i]['mean_rmse'] = mean_rmse
 
-    def summary(self, show="all"):
-        ranks = np.argsort([sub['ranking'] for sub in self.submissions])
-        print("| Rank | User Id | Submitted Alias | Week | created on | status |  RMSE | zscore | mean Rank |")
-        for i, rank  in enumerate(ranks):
-            sub = self.submissions[rank]
-            print("|%s | %10s | %5s |%5s |%s|%s|  %10.6s  | %10.6s |%10.6s |" %
-                    (i+1, sub['userId'], sub['submitterAlias'],sub['week'],
-                sub['substatus']['status'],  sub['createdOn'],  sub['mean_rmse'],sub['ranking'],sub['zscore']))
+    def summary_final(self, show=True):
+        # an alias
+        subs = self.submissions
 
-    def summary_final(self):
-        ranks = np.argsort([sub['ranking'] for sub in self.submissions])
-        print("| Rank | Team name | SynapseId Id | mean RMSE | mean Rank | mean zscore |")
-        print("|----|-----|-----|----|----|------|")
+        # sorted indices of the mean ranks
+        ranks = np.argsort([sub['ranking'] for sub in subs])
 
-        results = {}
-        for i, rank  in enumerate(ranks):
-            sub = self.submissions[rank]
-            print("|%s | %20s | %20s | %20s | %20s | %10.6s  | %10.6s |%10.6s |" %
-                    (i+1, sub['submitterAlias'], sub['userId'],
-                        sub['substatus']['id'], sub['substatus']['entityId'],
-                        sub['mean_rmse'],sub['ranking'],sub['zscore']))
-            results[sub['submitterAlias']] = i+1
-        return results
+        teams = [subs[rank]['submitterAlias'] for rank in ranks]
+
+        df = pd.DataFrame(index=teams, data=ranks, columns=['mean Rank'])
+
+        # finally the ranks
+        df['Team Name'] = [subs[rank]['submitterAlias'] for rank in ranks]
+        df['Team Id'] = [subs[rank]['userId'] for rank in ranks]
+        df['Submission Id'] = [subs[rank]['substatus']['id'] for rank in ranks]
+        df['Entity Id'] = [subs[rank]['substatus']['entityId'] for rank in ranks]
+        df['Mean Rank'] = [subs[rank]['ranking'] for rank in ranks]
+        df['Mean RMSE'] = [subs[rank]['mean_rmse'] for rank in ranks]
+
+        ranks = df['Mean Rank'].rank()
+        df['Final Rank'] = ranks.values
+
+        df = df.set_index('Final Rank')
+        df = df[['Team Name', u'Team Id', u'Submission Id', 
+                u'Entity Id', 'Mean Rank', u'Mean RMSE']]
+    
+        ranks = np.argsort([sub['ranking'] for sub in subs])
+        if show is False:
+            return df
+
+        print(dataframe_towiki(df))
+        return df
+
+    def save_rmse_to_json(self):
+        super(SC2BSubmissions, self).save_rmse_to_json(N1=231, N2=254)

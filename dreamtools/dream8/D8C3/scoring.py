@@ -26,7 +26,7 @@ class D8C3(Challenge):
         self._init()
         self.sub_challenges = []
 
-        msg = "This challenge is not yet part of DreamTools"
+        msg = "This challenge is not yet part of DREAmTools"
         msg += "Please, see https://www.synapse.org/#!Synapse:syn1876068/wiki/232963"
         raise NotImplementedError(msg)
 

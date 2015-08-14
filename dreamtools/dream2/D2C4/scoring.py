@@ -1,31 +1,24 @@
-"""
+"""D2C4 scoring function
 
 original code in MATLAB by Gustavo Stolovitzky
-
 """
 import os
-from dreamtools.core.challenge import Challenge
+
 import pandas as pd
+
+from dreamtools.core.challenge import Challenge
 from dreamtools.core.rocs import D3D4ROC, DREAM2
 
 
 class D2C4(Challenge, D3D4ROC, DREAM2):
     """A class dedicated to D2C4 challenge
 
-
     ::
 
         from dreamtools import D2C4
         s = D2C4()
-        filename = s.download_template() 
-        s.score(filename) 
-
-    There are 12 gold standards and therefore 12 possible submissions.
-    6 for the chip case and 6 for the qPCR. Those should be scored independently.
-    THere is no sub-challenge per se. 
-
-    This class works for the DIRECTED-SIGNED_EXCITATORY_chip case only but implementation
-    for other cases is straightforward.
+        filename = s.download_template()
+        s.score(filename)
 
     """
     def __init__(self):
@@ -38,6 +31,7 @@ class D2C4(Challenge, D3D4ROC, DREAM2):
         # 12 different GS were used to score 12 types
         # of network. We use those TAGS 
         self.sub_challenges = []
+
         for name in ['InSilico1', 'InSilico2', 'InSilico3']:
             self.sub_challenges.append('DIRECTED-UNSIGNED_%s' %name)
             self.sub_challenges.append('UNDIRECTED-UNSIGNED_%s' %name)
@@ -45,6 +39,11 @@ class D2C4(Challenge, D3D4ROC, DREAM2):
             self.sub_challenges.append('UNDIRECTED-SIGNED_INHIBITORY_%s' %name)
             self.sub_challenges.append('DIRECTED-SIGNED_EXCITATORY_%s' %name)
             self.sub_challenges.append('DIRECTED-SIGNED_INHIBITORY_%s' %name)
+
+        self.title = "In-silico Network Inference"
+        self.summary = """Reconstruct a genome scale regulatory network from a large collection of microarrays"""
+        self.scoring_metric = "AUPR and AUROC for each sub challenge"
+        self.synapseId = "syn2825394"
 
     def _init(self):
         # should download files from synapse if required.

@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-#  This file is part of DreamTools software
+#  This file is part of DREAMTools software
 #
 #  Copyright (c) 2014-2015 - EBI-EMBL
 #
@@ -16,7 +16,6 @@
 from dreamtools.core.rtools import RTools
 from dreamtools.core.challenge import Challenge
 import os
-
 
 
 class D8C2_sc1(Challenge, RTools):

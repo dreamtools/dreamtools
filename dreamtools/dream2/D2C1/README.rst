@@ -4,12 +4,11 @@ Overview
 
 
 :Title: DREAM2 - BCL6 Transcriptional Target Prediction
-:Nickname: D2C1
+:Alias: D2C1
 :Summary: Predict the genes for transcription factor binding.
 :SubChallenges: None
-:SCoring metric: AUPR and AUC
+:Scoring metric: AUPR and AUC
 :Synapse page: https://www.synapse.org/#!Synapse:syn3034857
-
 
 
 .. contents::

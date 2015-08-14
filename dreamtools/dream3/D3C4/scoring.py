@@ -18,7 +18,7 @@ class D3C4(Challenge, D3D4ROC):
 
         from dreamtools import D3C4
         s = D3C4()
-        filename = s.download_template()
+        filename = s.download_template(10)
         s.score(filename)
 
 

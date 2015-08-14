@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-#  This file is part of DreamTools software
+#  This file is part of DREAMTools software
 #
 #  Copyright (c) 2014-2015 - EBI-EMBL
 #
@@ -118,7 +118,12 @@ def scoring(args=None):
     except NotImplementedError as err:
         print("\n"+err.message)
         sys.exit()
-        
+
+    # User may just request some information about the challenge.
+    if options.info is True:
+        this = class_inst.import_scoring_class()
+        print(this)
+        sys.exit()
 
     # Checks name of the sub-challenges
     subchallenges = get_subchallenges(options.challenge)
@@ -133,7 +138,7 @@ def scoring(args=None):
         try:
             d.check_param_in_list(options.sub_challenge, subchallenges)
         except ValueError as err:
-            txt = "DreamTools error: unknown sub challenge or not implemented"
+            txt = "DREAMTools error: unknown sub challenge or not implemented"
             txt += "--->" + err.message
             print_color(txt, red)
             sys.exit()
@@ -188,10 +193,14 @@ def scoring(args=None):
         txt += " (sub-challenge %s)" % options.sub_challenge
     txt += " is :\n"
 
-    for k in sorted(res.keys()):
-        txt += darkgreen("     %s:\n %s\n" %(k, res[k]))
-
-    print(txt)
+    try:
+        import pandas as pd
+        df = pd.TimeSeries(res['Results'])
+        print(df)
+    except:
+        for k in sorted(res.keys()):
+            txt += darkgreen("     %s:\n %s\n" %(k, res[k]))
+        print(txt)
 
 
 class Options(argparse.ArgumentParser):
@@ -202,7 +211,7 @@ class Options(argparse.ArgumentParser):
         usage += """      python %s --challenge d5c2 --submission <filename>""" % prog
         epilog="""Author(s):
 
-        - Thomas Cokelaer: DreamTools package and framework.
+        - Thomas Cokelaer: DREAMTools package and framework.
         - Challenges have been developed by numerous authors from the DREAM
           consortium. Please see the credits in the GitHub
           repository on
@@ -212,9 +221,9 @@ class Options(argparse.ArgumentParser):
 Source code on: https://github.com/dreamtools/dreamtools
 Issues or bug report ? Please fill an issue on http://github.com/dreamtools/dreamtools/issues """
         description = """General Description:
-    You must provide the challenge nickname (e.g., d8c1 for Dream8, Challenge 1) and
+    You must provide the challenge alias (e.g., d8c1 for Dream8, Challenge 1) and
     if there were several sub-challenges, you also must provide the sub-challenge
-    nickname (e.g., sc1). Finally, the submission has to be provided. The format must
+    alias (e.g., sc1). Finally, the submission has to be provided. The format must
     be in agreement with the description of the challenge itself.
 
     Help and documentation about the templates may be found either within the online
@@ -247,7 +256,7 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
 
         group.add_argument("--challenge", dest='challenge',
                          default=None, type=str, 
-                         help="nickname of the challenge (e.g., D8C1 stands for"
+                         help="alias of the challenge (e.g., D8C1 stands for"
                          "dream8 challenge 1).")
         group.add_argument("--sub-challenge", dest='sub_challenge', 
                          default=None, type=str,
@@ -262,6 +271,8 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
         group.add_argument("--gold-standard", dest='goldstandard',
                          help="""a gold standard filename. This may be 
                          required in some challenges e.g. D2C3""")
+        group.add_argument("--info", dest='info', action="store_true",
+                help="Prints general information about the challenge")
         group.add_argument("--download-template", 
                 dest='download_template',
                 help="""Download template. Templates for challenge may be 

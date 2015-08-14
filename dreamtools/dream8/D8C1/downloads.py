@@ -26,12 +26,13 @@ from dreamtools.core.sageutils import Login
 class SubmissionsDownloader(Login):
     """Tool to download all official submissions from synapse (zipped files).
 
+    .. note:: This is for admin usage only
+
     ::
 
         >>> from dreamtools.dream8.D8C1 import downloads
-        >>> d = downloads.SubmissionsDownloader(directory="download")
+        >>> d = downloads.SubmissionsDownloader()
         >>> d.download_all()
-
 
     """
     def __init__(self,  client=None):
@@ -55,51 +56,33 @@ class SubmissionsDownloader(Login):
         self.download_all_sc1b_final_submissions()
         self.download_all_sc2b_final_submissions()
 
+    def _download(self, subs, location):
+        subs.load_submissions()
+        for i, sub in enumerate(subs.submissions):
+            subs.client.downloadSubmissionAndFilename(sub, downloadFile=True,
+                    downloadLocation=self._get_location("sc1a"))
+            print("downloading %s/%s"  % (i+1, len(subs.submissions)))
+
     def download_all_sc1a_final_submissions(self):
         """Download all submissions from the SC1A subchallenge"""
-        s = submissions.SC1ASubmissions()
-        s.load_submissions()
-        for i, sub in enumerate(s.submissions):
-            s.client.downloadSubmissionAndFilename(sub, downloadFile=True,
-                    downloadLocation=self._get_location("sc1a"))
-            print "downloading %s/%s"  % (i+1, len(s.submissions))
+        subs = submissions.SC1ASubmissions()
+        self._download(subs, 'sc1a')
 
     def download_all_sc1b_final_submissions(self):
-        """Download all submissions from the SC1B subchallenge
-
-        There is a duplicated filename here. This command fails::
-
-            easydev.swapdict([(x['submitterAlias'],
-                    json.loads(x['entityBundleJSON'])['fileHandles'][0]['fileName'])
-                                for x in s.submissions])
-
-        The duplicated name is Bing-Network from Bing or Cai team name
-        """
-        s = submissions.SC1BSubmissions()
-        s.load_submissions()
-        for i,sub in enumerate(s.submissions):
-            s.client.downloadSubmissionAndFilename(sub, downloadFile=True,
-                    downloadLocation=self._get_location("sc1b"))
-            print "downloading %s/%s"  % (i+1, len(s.submissions))
+        """Download all submissions from the SC1B subchallenge"""
+        # Note:  The duplicated name is Bing-Network from Bing or Cai team name
+        subs = submissions.SC1BSubmissions()
+        self._download(subs, 'sc1b')
 
     def download_all_sc2a_final_submissions(self):
         """Download all submissions from the SC2A subchallenge"""
-        s = submissions.SC2ASubmissions()
-        s.load_submissions()
-        for i,sub in enumerate(s.submissions):
-            s.client.downloadSubmissionAndFilename(sub, downloadFile=True,
-                    downloadLocation=self._get_location("sc2a"))
-            print "downloading %s/%s"  % (i+1, len(s.submissions))
+        subs = submissions.SC2ASubmissions()
+        self._download(subs, 'sc2a')
 
     def download_all_sc2b_final_submissions(self):
         """Download all submissions from the SC2B subchallenge"""
-        s = submissions.SC2BSubmissions()
-        s.load_submissions()
-        for i,sub in enumerate(s.submissions):
-            s.client.downloadSubmissionAndFilename(sub, downloadFile=True,
-                    downloadLocation=self._get_location("sc2b"))
-            print "downloading %s/%s"  % (i+1, len(s.submissions))
-
+        subs = submissions.SC2BSubmissions()
+        self._download(subs, 'sc2b')
 
 
 

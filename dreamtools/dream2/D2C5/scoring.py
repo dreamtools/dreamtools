@@ -1,9 +1,6 @@
-"""
-
+"""D2C5 scoring functions
 
 Original code in MATLAB by Gustavo Stolovitzky
-
-
 """
 import os
 from dreamtools.core.challenge import Challenge
@@ -14,20 +11,12 @@ from dreamtools.core.rocs import D3D4ROC, DREAM2
 class D2C5(Challenge, D3D4ROC, DREAM2):
     """A class dedicated to D2C5 challenge
 
-
     ::
 
         from dreamtools import D2C5
         s = D2C5()
         filename = s.download_template() 
         s.score(filename) 
-
-    There are 12 gold standards and therefore 12 possible submissions.
-    6 for the chip case and 6 for the qPCR. Those should be scored independently.
-    THere is no sub-challenge per se. 
-
-    This class works for the DIRECTED-SIGNED_EXCITATORY_chip case only but implementation
-    for other cases is straightforward.
 
     """
     def __init__(self):
@@ -42,6 +31,13 @@ class D2C5(Challenge, D3D4ROC, DREAM2):
             'SIGNED_EXCITATORY',
             'SIGNED_INHIBITORY',
             'UNSIGNED']
+
+        self.title = "Genome-Scale network inference"
+        self.summary = """Reconstruct a genome scale regulatory network from a large collection of microarrays"""
+        self.scoring_metric = "AUPR or AUROc for each sub challenge."
+        self.synapseId = "syn3034894"
+
+
 
     def _init(self):
         # should download files from synapse if required.

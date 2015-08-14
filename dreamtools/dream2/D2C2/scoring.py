@@ -1,10 +1,5 @@
 """D2C2 scoring function.
 
-:Title: DREAM2 - Protein-Protein Interaction Network Inference
-:Nickname: D2C2
-:Summary: Predict a PPI network of 47 proteins
-:SubChallenges: 
-:Synapse page: https://www.synapse.org/#!Synapse:syn2825374
 
 Implementation in Python based on a MATLAB code from
 Gustavo A. Stolovitzky
@@ -23,20 +18,20 @@ class D2C2(Challenge, D3D4ROC, DREAM2):
 
         from dreamtools import D2C2
         s = D2C2()
-        filename = s.download_template() 
-        s.score(filename) 
+        filename = s.download_template()
+        s.score(filename)
 
     """
     def __init__(self):
         """.. rubric:: constructor"""
         super(D2C2, self).__init__('D2C2')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
-        self._init()
         self.sub_challenges = []
 
-    def _init(self):
-        # should download files from synapse if required.
-        pass
+        self.title = "DREAM2 - Protein-Protein Interaction Network Inference"
+        self.summary = "Predict a PPI network of 47 proteins"
+        self.synapseId = "syn2825374"
+        self.scoring_metric = "AUPR and AUROC"
 
     def download_template(self):
         """Returns a valid template"""
@@ -44,7 +39,7 @@ class D2C2(Challenge, D3D4ROC, DREAM2):
 
     def download_goldstandard(self):
         """Returns the gold standard"""
-        return  self._pj([self._path2data, 'goldstandard', 
+        return  self._pj([self._path2data, 'goldstandard',
             'D2C2_goldstandard.txt'])
 
     def score(self, filename):
@@ -55,18 +50,18 @@ class D2C2(Challenge, D3D4ROC, DREAM2):
 
         """
         gold = self.download_goldstandard()
-        
+
         self.gold_edges =  pd.read_csv(gold, sep='\t', header=None)
         self.prediction =  pd.read_csv(filename, sep='\t', header=None)
 
         #
-        newtest = pd.merge(self.prediction, self.gold_edges, 
+        newtest = pd.merge(self.prediction, self.gold_edges,
             how='inner', on=[0,1])
 
         test = list(newtest['2_x'])
         gold_index = list(newtest['2_y'])
 
-        AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_edges, 
+        AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_edges,
             self.prediction, gold_index)
 
         # specific precision values

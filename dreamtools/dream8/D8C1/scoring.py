@@ -1,7 +1,7 @@
 #-*- python -*-
 # -*- coding: utf-8 -*-
 #
-#  This file is part of dreamtools software
+#  This file is part of DREAMTools software
 #
 #  Copyright (c) 2013-2014 - EBI-EMBL
 #
@@ -47,8 +47,7 @@ from dreamtools.dream8.D8C1 import cython_scoring
 from dreamtools.core.ziptools import ZIP
 from dreamtools.core.rocs import ROC
 from dreamtools.core.challenge import Challenge
-
-import bottleneck as bn
+from dreamtools.dream8.D8C1 import commons
 
 
 __all__ = ["HPNScoringNetwork", "HPNScoring", "HPNScoringNetworkInsilico",
@@ -60,11 +59,12 @@ __all__ = ["HPNScoringNetwork", "HPNScoring", "HPNScoringNetworkInsilico",
 
 class D8C1(Challenge):
 
-    def __init__(self):
+    def __init__(self, version=2):
         super(D8C1, self).__init__('D8C1')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.sub_challenges = ['SC1A','SC1B','SC2A','SC2B']
         self._init()
+        self.version = version
 
     def _init(self):
         self._download_data('experimental.zip', 'syn1920412')
@@ -83,63 +83,26 @@ class D8C1(Challenge):
         return self._pj([self._path2data, 'templates', filename])
 
     def score(self, filename, subname=None):
-        print subname
         if subname == 'SC1A':
             s = HPNScoringNetwork(filename)
             s.compute_all_aucs()
             auc = s.get_auc_final_scoring()
-
-            #from dreamtools.dream8.D8C1 import ranking
-            #sc1a = HPNScoringNetwork(filename,  verbose=verbose)
-            #sc1a.compute_all_aucs()
-            #rank = ranking.SC1A_ranking()
-            #rank.append_submission(filename)
-            #return {'AUROC': sc1a.get_auc_final_scoring(),
-            #        'Rank LB': rank.get_rank_your_submission()}
             return {'meanAUROC': auc}
         elif subname == 'SC1B':
             s = HPNScoringNetworkInsilico(filename)
             s.compute_score()
             return {'meanAUROC': s.auc}
-            """
-from dreamtools.dream8.D8C1 import scoring, ranking
-sc1b = scoring.HPNScoringNetworkInsilico(filename, verbose=verbose)
-sc1b.compute_score()
-rank = ranking.SC1B_ranking()
-rank.append_submission(filename)
-return {'AUROC': sc1b.auc,'Rank LB':rank.get_rank_your_submission()}"""
         elif subname == 'SC2A':
-            s = HPNScoringPrediction(filename)
+            s = HPNScoringPrediction(filename, version=self.version)
             s.compute_all_rmse()
             return {'meanRMSE': s.get_mean_rmse()}
         elif subname == 'SC2B':
-            s = HPNScoringPredictionInsilico(filename)
+            s = HPNScoringPredictionInsilico(filename, version=self.version)
             s.compute_all_rmse()
             return {'meanRMSE': s.get_mean_rmse()}
         else:
             raise ValueError('Invalid name. Use one of %s' % self.sub_challenges)
 
-
-"""If we want to add mean rank
-        
-from dreamtools.dream8.D8C1 import scoring, ranking
-     sc2a = scoring.HPNScoringPrediction(filename, verbose=verbose)
-     sc2a.compute_all_rmse()
-     rank = ranking.SC2A_ranking()
-     rank.append_submission(filename)
-     return {'RMSE': sc2a.get_mean_rmse(),
-             'Rank LB': rank.get_rank_your_submission()}
-             
-             
-     from dreamtools.dream8.D8C1 import scoring, ranking
-     sc2b = scoring.HPNScoringPredictionInsilico(filename, verbose=verbose)
-     sc2b.compute_all_rmse()
-     rank = ranking.SC2B_ranking()
-     rank.append_submission(filename)
-     return {'RMSE': sc2b.get_mean_rmse(),
-             'Rank LB': rank.get_rank_your_submission()}
-
-"""
 
 class ScoringError(Exception):
     """An exception class for scoring classes"""
@@ -182,27 +145,28 @@ class HPNScoring( ZIP):
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
         #: List of valid cell lines (e.g, BT20)
-        self.valid_cellLines =  ["MCF7", "UACC812", "BT549", "BT20"]
+        self.valid_cellLines =  commons.cellLines
         #: List of valid ligands (e.g, EGF)
-        self.valid_ligands = ["EGF", "HGF", "FGF1", "IGF1", "Insulin", "NRG1",
-                              "PBS", "Serum"]
-        #: length of the vectors to be found within each cell line ignoring TAZ_p89 and FOXO3a_pS318
+        self.valid_ligands = commons.stimuli
+        #: length of the vectors to be found within each cell line 
+        # ignoring TAZ_p89 and FOXO3a_pS318
         # sometimes, like in the true descendants, the TAZ and FOX are inlcude
         # but set to None, which may be confusing
         self.valid_length = {'BT549': 44, 'MCF7': 39, 'UACC812': 44, 'BT20': 46}
         self.valid_length_extended = {'BT549': 45, 'MCF7': 41, 'UACC812': 45,
                                       'BT20': 48}
 
-        #: indices of the mTOR species in the different cell lines within the true descendants vectors
-        # assuming length are 44, 39, 44, 46 that is excludnig  the taz and fox phosphos
+        #: indices of the mTOR species in the different cell lines within 
+        # the true descendants vectors assuming length are 44, 39, 44, 46 that 
+        # is excludnig  the taz and fox phosphos
         self.mTor_index = {'BT20': 23, 'UACC812': 21, 'MCF7':21, 'BT549':21}
         #indices are computed using:
 
         self.species_to_ignore = {
-            'MCF7':['TAZ_pS89', 'FOXO3a_pS318_S321'],
-            'BT20':['TAZ_pS89', 'FOXO3a_pS318_S321'],
-            'BT549':['TAZ_pS89'],
-            'UACC812':['TAZ_pS89']
+            'MCF7': ['TAZ_pS89', 'FOXO3a_pS318_S321'],
+            'BT20': ['TAZ_pS89', 'FOXO3a_pS318_S321'],
+            'BT549': ['TAZ_pS89'],
+            'UACC812': ['TAZ_pS89']
             }
 
         # We need to retrieve list of phosphos as coded in the experimental data sets .
@@ -1719,7 +1683,13 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
             #RMSE += nansum( [x for x in (log2(true)-log2(user))**2 if x!=inf]  )
             data = [x for x in (np.log2(true)-np.log2(user))**2 if x!=np.inf]
             N = len([x for x in data if np.isnan(x) == False])
-            RMSE += bn.nansum(data)
+            try:
+                import bottleneck as bn
+                RMSE += bn.nansum(data)
+            except:
+                RMSE += np.nansum(data)
+
+
             #RMSE += np.nansum(data)
             counter += N
         # TODO: if nans are include, do we need to change T ?
@@ -1922,7 +1892,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
     test_synapse_id =  "syn2009175"
     true_synapse_id = "syn2143242"
 
-    def __init__(self, filename=None, verbose=False, version='official'):
+    def __init__(self, filename=None, verbose=False, version=2):
         """SC2B sub challenge (prediction in silico)
 
         :param filename: file to score
@@ -1937,18 +1907,22 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         """
         super(HPNScoringPredictionInsilico, self).__init__(filename)
         # WRONG NETWORK as used in the official LB
-        if version == 'official':
+        self.version = version
+        if self.version == 1:
             fname = os.sep.join([self._path2data, "goldstandard", "TruePredictionInsilico.zip"])
-        else:
+        elif self.version == 2:
             # CORRECT NETWORK
             fname = os.sep.join([self._path2data, "goldstandard",  "TruePredictionInsilico2.zip"])
+        else:
+            raise ValueError("version must be either 1 or 2")
         self.true_desc_filename = fname
 
         #self.loadZIPFile(self.filename)
         self.valid_cellLines = [""]
         self.times = [0, 1,2,4,6,10,15,30,60,120]
-        self.stimuli = ["loLIG1", "hiLIG1", "loLIG2", "hiLIG2",  "loLIG1_loLIG2",
-                        "loLIG1_hiLIG2", "hiLIG1_loLIG2", "hiLIG1_hiLIG2"]
+        self.stimuli = ["loLIG1", "hiLIG1", "loLIG2", "hiLIG2",  
+                "loLIG1_loLIG2", "loLIG1_hiLIG2", "hiLIG1_loLIG2", 
+                "hiLIG1_hiLIG2"]
         self.inhibitors = ["AB%s"%x for x in range(1,21)]
         self.phosphos = ["AB%s"%x for x in range(1,21)]
 
@@ -2137,7 +2111,11 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
             data = [x for x in (np.log2(true)-np.log2(user))**2 if x!=np.inf]
             N = len([x for x in data if np.isnan(x) == False])
             #N = len(data)
-            RMSE += bn.nansum(data)
+            try:
+                import bottleneck as bn
+                RMSE += bn.nansum(data)
+            except:
+                RMSE += np.nansum(data)
             counter += N
 
         # TODO: if nans are include, do we need to change T ?
@@ -2174,6 +2152,9 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
                         (16,7), (6,8),
                         (16,8),(6,9),(7,9),(16,9),(20,9), (6,10),(6,12),(2,14),(6,14),
                         (7,14), (2,15), (16,15), (5,16), (5,17), (5,19), (16,19)]
+
+                    if self.version == 2:
+                        dummy_nodes = [(16,4), (16,14)]
                 stop = False
                 for node in dummy_nodes:
                     n1 = "AB" + str(node[0])
@@ -2225,6 +2206,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
                     else:
                         datum = float(datum)
                     self.training[phospho].append(datum)
+
     def get_null(self, N=100, tag="sc2b"):
         self.get_training_data()
 
@@ -2564,13 +2546,11 @@ class HPNScoringPredictionInsilico_ranking(HPNScoring):
             for l in phosphos:
                 if l!=c:
                     # get this RMSE for all participant
-
                     data = [x[c][l] for x in self.rmse]
 
                     # but use a reverse order hence 1-x for the sorting
                     indices = np.argsort([x for x in data])
                     ranks[c][l] = [list(indices).index(i)+1 for i in range(0,len(indices))]
-
 
         self.ranks = copy.deepcopy(ranks)
 

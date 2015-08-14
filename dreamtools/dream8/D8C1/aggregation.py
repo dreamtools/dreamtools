@@ -48,11 +48,12 @@ class AggregationTools(Login):
 
 
     """
-    def __init__(self, name, client=None):
+    def __init__(self, name, client=None, version=2):
         assert name in ["SC1A", "SC1B", "SC2A", "SC2B"]
         self.name = name
         super(AggregationTools, self).__init__(client=client)
         self.mode = "mean"
+        self.version = version
 
     def load_submissions(self):
         """Load all submissions"""
@@ -61,16 +62,15 @@ class AggregationTools(Login):
         elif self.name == "SC1B":
             s = submissions.SC1BSubmissions(client=self.client)
         elif self.name == "SC2A":
-            s = submissions.SC2ASubmissions(client=self.client)
+            s = submissions.SC2ASubmissions(client=self.client, version=self.version)
         elif self.name == "SC2B":
-            s = submissions.SC2BSubmissions(client=self.client)
+            s = submissions.SC2BSubmissions(client=self.client, version=self.version)
 
         s.load_submissions()
         self.submissions = s.submissions[:]
 
     def get_best_submissions(self, N, start=0):
         """Return the N best submissions"""
-
         ranking = [this['ranking'] for this in self.submissions]
         indices = np.argsort(ranking)[start:N]
         subs = [self.submissions[i] for i in indices]
@@ -167,74 +167,6 @@ class AggregationTools(Login):
         df = self.get_df_from_submissions()
         return df
 
-    def _load_local_submissions(self, directory):
-        import glob
-        import os
-        from easydev import progressbar
-        filenames = glob.glob(directory + os.sep + '*zip')
-        N = len(filenames)
-        print("Found %s zipped file")
-        pb = progressbar.progress_bar(N)
-
-        self.submissions = []
-        for i, filename in enumerate(filenames):
-            sub = {}
-            if self.name == 'SC1A':
-                raise NotImplementedError
-
-            elif self.name == 'SC1B':
-                try:
-                    s = scoring.HPNScoringNetworkInsilico(filename, verbose=False)
-                    s.compute_score()
-                except:
-                    print('Skipping %s . Could not read or compute score' %
-                            filename)
-                    continue
-                sub['submitterAlias'] = 'unknown'
-                sub['entityId'] = 'unknown'
-                sub['id'] = 'unknown'
-                sub['auc'] = s.auc
-                sub['zscore'] = -1
-                sub['filename'] = filename
-                sub['userId'] = 'unknonwn'
-
-            elif self.name == 'SC2A':
-                raise NotImplementedError
-
-
-            elif self.name == 'SC2B':
-                try:
-                    s = scoring.HPNScoringPredictionInsilico(filename, verbose=False)
-                    s.compute_all_rmse()
-                except:
-                    print('Skipping %s . Could not read or compute score' %
-                            filename)
-                sub['submitterAlias'] = 'unknown'
-                sub['entityId'] = 'unknown'
-                sub['id'] = 'unknown'
-                sub['mean_rmse'] = s.get_mean_rmse()
-                sub['zscore'] = -1
-                sub['ranking'] = 1
-                sub['rmses'] = 1
-                
-
-                sub['filename'] = filename
-                sub['userId'] = 'unknonwn'
-
-
-            self.submissions.append(sub)
-            pb.animate(i+1,0)
-
-        df = self.get_df_from_submissions()
-        if self.name == 'SC2B':
-            df['mean_rank'] = df.index
-
-
-        # We must compute the scores of each team
-
-        #df = self.get_df_from_submissions()
-        return df
-
 
 class SC1AggregationPlotting(object):
     """ABC class plotting common to SC2A_aggregation and SC2B_aggregation."""
@@ -314,7 +246,7 @@ class SC1AggregationPlotting(object):
 
         ::
 
-            >>> from dreamtools.dream8.D8C1 import agregation
+            >>> from dreamtools.dream8.D8C1 import aggregation
             >>> a = aggregation.SC1A_aggregation()
             >>> a.plot_aggr_random(N=100, Nmax=74)
 
@@ -391,6 +323,7 @@ class SC2AggregationPlotting(object):
         .. seealso:: :class:`SC2A_aggregation`
 
         """
+        self._best_results= {}
         assert N>=2
         if N > len(self.df.index):
             N = len(self.df.index)
@@ -412,14 +345,17 @@ class SC2AggregationPlotting(object):
 
         newspan = [x for x in span]
 
+        self._best_results['aggregation'] = mean_rmses
+        self._best_results['individual'] = iauc
+
+
         pylab.plot(newspan, iauc, 'or', label="individual mean RMSE")
         pylab.xlabel("N", fontsize=20)
         pylab.ylabel("RMSE", fontsize=20)
         pylab.title("RMSE for the first N best submissions", fontsize=20)
-        #yr = pylab.ylim()
-        #pylab.axis([1, , start+N+1, yr[0],yr[1]])
+
         pylab.legend(loc="upper left")
-        return iauc
+        return self._best_results
 
     def plot_aggr_random(self, N=5, Nmax=14):
         """plots aggregation using N random submissions
@@ -473,12 +409,11 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
 
     You need to download the file before hand:
 
-
     2 regimes ignored while doing the scoring/aggregation.
 
     """
     valid_ligands_final = commons.valid_ligands_final
-    def __init__(self, best=2, client=None, local_submissions=False):
+    def __init__(self, best=2, client=None, version=None):
         """
 
         :param best: default to 2
@@ -497,11 +432,8 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
         self._individuals = {}
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc1a'])
 
-        if local_submissions is False:
-            self.df = self._load_submissions_from_synapse()
-        else:
-            self.df = self._load_local_submissions(local_submissions)
 
+        self.df = self._load_submissions_from_synapse()
 
         scoring = HPNScoringNetwork()
         self.true_descendants = copy.deepcopy(scoring.true_descendants)
@@ -535,7 +467,6 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
             for l in aggregate.edge_scores[c].keys():
                 edge_scores[c][l] = [aggregate.edge_scores[c][l]]
 
-        #N = len(subs)
         if len(subs)>1:
             for sub in subs[1:]:
                 if sub in self._individuals.keys():
@@ -649,7 +580,7 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
 
 
     """
-    def __init__(self, best=2, client=None, local_submissions=False):
+    def __init__(self, best=2, client=None, version=None):
         """
 
         :param best:
@@ -667,10 +598,7 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
 
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc1b'])
 
-        if local_submissions is False:
-            self.df = self._load_submissions_from_synapse()
-        else:
-            self.df = self._load_local_submissions(local_submissions)
+        self.df = self._load_submissions_from_synapse()
 
     def remove_correlated_submissions(self):
         # same  as in SC1A actually...
@@ -731,7 +659,7 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
 
 
     """
-    def __init__(self, client=None, local_submissions=False):
+    def __init__(self, client=None, version=2):
         """.. rubric:: constructor
 
         :param best:
@@ -740,22 +668,21 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
             reload all of them
 
         """
-        super(SC2A_aggregation, self).__init__(name="SC2A", client=client)
+        super(SC2A_aggregation, self).__init__(name="SC2A", client=client, version=version)
 
         self._individuals = {}
 
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc2a'])
-        if local_submissions is False:
-            self.df = self._load_submissions_from_synapse()
-        else:
-            self.df = self._load_local_submissions(local_submissions)
+
+        self.df = self._load_submissions_from_synapse()
+
 
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
             aggregate = copy.deepcopy(self._individuals[index])
         else:
             filename = self.df.ix[index].filename
-            aggregate = HPNScoringPrediction(filename=filename)
+            aggregate = HPNScoringPrediction(filename=filename, version=self.version)
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -779,7 +706,7 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
                     individual = copy.deepcopy(self._individuals[sub])
                 else:
                     filename = self.df.ix[sub].filename
-                    individual = HPNScoringPrediction(filename=filename)
+                    individual = HPNScoringPrediction(filename=filename, version=self.version)
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.user_prediction.keys():
                     for l in aggregate.user_prediction[c].keys():
@@ -806,7 +733,6 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
         return np.nanmean([d[k1][k2] for k1 in d.keys() for k2 in d[k1].keys()])
 
 
-
 class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
     """Investigating the aggregation over several teams.
 
@@ -818,25 +744,19 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
 
     By default, uses the submissions from the challenge itself (up to week 9)
 
-
-
-
     """
-    def __init__(self, client=None, local_submissions=False, version='official'):
+    def __init__(self, client=None, version=2):
         """
 
         :param client: an existing synapse client
 
         """
-        super(SC2B_aggregation, self).__init__(name="SC2B", client=client)
+        super(SC2B_aggregation, self).__init__(name="SC2B", client=client, version=version)
         self._individuals = {}
         self.directory = os.sep.join([d8c1path, 'submissions', 'sc2b'])
         self.version = version
 
-        if local_submissions is False:
-            self.df = self._load_submissions_from_synapse()
-        else:
-            self.df = self._load_local_submissions(local_submissions)
+        self.df = self._load_submissions_from_synapse()
 
     def _get_seed_aggregate(self, index):
         if index in self._individuals.keys():
@@ -865,7 +785,8 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
                     individual = copy.deepcopy(self._individuals[sub])
                 else:
                     filename = self.df.ix[sub].filename
-                    individual = HPNScoringPredictionInsilico(filename=filename, version=self.version)
+                    individual = HPNScoringPredictionInsilico(filename=filename,
+                                                              version=self.version)
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.user_prediction.keys():
                     for l in aggregate.user_prediction[c].keys():
@@ -894,299 +815,41 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
             np.isnan(d[k1][k2])==False])
 
 
-class GenerateSC1AMatrixForMatlabAggregation(Login, ZIP):
-    """
-
-    This class expects to find the 74 zipped submissions in
-    submission/sc1a directory. If you don't have this directory, please
-    use :class:`dreamtools.dream8hpn.downloads.SubmissionsDownloader` class.
-
-
-    """
-    def __init__(self, client=None, edge_scores={}, species={}):
-        super(GenerateSC1AMatrixForMatlabAggregation, self).__init__(client=client)
-
-        self.directory = os.sep.join([d8c1path, 'submissions', 'sc1a'])
-
-        self.edge_scores = edge_scores.copy()
-        self.species = species.copy()
-        self._set_mapping()
-
-        if len(self.edge_scores) == 0 or len(species)==0:
-            self.loaddata()
-
-        self.cellLines = ["BT20", "BT549", "MCF7", "UACC812"]
-        self.stimuli = ['IGF1', 'PBS', 'Serum', 'NRG1', 'Insulin', 'HGF', 'EGF', 'FGF1']
-
-    def loaddata(self):
-        """Team name in the filename are not alwasy the official team names as
-        they appear on synapse.
-
-        """
-        if os.path.exists(self.directory)==False:
-            raise ValueError("directory %s does not exists" % self.directory)
-        filenames = glob.glob(self.directory+os.sep+"*zip")
-        if len(filenames)!=74:
-            raise ValueError("Expected 74 submissions in SC1A final \
-submissions.  Found %s" % len(filenames))
-
-
-        #true_desc_filename = os.sep.join([d8c1path, 'gs', 'TrueDescVectors.zip'])
-
-        for filename in filenames:
-            team_name = self.mapping[filename.split("/")[2]]
-            individual = HPNScoringNetwork(filename=filename,
-                                           true_descendants=self.true_descendants,
-                    skip_true=True)
-            self.edge_scores[team_name] = individual.edge_scores.copy()
-        print("all edge scores available in edge_scores dictionary")
-        self.species = individual.species.copy()
-
-
-    def create_single_dataframe(self, cell, stimulus):
-
-        # first get the names of teach value in the matrices that will be read
-        indices = [x+"/"+y for x in self.species[cell] for y in self.species[cell]]
-
-        # each team for a given cell and stimuli has a NxN matrix of weights
-
-
-        data = [(team, self.edge_scores[team][cell][stimulus].flatten())
-            for team in self.edge_scores.keys()]
-
-        df = pd.DataFrame(dict(data), index=indices)
-        return df
-
-    def save_all_df(self, threshold=0.5):
-        for cell in self.cellLines:
-            for s in self.stimuli:
-                filename = "%s_%s_agg.csv" % (cell, s)
-                print("saving %s" % filename)
-                df = self.create_single_dataframe(cell, s)
-                df[df<threshold] = -1
-                df[df>=threshold] = 1
-                df.to_csv(filename)
-
-
-    def _set_mapping(self):
-        """The mapping is harcoded bt can be created as follows:
-
-        s = submissions.SC1ASubmissions()
-        easydev.swapdict(dict([(x['submitterAlias'],
-            json.loads(x['entityBundleJSON'])['fileHandles'][0]['fileName'])
-            for x in s.submissions]))
-        """
-        self.mapping = {u'ABCD-Network.zip': u'ABCD',
-                        u'AHAT-Network.zip': u'AHAT',
-                        u'ALAK-Network.zip': u'ALAK',
+# NOTE: filename do not match team name in some cases:
+"""
                         u'AUTO-Network.zip': u'Auto',
-                        u'AlSoTi-Network.zip': u'AlSoTi',
-                        u'Alphabet-Network.zip': u'Alphabet',
-                        u'BIGH-Network.zip': u'BIGH',
-                        u'BNet-Network.zip': u'BNet',
-                        u'BiGCaT-Network.zip': u'BiGCaT',
-                        u'Bing-Network.zip': u'Bing',
-                        u'Boston-Network.zip': u'Boston',
                         u'CGR-Network.zip': u'CGR',
                         u'CMK-Network.zip': u'CMK4',
-                        u'Cai-Network.zip': u'Cai',
-                        u'Cassis-Network.zip': u'Cassis',
-                        u'ChaosLab-Network.zip': u'ChaosLab',
-                        u'D3-Network.zip': u'D3',
                         u'DC_GFP-Network.zip': u'DC_TDC',
                         u'DynamoBios-Network.zip': u'Dynamo Bios',
-                        u'FUBerlin-Network.zip': u'FUBerlin',
-                        u'Firefly-Network.zip': u'Firefly',
-                        u'Freya-Network.zip': u'Freya',
-                        u'Frs5pB-Network.zip': u'Frs5pB',
                         u'GoatTower-Network.zip': u'Goat Tower',
-                        u'Gupta3-Network.zip': u'Gupta',
                         u'HD_Systems6-Network.zip': u'HD_Systems',
-                        u'HIBY-Network.zip': u'HIBY',
-                        u'Hatric-Network.zip': u'Hatric',
-                        u'HeelsDream-Network.zip': u'HeelsDream',
-                        u'Ingenuity-Network.zip': u'Ingenuity',
-                        u'JCheng-Network.zip': u'JCheng',
-                        u'JKLab-Network.zip': u'JKLab',
-                        u'JSE-Network.zip': u'JSE',
-                        u'KALEH-Network.zip': u'KALEH',
-                        u'KTLAB-Network.zip': u'KTLAB',
                         u'MA5-Network.zip': u'DoNET',
-                        u'ML_BHK_KG-Network.zip': u'ML_BHK_KG',
-                        u'Morpheus-Network.zip': u'Morpheus',
-                        u'NIPL-Network.zip': u'NIPL',
-                        u'NMSUSongLab-Network.zip': u'NMSUSongLab',
-                        u'Netzwerk-Network.zip': u'Netzwerk',
-                        u'Pitt.transmed-Network.zip': u'Pitt.transmed',
-                        u'Platinum-Network.zip': u'Platinum',
                         u'Reptar1-Network.zip': u'Reptar',
-                        u'SBIT-Network.zip': u'SBIT',
-                        u'SBI_Lab-Network.zip': u'SBI_Lab',
-                        u'SENSE-Network.zip': u'SENSE',
-                        u'SFTTRW-Network.zip': u'SFTTRW',
-                        u'SUNQR-Network.zip': u'SUNQR',
-                        u'ScreamingGoats-Network.zip': u'ScreamingGoats',
-                        u'Singularity-Network.zip': u'Singularity',
-                        u'StuartLab-Network.zip': u'StuartLab',
-                        u'StuartLabANOVA-Network.zip': u'StuartLabANOVA',
-                        u'T4-Network.zip': u'T4',
-                        u'T8-Network.zip': u'T8',
                         u'TaylorSwift-Network.zip': u'Taylor Swift',
                         u'Tongji-Network.zip': u'tongji team',
                         u'Try1-Network.zip': u'TEST-1roni',
-                        u'WH-Network.zip': u'WH',
-                        u'WelchsLab-Network.zip': u'WelchsLab',
-                        u'Zhangroup-Network.zip': u'Zhangroup',
-                        u'amss1012-Network.zip': u'amss1012',
-                        u'bacbddepn-Network.zip': u'bacbddepn',
-                        u'bdalab-Network.zip': u'bdalab',
-                        u'dftt-Network.zip': u'dftt',
                         u'guanlab18-Network.zip': u'GuanLab',
-                        u'hibiscus-Network.zip': u'hibiscus',
-                        u'limax-Network.zip': u'limax',
-                        u'lpNet-Network.zip': u'lpNet',
                         u'result.zip': u'ICHING',
                         u'sakev-Network.zip': u'sakev',
-                        u'sannio2-Network.zip': u'sannio2',
-                        u'sfntt-Network.zip': u'sfntt',
-                        u'slugly-Network.zip': u'slugly'}
+"""
 
-
-class GenerateSC1BMatrixForMatlabAggregation(Login, ZIP):
-    """
-
-    This class expects to find the 65 zipped submissions in
-    hpndream8_downloads/sc1a directory. If you don't have this directory, please
-    use :class:`dreamtools.dream8hpn.downloads.SubmissionsDownloader` class.
-
-
-
-    """
-    def __init__(self,  client=None):
-        super(GenerateSC1BMatrixForMatlabAggregation, self).__init__(client=client)
-        self.directory = os.sep.join([d8c1path, 'submissions', 'sc1b'])
-        self._set_mapping()
-        self.user_graphs = {}
-
-    def loaddata(self):
-        """Team name in the filename are not alwasy the official team names as
-        they appear on synapse.
-
-        """
-        if os.path.exists(self.directory)==False:
-            raise ValueError("directory %s does not exists" % self.directory)
-        filenames = glob.glob(self.directory+os.sep+"*zip")
-        if len(filenames)!=65:
-            raise ValueError("Expected 65 submissions in SC1A final \
-submissions.  Found %s" % len(filenames))
-
-        true_desc_filename = os.sep.join([d8c1path, "gs", "TrueGraph.csv"])
-
-        for filename in filenames:
-            team_name = self.mapping[filename.split("/")[2]]
-            individual = HPNScoringNetworkInsilico(filename=filename,
-                    goldstandard=true_desc_filename)
-            self.user_graphs[team_name] = individual.user_graph.copy()
-        print("all edge scores available in user_graph dictionary")
-
-    def create_single_dataframe(self, data):
-
-        labels = ["AB"+str(i) for i in range(1,21)]
-        indices = [x+"/"+y for x in labels for y in labels]
-
-        df = pd.DataFrame(data.flatten(),
-                index=indices)
-        return df
-
-    def save_all_network(self, threshold=0.5):
-        filename = "sc1b_user_graph_threshold_%s_agg.csv" % (str(threshold).replace(".", "dot"))
-        dfs = pd.DataFrame()
-        for team,data in self.user_graphs.iteritems():
-            df = self.create_single_dataframe(data)
-            print team
-            dfs[team] = df.iloc[:,0]
-        dfs[dfs<threshold] = -1
-        dfs[dfs>=threshold] = 1
-        dfs.to_csv(filename)
-
-
-    def _set_mapping(self):
-        """The mapping is harcoded bt can be created as follows:
-
-        s = submissions.SC1BSubmissions()
-        s.load_submissions()
-        d = dict([(x['submitterAlias'],
-            json.loads(x['entityBundleJSON'])['fileHandles'][0]['fileName'])
-            for x in s.submissions])
-        d['Cai'] = 'Bing(Cai)-Network-Insilico.zip'
-        mapping = easydev.swapdict(d)
-        """
-        self.mapping = {u'ABCD-Network-Insilico.zip': u'ABCD',
-             u'AHAT-Network-Insilico.zip': u'AHAT',
-             u'ALAK-Network-Insilico.zip': u'ALAK',
-             u'AlSoTi-Network-Insilico.zip': u'AlSoTi',
-             u'Alphabet-Network-Insilico.zip': u'Alphabet',
-             u'Antipodes-Network-Insilico.zip': u'Antipodes',
-             u'BNet-Network-Insilico.zip': u'BNet',
-             u'BiGCaT-Network-Insilico.zip': u'BiGCaT',
-             'Bing(Cai)-Network-Insilico.zip': u'Cai',
-             u'Bing-Network-Insilico.zip': u'Bing',
-             u'Boston-Network-Insilico.zip': u'Boston',
-             u'CGR-Network-Insilico.zip': u'CGR',
-             u'CMK-Network-Insilico.zip': u'CMK',
-             u'Cassis-Network-Insilico.zip': u'Cassis',
-             u'ChaosLab-Network-Insilico.zip': u'ChaosLab',
-             u'D3-Network-Insilico.zip': u'D3',
+"""
+            'Bing(Cai)-Network-Insilico.zip': u'Cai',
              u'DC_GFInS-Network-Insilico.zip': u'DC_TDC',
              u'DynamoBios-Network-Insilico.zip': u'Dynamo Bios',
-             u'FUBerlin-Network-Insilico.zip': u'FUBerlin',
-             u'Freya-Network-Insilico.zip': u'Freya',
-             u'Frs5pB-Network-Insilico.zip': u'Frs5pB',
              u'GoatTower-Network-Insilico.zip': u'Goat Tower',
              u'Gupta2-Network-Insilico.zip': u'Gupta',
              u'HD_Systems7-Network-Insilico.zip': u'HD_Systems',
-             u'Hairball-Network-Insilico.zip': u'Hairball',
-             u'Hatric-Network-Insilico.zip': u'Hatric',
-             u'Hogwarts2-Network-Insilico.zip': u'Hogwarts2',
-             u'JCheng-Network-Insilico.zip': u'JCheng',
-             u'KALEH-Network-Insilico.zip': u'KALEH',
              u'MA1-Network-Insilico.zip': u'DoNET',
-             u'Morpheus-Network-Insilico.zip': u'Morpheus',
-             u'NIPL-Network-Insilico.zip': u'NIPL',
-             u'NMSUSongLab-Network-Insilico.zip': u'NMSUSongLab',
-             u'Netzwerk-Network-Insilico.zip': u'Netzwerk',
-             u'Pitt.transmed-Network-Insilico.zip': u'Pitt.transmed',
-             u'Platinum-Network-Insilico.zip': u'Platinum',
-             u'SBIT-Network-Insilico.zip': u'SBIT',
-             u'SBI_Lab-Network-Insilico.zip': u'SBI_Lab',
-             u'SENSE-Network-Insilico.zip': u'SENSE',
-             u'SFTTRW-Network-Insilico.zip': u'SFTTRW',
-             u'SUNQR-Network-Insilico.zip': u'SUNQR',
-             u'ScreamingGoats-Network-Insilico.zip': u'ScreamingGoats',
-             u'Shen-Network-Insilico.zip': u'Shen',
-             u'Singularity-Network-Insilico.zip': u'Singularity',
-             u'StuartLab-Network-Insilico.zip': u'StuartLab',
              u'TaylorSwift-Network-Insilico.zip': u'Taylor Swift',
              u'Tongji-Network-Insilico.zip': u'tongji team',
              u'UCSD_DING-Network-Insilico.zip': u'ding',
              u'WH-Network-Insilico.zip': u'WH',
-             u'WelchsLab-Network-Insilico.zip': u'WelchsLab',
-             u'Zhangroup-Network-Insilico.zip': u'Zhangroup',
-             u'amss1012-Network-Insilico.zip': u'amss1012',
-             u'bacbddepn-Network-Insilico.zip': u'bacbddepn',
-             u'bdalab-Network-Insilico.zip': u'bdalab',
              u'biomecis2-Network-Insilico.zip': u'Biomecis',
-             u'dftt-Network-Insilico.zip': u'dftt',
              u'guanlab18-Network-Insilico.zip': u'GuanLab',
-             u'hibiscus-Network-Insilico.zip': u'hibiscus',
              u'insilico.zip': u'ICHING',
-             u'limax-Network-Insilico.zip': u'limax',
-             u'lpNet-Network-Insilico.zip': u'lpNet',
-             u'sakev-Network-Insilico.zip': u'sakev',
-             u'sannio2-Network-Insilico.zip': u'sannio2',
-             u'sfntt-Network-Insilico.zip': u'sfntt',
-             u'slugly-Network-Insilico.zip': u'slugly'}
-
+"""
 
 
 def create_all_aggregation_figures():
@@ -1242,51 +905,3 @@ def create_all_aggregation_figures():
         pylab.savefig("sc1a_aggregation_random_median.pdf")
     except:
         print("SC1A random median failed")
-
-
-def sc1a_check_edge_scores_range():
-    """
-
-    load all submissions from sc1a and check that values are >0.
-    If not, print info
-
-
-    values larger than one im amss1012, sannio2,ML_BHK_KG
-    large values around 8 for ML_BHK_KG-N
-    between 1.2 and 1.8 for sannio
-    up to 30 for amss1012
-    # need to comment scaling in socring module.
-    """
-    filenames = glob.glob(os.sep.join([d8c1path, "submissions", "sc1a", "*zip"]))
-    for filename in filenames:
-        print("#################")
-        print filename
-        s = scoring.HPNScoringNetwork(filename,verbose=False)
-        p = pd.Panel(dict([(c+"_"+l, pd.DataFrame(s.edge_scores[c][l]))
-            for c in s.edge_scores.keys() for l in s.edge_scores[c].keys()]))
-        for item in p.items:
-            if p[item].min().min()<0:
-                print("-----Found negative in %s %s" % (filename, item))
-            if p[item].max().max()>1:
-                print("-------Found larger than one in %s %s" % (filename, item))
-            #print("---------- max in %s %s" %(item, p[item].max().max()))
-
-
-def sc1b_check_edge_scores_range():
-    """Check that all SC1B edge score are in the range [0,1]
-
-    sannio2 with values ~ 1.2
-    # need to comment scaling in socring module.
-    """
-    filenames = glob.glob(os.sep.join([d8c1path , 'submissions', "sc1b", "*zip"]))
-    for filename in filenames:
-        print("#################")
-        print filename
-        s = scoring.HPNScoringNetworkInsilico(filename,verbose=False)
-        p = pd.DataFrame(s.user_graph)
-
-        if p.min().min()<-0.0001:
-            print("-----Found NEGATIVE in %s " % (filename))
-        if p.max().max()>1.001:
-            print("-------Found larger than one in %s " % (filename))
-        #print("---------- max in %s" %(p.max().max()))

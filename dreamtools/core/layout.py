@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-#  This file is part of DreamTools software
+#  This file is part of DREAMTools software
 #
 #  Copyright (c) 2014-2015 - EBI-EMBL
 #
@@ -28,7 +28,7 @@ Overview
 
 
 :Title: 
-:Nickname: %(nickname)s
+:Nickname: %(alias)s
 :Summary: 
 :SubChallenges: 
 :Synapse page: https://www.synapse.org/#!Synapse:synXXXXXXX
@@ -42,8 +42,8 @@ Scoring
 
 ::
 
-    from dreamtools import %(nickname)s
-    s = %(nickname)s()
+    from dreamtools import %(alias)s
+    s = %(alias)s()
     filename = s.download_template() 
     s.score(filename) 
 
@@ -51,28 +51,19 @@ Scoring
 '''
 
 scoring_templates = '''
-"""
-
-:Title: 
-:Nickname: %(nickname)s
-:Summary: 
-:SubChallenges: 
-:Synapse page: https://www.synapse.org/#!Synapse:synXXXXXXX
-
-
-"""
+"""%(alias)s scoring function"""
 import os
 from dreamtools.core.challenge import Challenge
 
 
-class %(nickname)s(Challenge):
-    """A class dedicated to %(nickname)s challenge
+class %(alias)s(Challenge):
+    """A class dedicated to %(alias)s challenge
 
 
     ::
 
-        from dreamtools import %(nickname)s
-        s = %(nickname)s()
+        from dreamtools import %(alias)s
+        s = %(alias)s()
         filename = s.download_template() 
         s.score(filename) 
 
@@ -83,10 +74,14 @@ class %(nickname)s(Challenge):
         """.. rubric:: constructor
 
         """
-        super(%(nickname)s, self).__init__('%(nickname)s')
+        super(%(alias)s, self).__init__('%(alias)s')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = []
+        self.title = "undefined"
+        self.summary = "undefined"
+        self.scoring_metric = "undefined"
+        self.synapseId = "undefined"
 
     def _init(self):
         # should download files from synapse if required.
@@ -141,14 +136,14 @@ class Layout(Logging):
             self.warning("%s already exists. Skipped the creation of this directory" % filename)
         else:
             fh = open(self._pj(filename), 'w')
-            fh.write(scoring_templates % {'nickname': self.name})
+            fh.write(scoring_templates % {'alias': self.name})
 
         filename = 'README.rst'
         if os.path.exists(self._pj('README.rst')) is True:
             self.warning("%s already exists. Skipped the creation of this directory" % filename)
         else:
             fh = open(self._pj(filename), 'w')
-            fh.write(README_templates % {'nickname': self.name})
+            fh.write(README_templates % {'alias': self.name})
 
     def _pj(self, filename):
         return os.sep.join([self.name, filename])
@@ -210,7 +205,7 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
         description = """General Description:
 
     dreamtools-layout creates the layout for a challenge. You must provide
-    a valid nickname (e.g., D8C1 for Dream8, Challenge 1). Then, the following
+    a valid alias (e.g., D8C1 for Dream8, Challenge 1). Then, the following
     layout is created for you:
 
         D8C1/__init__.py
@@ -240,7 +235,7 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
 
         group.add_argument("--challenge-name", dest='challenge_name',
                          default=None, type=str, 
-                         help="nickname of the challenge (e.g., D8C1 stands for"
+                         help="alias of the challenge (e.g., D8C1 stands for"
                          "dream8 challenge 1). Intermediate challenge such as first challenge of DREAM9.5 must be encoded as D9dot5C1")
 
 if __name__ == "__main__":

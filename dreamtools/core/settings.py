@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-#  This file is part of DreamTools software
+#  This file is part of DREAMTools software
 #
 #  Copyright (c) 2014-2015 - EBI-EMBL
 #
@@ -18,28 +18,30 @@ import os
 import appdirs
 
 
-__all__ = ["DreamToolsConfig"]
+__all__ = ["DREAMToolsConfig"]
 
 
 # first item if the value
 # second item if a type or TUPLE of types possible
 # third item is documentation
 
-class DreamToolsConfig(object):
+class DREAMToolsConfig(object):
 
-    def __init__(self):
-        #super(DreamToolsConfig, self).__init__(name="dreamtools",
+    def __init__(self, verbose=False):
+        self.verbose = verbose
+        #super(DREAMToolsConfig, self).__init__(name="dreamtools",
         #        default_params=defaultParams)
-        print("Welcome to DreamTools")
-        print("=====================")
-        print("\nUsage example:")
-        print(" >>> from dreamtools import D2C1")
-        print(" >>> c = D2C1()")
-        print(" >>> filename = c.download_template()")
-        print(" >>> c.score(filename)\n")
-        print(" Any issues/suggestions ? Visit http://github.com/dreamtools/\n\n")
+        if self.verbose is True:
+            print("Welcome to DREAMTools")
+            print("=====================")
+            print("\nUsage example:")
+            print(" >>> from dreamtools import D2C1")
+            print(" >>> c = D2C1()")
+            print(" >>> filename = c.download_template()")
+            print(" >>> c.score(filename)\n")
+            print(" Any issues/suggestions ? Visit http://github.com/dreamtools/\n\n")
         self.appdirs = appdirs.AppDirs("dreamtools")
-    
+
     def _get_config_dir(self):
         sdir = self.appdirs.user_config_dir
         return self._get_and_create(sdir)
@@ -54,7 +56,7 @@ class DreamToolsConfig(object):
                 print("Could not create the path %s " % sdir)
                 return None
         return sdir
-    
+
     def _mkdirs(self, newdir, mode=0o777):
         """from matplotlib mkdirs
 

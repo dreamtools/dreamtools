@@ -7,6 +7,10 @@ import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
 
+
+__all__ = ['D6C4']
+
+
 class D6C4(Challenge):
     """A class dedicated to D6C4 challenge
 
@@ -53,7 +57,8 @@ class D6C4(Challenge):
     def _init(self):
 
         # Reads the test file with missing values
-        df = pd.read_csv("./data/AMLTraining.csv", index_col=0)
+        df = pd.read_csv(self._pj([self._path2data, 'data', 'AMLTraining.csv']), 
+                index_col=0)
         df.fillna('none', inplace=True)
 
         testset = df.SampleNumber[df.Label == 'none'].unique()
@@ -64,7 +69,7 @@ class D6C4(Challenge):
 
         # Read the test with all values
         # let us set the index with first column (FCSFileName)
-        gs = pd.read_csv("goldstandard/AML.csv", index_col=0)
+        gs = pd.read_csv(self.download_goldstandard(), index_col=0)
         # let us keep only the relevant data (test set)
         gs = gs.ix[testsetIndex]
         assert sum(gs.Label == 'aml') == 20
@@ -103,7 +108,7 @@ class D6C4(Challenge):
         # patients in the first 20 predictions out of all the AML patients in the
         # cohort.
 
-        # TODO seems to be identicl to prec ????
+        # TODO seems to be identicl to prec 
         # at least on the official LB
         # https://www.synapse.org/#!Synapse:syn2887788/wiki/72181
         results['recall'] = sum(prec)/20.

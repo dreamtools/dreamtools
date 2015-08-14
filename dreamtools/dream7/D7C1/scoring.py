@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-#  This file is part of DreamTools software
+#  This file is part of DREAMTools software
 #
 #  Copyright (c) 2014-2015 - EBI-EMBL
 #
@@ -79,6 +79,7 @@ class D7C1(Challenge):
         """
         Challenge.__init__(self, challenge_name='D7C1')
         self.sub_challenges = ['parameter', 'topology', 'timecourse']
+        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
         self.path = path
 
@@ -188,7 +189,7 @@ class D7C1(Challenge):
             over = -np.log10(pvalue)
             return {'score':score,  'pvalue':pvalue, 'overallScore':over}
         elif subname == 'topology':
-            print("Note: Null distribution used to compute p-value and overall score is stochastic" +
+            print("Note: Null distribution used to compute p-value and overall score is stochastic " +
                   "but should be close to the one used in the official LB.\n")
             score =  self.score_topology(filename)
             pvalue = self.get_pvalues_topology(score)
@@ -328,7 +329,6 @@ class D7C1(Challenge):
             raise ValueError("Incorrect challenge name. Use one of %s " % self.sub_challenges)
 
     def _get_gs(self, filename):
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         filename = os.sep.join([self._path2data, "goldstandard", filename])
         return filename
 
@@ -669,7 +669,6 @@ class D7C1(Challenge):
                 Ni[i] += 1
                 if signs[-1] in dgenes[gene]:
                     Ni[i] += 1
-
 
         Si = Li + Ni
         return sum(Si)

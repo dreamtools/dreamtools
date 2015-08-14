@@ -23,7 +23,7 @@ Created on Fri Mar 21 11:51:26 2014
 
 cellLines = ["BT20", "MCF7", "UACC812", "BT549"]
 ligands = ["EGF", "HGF", "FGF1", "IGF1", "Insulin", "NRG1", "PBS", "Serum"]
-
+stimuli = ligands
 valid_ligands_final = {
                    'UACC812': ['PBS', 'Serum', 'NRG1', 'Insulin', 'HGF', 'EGF', 'FGF1',  'IGF1'],
                       'BT20': ['IGF1', 'PBS', 'Serum', 'NRG1', 'HGF', 'EGF', 'FGF1'],

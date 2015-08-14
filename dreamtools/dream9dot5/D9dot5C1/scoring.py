@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-#  This file is part of DreamTools software
+#  This file is part of DREAMTools software
 #
 #  Copyright (c) 2014-2015 - EBI-EMBL
 #
@@ -112,7 +112,7 @@ class D9dot5C1(Challenge):
         if os.path.exists(filename) is False:
             # must download the data now
             print("File %s not found. Downloading from Synapse. You must have a login." % filename)
-            d = Downloader(self.nickname)
+            d = Downloader(self.alias)
             d.download(synid)
 
         return filename

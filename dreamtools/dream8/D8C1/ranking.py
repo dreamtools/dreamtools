@@ -14,6 +14,10 @@
 #  website: http://github.com/dreamtools
 #
 ##############################################################################
+"""This is a standlone ranking independent of synapse that may be used in the
+future"""
+
+
 
 import json
 import os
@@ -79,10 +83,11 @@ class SC1A_ranking(Ranking):
 
 
     """
-    def __init__(self):
+    def __init__(self, version=None):
         super(SC1A_ranking, self).__init__('SC1A')
         self.aucs = pd.read_json(self._getdata("SC1A_aucs.json"))
         self.ranked_df = pd.read_json(self._getdata("SC1A_results.json"))
+        self.version = version
 
     def _sort_df(self, df):
         df.sort('Mean Rank', inplace=True)
@@ -152,7 +157,7 @@ class SC1A_ranking(Ranking):
 
     def append_submission(self, res):
         try:
-            res = scoring.HPNScoringNetwork(res)
+            res = scoring.HPNScoringNetwork(res, self.version)
             res.compute_all_aucs()
         except Exception:
             if getattr(res, 'aucs') is False:
@@ -167,9 +172,10 @@ class SC1A_ranking(Ranking):
 
 class SC1B_ranking(Ranking):
 
-    def __init__(self):
+    def __init__(self, version=None):
         super(SC1B_ranking, self).__init__('SC1B')
         self.ranked_df = pd.read_json(self._getdata("SC1B_results.json"))
+        self.version = version # does not matter. to have same API
 
     def _sort_df(self, df):
         df.sort('AUC', inplace=True, ascending=False)
@@ -212,10 +218,10 @@ class SC1B_ranking(Ranking):
 
     def append_submission(self, res):
         try:
-            res = scoring.HPNScoringNetworkInsilico(res)
+            res = scoring.HPNScoringNetworkInsilico(res, self.version)
             res.compute_score()
         except:
-            pass
+            print('Failed to score submission')
 
         ts = self.ranked_df.ix[0].copy()
         ts.name = 99
@@ -233,17 +239,18 @@ class SC2A_ranking(Ranking):
     #      week5 that has a lower score anyway
     # 1971259/HD systems see SC1A function docstring
     userIds_toremove =  ["375805", "1991105", "1971259"]
-    def __init__(self):
+    def __init__(self, version=1):
         super(SC2A_ranking, self).__init__('SC2A')
-        self.rmses = pd.read_json(self._getdata("SC2A_rmses.json"))
-        self.ranked_df = pd.read_json(self._getdata("SC2A_results.json"))
+        self.version = version
 
-        self.phosphos_to_exclude = {
-                'MCF7': ['TAZ_pS89', 'FOXO3a_pS318_S321', 'mTOR_pS2448'],
-                'UACC812': ['TAZ_pS89','mTOR_pS2448'],
-                'BT20': ['TAZ_pS89', 'FOXO3a_pS318_S321', 'mTOR_pS2448'],
-                'BT549': ['TAZ_pS89','mTOR_pS2448']
-        }
+        # Those files are created using the submissions module calling
+        # save_rmse_to_json anda save_df_to_json
+        if self.version == 1:
+            self.rmses = pd.read_json(self._getdata("SC2A_rmses_v1.json"))
+            self.ranked_df = pd.read_json(self._getdata("SC2A_results_v1.json"))
+        elif version == 2:
+            self.rmses = pd.read_json(self._getdata("SC2A_rmses_v2.json"))
+            self.ranked_df = pd.read_json(self._getdata("SC2A_results_v2.json"))
 
     def _sort_df(self, df):
         df.sort('Mean Rank', inplace=True)
@@ -252,37 +259,6 @@ class SC2A_ranking(Ranking):
         df = df.reset_index(drop=True)
         df['Final Rank'] = [1+x for x in df.index]
         return df
-
-    def get_ranked_df_from_submissions(self):
-        self.check_submissions()
-        submitterAlias = [sub['submitterAlias'] for sub in self.submissions]
-        subId = [sub['substatus']['id'] for sub in self.submissions]
-        entityId = [sub['substatus']['entityId'] for sub in self.submissions]
-        userId = [sub['userId'] for sub in self.submissions]
-        rmse = [sub['mean_rmse'] for sub in self.submissions]
-        ranking = [sub['ranking'] for sub in self.submissions]
-
-        df = pd.DataFrame({
-            'Final Rank': ranking,
-            'Team Name': submitterAlias,
-            'Team Id': userId,
-            'Submission Id': subId,
-            'Entity Id': entityId,
-            'Mean RMSE': rmse,
-            'Mean Rank':ranking
-        })
-        df = self._sort_df(df)
-        return df
-
-    def get_rmses_from_submissions(self):
-        df = self.get_ranked_df()
-        data = [this['rmses'] for this in self.submissions]
-        columns = [k1+"_"+k2 for k1 in data[0].keys() for k2 in data[0][k1].keys()]
-        rmses = [[datum[k1][k2] for k1 in datum.keys() for k2 in datum[k1].keys()] for datum in data]
-        indices = [sub['submitterAlias'] for sub in self.submissions]
-        rmses = pd.DataFrame(rmses, columns=columns, index=indices)
-
-        return rmses
 
     def get_rmses(self):
         return self.rmses.copy()
@@ -296,8 +272,12 @@ class SC2A_ranking(Ranking):
 
     def append_submission(self, res):
         try:
-            res = scoring.HPNScoringPrediction(res)
+            print res
+            print self.version
+            res = scoring.HPNScoringPrediction(res, version=self.version)
+            print 1
             res.compute_all_rmse()
+            print 2
         except:
             pass
 
@@ -323,10 +303,16 @@ class SC2B_ranking(Ranking):
     #      week5 that has a lower score anyway
     # 1971259/HD systems see SC1A function docstring
     userIds_toremove =  ["375805", "1991105"]
-    def __init__(self, version='official'):
+    def __init__(self, version=1):
         super(SC2B_ranking, self).__init__('SC2B')
-        self.rmses = pd.read_json(self._getdata("SC2B_rmses.json"))
-        self.ranked_df = pd.read_json(self._getdata("SC2B_results.json"))
+        # Those files are created using the submissions module calling
+        # save_rmse_to_json anda save_df_to_json
+        if version == 1:
+            self.rmses = pd.read_json(self._getdata("SC2B_rmses_v1.json"))
+            self.ranked_df = pd.read_json(self._getdata("SC2B_results_v1.json"))
+        elif version == 2:
+            self.rmses = pd.read_json(self._getdata("SC2B_rmses_v2.json"))
+            self.ranked_df = pd.read_json(self._getdata("SC2B_results_v2.json"))
         self.version = version
 
     def _sort_df(self, df):
@@ -337,38 +323,6 @@ class SC2B_ranking(Ranking):
         df = df.reset_index(drop=True)
         df['Final Rank'] = [1+x for x in df.index]
         return df
-
-    def get_ranked_df_from_submissions(self):
-        self.check_submissions()
-        submitterAlias = [sub['submitterAlias'] for sub in self.submissions]
-        subId = [sub['substatus']['id'] for sub in self.submissions]
-        entityId = [sub['substatus']['entityId'] for sub in self.submissions]
-        userId = [sub['userId'] for sub in self.submissions]
-        rmse = [sub['mean_rmse'] for sub in self.submissions]
-        ranking = [sub['ranking'] for sub in self.submissions]
-
-        df = pd.DataFrame({
-            'Final Rank': ranking,
-            'Team Name': submitterAlias,
-            'Team Id': userId,
-            'Submission Id': subId,
-            'Entity Id': entityId,
-            'Mean RMSE': rmse,
-            'Mean Rank':ranking
-        })
-        df = self._sort_df(df)
-        return df
-
-    def get_rmses_from_submissions(self):
-        df = self.get_ranked_df()
-        data = [this['rmses'] for this in self.submissions]
-        columns = [k1+"_"+k2 for k1 in data[0].keys() for k2 in data[0][k1].keys()]
-        rmses = [[datum[k1][k2] for k1 in datum.keys() for k2 in datum[k1].keys()] for datum in data]
-        indices = [sub['submitterAlias'] for sub in self.submissions]
-        rmses = pd.DataFrame(rmses, columns=columns, index=indices)
-        # recompute the mean RMSEs gives same results as in get_ranked_df
-        # self.get_rmses().mean(axis=1)
-        return rmses
 
     def get_rmses(self):
          return self.rmses.copy()
@@ -398,21 +352,24 @@ class SC2B_ranking(Ranking):
 
 
 
-class Aggregate():
-    """
-    a = ranking.SC1A_ranking()
-    b = ranking.SC1B_ranking()
-    aggr = Aggregate(a,b)
-    print(aggr)
+class CombinedRanking(object):
+    """Combined Ranking for SC1 and SC2 challenge
+
+    ::
+
+        >>> a = ranking.SC1A_ranking()
+        >>> b = ranking.SC1B_ranking()
+        >>> aggr = CombinedRanking(a, b, 'SC1')
+        >>> aggr.get_ranking()
 
     """
     def __init__(self, rsca, rscb, name):
         """
 
-        :param rsca:
-        :param rscb:
+        :param rsca: an instance of SC1A_ranking or SC2A_ranking
+        :param rscb: an instance of SC1B_ranking or SC2B_ranking
         :param name: SC1 or SC2
-        :return:
+
         """
         self.rsca = rsca
         self.rscb = rscb
@@ -444,4 +401,5 @@ class Aggregate():
 
     def __str__(self):
         df = self.get_ranking()
-        return df.to_string()
+        from dreamtools.core.wikitools import dataframe_towiki
+        print(dataframe_towiki(df))

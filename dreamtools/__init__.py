@@ -3,11 +3,13 @@
 from .core.sageutils import Login
 from .core import settings
 import os
-configuration = settings.DreamToolsConfig()
+
+configuration = settings.DREAMToolsConfig(verbose=False)
 dreampath = configuration.user_config_dir
 
 
 from dreamtools.core.challenge import Challenge
+
 
 from dream2.D2C1.scoring import D2C1
 from dream2.D2C2.scoring import D2C2
@@ -29,6 +31,7 @@ from dream5.D5C2.scoring import D5C2
 from dream5.D5C3.scoring import D5C3
 from dream5.D5C4.scoring import D5C4
 
+from dream6.D6C2.scoring import D6C2
 from dream6.D6C3.scoring import D6C3
 from dream6.D6C4.scoring import D6C4
 

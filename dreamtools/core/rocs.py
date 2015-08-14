@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-#  This file is part of DreamTools software
+#  This file is part of DREAMTools software
 #
 #  Copyright (c) 2014-2015 - EBI-EMBL
 #
@@ -16,13 +16,12 @@
 """Provides tools related to Receiver Operating Characteristic (ROC).
 
 
-Those code were direct translation of Perl or matlab codes but we stronly recommend
-to use scikit-learn in the future."""
+Those code were directly translation of Perl or matlab
+codes but we should be using scikit-learn in the future."""
 import numpy as np
 
 
 __all__ = ['ROC', 'ROCDiscovery', 'D3D4ROC', 'MCC']
-
 
 
 class BinaryClassifier(object):

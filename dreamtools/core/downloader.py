@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-#  This file is part of DreamTools software
+#  This file is part of DREAMTools software
 #
 #  Copyright (c) 2014-2015 - EBI-EMBL
 #
@@ -35,7 +35,7 @@ class Downloader(Challenge, Login):
     def __init__(self, challenge, client=None):
         """.. rubric:: constructor
 
-        :param str challenge: nickname of a challenge (e.g., D5C1)
+        :param str challenge: alias of a challenge (e.g., D5C1)
 
         To automatically connect to synapse, create a file called .synapseConfig with this
         content::

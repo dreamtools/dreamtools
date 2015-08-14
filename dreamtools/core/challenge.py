@@ -20,11 +20,7 @@ from dreamtools import configuration as cfg
 
 
 class Challenge(object):
-    """Common class to all challenges
-    
-    
-    
-    """
+    """Common class to all challenges"""
 
     def __init__(self, challenge_name):
         """.. rubric:: constructor
@@ -34,12 +30,21 @@ class Challenge(object):
             e.g. D9.5 should be encoded as D9dot5CY
 
         """
-        #: nickname of the challenge. Must be DXCY form with X, Y being 2 numbers
-        self.nickname = challenge_name
+        #: alias of the challenge as DXCY form with X, Y being 2 numbers
+        self.alias = challenge_name
         self._check_challenge_name()
-        #: directory where is stored the configuration file and possibly data files.
+        #: directory where is stored the configuration file and data files.
         self.mainpath = cfg.user_config_dir
+    
+        # More METADATA
         self.sub_challenges = []
+        self.synapseId = "undefined"
+        self.summary = "undefined"
+        self.title = 'undefined'
+        self.scoring_metric = 'undefined'
+
+        
+        # initialisation
         self.mkdir()
 
         self.client = None
@@ -47,19 +52,19 @@ class Challenge(object):
     def _get_directory(self):
         """Gets directory where data will be stored."""
         name_dir = self._get_challenge_directory()
-        directory = os.sep.join([self.mainpath, name_dir, self.nickname])
+        directory = os.sep.join([self.mainpath, name_dir, self.alias])
         return directory
     directory = property(_get_directory)
 
     def _check_challenge_name(self):
-         results = re.search("^D\d+(dot5)?C\d+$", self.nickname)
+         results = re.search("^D\d+(dot5)?C\d+$", self.alias)
          if results is None:
             msg = "Challenge name provided (%s) is incorrect expects DXCY with X and Y as numbers. Or possibly DXdot5CY (e.g. D8C3, D9dot5C2)"
-            raise ValueError(msg % self.nickname)
+            raise ValueError(msg % self.alias)
 
     def _get_challenge_directory(self):
         # name is e.g., D1C2 we want to extract the 1 (with more than 1 digit)
-        name = self.nickname[1:] # get rid of first letter D
+        name = self.alias[1:] # get rid of first letter D
         version = name.split("C")[0]
         return "dream" + str(version)
 
@@ -72,7 +77,7 @@ class Challenge(object):
         directory = self._get_directory()
         if os.path.exists(directory) is False:
             os.mkdir(directory)
-            
+
     def download_template(self, sub_challenge=None):
         """Must be provided"""
         raise NotImplementedError
@@ -86,23 +91,23 @@ class Challenge(object):
 
     def import_scoring_class(self):
         """Dynamic import of a challenge class
-        
+
         ::
 
             c = Challenge('D7C1')
             inst_class = c.import_scoring_class()
-        
+
 
         """
         import imp
         import dreamtools
 
-        pathname = os.path.split(dreamtools.__file__)[0] 
-        pathname += os.sep + self._get_challenge_directory() 
-        pathname += os.sep + self.nickname
+        pathname = os.path.split(dreamtools.__file__)[0]
+        pathname += os.sep + self._get_challenge_directory()
+        pathname += os.sep + self.alias
         pathname += os.sep + 'scoring.py'
         py_mod = imp.load_source('scoring', pathname)
-        class_inst = getattr(py_mod, self.nickname)()
+        class_inst = getattr(py_mod, self.alias)()
 
         return class_inst
 
@@ -115,7 +120,7 @@ class Challenge(object):
         if os.path.exists(filename) is False:
             # must download the data now
             print("File %s not found. Downloading from Synapse." % filename)
-            d = Downloader(self.nickname, self.client)
+            d = Downloader(self.alias, self.client)
             d.download(synid)
             # save the login if needed again, it will be faster
             self.client = d.client
@@ -139,8 +144,48 @@ class Challenge(object):
         from dreamtools.core.ziptools import ZIP
         z = ZIP()
         z.loadZIPFile(self.get_pathname(filename)), z.extractall(self.directory)
-
     def _check_subname(self, subname):
         from easydev import check_param_in_list
         check_param_in_list(subname, self.sub_challenges)
 
+    def __str__(self):
+        txt = """Challenge %s\n""" % self.alias
+        txt += "=" * len(txt) + "\n"
+        if len(self.sub_challenges):
+            txt += """Note that this challenge contains sub-challenges.\n"""
+            for this in self.sub_challenges:
+                txt += " * %s \n" % this
+            txt += "\n"
+
+        metadata = """
+:Title: %(title)s
+:Alias: %(alias)s
+:Summary: %(summary)s
+:SubChallenges: %(subchallenge)s
+:Scoring metric: %(scoring_metric)s
+:Synapse page: https://www.synapse.org/#!Synapse:%(synapseId)s"""
+
+        txt += metadata % {
+            'alias': self.alias,
+            'title': self.title,
+            'summary': self.summary,
+            'subchallenge': " ".join(self.sub_challenges),
+            'scoring_metric': self.scoring_metric,
+            'synapseId': self.synapseId}
+        txt += """\n\n\nVisit http://dreamchallenges.org to get more information about the challenge\n\n\n"""
+
+        txt += "Any issues/suggestions about DREAMTools itself ? "
+        txt += "Please visit http://github.com/dreamtools/\n\n"
+
+
+        return txt
+
+    def test(self):
+        if len(self.sub_challenges) == 0:
+            self.download_template()
+            self.download_goldstandard()
+        else:
+            for subname in self.sub_challenges:
+                self.download_template(subname)
+                self.download_goldstandard(subname)
+        print(self)

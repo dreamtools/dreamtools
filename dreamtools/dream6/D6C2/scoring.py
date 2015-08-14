@@ -6,6 +6,8 @@ Original matlab code from Bobby Prill
 import os
 from dreamtools.core.challenge import Challenge
 
+__all__ = ['D6C2']
+
 
 class D6C2(Challenge):
     """A class dedicated to D6C2 challenge
@@ -30,9 +32,9 @@ class D6C2(Challenge):
         self._init()
         self.sub_challenges = []
 
-         msg = "This challenge was re done in DREAM7. "
-         msg += "Please, D7C1 challenge instead"
-         raise NotImplementedError(msg)
+        msg = "This challenge was re-done in DREAM7. "
+        msg += "Please, D7C1 challenge instead"
+        raise NotImplementedError(msg)
 
     def _init(self):
         # should download files from synapse if required.

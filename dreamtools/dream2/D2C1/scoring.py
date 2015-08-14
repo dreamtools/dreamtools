@@ -1,13 +1,7 @@
 """D2C2 scoring function
 
-:Title: DREAM2 - BCL6 Transcriptional Target Prediction
-:Nickname: D2C1
-:Summary: Predict the genes for transcription factor binding.
-:SubChallenges: None
-:Synapse page: https://www.synapse.org/#!Synapse:syn3034857
-
-Implementation in Python based on a MATLAB code from
-Gustavo A. Stolovitzky
+Class imlemented in Python based on original code in MATLAB from
+Gustavo A. Stolovitzky.
 
 """
 import pandas as pd
@@ -25,6 +19,11 @@ class D2C1(Challenge, D3D4ROC, DREAM2):
         filename = [self._path2data, "data", "BCL6_targets_and_decoys.xls"]
         filename = self._pj(filename)
         self.decoys = pd.read_excel(filename)
+
+        self.title = "DREAM2 - BCL6 Transcriptional Target Prediction"
+        self.summary = "Predict the genes for transcription factor binding."
+        self.scoring_metric = "AUPR and AUC"
+        self.synapseId = "syn3034857"
 
     def _create_templates(self, filename='test_BCL6targets.txt'):
         templates = self.decoys.copy()

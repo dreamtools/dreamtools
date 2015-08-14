@@ -23,7 +23,6 @@ import pylab
 import numpy as np
 from scipy.stats import kstest
 
-#from scoring import HPNScoringNetwork
 import easydev
 
 __all__ = ["AUCnull"]
