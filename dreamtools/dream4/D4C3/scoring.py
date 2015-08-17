@@ -1,10 +1,8 @@
-"""
+"""D4C3 scoring function
 
-
-Based on Matlab script available on https://www.synapse.org/#!Synapse:syn2825304
-Original code from  Gustavo A. Stolovitzky and Robert Prill.
-Converted to this Python module by Thomas Cokelaer
-
+Based on Matlab script available on
+https://www.synapse.org/#!Synapse:syn2825304, which is an
+original code from  Gustavo A. Stolovitzky and Robert Prill.
 """
 import os
 from dreamtools.core.challenge import Challenge
@@ -27,17 +25,18 @@ class D4C3(Challenge):
     Data and templates are inside Dreamtools.
 
 
-    .. note:: A parameter called cost_per_link is hardcoded for the challenge. IT was compute as
-        the = min {Prediction Score / Edge Count} amongst all submissions. For this scoring
-        function, :attr:`cost_per_link` is set to 0.0827 and may be changed by the user.
-
-
+    .. note:: A parameter called cost_per_link is hardcoded for the challenge.
+        It was compute as min {Prediction Score / Edge Count} amongst all 
+        submissions. For this scoring function, :attr:`cost_per_link` is set 
+        to 0.0827 and may be changed by the user.
 
     """
     def __init__(self, edge_count=None, cost_per_link=0.0827):
         """.. rubric:: constructor
 
-        edge count is required. Itf not provided,a prompt will ask for its value
+        :param int edge_count: if not provided, a prompt will ask for its 
+            value.
+        :param float cost_per_link: a cost
 
         """
         super(D4C3, self).__init__('D4C3')
@@ -47,10 +46,17 @@ class D4C3(Challenge):
         # as r = min(prediction_score / edge_count).
         self.cost_per_link = cost_per_link
         self.edge_count = edge_count
-        self.species = ['AKT', 'ERK12', 'Ikb', 'JNK12', 'p38', 'HSP27', 'MEK12']
+        self.species = ['AKT', 'ERK12', 'Ikb', 'JNK12', 'p38', 
+                'HSP27', 'MEK12']
 
         self._load_gold_standard()
         self._fetch_normalisation()
+
+        self.title = "DREAM4 Predictive Signaling Network Modeling"
+        self.summary = """Predict phosphoprotein measurements using an interpretable, predictive net work"""
+        self.scoring_metric = """difference between prediction and measuremnts.
+then log-transformed average of the pvalues for the  each protein."""
+        self.synapseId = "syn2825304"
 
     def download_goldstandard(self):
         filename = self._pj([self._path2data, 'goldstandard', 'D4C3_goldstandard.csv'])
@@ -120,7 +126,8 @@ class D4C3(Challenge):
 
             # load prob density function
             import scipy.io
-            filename = self._pj([self._path2data, 'data', 'pdf_score_%s.mat' % str(i+1)])
+            filename = self._pj([self._path2data, 'data', 
+                'pdf_score_%s.mat' % str(i+1)])
             proba = scipy.io.loadmat(filename)
             X, Y, C = proba['X'][0], proba['Y'][0], proba['C'][0]
 
@@ -137,6 +144,7 @@ class D4C3(Challenge):
             assert edge_count >= 0
         else:
             edge_count = self.edge_count
+
         self.overall_score = self.prediction_score - self.cost_per_link * edge_count
 
         df = pd.DataFrame()
@@ -148,7 +156,6 @@ class D4C3(Challenge):
         return df
 
         #return a final data dataframe
-
 
     def plot(self):
         """Plots prediction versus gold standard for each species
@@ -165,7 +172,6 @@ class D4C3(Challenge):
             s.plot()
 
         """
-
         if hasattr(self, 'x_norm_log') is False:
             print('Call score() method first. Nothing to plot.')
             return
@@ -239,10 +245,4 @@ class D4C3(Challenge):
 
         b,m =  solution
         rho = np.corrcoef(x,y)[1,0]
-        return m,b,rho
-
-
-
-
-
-
+        return m, b, rho

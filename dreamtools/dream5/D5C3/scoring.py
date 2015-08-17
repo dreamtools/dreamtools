@@ -1,6 +1,6 @@
-"""
+"""D5C3 scoring function
 
-from Gustavo A. Stolovitzky,  Robert Prill, Ph.D.
+Original matlab code from Gustavo A. Stolovitzky,  Robert Prill, Ph.D.
 sub challenge B original code in R from A. de la Fuente
 
 """
@@ -10,6 +10,9 @@ from dreamtools.core.challenge import Challenge
 import pandas as pd
 import numpy as np
 from dreamtools.core.rocs import D3D4ROC
+
+
+__all__ = ["D5C3"]
 
 
 class D5C3(Challenge, D3D4ROC):
@@ -29,7 +32,6 @@ class D5C3(Challenge, D3D4ROC):
 
     For A series, 5 networks are required. For B, 3  are needed.
 
-
     """
     def __init__(self):
         """.. rubric:: constructor
@@ -41,14 +43,19 @@ class D5C3(Challenge, D3D4ROC):
         self.sub_challenges = ['A100', 'A300', 'A999', 'B']
         self.N_pvalues = 100
 
+        self.title = """DREAM5 - Systems Genetics challenges"""
+        self.summary = """Predict disease phenotypes and infer Gene Networks from Systems Genetics data"""
+        self.synapseId = "syn2820440"
+
     def _init(self):
         # should download files from synapse if required.
         # The templates
-        self._download_data('DREAM5_SysGenA100_myteam_Network1.txt', 'syn4561478')
-        self._download_data('DREAM5_SysGenA100_myteam_Network2.txt', 'syn4561482')
-        self._download_data('DREAM5_SysGenA100_myteam_Network3.txt', 'syn4561486')
-        self._download_data('DREAM5_SysGenA100_myteam_Network4.txt', 'syn4561489')
-        self._download_data('DREAM5_SysGenA100_myteam_Network5.txt', 'syn4561493')
+        prefix = 'DREAM5_SysGen'
+        self._download_data(prefix + 'A100_myteam_Network1.txt', 'syn4561478')
+        self._download_data(prefix + 'A100_myteam_Network2.txt', 'syn4561482')
+        self._download_data(prefix + 'A100_myteam_Network3.txt', 'syn4561486')
+        self._download_data(prefix + 'A100_myteam_Network4.txt', 'syn4561489')
+        self._download_data(prefix + 'A100_myteam_Network5.txt', 'syn4561493')
 
         # Get goldstandard and unpack zipped files
         self._download_data('D5C3_goldstandard.zip', 'syn4561554')

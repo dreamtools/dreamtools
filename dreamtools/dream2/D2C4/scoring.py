@@ -17,8 +17,9 @@ class D2C4(Challenge, D3D4ROC, DREAM2):
 
         from dreamtools import D2C4
         s = D2C4()
-        filename = s.download_template()
-        s.score(filename)
+        subname = 'DIRECTED-UNSIGNED_InSilico1'
+        filename = s.download_template(subname)
+        s.score(filename, subname)
 
     """
     def __init__(self):

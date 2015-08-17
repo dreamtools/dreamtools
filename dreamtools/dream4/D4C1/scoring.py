@@ -43,6 +43,15 @@ class D4C1(Challenge):
         self._load_golddata()
         self.results = {'kinase': {}, 'pdz': {}, 'sh3': {}}
 
+
+        self.title = "Peptide Recognition Domain (PRD) Specificity Prediction"
+        self.summary = "Predict protein-protein interactions at the level "
+        self.summary += "of binding domains and peptides"
+        self.scoring_metric = """depends on the sub-challenges. Frobenius distance are computed and their p-values estimate. Then, log-transformed of the AUROC/AUPR p-values"""
+        self.synapseId = "syn2925957"
+
+
+
     def score(self, filename):
         self._load_prediction(filename)
         self.score_kinases()

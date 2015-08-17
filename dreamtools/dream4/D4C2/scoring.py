@@ -1,8 +1,7 @@
-"""
+"""D4C2 scoring function
 
-Implementation in Python from Thomas Cokelaer.
-Original code in matlab (Gustavo Stolovitzky and Robert Prill).
 
+From an original code in matlab (Gustavo Stolovitzky and Robert Prill).
 
 """
 import os
@@ -22,12 +21,9 @@ class D4C2(Challenge, D3D4ROC):
         from dreamtools import D4C2
         s = D4C2()
         filename = s.download_template(10, )
-        s.score(filename) 
+        s.score(filename)
 
     Data and templates are downloaded from Synapse. You must have a login.
-
-
-    So far only 1 network at a time is scored using scor_prediction.
 
 
     """
@@ -39,6 +35,11 @@ class D4C2(Challenge, D3D4ROC):
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = ['10', '100', '100_multifactorial']
+
+        self.title = "DREAM4 In Silico Network Challenge"
+        self.summary = """Infer simulated gene regulation networks and predict gene expression measurements"""
+        self.scoring_metric = """same as challenge D3C4 (mean of AUROC and AUPR computed as log-transformed average of all p-values) """
+        self.synapseId = "syn3049714"
 
     def _init(self):
         # should download files from synapse if required.
@@ -119,10 +120,10 @@ class D4C2(Challenge, D3D4ROC):
             results['SCORE'] = overall_score
             results = pd.TimeSeries(results)
 
-            results = results[['SCORE', 'AUPR_PVAL', 'AUPR_SCORE', 
-                'AUROC_PVAL', 'AUROC_SCORE', 'Net1_AUPR',  'Net2_AUPR', 
+            results = results[['SCORE', 'AUPR_PVAL', 'AUPR_SCORE',
+                'AUROC_PVAL', 'AUROC_SCORE', 'Net1_AUPR',  'Net2_AUPR',
                 'Net3_AUPR', 'Net4_AUPR', 'Net5_AUPR',
-                'Net1_AUROC', 'Net2_AUROC',   'Net3_AUROC', 
+                'Net1_AUROC', 'Net2_AUROC',   'Net3_AUROC',
                 'Net4_AUROC', 'Net5_AUROC']]
             return results
 
@@ -166,7 +167,7 @@ class D4C2(Challenge, D3D4ROC):
         return data
 
     def score_prediction(self, filename=None, subname=None):
-        """This is a longish scoring function translated from the 
+        """This is a longish scoring function translated from the
         matlab original code of D4C2
 
         :param filename:
@@ -186,19 +187,18 @@ class D4C2(Challenge, D3D4ROC):
         self.gold_data = self._load_network(gs_filename)
         self.pdf_data = self.load_prob(pdf_filename)
 
-
         # append rank small to large
-        newtest = pd.merge(self.test_data, self.gold_data, how='inner', 
+        newtest = pd.merge(self.test_data, self.gold_data, how='inner',
                 on=[0,1])
         test = list(newtest['2_x'])
         gold_index = list(newtest['2_y'])
 
-        AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_data, 
+        AUC, AUROC, prec, rec, tpr, fpr = self.get_statistics(self.gold_data,
                 self.test_data, gold_index)
 
-        p_auroc = self._probability(self.pdf_data['auroc_X'][0], 
+        p_auroc = self._probability(self.pdf_data['auroc_X'][0],
                 self.pdf_data['auroc_Y'][0], AUROC)
-        p_aupr = self._probability(self.pdf_data['aupr_X'][0], 
+        p_aupr = self._probability(self.pdf_data['aupr_X'][0],
                 self.pdf_data['aupr_Y'][0], AUC)
 
         return {'AUPR': AUC, 'AUROC':AUROC, 'prec':prec,

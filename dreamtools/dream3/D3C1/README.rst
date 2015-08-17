@@ -4,7 +4,7 @@ Overview
 
 
 :Title: DREAM 3 Signaling Cascade Identification
-:Nickname: D3C1
+:Alias: D3C1
 :Summary: Infer a signaling network from flow cytometry data
 :SubChallenges: None
 :Scoring metric: probability of having N correct predictions

@@ -1,11 +1,7 @@
-"""
+"""D3C2 scoring function
 
-
-
-
-Implementation in Python from Thomas Cokelaer.
-Original code in matlab (Gustavo Stolovitzky and Robert Prill).
-
+Implemented after an original MATLAB code from Gustavo Stolovitzky and 
+Robert Prill.
 
 """
 import os
@@ -36,6 +32,11 @@ class D3C2(Challenge):
         super(D3C2, self).__init__('D3C2')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.sub_challenges = ['phospho', 'cytokine']
+        self.title = "DREAM3 Signaling Response Prediction"
+        self.summary = "Predict missing protein concentrations from a large corpus of measurements"
+        self.scoring_metric = "distance to prediction."
+        self.synapseId = "syn2825325"
+
         self._init()
 
     def _init(self):
@@ -47,26 +48,26 @@ class D3C2(Challenge):
 
     def download_template(self, name):
         self._check_sub_challenge_name(name)
-        filename = self._pj([self._path2data, 'templates', 'D3C2_template_%s.txt' % name])
+        filename = self._pj([self._path2data, 'templates', 
+            'D3C2_template_%s.txt' % name])
         return filename
 
-
     def download_goldstandard(self, subname):
-        gs_filename = self._pj([self._path2data, 'goldstandard', 'D3C2_goldstandard_%s.txt' % subname])
+        gs_filename = self._pj([self._path2data, 'goldstandard', 
+            'D3C2_goldstandard_%s.txt' % subname])
         return gs_filename
 
     def score(self, filename, subname):
-        """This is a longish scoring function translated from the matlab original code of D4C2
-
-        """
+        """Returns score of a prediction"""
         self._check_sub_challenge_name(subname)
 
         gs_filename = self.download_goldstandard(subname)
 
-
         pdf_filename = self.get_pathname('D3C2_proba_%s.mat' % subname)
-        #%% Read the probability density function that we computed (empirically) elsewhere
-        #%% NOTE: This loads: X, Y, and C, where C is a constant that scales the pdf to the histogram
+        # Read the probability density function that we computed 
+        # (empirically) elsewhere
+        # NOTE: This loads: X, Y, and C, where C is a constant that 
+        # scales the pdf to the histogram
         temp = self.loadmat(pdf_filename)
         X = temp['X'][0]
         Y = temp['Y'][0]
@@ -90,8 +91,8 @@ class D3C2(Challenge):
         return sum(Y[X <= x]) * (X[1] - X[0])
 
     def _performance_score(self, G, T):
-        ACC = 300			# accuracy of the dector (lower limit of detection)
-        GAMMA = 0.08		# coeff of variation (gamma) mostly due to biological error
+        ACC = 300       # accuracy of the dector (lower limit of detection)
+        GAMMA = 0.08    # coeff of variation (gamma) due to biological error
 
         numer = (G - T)**2
         denom = ACC**2 + (GAMMA * G)**2

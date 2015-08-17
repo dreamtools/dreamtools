@@ -4,7 +4,7 @@ Overview
 
 
 :Title: Peptide Recognition Domain (PRD) Specificity Prediction
-:Nickname: D4C1
+:Alias: D4C1
 :Summary: Predict protein-protein interactions at the level of binding domains and peptides
 :SubChallenges: There were 3 sub-challenges however the template should contain
     all sub-challenges all together

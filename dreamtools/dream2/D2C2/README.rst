@@ -4,7 +4,7 @@ Overview
 
 
 :Title: DREAM2 - Protein-Protein Interaction Network Inference
-:Nickname: D2C2
+:Alias: D2C2
 :Summary: Predict a PPI network of 47 proteins
 :SubChallenges: None
 :SCoring metric: AUPR and AUC

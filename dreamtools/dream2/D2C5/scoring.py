@@ -15,8 +15,9 @@ class D2C5(Challenge, D3D4ROC, DREAM2):
 
         from dreamtools import D2C5
         s = D2C5()
-        filename = s.download_template() 
-        s.score(filename) 
+        subname = "UNSIGNED"
+        filename = s.download_template(subname) 
+        s.score(filename, subname) 
 
     """
     def __init__(self):
@@ -36,8 +37,6 @@ class D2C5(Challenge, D3D4ROC, DREAM2):
         self.summary = """Reconstruct a genome scale regulatory network from a large collection of microarrays"""
         self.scoring_metric = "AUPR or AUROc for each sub challenge."
         self.synapseId = "syn3034894"
-
-
 
     def _init(self):
         # should download files from synapse if required.

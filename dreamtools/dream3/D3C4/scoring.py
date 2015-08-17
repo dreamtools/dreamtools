@@ -39,6 +39,11 @@ class D3C4(Challenge, D3D4ROC):
         self.sub_challenges = ['10', '100', '50']
         self.netnames = ['Yeast3', 'Yeast1', 'Yeast2', 'Ecoli2', 'Ecoli1']
 
+        self.title = "DREAM 3 In Silico Network Challenge"
+        self.summary = "Infer simulated gene regulation networks"
+        self.scoring_metric = """an of AUROC and AUPR computed as log-transformed average of the 5 p-values."""
+        self.synapseId = "syn2853594"
+
     def _init(self):
         # should download files from synapse if required.
         # First the PDF

@@ -1,4 +1,4 @@
-"""
+"""D3C1 scoring function
 
 
 Original matlab code from Gustavo A. Stolovitzky and Robert Prill.
@@ -30,6 +30,11 @@ class D3C1(Challenge):
 
         # read data required for the scoring.
         self._init()
+
+        self.title = "DREAM 3 Signaling Cascade Identification"
+        self.summary = "Infer a signaling network from flow cytometry data"
+        self.scoring_metric = "probability of having N correct predictions"
+        self.synapseId = "syn3033068"
 
     def _init(self):
         self._load_proba()
@@ -63,7 +68,7 @@ class D3C1(Challenge):
         challenge)"""
         # There is a matlab file called data/PDF_SignalingCascadeChallenge.mat
         # but it appears to be very simple so it is hardcoded here below
-        self.X = np.array([0,1,2,3,4])
+        self.X = np.array([0, 1, 2, 3, 4])
         self.Y = np.array([0.55357143,  0.33809524,  0.09285714,  0.01428571,
             0.00119048])
         # 4 proteins, 7 assignements. P(4 correct) = 1/ (7*6*5*4)

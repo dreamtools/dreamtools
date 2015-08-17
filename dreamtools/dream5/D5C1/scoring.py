@@ -1,12 +1,15 @@
-"""
-
+"""D5C1 scoring function
 
 From an original matlab code from Gustavo A. Stolovitzky, Robert Prill
+
 """
 import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
 import numpy as np
+
+
+__all__ = "D5C1"
 
 
 class D5C1(Challenge):
@@ -17,8 +20,8 @@ class D5C1(Challenge):
 
         from dreamtools import D5C1
         s = D5C1()
-        filename = s.download_template() 
-        s.score(filename) 
+        filename = s.download_template()
+        s.score(filename)
 
     Data and templates are downloaded from Synapse. You must have a login.
 
@@ -31,6 +34,12 @@ class D5C1(Challenge):
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = []
+
+        self.title = """DREAM5 - Epitope-Antibody Recognition (EAR) Specificity
+ Prediction """
+        self.summary = """Predict the binding specificity of peptide-antibody interactions. """
+        self.scoring_metric = """ROC curve is computed with AUC and AUPR metrics and p-values.overall score is the mean of those 2 p-values."""
+        self.synapseId = "syn2820433"
 
     def _init(self):
         # should download files from synapse if required.
@@ -61,13 +70,13 @@ class D5C1(Challenge):
         """
         self._load_proba()
         prediction = pd.read_csv(filename, sep='[ \t]', engine='python', header=None)
-        gold = pd.read_csv(self.download_goldstandard(), sep='[ \t]', 
+        gold = pd.read_csv(self.download_goldstandard(), sep='[ \t]',
                 engine='python', header=None)
         prediction.columns = ['sequence', 'value']
         gold.columns = ['sequence', 'value']
 
         # merge the prediction and gold based on the sequence.
-        data = pd.merge(prediction, gold, how='inner', on=['sequence'], 
+        data = pd.merge(prediction, gold, how='inner', on=['sequence'],
                 suffixes=['_pred', '_gold'])
         # sory by prediction
         data.sort(columns=['value_pred'], ascending=False, inplace=True)
@@ -86,7 +95,7 @@ class D5C1(Challenge):
 
         score = np.mean(-np.log10([P_AUROC, P_AUPR]))
 
-        return {'auroc':auroc, 'aupr':aupr, 'pval_aupr': P_AUPR, 
+        return {'auroc':auroc, 'aupr':aupr, 'pval_aupr': P_AUPR,
                 'pval_auroc':P_AUROC, 'score':score}
 
     def _probability(self, X, Y, x):

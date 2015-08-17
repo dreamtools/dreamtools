@@ -15,8 +15,10 @@
 ##############################################################################
 """D5C2 challenge scoring functions
 
-:Credits: Based on TF_web.pl (perl version) provided by Raquel Norel (Columbia University/IBM)
-   that is used wihtin the web server http://www.ebi.ac.uk/saezrodriguez-srv/d5c2/cgi-bin/TF_web.pl
+Based on TF_web.pl (perl version) provided by Raquel Norel (Columbia
+University/IBM) also used by the web server http://www.ebi.ac.uk/saezrodriguez-srv/d5c2/cgi-bin/TF_web.pl
+
+This implementation is independent of the web server.
 """
 import os
 from os.path import join as pj
@@ -41,7 +43,8 @@ class D5C2(Challenge):
         from dreamtools import D5C2
         s = D5C2()
 
-        # You can get a template from www.synapse.org page (you need to register)
+        # You can get a template from www.synapse.org page (you need 
+        # to register)
         filename = s.download_template()
         s.score(filename) # takes about 5 minutes
         s.get_table()
@@ -65,8 +68,13 @@ class D5C2(Challenge):
         self._dvps = {}
         self._probes = {}
 
+        self.title = "DREAM5 - TF-DNA Motif Recognition Challenge"
+        self.summary = "Predict the specificity of a Transcription Factor binding to a 35-mer probe"
+        self.synapseId = "syn2887863"
+
     def score(self, prediction_file):
-        """Compute all results and compare user prediction with all official participants
+        """Compute all results and compare prediction with official participants
+
 
         This scoring function can take a long time (about 5-10 minutes).
         """
@@ -107,6 +115,17 @@ class D5C2(Challenge):
             this = pj(self.tmpdir, directory)
             if os.path.exists(this) is False:
                 os.mkdir(this)
+
+    def download_goldstandard(self):
+
+        filename = self._download_data('DREAM5_GoldStandard_probes.zip', 
+                'syn2898469')
+        print("Note: to get a valid gold standard, \n")
+        print(" 1 - Unzip the file\n")
+        print(" 2 - Extract the first, second, fourth column\n")
+        print(" 3 - Replace spaces by tabs\n")
+        print(" 4 - zip the file\n")
+        return filename
 
     def download_all_data(self):
         """Download all large data sets from Synapse"""
@@ -277,7 +296,7 @@ class D5C2(Challenge):
 
             df.to_csv(self._setfile(tf_index, 'Out'), sep=' ', index=False, header=None, float_format="%.6f")
             pb.animate(tf_index)
-        print("")
+        print("ooooooooooo")
         ################################################# 2 create the DVP
 
         pb = progress_bar(self.Ntf, interval=1)
@@ -410,43 +429,55 @@ class D5C2(Challenge):
         df = pd.concat([participants, userdf])
         return (df, userdf)
 
-    def plot(self):
+    def plot(self, fontsize=16):
         """Show the user prediction compare to 20 other participants"""
         df, userdf = self._get_table()
 
         import pylab
         pylab.clf();
         pylab.subplot(2,2,1)
-        pylab.plot(df.AUROC_8mer, df.AUPR_8mer, marker='+', color='k', lw=0, markersize=10)
-        pylab.plot(userdf.AUROC_8mer, userdf.AUPR_8mer, marker='s', color='b', lw=0, markersize=10)
-        pylab.xlim([0,1])
-        pylab.ylim([0,1])
-        pylab.xlabel('AUROC octamers')
-        pylab.ylabel('AURPR octamers')
+        pylab.plot(df.AUROC_8mer, df.AUPR_8mer, 
+                marker='+', color='k', lw=0, markersize=10)
+        pylab.plot(userdf.AUROC_8mer, userdf.AUPR_8mer, 
+                marker='s', color='b', lw=0, markersize=10)
+        pylab.xlim([0, 1])
+        pylab.ylim([0, 1])
+        pylab.xlabel('AUROC octamers', fontsize=fontsize)
+        pylab.ylabel('AURPR octamers', fontsize=fontsize)
+        pylab.grid()
 
-        pylab.subplot(2,2,2)
-        pylab.plot(df.AUROC_probe, df.AUPR_probe, marker='+', color='k', lw=0, markersize=10)
-        pylab.plot(userdf.AUROC_probe, userdf.AUPR_probe, marker='s', color='b', lw=0, markersize=10)
-        pylab.xlim([0,1])
-        pylab.ylim([0,1])
-        pylab.xlabel('AUROC probes')
-        pylab.ylabel('AURPR probes')
+        pylab.subplot(2, 2, 2)
+        pylab.plot(df.AUROC_probe, df.AUPR_probe, 
+                marker='+', color='k', lw=0, markersize=10)
+        pylab.plot(userdf.AUROC_probe, userdf.AUPR_probe, 
+                marker='s', color='b', lw=0, markersize=10)
+        pylab.xlim([0, 1])
+        pylab.ylim([0, 1])
+        pylab.xlabel('AUROC probes', fontsize=fontsize)
+        pylab.ylabel('AURPR probes', fontsize=fontsize)
+        pylab.grid()
 
         pylab.subplot(2,2,3)
-        pylab.plot(df.Pearson, df.Spearman, marker='+', color='k', lw=0, markersize=10)
-        pylab.plot(userdf.Pearson, userdf.Spearman, marker='s', color='b', lw=0, markersize=10)
-        pylab.xlim([0,1])
-        pylab.ylim([0,1])
-        pylab.xlabel('Pearson probes')
-        pylab.ylabel('Spearman probes')
+        pylab.plot(df.Pearson, df.Spearman, 
+                marker='+', color='k', lw=0, markersize=10)
+        pylab.plot(userdf.Pearson, userdf.Spearman, 
+                marker='s', color='b', lw=0, markersize=10)
+        pylab.xlim([0, 1])
+        pylab.ylim([0, 1])
+        pylab.xlabel('Pearson probes', fontsize=fontsize)
+        pylab.ylabel('Spearman probes', fontsize=fontsize)
+        pylab.grid()
 
-        pylab.subplot(2,2,4)
-        pylab.plot(df.Pearson, df.Pearson_Log, marker='+', color='k', lw=0, markersize=10)
-        pylab.plot(userdf.Pearson, userdf.Pearson_Log, marker='s', color='b', lw=0, markersize=10)
-        pylab.xlim([0,1])
-        pylab.ylim([0,1])
-        pylab.xlabel('Pearson probes')
-        pylab.ylabel('Log Pearson probes')
+        pylab.subplot(2, 2, 4)
+        pylab.plot(df.Pearson, df.Pearson_Log, 
+                marker='+', color='k', lw=0, markersize=10)
+        pylab.plot(userdf.Pearson, userdf.Pearson_Log, 
+                marker='s', color='b', lw=0, markersize=10)
+        pylab.xlim([0, 1])
+        pylab.ylim([0, 1])
+        pylab.xlabel('Pearson probes', fontsize=fontsize)
+        pylab.ylabel('Log Pearson probes', fontsize=fontsize)
+        pylab.grid()
 
     def cleanup(self):
         """Remove the temporary directory"""

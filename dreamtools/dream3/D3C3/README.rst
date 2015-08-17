@@ -4,7 +4,7 @@ Overview
 
 
 :Title: DREAM3 Gene Expression Prediction
-:Nickname: D3C3
+:Alias: D3C3
 :Summary: Predict missing gene expression measurements
 :SubChallenges: different network size (10, 50, 100)
 :Scoring metric: p-value of a test for association between paired

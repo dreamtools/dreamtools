@@ -12,7 +12,6 @@ import os
 class D3C3(Challenge):
     """A class dedicated to D3C3 challenge
 
-
     ::
 
         from dreamtools import D3C3
@@ -36,10 +35,13 @@ class D3C3(Challenge):
         """
         super(D3C3, self).__init__('D3C3')
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
-        self._init()
 
-    def _init(self):
-       pass
+        self.title = "DREAM3 Gene Expression Prediction"
+        self.summary = "Predict missing gene expression measurements"
+        self.scoring_metric = """p-value of a test for association between paired samples using the spearman rank correlation."""
+        self.synapseId = "syn3033083"
+        #:SubChallenges: different network size (10, 50, 100)
+
 
     def download_goldstandard(self):
         return self._pj([self._path2data, 'goldstandard', 

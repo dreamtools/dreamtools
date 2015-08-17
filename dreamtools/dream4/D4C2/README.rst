@@ -4,7 +4,7 @@ Overview
 
 
 :Title: DREAM4 In Silico Network Challenge
-:Nickname: D4C2
+:Alias: D4C2
 :Summary: Infer simulated gene regulation networks and predict gene expression measurements
 :SubChallenges: 3 called (10,100,100_multifactorial)
 :Scoring metric: same as challenge D3C4 (mean of AUROC and AUPR computed as log-transformed average of several p-values) 

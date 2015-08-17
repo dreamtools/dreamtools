@@ -193,14 +193,14 @@ def scoring(args=None):
         txt += " (sub-challenge %s)" % options.sub_challenge
     txt += " is :\n"
 
-    try:
-        import pandas as pd
-        df = pd.TimeSeries(res['Results'])
-        print(df)
-    except:
-        for k in sorted(res.keys()):
-            txt += darkgreen("     %s:\n %s\n" %(k, res[k]))
-        print(txt)
+    #try:
+    #    import pandas as pd
+    #    df = pd.TimeSeries(res['Results'])
+    #    print(df)
+    #except:
+    for k in sorted(res.keys()):
+        txt += darkgreen("     %s:\n %s\n" %(k, res[k]))
+    print(txt)
 
 
 class Options(argparse.ArgumentParser):

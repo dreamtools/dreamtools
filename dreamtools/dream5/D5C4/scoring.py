@@ -1,4 +1,4 @@
-"""
+"""D5C4 scoring function
 
 Based on original matlab code from Gustavo A. Stolovitzky and Robert Prill
 
@@ -33,6 +33,11 @@ class D5C4(Challenge, D3D4ROC):
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = []
+        self.title = "DREAM5 - Network Inference Challenge"
+        self.summary = "Infer simulated and in-vivo regulation networks"
+        self.synapseId = "syn2787209"
+
+
 
     def _init(self):
         # should download files from synapse if required.

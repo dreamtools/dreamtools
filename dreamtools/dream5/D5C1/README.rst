@@ -4,7 +4,7 @@ Overview
 
 
 :Title: DREAM5 - Epitope-Antibody Recognition (EAR) Specificity Prediction 
-:Nickname: D5C1
+:Alias: D5C1
 :Summary: Predict the binding specificity of peptide-antibody interactions. 
 :SubChallenges: None
 :Scoring metric: ROC curve is computed with AUC and AUPR metrics and p-values.
