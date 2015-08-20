@@ -38,14 +38,9 @@ class D5C3(Challenge, D3D4ROC):
 
         """
         super(D5C3, self).__init__('D5C3')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = ['A100', 'A300', 'A999', 'B']
         self.N_pvalues = 100
-
-        self.title = """DREAM5 - Systems Genetics challenges"""
-        self.summary = """Predict disease phenotypes and infer Gene Networks from Systems Genetics data"""
-        self.synapseId = "syn2820440"
 
     def _init(self):
         # should download files from synapse if required.
@@ -94,11 +89,11 @@ class D5C3(Challenge, D3D4ROC):
 
         self._check_subname(subname)
         if subname == 'B':
-            filenames = [self._pj([self._path2data, 'templates',
+            filenames = [self._pj([self.classpath, 'templates',
                                    "DREAM5_SysGenB1_your_Predictions.txt" ])]
-            filenames.append(self._pj([self._path2data, 'templates',
+            filenames.append(self._pj([self.classpath, 'templates',
                                    "DREAM5_SysGenB2_your_Predictions.txt" ]))
-            filenames.append(self._pj([self._path2data, 'templates',
+            filenames.append(self._pj([self.classpath, 'templates',
                                    "DREAM5_SysGenB3_your_Predictions.txt" ]))
         else:
             filenames = []
@@ -113,11 +108,11 @@ class D5C3(Challenge, D3D4ROC):
         # if not, the network _1 is returned only
         self._check_subname(subname)
         if subname == 'B':
-            filenames = [self._pj([self._path2data, 'goldstandard',
+            filenames = [self._pj([self.classpath, 'goldstandard',
                 "DREAM5_SysGenB1_TestPhenotypeData.txt" ])]
-            filenames.append(self._pj([self._path2data, 'goldstandard',
+            filenames.append(self._pj([self.classpath, 'goldstandard',
                 "DREAM5_SysGenB2_TestPhenotypeData.txt"]))
-            filenames.append(self._pj([self._path2data, 'goldstandard',
+            filenames.append(self._pj([self.classpath, 'goldstandard',
                 "DREAM5_SysGenB3_TestPhenotypeData.txt"]))
             return filenames
         else:
@@ -297,7 +292,7 @@ class D5C3(Challenge, D3D4ROC):
             self.golds.append(gold)
 
             #filename = 'DREAM5_SysGenB%s_your_Predictions.txt' % tag
-            #filename = self._pj([self._path2data, 'data', filename])
+            #filename = self._pj([self.classpath, 'data', filename])
             filename = filenames[tag-1]
             pred1 = pd.read_csv(filename, sep='[ \t]', engine='python')
             self.preds.append(pred1)
