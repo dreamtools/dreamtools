@@ -11,13 +11,6 @@ version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
 
-## compile cython code
-def post_process():
-    cwd = os.getcwd()
-    os.chdir('dreamtools/dream8/D8C1')
-    os.system('python setup.py build_ext --inplace')
-    os.chdir(cwd)
-
 
 metainfo = {
     'authors': {
@@ -82,7 +75,7 @@ setup(
         'easydev>=0.8.5', 'fitter',
         'synapseclient', 'tabulate', 'cython'],
 
-    ext_modules = cythonize("dreamtools/dream8/D8C1/*.pyx"),
+    ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"]),
 
 
     entry_points = {
