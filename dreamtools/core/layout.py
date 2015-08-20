@@ -75,13 +75,8 @@ class %(alias)s(Challenge):
 
         """
         super(%(alias)s, self).__init__('%(alias)s')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = []
-        self.title = "undefined"
-        self.summary = "undefined"
-        self.scoring_metric = "undefined"
-        self.synapseId = "undefined"
 
     def _init(self):
         # should download files from synapse if required.
