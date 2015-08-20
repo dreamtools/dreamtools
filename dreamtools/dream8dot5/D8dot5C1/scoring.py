@@ -12,11 +12,13 @@
 #
 #  website: http://github.org/dreamtools
 ##############################################################################
-import os
-import pandas as pd
+from dreamtools import Challenge
 
 
-'''
+__all__ = ["D8dot5C1"]
+
+
+"""
 def sanity_check_userSubmission(goldStandard, user_predicted_response,
                                 expected_columnNames = None):
 
@@ -42,11 +44,10 @@ def sanity_check_userSubmission(goldStandard, user_predicted_response,
         submissionResult.error=True
         submissionResult.error_message='NA/missing values found in the submission'
         return
-'''
+"""
 
 
-
-class D8dot5C1():
+class D8dot5C1(Challenge):
     """A class dedicated to D8dot5C1 challenge
 
     ::
@@ -56,14 +57,11 @@ class D8dot5C1():
         filename = s.download_template() 
         s.score(filename) 
 
-    Data and templates are downloaded from Synapse. You must have a login.
     """
     def __init__(self):
-        """.. rubric:: constructor
-        """
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
+        """.. rubric:: constructor"""
+        super(D8dot5C1, self).__init__('D8dot5C1')
         self.sub_challenges = ['sc1', 'sc2']
-
 
     def score(self, filename, sub_challenge_name):
         """Scoring functions for the 2 sub challenges"""
@@ -94,17 +92,10 @@ class D8dot5C1():
         """Download template 
         """
         if sub_challenge == 'sc1':
-            filename = os.sep.join([self._path2data, 'data', 'dummy_template_sc1.csv'])
+            filename = self.getpath_template('dummy_template_sc1.csv')
             return filename
         elif sub_challenge == 'sc2':
-            filename = os.sep.join([self._path2data, 'data', 'dummy_template_sc2.csv'])
+            filename = self.getpath_template('dummy_template_sc2.csv')
             return filename
         else:
             ValueError("Invalid sub challenge. Use one of %s" % self.sub_challenges)
-
-
-
-
-
-
-
