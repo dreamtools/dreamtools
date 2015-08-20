@@ -23,7 +23,6 @@ class D2C5(Challenge, D3D4ROC, DREAM2):
     def __init__(self):
         """.. rubric:: constructor"""
         super(D2C5, self).__init__('D2C5')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
 
         # although there is no sub challenges per se,
@@ -32,11 +31,6 @@ class D2C5(Challenge, D3D4ROC, DREAM2):
             'SIGNED_EXCITATORY',
             'SIGNED_INHIBITORY',
             'UNSIGNED']
-
-        self.title = "Genome-Scale network inference"
-        self.summary = """Reconstruct a genome scale regulatory network from a large collection of microarrays"""
-        self.scoring_metric = "AUPR or AUROc for each sub challenge."
-        self.synapseId = "syn3034894"
 
     def _init(self):
         # should download files from synapse if required.

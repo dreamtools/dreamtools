@@ -14,16 +14,10 @@ from dreamtools.core.rocs import D3D4ROC, DREAM2
 class D2C1(Challenge, D3D4ROC, DREAM2):
     def __init__(self):
         super(D2C1, self).__init__('D2C1')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
-        filename = [self._path2data, "data", "BCL6_targets_and_decoys.xls"]
+        filename = [self.classpath, "data", "BCL6_targets_and_decoys.xls"]
         filename = self._pj(filename)
         self.decoys = pd.read_excel(filename)
-
-        self.title = "DREAM2 - BCL6 Transcriptional Target Prediction"
-        self.summary = "Predict the genes for transcription factor binding."
-        self.scoring_metric = "AUPR and AUC"
-        self.synapseId = "syn3034857"
 
     def _create_templates(self, filename='test_BCL6targets.txt'):
         templates = self.decoys.copy()
@@ -35,11 +29,11 @@ class D2C1(Challenge, D3D4ROC, DREAM2):
 
     def download_template(self):
         """Returns D2C1 template location"""
-        return self._pj([self._path2data, 'templates', 'D2C1_template.tsv'])
+        return self._pj([self.classpath, 'templates', 'D2C1_template.tsv'])
 
     def download_goldstandard(self):
         """Returns D2C1 gold standard file location"""
-        return self._pj([self._path2data, 'goldstandard',
+        return self._pj([self.classpath, 'goldstandard',
                         'D2C1_goldstandard.tsv'])
 
     def score(self, filename):
@@ -54,7 +48,6 @@ class D2C1(Challenge, D3D4ROC, DREAM2):
         gold = self.download_goldstandard()
 
         # load predictions
-
         self.gold_edges = pd.read_csv(gold, sep='\t', header=None)
         self.prediction = pd.read_csv(filename,  sep='\t', header=None)
 

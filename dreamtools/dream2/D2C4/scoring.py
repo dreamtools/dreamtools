@@ -25,7 +25,6 @@ class D2C4(Challenge, D3D4ROC, DREAM2):
     def __init__(self):
         """.. rubric:: constructor"""
         super(D2C4, self).__init__('D2C4')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
 
         # although there is no sub challenges per se,
@@ -40,11 +39,6 @@ class D2C4(Challenge, D3D4ROC, DREAM2):
             self.sub_challenges.append('UNDIRECTED-SIGNED_INHIBITORY_%s' %name)
             self.sub_challenges.append('DIRECTED-SIGNED_EXCITATORY_%s' %name)
             self.sub_challenges.append('DIRECTED-SIGNED_INHIBITORY_%s' %name)
-
-        self.title = "In-silico Network Inference"
-        self.summary = """Reconstruct a genome scale regulatory network from a large collection of microarrays"""
-        self.scoring_metric = "AUPR and AUROC for each sub challenge"
-        self.synapseId = "syn2825394"
 
     def _init(self):
         # should download files from synapse if required.

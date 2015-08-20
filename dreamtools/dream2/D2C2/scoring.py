@@ -25,21 +25,14 @@ class D2C2(Challenge, D3D4ROC, DREAM2):
     def __init__(self):
         """.. rubric:: constructor"""
         super(D2C2, self).__init__('D2C2')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
-        self.sub_challenges = []
-
-        self.title = "DREAM2 - Protein-Protein Interaction Network Inference"
-        self.summary = "Predict a PPI network of 47 proteins"
-        self.synapseId = "syn2825374"
-        self.scoring_metric = "AUPR and AUROC"
 
     def download_template(self):
         """Returns a valid template"""
-        return self._pj([self._path2data, 'templates', 'D2C2_template.txt'])
+        return self._pj([self.classpath, 'templates', 'D2C2_template.txt'])
 
     def download_goldstandard(self):
         """Returns the gold standard"""
-        return  self._pj([self._path2data, 'goldstandard',
+        return self._pj([self.classpath, 'goldstandard',
             'D2C2_goldstandard.txt'])
 
     def score(self, filename):
@@ -51,12 +44,12 @@ class D2C2(Challenge, D3D4ROC, DREAM2):
         """
         gold = self.download_goldstandard()
 
-        self.gold_edges =  pd.read_csv(gold, sep='\t', header=None)
-        self.prediction =  pd.read_csv(filename, sep='\t', header=None)
+        self.gold_edges = pd.read_csv(gold, sep='\t', header=None)
+        self.prediction = pd.read_csv(filename, sep='\t', header=None)
 
         #
         newtest = pd.merge(self.prediction, self.gold_edges,
-            how='inner', on=[0,1])
+            how='inner', on=[0, 1])
 
         test = list(newtest['2_x'])
         gold_index = list(newtest['2_y'])
@@ -69,12 +62,12 @@ class D2C2(Challenge, D3D4ROC, DREAM2):
         spec_prec = self.compute_specific_precision_values(P, rec)
 
         # for plotting
-        self.metrics = {'AUPR':AUC, 'AUROC':AUROC ,
+        self.metrics = {'AUPR': AUC, 'AUROC': AUROC ,
             'tpr':  tpr, 'fpr':  fpr,
             'rec':  rec, 'prec':  prec,
             'precision at nth correct prediction':  spec_prec}
 
-        results = {'AUPR':AUC, 'AUROC':AUROC }
+        results = {'AUPR': AUC, 'AUROC': AUROC}
         results['precision at nth correct prediction'] = spec_prec
 
         return results

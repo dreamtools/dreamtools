@@ -12,7 +12,6 @@ from dreamtools.core.rocs import D3D4ROC, DREAM2
 class D2C3(Challenge, D3D4ROC, DREAM2):
     """A class dedicated to D2C3 challenge
 
-
     ::
 
         from dreamtools import D2C3
@@ -31,7 +30,6 @@ class D2C3(Challenge, D3D4ROC, DREAM2):
     def __init__(self):
         """.. rubric:: constructor"""
         super(D2C3, self).__init__('D2C3')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
         # although there is no sub challenges per se,
         # 12 different GS were used to score 12 types
@@ -51,11 +49,6 @@ class D2C3(Challenge, D3D4ROC, DREAM2):
             "UNDIRECTED-UNSIGNED_chip",
             "UNDIRECTED-UNSIGNED_qPCR"]
 
-        self.title = "DREAM2 - Synthetic Five-Gene Network Inference"
-        self.summary = "Infer a gene regulation network from qPCR and microarray measurements"
-        self.synapseId = "syn3034869"
-        self.scoring_metric = "AUPR and AUROC metrics"
-
     def download_goldstandard(self, subname=None):
         """Returns one of the 12 gold standard files
 
@@ -63,21 +56,21 @@ class D2C3(Challenge, D3D4ROC, DREAM2):
             See :attr:`sub_challenges`
         """
         self._check_subname(subname)
-        gold = self._pj([self._path2data, 'goldstandard',
+        gold = self._pj([self.classpath, 'goldstandard',
             'D2C3_goldstandard_%s.txt' % subname])
         return gold
 
     def download_template(self, subname=None):
         self._check_subname(subname)
         filename = 'D2C3_templates_%s.txt' % subname
-        return self._pj([self._path2data, 'templates', filename])
+        return self._pj([self.classpath, 'templates', filename])
 
     def score(self, filename, subname=None):
         goldstandard = self.download_goldstandard(subname)
-        self.gold_edges =  pd.read_csv(goldstandard, sep='\t', header=None)
-        self.prediction =  pd.read_csv(filename, sep='\t', header=None)
+        self.gold_edges = pd.read_csv(goldstandard, sep='\t', header=None)
+        self.prediction = pd.read_csv(filename, sep='\t', header=None)
         newtest = pd.merge(self.prediction, self.gold_edges, how='inner',
-                on=[0,1])
+                on=[0, 1])
 
         test = list(newtest['2_x'])
         gold_index = list(newtest['2_y'])
