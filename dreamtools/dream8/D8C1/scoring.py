@@ -61,7 +61,6 @@ class D8C1(Challenge):
 
     def __init__(self, version=2):
         super(D8C1, self).__init__('D8C1')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.sub_challenges = ['SC1A','SC1B','SC2A','SC2B']
         self._init()
         self.version = version
@@ -80,7 +79,7 @@ class D8C1(Challenge):
             filename = 'alphabeta-Prediction-Insilico.zip'
         else:
             raise ValueError('Invalid name. Use one of %s' % self.sub_challenges)
-        return self._pj([self._path2data, 'templates', filename])
+        return self.getpath_template(filename)
 
     def score(self, filename, subname=None):
         if subname == 'SC1A':
