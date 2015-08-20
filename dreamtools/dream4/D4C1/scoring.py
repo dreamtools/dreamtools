@@ -1,11 +1,9 @@
+"""D4C1 scoring function
+
+Based on an original matlab code from  
+Gustavo A. Stolovitzky, and Robert Prill.
+
 """
-
-
-
-Based on original matlab code from  Gustavo A. Stolovitzky, and Robert Prill.
-
-"""
-import os
 import StringIO
 from dreamtools.core.challenge import Challenge
 
@@ -32,7 +30,6 @@ class D4C1(Challenge):
 
         """
         super(D4C1, self).__init__('D4C1')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
         self._indices_sh3 = [0, 1, 2, 4]  # gold standard for 3 was not ready
         self._indices_kinases = [5, 6, 7]
@@ -43,15 +40,6 @@ class D4C1(Challenge):
         self._load_golddata()
         self.results = {'kinase': {}, 'pdz': {}, 'sh3': {}}
 
-
-        self.title = "Peptide Recognition Domain (PRD) Specificity Prediction"
-        self.summary = "Predict protein-protein interactions at the level "
-        self.summary += "of binding domains and peptides"
-        self.scoring_metric = """depends on the sub-challenges. Frobenius distance are computed and their p-values estimate. Then, log-transformed of the AUROC/AUPR p-values"""
-        self.synapseId = "syn2925957"
-
-
-
     def score(self, filename):
         self._load_prediction(filename)
         self.score_kinases()
@@ -60,7 +48,7 @@ class D4C1(Challenge):
         return self.results
 
     def _load_golddata(self):
-        filename = self._pj([self._path2data, 'goldstandard',
+        filename = self._pj([self.classpath, 'goldstandard',
             'D4C1_goldstandard.txt'])
         data = open(filename).read()
         # in principle, the file contains 13 matrices with an empty
@@ -89,7 +77,7 @@ class D4C1(Challenge):
             self.prediction.append(df)
 
     def download_template(self):
-        filename = self._pj([self._path2data, 'templates', 
+        filename = self._pj([self.classpath, 'templates', 
             'D4C1_templates.txt'])
         return filename
 

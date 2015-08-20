@@ -4,7 +4,6 @@
 From an original code in matlab (Gustavo Stolovitzky and Robert Prill).
 
 """
-import os
 from dreamtools.core.challenge import Challenge
 from dreamtools.core.rocs import D3D4ROC
 
@@ -14,7 +13,6 @@ import numpy as np
 
 class D4C2(Challenge, D3D4ROC):
     """A class dedicated to D4C2 challenge
-
 
     ::
 
@@ -32,14 +30,8 @@ class D4C2(Challenge, D3D4ROC):
 
         """
         super(D4C2, self).__init__('D4C2')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = ['10', '100', '100_multifactorial']
-
-        self.title = "DREAM4 In Silico Network Challenge"
-        self.summary = """Infer simulated gene regulation networks and predict gene expression measurements"""
-        self.scoring_metric = """same as challenge D3C4 (mean of AUROC and AUPR computed as log-transformed average of all p-values) """
-        self.synapseId = "syn3049714"
 
     def _init(self):
         # should download files from synapse if required.
@@ -138,7 +130,7 @@ class D4C2(Challenge, D3D4ROC):
             name1, name2 = subname.rsplit("_", 1)
         self._check_sub_challenge_name(name1)
         name = str(name1)
-        filename = self._pj([self._path2data, 'templates', name1,
+        filename = self._pj([self.classpath, 'templates', name1,
             'DREAM4_Example_InSilico_Size%s_%s.txt' % (name1, name2)])
         print("\nNote that there are 5 networks ending in 1,2,3,4,5.")
         return filename
@@ -150,7 +142,7 @@ class D4C2(Challenge, D3D4ROC):
         else:
             name1, name2 = subname.rsplit("_", 1)
         self._check_sub_challenge_name(name1)
-        gs_filename = self._pj([self._path2data, 'goldstandard', name1,
+        gs_filename = self._pj([self.classpath, 'goldstandard', name1,
                                 'DREAM4_GoldStandard_InSilico_Size%s_%s.tsv' % (name1, name2)])
         return gs_filename
 

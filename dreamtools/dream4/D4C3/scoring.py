@@ -40,7 +40,6 @@ class D4C3(Challenge):
 
         """
         super(D4C3, self).__init__('D4C3')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
         # cost_per_link Was determined empirically from all the teams' submissions
         # as r = min(prediction_score / edge_count).
@@ -52,14 +51,8 @@ class D4C3(Challenge):
         self._load_gold_standard()
         self._fetch_normalisation()
 
-        self.title = "DREAM4 Predictive Signaling Network Modeling"
-        self.summary = """Predict phosphoprotein measurements using an interpretable, predictive net work"""
-        self.scoring_metric = """difference between prediction and measuremnts.
-then log-transformed average of the pvalues for the  each protein."""
-        self.synapseId = "syn2825304"
-
     def download_goldstandard(self):
-        filename = self._pj([self._path2data, 'goldstandard', 'D4C3_goldstandard.csv'])
+        filename = self._pj([self.classpath, 'goldstandard', 'D4C3_goldstandard.csv'])
         return filename
 
     def _load_gold_standard(self):
@@ -70,7 +63,7 @@ then log-transformed average of the pvalues for the  each protein."""
         pass
 
     def download_template(self):
-        filename = self._pj([self._path2data, 'templates', 'D4C3_templates.csv'])
+        filename = self._pj([self.classpath, 'templates', 'D4C3_templates.csv'])
         return filename
 
     def _load_prediction(self, filename):
@@ -126,7 +119,7 @@ then log-transformed average of the pvalues for the  each protein."""
 
             # load prob density function
             import scipy.io
-            filename = self._pj([self._path2data, 'data', 
+            filename = self._pj([self.classpath, 'data', 
                 'pdf_score_%s.mat' % str(i+1)])
             proba = scipy.io.loadmat(filename)
             X, Y, C = proba['X'][0], proba['Y'][0], proba['C'][0]
@@ -216,10 +209,10 @@ then log-transformed average of the pvalues for the  each protein."""
     def _fetch_normalisation(self):
         # x is training
         # y is gold
-        filename = self._pj([self._path2data, 'data', 'common_training.csv'])
+        filename = self._pj([self.classpath, 'data', 'common_training.csv'])
         training = pd.read_csv(filename)
 
-        #filename = self._pj([self._path2data, 'data', 'common_gold.csv'])
+        #filename = self._pj([self.classpath, 'data', 'common_gold.csv'])
         self.download_goldstandard()
         goldfile = pd.read_csv(filename)
 
