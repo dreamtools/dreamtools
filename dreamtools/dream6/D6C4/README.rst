@@ -8,7 +8,7 @@ Overview
 :Summary: 
 :SubChallenges: 
 :Synapse page: https://www.synapse.org/#!Synapse:syn2887788
-
+:Leaderboard: https://www.synapse.org/#!Synapse:syn2887788/wiki/72181
 
 .. contents::
 

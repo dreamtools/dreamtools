@@ -1,9 +1,8 @@
-"""
+"""D6C2 scoring function
 
-Original matlab code from Bobby Prill
+See D7C1
 
 """
-import os
 from dreamtools.core.challenge import Challenge
 
 __all__ = ['D6C2']
@@ -28,17 +27,11 @@ class D6C2(Challenge):
 
         """
         super(D6C2, self).__init__('D6C2')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
-        self._init()
         self.sub_challenges = []
 
         msg = "This challenge was re-done in DREAM7. "
-        msg += "Please, D7C1 challenge instead"
+        msg += "Please, use D7C1 challenge instead"
         raise NotImplementedError(msg)
-
-    def _init(self):
-        # should download files from synapse if required.
-        pass
 
     def score(self, prediction_file):
         raise NotImplementedError

@@ -19,45 +19,32 @@ class D6C4(Challenge):
 
         from dreamtools import D6C4
         s = D6C4()
-        filename = s.download_template() 
-        s.score(filename) 
+        filename = s.download_template()
+        s.score(filename)
 
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
     def __init__(self):
-        """.. rubric:: constructor
-
-        """
+        """.. rubric:: constructor"""
         super(D6C4, self).__init__('D6C4')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = []
 
-    def _init(self):
-        # should download files from synapse if required.
-        pass
-
-    def score(self, prediction_file):
-        raise NotImplementedError
-
     def download_template(self):
         # should return full path to a template file
-        filename = self._pj([self._path2data, 'templates', 
-            'D6C4_template.txt'])
+        filename = self.getpath_template('D6C4_template.txt')
         return filename
 
     def download_goldstandard(self):
         # should return full path to a gold standard file
-        filename = self._pj([self._path2data, 'goldstandard', 
-            'D6C4_goldstandard.txt'])
+        filename = self.getpath_gs('D6C4_goldstandard.txt')
         return filename
-
 
     def _init(self):
 
         # Reads the test file with missing values
-        df = pd.read_csv(self._pj([self._path2data, 'data', 'AMLTraining.csv']), 
+        df = pd.read_csv(self._pj([self.classpath, 'data', 'AMLTraining.csv']),
                 index_col=0)
         df.fillna('none', inplace=True)
 
@@ -69,7 +56,9 @@ class D6C4(Challenge):
 
         # Read the test with all values
         # let us set the index with first column (FCSFileName)
-        gs = pd.read_csv(self.download_goldstandard(), index_col=0)
+        filename = self._pj([self.classpath, 'goldstandard', 'AML.csv'])
+        gs = pd.read_csv(filename, index_col=0, 
+                sep=',')
         # let us keep only the relevant data (test set)
         gs = gs.ix[testsetIndex]
         assert sum(gs.Label == 'aml') == 20
@@ -105,10 +94,10 @@ class D6C4(Challenge):
         results['precision'] = sum(prec)/20.
 
         # The Recall of the predictions, defined as the proportion of AML
-        # patients in the first 20 predictions out of all the AML patients in the
-        # cohort.
+        # patients in the first 20 predictions out of all the AML 
+        # patients in the cohort.
 
-        # TODO seems to be identicl to prec 
+        # TODO seems to be identicl to prec
         # at least on the official LB
         # https://www.synapse.org/#!Synapse:syn2887788/wiki/72181
         results['recall'] = sum(prec)/20.
@@ -122,8 +111,8 @@ class D6C4(Challenge):
         from dreamtools.core.rocs import MCC
         N = 180
         T = 20
-        TP = sum(prec) 
-        FP = T - TP    
+        TP = sum(prec)
+        FP = T - TP
         FN = FP  # symmetric
         TN = N - T - FP
         results['MCC'] = MCC(TP, TN, FP, FN)
@@ -138,8 +127,6 @@ class D6C4(Challenge):
             # TODO: this is not exactly the same as in the LB
         except:
             print('Install scikit-learn for the Jaccard similarity')
-
-
 
         return results
 

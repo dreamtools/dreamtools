@@ -3,9 +3,9 @@ Overview
 ===========
 
 
-:Title: 
+:Title: Estimation of Model Parameters
 :Nickname: D6C2
-:Summary: 
+:Summary: Parameter estimation of gene regulatory networks given incomplete structure given perturbed data sets.
 :SubChallenges: 
 :Synapse page: https://www.synapse.org/#!Synapse:syn2841366
 
