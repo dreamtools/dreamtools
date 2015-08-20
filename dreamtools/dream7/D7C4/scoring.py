@@ -24,28 +24,40 @@ class D7C4(Challenge):
 
         from dreamtools import D7C4
         s = D7C4()
-        filename = s.download_template() 
-        s.score(filename) 
+        filename = s.download_template()
+        s.score(filename)
 
     Data and templates are downloaded from Synapse. You must have a login.
 
     ::
 
-        # columns represent the probablisitic c-index of the given team for each drug.
-        # following the columns of teams are 5 columns which are used for calculating the overall team score
-        # |-> Test_data = the probabalistic c-index for the experimentally determined test data scored against itself
-        # |-> Mean Null Distribution = a set of 10,000 random predictions were scored to create the null distribution, of which this column represents the mean
-        # |-> SD Null Distribution = a set of 10,000 random predictions were scored to create the null distribution, of which this column represents the standard deviation
-        # |-> z-score of test data to null = score of the test data minus the mean of the null distribution divided by the standard deviation of the null distribution
-        # |-> weight of drug (normalized z-score) = the z-score normalized by the largest z-score across all 31 drugs.
-        # to calculate your team overall score, simply mulitple the score of all drugs by the corresponding weight.  Divide the sum of these weighted scores by the sum of the weights
+        # columns represent the probabilistic c-index of the given team for
+          each drug.
+        # following the columns of teams are 5 columns which are used for
+          calculating the overall team score
+        # |-> Test_data = the probabilistic c-index for the experimentally
+          determined test data scored against itself
+        # |-> Mean Null Distribution = a set of 10,000 random predictions
+          were scored to create the null distribution, of which this column
+          represents the mean
+        # |-> SD Null Distribution = a set of 10,000 random predictions
+          were scored to create the null distribution, of which this column
+          represents the standard deviation
+        # |-> z-score of test data to null = score of the test data minus
+          the mean of the null distribution divided by the standard deviation
+          of the null distribution
+        # |-> weight of drug (normalized z-score) = the z-score normalized
+          by the largest z-score across all 31 drugs.
+        # to calculate your team overall score, simply mulitple the score
+          of all drugs by the corresponding weight.  Divide the sum of these
+          weighted scores by the sum of the weights
 
 
     """
     def __init__(self):
         """.. rubric:: constructor
 
-        This challenge uses PERL script that requires the 
+        This challenge uses PERL script that requires the
 
         It can be installed using a tool such as cpanm
 
@@ -54,7 +66,7 @@ class D7C4(Challenge):
         Download the perl package available in  ./misc
 
         This should work out of the box under Fedora::
-            
+
             sudo cpanm install Math::Libm
             sudo cpanm install Algorithm::Pair::Best2
             sudo cpanm install Digest::SHA1
@@ -65,14 +77,13 @@ class D7C4(Challenge):
         Then, untar file in ./misc
         cd to the directory and type:;
 
-            perl Makefile.PL 
-            make 
+            perl Makefile.PL
+            make
             sudo make install
 
 
         """
         super(D7C4, self).__init__('D7C4')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.sub_challenges = ['A', 'B']
 
     def _check_subname(self, subname):
@@ -82,11 +93,9 @@ class D7C4(Challenge):
     def download_template(self, subname):
         self._check_subname(subname)
         if subname == 'A':
-            filename = self._pj([self._path2data, 'templates', 
-                    'D7C4_template.csv'])
+            filename = self.getpath_template('D7C4_template.csv')
         elif subname == 'B':
-            filename = self._pj([self._path2data, 'templates',
-                    'D7C4_template_B.csv'])
+            filename = self.getpath_template('D7C4_template_B.csv')
         return filename
 
     def score(self, filename, subname):
@@ -96,29 +105,27 @@ class D7C4(Challenge):
         elif subname == 'B':
             return self.score_B(filename)
 
-
     def download_goldstandard(self, subname):
         self._check_subname(subname)
         if subname == 'A':
-            filename = self._pj([self._path2data, 'templates',
+            filename = self._pj([self.classpath, 'templates',
                     'D7C4_template.csv'])
         elif subname == 'B':
-            filename = self._pj([self._path2data, 'goldstandard',
-                    'D7C4_B_synergy_IC20.tsv'])
+            filename = self.getpath_gs('D7C4_B_synergy_IC20.tsv')
         return filename
 
     def score_A(self, filename):
         from easydev import TempFile
         fh = TempFile()
-        script = self._pj([self._path2data, 
+        script = self._pj([self.classpath,
             'weighted_average_concordance_index.pl'])
-        datadir = self._pj([self._path2data, 'data'])
+        datadir = self._pj([self.classpath, 'data'])
         cmd = "perl %s %s %s %s"
         cmd = cmd % (script, filename, datadir , fh.name)
 
         shellcmd(cmd, verbose=True, ignore_errors=True)
         df = pd.read_csv(fh.name, sep='\t', header=None)
-        df.columns = ['DrugID','probabilistic c-index',	
+        df.columns = ['DrugID', 'probabilistic c-index',
         'weighted probabilistic c-index', 'zscores']
         df = df.set_index('DrugID')
         fh.delete()
@@ -127,13 +134,13 @@ class D7C4(Challenge):
         ws = ws.ix['weighted probabilistic c-index']
 
         results = df.mean()
-        results['weight average probabilitis c-index'] = ws 
+        results['weight average probabilistic c-index'] = ws
 
         del results['zscores']
 
         # Finally compute pvalues based on precomputed scores
-        precomp = pd.read_csv(self._pj([self._path2data, 'data',
-            'DREAM7_DrugSensitivity1_drug_zscores.txt']), sep='\t', 
+        precomp = pd.read_csv(self._pj([self.classpath, 'data',
+            'DREAM7_DrugSensitivity1_drug_zscores.txt']), sep='\t',
             skiprows=6,  header=None)
 
         overall_mean = precomp.ix[31][1]
@@ -141,7 +148,7 @@ class D7C4(Challenge):
 
         pval = 1 -  (.5 * (math.erf((ws - overall_mean)/(math.sqrt(2*overall_var))) + 1))
 
-        results['weight average probabilitis c-index p-value'] = pval
+        results['weight average probabilistic c-index p-value'] = pval
 
         return {'Results': results}
 

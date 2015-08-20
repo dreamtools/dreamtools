@@ -79,7 +79,6 @@ class D7C1(Challenge):
         """
         Challenge.__init__(self, challenge_name='D7C1')
         self.sub_challenges = ['parameter', 'topology', 'timecourse']
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
         self.path = path
 
@@ -97,9 +96,9 @@ class D7C1(Challenge):
         #self.compute_score_distance_model1()
         #self.compute_score_parameter_prediction_model1()
         #self.compute_score_topology()
-        
+
         # data structure to store null distances
-        self.rdistance_pred1 = [] 
+        self.rdistance_pred1 = []
         self.rdistance_param1 = []
 
     def download_template(self, name):
@@ -108,11 +107,11 @@ class D7C1(Challenge):
         :param str name: one in 'topology', 'parameter', 'timecourse'
         """
         if name == 'parameter':
-            return self._pj([self._path2data, 'templates', 'model1_parameters_alphabeta.txt'])
+            return self.getpath_template('model1_parameters_alphabeta.txt')
         elif name == 'topology':
-            return self._pj([self._path2data, 'templates', 'network_topology_alphabeta.txt'])
+            return self.getpath_template('network_topology_alphabeta.txt')
         elif name == 'timecourse':
-            return self._pj([self._path2data, 'templates', 'model1_timecourse_alphabeta.txt'])
+            return self.getpath_template('model1_timecourse_alphabeta.txt')
         else:
             raise ValueError("Incorrect challenge name. Use one of %s " % self.sub_challenges)
 
@@ -139,10 +138,10 @@ class D7C1(Challenge):
         for team in self.teams:
             team_name = team.split(os.sep)[1]
             self.team_names.append(team_name)
-            
+
             filename = team + os.sep + tag_param1 + '_' + team_name + '.txt'
             self.data['param1'][team_name] = self._read_df(filename, 'param')
-        
+
             filename = team + os.sep + tag_param2 + '_' + team_name + '.txt'
             self.data['param2'][team_name] = self._read_df(filename, 'param')
 
@@ -175,7 +174,7 @@ class D7C1(Challenge):
     def score(self, filename, subname=None):
         """Return score for a given sub challenge
 
-        :param str filename: input filemame. 
+        :param str filename: input filemame.
         :return: name of a sub_challenge. See :attr:`sub_challenges` attribute.
         """
         if subname == 'parameter':
@@ -329,7 +328,7 @@ class D7C1(Challenge):
             raise ValueError("Incorrect challenge name. Use one of %s " % self.sub_challenges)
 
     def _get_gs(self, filename):
-        filename = os.sep.join([self._path2data, "goldstandard", filename])
+        filename = self.getpath_gs(filename)
         return filename
 
     def _load_gold_standard(self):
@@ -340,7 +339,7 @@ class D7C1(Challenge):
         self.gs['topo2'] = self._read_df(self._get_gs("model2_topology_answer.txt"), mode='topo')
 
 
-    ################################################### compute all submissions from challenge
+    ################################## compute all submissions from challenge
     def leaderboard_compute_score_topology(self):
         """Computes all scores (topology) for loaded submissions
 
@@ -399,7 +398,8 @@ class D7C1(Challenge):
         scores = {}
         for team in self.team_names:
             data = self.data['pred1'][team]
-            scores[team] = self._compute_score_timecourse_model1(data, startindex, endindex)
+            scores[team] = self._compute_score_timecourse_model1(data, 
+                    startindex, endindex)
         self.scores['pred1'] = pd.TimeSeries(scores)
         self.scores['pred1'].sort()
         self.scores['pred1'] = self.scores['pred1'].to_frame()
@@ -411,9 +411,8 @@ class D7C1(Challenge):
         score = diff.values[0] # should be a single float
         return score
 
-    #@do_profile()
     def _compute_score_timecourse_model1(self, data, startindex, endindex):
-        d1 = (self.gs['pred1'] - data) ** 2  
+        d1 = (self.gs['pred1'] - data) ** 2
         d1 /= (0.01 + 0.04 * self.gs['pred1'].values**2)
         # let us ignore the first 10 points
 
@@ -423,7 +422,7 @@ class D7C1(Challenge):
         distance = np.sum(data) / (3*N)  # normalisation
         return distance
 
-    ################################################# NULL distribution (draft do not use)
+    ##################################### NULL distribution (draft do not use)
     def _get_random_parameters_model1(self, N=10000):
         """Null distribution for the model1 parameter
 
@@ -442,9 +441,9 @@ class D7C1(Challenge):
         # select only best 9 as in the paper
         Nbest = 9
         best_teams = list(self.scores['param1'].ix[0:Nbest].index)
-        
-        # create a dataframe to hold all teams and 
-        p = pd.DataFrame(dict([(key, self.data['param1'][key].T.values[0]) 
+
+        # create a dataframe to hold all teams and
+        p = pd.DataFrame(dict([(key, self.data['param1'][key].T.values[0])
             for key in best_teams]))
 
         nulls = []
@@ -453,7 +452,7 @@ class D7C1(Challenge):
             nulls.append(null)
 
         indexnames = list(self.gs['param1'].index)
-        df = pd.DataFrame(dict([(name, nulls[i].values) 
+        df = pd.DataFrame(dict([(name, nulls[i].values)
             for i, name in enumerate(indexnames)]))
         df = df[self.gs['param1'].index]
         return df
@@ -473,12 +472,11 @@ class D7C1(Challenge):
         return distances
 
     def get_pvalues_parameter(self, score):
-        filename = self._pj([self._path2data, 'data', 'D7C1_param_proba.npy'])
+        filename = self._pj([self.classpath, 'data', 'D7C1_param_proba.npy'])
         data = np.load(filename)
         X = data[:, 0]
         Y = data[:, 1]
         return sum(Y[X<score]) * (X[2]-X[1])
-
 
     def _get_random_timecourse_model1(self, N=10000):
         """Null distributions for the model1 timecourse challenge
@@ -494,7 +492,7 @@ class D7C1(Challenge):
         Nbest = 11
         best_teams = list(self.scores['pred1'].ix[0:Nbest].index)
 
-        # data mangling to extract random values easily 
+        # data mangling to extract random values easily
         p3 = pd.DataFrame(dict([(key, self.data['pred1'][key]['p3']) for key in best_teams]))
         p5 = pd.DataFrame(dict([(key, self.data['pred1'][key]['p5']) for key in best_teams]))
         p8 = pd.DataFrame(dict([(key, self.data['pred1'][key]['p8']) for key in best_teams]))
@@ -507,7 +505,7 @@ class D7C1(Challenge):
             data[ik,1] = p5.ix[k][np.random.randint(0,Nbest,N)]
             data[ik,2] = p8.ix[k][np.random.randint(0,Nbest,N)]
         return data
-           
+
     def get_null_timecourse_model1(self, N=10000):
         data = self._get_random_timecourse_model1(N=N)
         distances = []
@@ -531,10 +529,6 @@ class D7C1(Challenge):
                             2.53E-06, 2.90E-06, 1.34E-03, 6.90E-01, 1.00E+00, 1.00E+00])
         return np.interp(score, scores, pvalues)
 
-
-
-
-
     def _leaderboard_compute_overall_score(self, N=100):
         """Based on NULL distribution, compute overall score of model1
 
@@ -552,9 +546,9 @@ class D7C1(Challenge):
         fit_pred1.fit()
 
         import scipy.stats
-        self.pvalues_param1 = scipy.stats.beta.cdf(self.scores['param1'].scores, 
+        self.pvalues_param1 = scipy.stats.beta.cdf(self.scores['param1'].scores,
                 *fit_param1.fitted_param['beta'])
-        self.pvalues_pred1 = scipy.stats.beta.cdf(self.scores['pred1'].scores, 
+        self.pvalues_pred1 = scipy.stats.beta.cdf(self.scores['pred1'].scores,
                 *fit_pred1.fitted_param['beta'])
 
         self.scores['pred1']['pvalues'] = self.pvalues_pred1
@@ -573,7 +567,7 @@ class D7C1(Challenge):
         self.leaderboard_compute_score_timecourse_model1(10,39)
 
         df = pd.merge(self.scores['param1'], self.scores['pred1'],
-                left_index=True, right_index=True, 
+                left_index=True, right_index=True,
                 suffixes=['_parameter', '_timecourse'])
 
 
@@ -606,11 +600,10 @@ class D7C1(Challenge):
         # make sure there are unique
         regulators_data = set(data.regulator)
 
-
         for i in range(0,3):
             for j in range(0,3):
                 # if all 5 values are correct, L = 12 and stops there
-                # Note that is the regulated gene is zero, it means 
+                # Note that is the regulated gene is zero, it means
                 # it does not exists so it is ignored.
                 if all(gs.values[i][[0,1,2]] == data.values[j][[0,1,2]]) is True:
                     # g1 should be different from 0
