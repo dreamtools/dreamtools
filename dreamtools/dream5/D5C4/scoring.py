@@ -4,7 +4,6 @@ Based on original matlab code from Gustavo A. Stolovitzky and Robert Prill
 
 
 """
-import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
 from dreamtools.core.rocs import D3D4ROC
@@ -19,8 +18,8 @@ class D5C4(Challenge, D3D4ROC):
 
         from dreamtools import D5C4
         s = D5C4()
-        filename = s.download_template() 
-        s.score(filename) 
+        filename = s.download_template()
+        s.score(filename)
 
     Data and templates are downloaded from Synapse. You must have a login.
 
@@ -30,14 +29,8 @@ class D5C4(Challenge, D3D4ROC):
 
         """
         super(D5C4, self).__init__('D5C4')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = []
-        self.title = "DREAM5 - Network Inference Challenge"
-        self.summary = "Infer simulated and in-vivo regulation networks"
-        self.synapseId = "syn2787209"
-
-
 
     def _init(self):
         # should download files from synapse if required.
@@ -49,7 +42,7 @@ class D5C4(Challenge, D3D4ROC):
         # the probabilities
         self._download_data('D5C4_probabilities.zip', 'syn4564719')
         self.unzip('D5C4_probabilities.zip')
-        
+
         # the templates
         self._download_data('D5C4_templates.zip', 'syn4564726')
         self.unzip('D5C4_templates.zip')
@@ -207,7 +200,7 @@ class D5C4(Challenge, D3D4ROC):
 
         #  sanity check
         #if ( (P ~= round(TPk(end))) | (N ~= round(FPk(end))) )
-        #	        disp('ERROR. There is a problem with the completion of the prediction list.')
+        #            disp('ERROR. There is a problem with the completion of the prediction list.')
         #  end
 
         # finishing touch
@@ -259,10 +252,10 @@ class D5C4(Challenge, D3D4ROC):
         targets = list(set(gold[[0,1]].stack()))
 
         N, M = gold[0].max(), gold[1].max()
-        
+
         ## A will store indices goind from 0 (not 1) to N-1
         # hence the -1 indices when handling A if i,j are the
-        # values of the gene 
+        # values of the gene
         A = np.zeros((N, M))
         for row in gold[[0,1]].values:
             i, j = row

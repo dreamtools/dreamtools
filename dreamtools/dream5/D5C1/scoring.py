@@ -3,7 +3,6 @@
 From an original matlab code from Gustavo A. Stolovitzky, Robert Prill
 
 """
-import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
 import numpy as np
@@ -31,15 +30,8 @@ class D5C1(Challenge):
 
         """
         super(D5C1, self).__init__('D5C1')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = []
-
-        self.title = """DREAM5 - Epitope-Antibody Recognition (EAR) Specificity
- Prediction """
-        self.summary = """Predict the binding specificity of peptide-antibody interactions. """
-        self.scoring_metric = """ROC curve is computed with AUC and AUPR metrics and p-values.overall score is the mean of those 2 p-values."""
-        self.synapseId = "syn2820433"
 
     def _init(self):
         # should download files from synapse if required.

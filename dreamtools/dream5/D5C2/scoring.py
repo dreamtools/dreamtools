@@ -60,7 +60,6 @@ class D5C2(Challenge):
         :param tmpdir: a local temporary file if provided.
         """
         super(D5C2, self).__init__('D5C2')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.Ntf = Ntf
         self.tmpdir = tmpdir # directory where to save the results
 
@@ -68,13 +67,8 @@ class D5C2(Challenge):
         self._dvps = {}
         self._probes = {}
 
-        self.title = "DREAM5 - TF-DNA Motif Recognition Challenge"
-        self.summary = "Predict the specificity of a Transcription Factor binding to a 35-mer probe"
-        self.synapseId = "syn2887863"
-
     def score(self, prediction_file):
         """Compute all results and compare prediction with official participants
-
 
         This scoring function can take a long time (about 5-10 minutes).
         """
@@ -402,7 +396,7 @@ class D5C2(Challenge):
         userdf['Team'] = 'Your team'
         userdf['Model type'] = 'Your model'
 
-        filename = os.sep.join([self._path2data, "data", "d5c2_data_table.csv"])
+        filename = os.sep.join([self.classpath, "data", "d5c2_data_table.csv"])
         participants = pd.read_csv(filename, sep='\t', index_col=0)
         table = pd.concat([participants, userdf])
 
@@ -423,7 +417,7 @@ class D5C2(Challenge):
         userdf.index = [20] # there are 20 participants, let us add this user as the 21st
 
         # load all data from participants for comparison
-        filename = os.sep.join([self._path2data, "data", "d5c2_data_plot.csv"])
+        filename = os.sep.join([self.classpath, "data", "d5c2_data_plot.csv"])
         participants = pd.read_csv(filename, sep='\t', )
 
         df = pd.concat([participants, userdf])
