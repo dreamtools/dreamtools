@@ -1,4 +1,4 @@
-"""
+"""D3C3 scoring function
 
 Original matlab version (Gustavo A. Stolovitzky, Ph.D. Robert Prill) translated
 into Python by Thomas Cokelaer.
@@ -6,7 +6,7 @@ into Python by Thomas Cokelaer.
 from dreamtools.core.challenge import Challenge
 import pandas as pd
 import numpy as np
-import os
+
 
 
 class D3C3(Challenge):
@@ -34,17 +34,11 @@ class D3C3(Challenge):
 
         """
         super(D3C3, self).__init__('D3C3')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
-        self.title = "DREAM3 Gene Expression Prediction"
-        self.summary = "Predict missing gene expression measurements"
-        self.scoring_metric = """p-value of a test for association between paired samples using the spearman rank correlation."""
-        self.synapseId = "syn3033083"
         #:SubChallenges: different network size (10, 50, 100)
 
-
     def download_goldstandard(self):
-        return self._pj([self._path2data, 'goldstandard', 
+        return self._pj([self.classpath, 'goldstandard', 
             'D3C3_goldstandard.txt'])
 
     def score(self, filename):
@@ -56,7 +50,7 @@ class D3C3(Challenge):
         T = self.T[self.T.columns[2:]].values
 
         # Using scipy, the pvalue are not the same as in matlab for several reasons.
-        # first cipy returs only 2-tail pvalue but more importantly, it is
+        # first scipy returns only 2-tail pvalue but more importantly, it is
         # a rough approximation as mentionned in their doc and when compared
         # to matlab differences can be large. So, we use R, which results are
         # also differnt but much close (1-2% different
@@ -76,15 +70,15 @@ class D3C3(Challenge):
         rho_row = []
         rho_col = []
 
-        for i in range(0,50):
-            rtool.session.t = T[i,:].copy()
-            rtool.session.g = G[i,:].copy()
+        for i in range(0, 50):
+            rtool.session.t = T[i, :].copy()
+            rtool.session.g = G[i, :].copy()
             rtool.session.run("results = cor.test(t, g, method='spearman', alternative='greater', exact=F)")
             rho_row.append(rtool.session.results['estimate'])
             pval_row.append(rtool.session.results['p.value'])
         for i in range(0, 8):
-            rtool.session.t = T[:,i].copy()
-            rtool.session.g = G[:,i].copy()
+            rtool.session.t = T[:, i].copy()
+            rtool.session.g = G[:, i].copy()
             rtool.session.run("results = cor.test(t, g, method='spearman', alternative='greater', exact=F)")
             rho_col.append(rtool.session.results['estimate'])
             pval_col.append(rtool.session.results['p.value'])
@@ -108,8 +102,8 @@ challenge. \n""")
         return {'score': score}
 
     def download_template(self):
-        return self._pj([self._path2data, 'templates', 'D3C3_template.txt'])
+        return self._pj([self.classpath, 'templates', 'D3C3_template.txt'])
 
     def _read_challenge(self, filename):
-       df = pd.read_csv(filename, sep='\t')
-       return df
+        df = pd.read_csv(filename, sep='\t')
+        return df

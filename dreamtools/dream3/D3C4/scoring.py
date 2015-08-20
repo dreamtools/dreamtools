@@ -4,15 +4,17 @@ Implementation in Python from Thomas Cokelaer.
 Original code in matlab (Gustavo Stolovitzky and Robert Prill).
 
 """
-import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
 from dreamtools.core.rocs import D3D4ROC
 import numpy as np
 
+
+__all__ = ["D3C4"]
+
+
 class D3C4(Challenge, D3D4ROC):
     """A class dedicated to D3C4 challenge
-
 
     ::
 
@@ -33,16 +35,11 @@ class D3C4(Challenge, D3D4ROC):
 
         """
         super(D3C4, self).__init__('D3C4')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
 
         self.sub_challenges = ['10', '100', '50']
         self.netnames = ['Yeast3', 'Yeast1', 'Yeast2', 'Ecoli2', 'Ecoli1']
 
-        self.title = "DREAM 3 In Silico Network Challenge"
-        self.summary = "Infer simulated gene regulation networks"
-        self.scoring_metric = """an of AUROC and AUPR computed as log-transformed average of the 5 p-values."""
-        self.synapseId = "syn2853594"
 
     def _init(self):
         # should download files from synapse if required.
@@ -171,7 +168,7 @@ class D3C4(Challenge, D3D4ROC):
                 subname2, netname = subname.split("_", 1)
                 self._check_subname(subname2)
                 subname2 = subname
-            filename = self._pj([self._path2data, 'templates',
+            filename = self._pj([self.classpath, 'templates',
                 'example_InSilicoSize%s.txt' % subname2])
         else:
             filename = self.download_goldstandard(subname)

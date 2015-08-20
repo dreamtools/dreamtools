@@ -4,7 +4,6 @@ Implemented after an original MATLAB code from Gustavo Stolovitzky and
 Robert Prill.
 
 """
-import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
 
@@ -30,13 +29,7 @@ class D3C2(Challenge):
 
         """
         super(D3C2, self).__init__('D3C2')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.sub_challenges = ['phospho', 'cytokine']
-        self.title = "DREAM3 Signaling Response Prediction"
-        self.summary = "Predict missing protein concentrations from a large corpus of measurements"
-        self.scoring_metric = "distance to prediction."
-        self.synapseId = "syn2825325"
-
         self._init()
 
     def _init(self):
@@ -48,12 +41,12 @@ class D3C2(Challenge):
 
     def download_template(self, name):
         self._check_sub_challenge_name(name)
-        filename = self._pj([self._path2data, 'templates', 
+        filename = self._pj([self.classpath, 'templates', 
             'D3C2_template_%s.txt' % name])
         return filename
 
     def download_goldstandard(self, subname):
-        gs_filename = self._pj([self._path2data, 'goldstandard', 
+        gs_filename = self._pj([self.classpath, 'goldstandard', 
             'D3C2_goldstandard_%s.txt' % subname])
         return gs_filename
 

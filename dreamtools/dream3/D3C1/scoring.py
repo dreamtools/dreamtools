@@ -4,7 +4,6 @@
 Original matlab code from Gustavo A. Stolovitzky and Robert Prill.
 
 """
-import os
 import numpy as np
 from dreamtools.core.challenge import Challenge
 import pandas as pd
@@ -14,7 +13,6 @@ __all__ = ["D3C1"]
 
 class D3C1(Challenge):
     """D3C1 scoring function to evaluate the accuracy of a prediction
-
 
     ::
 
@@ -26,15 +24,8 @@ class D3C1(Challenge):
 
     def __init__(self):
         Challenge.__init__(self, "D3C1")
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
-
         # read data required for the scoring.
         self._init()
-
-        self.title = "DREAM 3 Signaling Cascade Identification"
-        self.summary = "Infer a signaling network from flow cytometry data"
-        self.scoring_metric = "probability of having N correct predictions"
-        self.synapseId = "syn3033068"
 
     def _init(self):
         self._load_proba()
@@ -42,7 +33,7 @@ class D3C1(Challenge):
 
     def download_goldstandard(self):
         filename = "D3C1_goldstandard.txt"
-        filename = self._path2data + os.sep + 'goldstandard' + os.sep + filename
+        filename = self._pj([self.classpath, 'goldstandard', filename])
         return filename
 
     def score(self, filename):
@@ -80,7 +71,6 @@ class D3C1(Challenge):
 
     def download_template(self):
         """Return filename of a template to be used for testing"""
-        filename = self._pj([self._path2data, 'templates', 'D3C1_template.txt'])
+        filename = self._pj([self.classpath, 'templates', 'D3C1_template.txt'])
         return filename
-
 
