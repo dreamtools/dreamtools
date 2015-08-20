@@ -51,7 +51,7 @@ class D8dot5C1_sc1():
 
     """
 
-    def __init__(self, filename, verboseR=True):
+    def __init__(self, filename):
         self.filename = filename
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
 

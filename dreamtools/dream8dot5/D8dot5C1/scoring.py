@@ -46,8 +46,6 @@ def sanity_check_userSubmission(goldStandard, user_predicted_response,
 
 
 
-
-
 class D8dot5C1():
     """A class dedicated to D8dot5C1 challenge
 
@@ -66,7 +64,6 @@ class D8dot5C1():
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.sub_challenges = ['sc1', 'sc2']
 
-    
 
     def score(self, filename, sub_challenge_name):
         """Scoring functions for the 2 sub challenges"""
@@ -82,19 +79,16 @@ class D8dot5C1():
     def score_sc1(self, filename):
         """See :class:`~dreamtools.dream8dot5.D8dot5C1.sc1.D8dot5C1_sc1` class for details"""
         from dreamtools.dream8dot5.D8dot5C1.sc1 import D8dot5C1_sc1
-        s = D8dot5C1_sc1(filename)
-        df = s.run()
-        return df
+        sc1 = D8dot5C1_sc1(filename)
+        result = sc1.run()
+        return result
 
-    '''
     def score_sc2(self, filename):
-        """See :class:`~dreamtools.dream8.D8C2.sc1.D8C2_sc2` class for details"""
-        from dreamtools.dream8.D8dot5C1.sc2 import D8dot5C1_sc2
-        s = D8dot5C1_sc2(filename)
-        df = s.run()
-        return df
-    '''
-
+        """See :class:`~dreamtools.dream8dot5.D8dot5C1.sc2.D8dot5C1_sc2` class for details"""
+        from dreamtools.dream8dot5.D8dot5C1.sc2 import D8dot5C1_sc2
+        sc2 = D8dot5C1_sc2(filename)
+        result = sc2.run()
+        return result
 
     def download_template(self, sub_challenge):
         """Download template 
