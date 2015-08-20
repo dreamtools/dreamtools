@@ -3,11 +3,13 @@ Overview
 ===========
 
 
-:Title: 
+:Title: DREAM7 - Sage Bionetworks-DREAM Breast Cancer Prognosis
 :Nickname: D7C2
-:Summary: 
+:Summary:  predict breast cancer survival, based on clinical information 
+     about the patient's tumor as well as genome-wide molecular profiling 
+     data including gene expression and copy number profiles.
 :SubChallenges: 
-:Synapse page: https://www.synapse.org/#!Synapse:synXXXXXXX
+:Synapsei page: https://www.synapse.org/#!Synapse:syn2813426
 
 
 .. contents::
