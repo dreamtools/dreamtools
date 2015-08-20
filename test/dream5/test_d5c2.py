@@ -10,5 +10,6 @@ def test_d5c2():
     res = s.score(filename)
     v = res.Pearson
     assert_almost_equal(v, 0.51295034)
+    s.plot()
 
     s.cleanup() # so we cleanit up now

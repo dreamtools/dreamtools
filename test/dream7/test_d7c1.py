@@ -3,7 +3,7 @@ import os
 import nose
 
 def test_scoring_model1():
-    s = scoring.D7C1()
+    s = scoring.D7C1(path='D7C1/submissions')
 
     ################## model1 parameters:
     # best performer
@@ -14,6 +14,12 @@ def test_scoring_model1():
     filename = s.download_goldstandard('parameter')
     score = s.score_model1_parameters(filename)
     assert score == 0
+
+
+    #s.load_submissions()
+    #s.compute_score_distance_model1()
+    #s.compute_score_parameter_prediction_model1()
+    #s.compute_score_topology()
 
 
 def test_scoring_topology_leaderboard():

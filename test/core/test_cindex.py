@@ -1,4 +1,4 @@
-from dreamtools.core.cindex import concordanceIndex
+from dreamtools.core.cindex import concordanceIndex, ConcordanceIndex
 from nose.tools import assert_almost_equal
 
 
@@ -21,3 +21,8 @@ def test_cindex():
     score = concordanceIndex(myPredictions, testObservations, [True]*N)
 
     assert_almost_equal(score, 0.5894737, 7)
+
+
+def test_cindex_class():
+    ci = ConcordanceIndex()
+    ci.test()
