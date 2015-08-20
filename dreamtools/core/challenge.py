@@ -33,7 +33,7 @@ class Challenge(object):
 
         """
         #: alias of the challenge as DXCY form with X, Y being 2 numbers
-        self.debug = True
+        self.debug = False
         self.alias = challenge_name
         self._check_challenge_name()
         #: directory where is stored the configuration file and data files.
@@ -93,12 +93,19 @@ class Challenge(object):
         """Must be provided"""
         raise NotImplementedError
 
+    def getpath_data(self, filename):
+        filename = self._pj([self.classpath, 'data', filename])
+        assert os.path.exists(filename), 'file %s does not exists' % filename
+        return filename
+
     def getpath_template(self, filename):
         filename = self._pj([self.classpath, 'templates', filename])
+        assert os.path.exists(filename), 'file %s does not exists' % filename
         return filename
 
     def getpath_gs(self, filename):
         filename = self._pj([self.classpath, 'goldstandard', filename])
+        assert os.path.exists(filename), 'file %s does not exists' % filename
         return filename
 
     def score(self, filename, sub_challenge=None):
