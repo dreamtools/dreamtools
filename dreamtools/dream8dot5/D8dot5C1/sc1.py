@@ -14,11 +14,33 @@
 #
 #  website: http://github.org/dreamtools
 ##############################################################################
-from dreamtools.core.challenge import Challenge
+#from dreamtools.core.challenge import Challenge
 import os
+import pandas
+import numpy
+from scipy.stats.stats import pearsonr
 
 
-class D8dot5C1_sc1(Challenge, RTools):
+def get_corrn_true_vs_predicted(truth,pred):
+    #caculate correlation for the given drug against both 
+    # 1.Genetics and  2.Genetics + Clinical user submitted response
+    pred_flt = pred[pred.ID.isin(truth.ID)]
+    
+    #making sure the patients IDs have the same row order on both truth and pred data frames
+    #else the correlations will be messed up
+    temp_merged_df = pandas.merge(pred_flt, truth, how="inner", left_on="ID", right_on="ID")
+
+    #calculate  correlation for genetics only AND genetics + clinical
+    corrn_genetics = pearsonr(temp_merged_df.deltaDAS, temp_merged_df.pred_gen_facs)
+    corrn_genetics_N_clinical = pearsonr(temp_merged_df.deltaDAS, temp_merged_df.pred_clin_gen_facs)
+    
+    #just return correlation and not the p-value which is also reported
+    return (round(corrn_genetics[0],5), round(corrn_genetics_N_clinical[0],5))
+
+
+
+
+class D8dot5C1_sc1():
     """Scoring class for D8dot5C1 sub challenge 1
 
     ::
@@ -30,46 +52,25 @@ class D8dot5C1_sc1(Challenge, RTools):
     """
 
     def __init__(self, filename, verboseR=True):
-        Challenge.__init__(self, challenge_name='D8dot5C1')
         self.filename = filename
         self._path2data = os.path.split(os.path.abspath(__file__))[0]
+
+    def load_gold_standard(self):
+        filename = self._path2data + '/goldstandard/dummy_goldStandard.csv'
+        df = pandas.read_csv(filename)
+        self.goldstandard = df.copy()
+
+    def load_user_prediction(self):
+        df = pandas.read_csv(self.filename)
+        self.prediction = df.copy()
 
     def run(self):
         """Compute the score and populates :attr:`df` attribute with results
 
-        """
-
-        return self.df
-
-
-
-
-
-
-import os
-import sys
-import warnings
-import pandas
-#also turning off the warning
-#./eval_submissions_ra_challenge.py:295: SettingWithCopyWarning: A value is trying to be set on a copy of a slice from a DataFrame.
-#Try using .loc[row_index,col_indexer] = value instead
-#leaderboard_df_selectedCol['submissionTeamName'] = leaderboard_df_selectedCol.submissionTeamName.apply(lambda x: "```%s```" % x)
-#ref this link : https://stackoverflow.com/questions/20625582/how-to-deal-with-this-pandas-warning 
-pandas.options.mode.chained_assignment = None
-import synapseclient
-import argparse
-import numpy as np
-import collections
-import shutil
-from scipy.stats.stats import pearsonr
-import tempfile
-from sklearn.utils import shuffle
-from sklearn.metrics import roc_curve, auc, precision_recall_curve
-
-#RA challenge specific code
-import synLeaderboard
-import metrics
-import dreamchallenge
-import ra_challenge
-import ra_message_templates
+        """ 
+        self.load_user_prediction()
+        self.load_gold_standard()
+        result = get_corrn_true_vs_predicted(self.goldstandard, self.prediction)
+        result = pandas.DataFrame({'cor_gen' : result[0] , 'cor_gen+clin' : result[1]}, index=xrange(1))
+        return(result)
 
