@@ -15,7 +15,9 @@
 ##############################################################################
 """Common utility to all challenges"""
 import os
+import sys
 import re
+
 from dreamtools import configuration as cfg
 
 
@@ -31,19 +33,28 @@ class Challenge(object):
 
         """
         #: alias of the challenge as DXCY form with X, Y being 2 numbers
+        self.debug = True
         self.alias = challenge_name
         self._check_challenge_name()
         #: directory where is stored the configuration file and data files.
         self.mainpath = cfg.user_config_dir
-    
+
         # More METADATA
         self.sub_challenges = []
-        self.synapseId = "undefined"
-        self.summary = "undefined"
-        self.title = 'undefined'
-        self.scoring_metric = 'undefined'
 
-        
+        # dynamically find the path of the module.
+        filename = os.path.abspath(sys.modules[self.__module__].__file__)
+        self.classpath = filename.rsplit(os.sep, 1)[0]
+        try:
+            metadata = self._get_metadata()
+            self.synapseId = metadata['synapseId']
+            self.summary = metadata['summary']
+            self.title = metadata['title']
+        except:
+            self.synapseId = 'undefined'
+            self.summary = 'undefined'
+            self.title = 'undefined'
+
         # initialisation
         self.mkdir()
 
@@ -82,6 +93,14 @@ class Challenge(object):
         """Must be provided"""
         raise NotImplementedError
 
+    def getpath_template(self, filename):
+        filename = self._pj([self.classpath, 'templates', filename])
+        return filename
+
+    def getpath_gs(self, filename):
+        filename = self._pj([self.classpath, 'goldstandard', filename])
+        return filename
+
     def score(self, filename, sub_challenge=None):
         """Must be provided"""
         raise NotImplementedError
@@ -112,8 +131,8 @@ class Challenge(object):
         return class_inst
 
     def _download_data(self, name, synid):
-        # name is not strictly required but if already found, it will not be downloaded again
-        #
+        # name is not strictly required but if already found, 
+        # it will not be downloaded again
         from dreamtools.core.downloader import  Downloader
 
         filename = self.directory + os.sep + name
@@ -128,7 +147,8 @@ class Challenge(object):
         return filename
 
     def get_pathname(self, filename):
-        """Return pathname of a file to be found on ./config/dreamtools if available"""
+        """Return pathname of a file to be found on ./config/dreamtools 
+        if available"""
         filename = self.directory + os.sep + filename
         if os.path.exists(filename) is False:
             raise ValueError("Could not find the file %s in %s" % (filename, self.directory))
@@ -162,23 +182,45 @@ class Challenge(object):
 :Alias: %(alias)s
 :Summary: %(summary)s
 :SubChallenges: %(subchallenge)s
-:Scoring metric: %(scoring_metric)s
 :Synapse page: https://www.synapse.org/#!Synapse:%(synapseId)s"""
+
 
         txt += metadata % {
             'alias': self.alias,
             'title': self.title,
             'summary': self.summary,
             'subchallenge': " ".join(self.sub_challenges),
-            'scoring_metric': self.scoring_metric,
             'synapseId': self.synapseId}
         txt += """\n\n\nVisit http://dreamchallenges.org to get more information about the challenge\n\n\n"""
 
         txt += "Any issues/suggestions about DREAMTools itself ? "
         txt += "Please visit http://github.com/dreamtools/\n\n"
 
-
         return txt
+
+    def _get_metadata(self):
+        metadata = {
+                'title': 'undefined',
+                'summary':'undefined',
+                'synapse page':'undefined'}
+
+        filename = self.classpath + os.sep + "README.rst"
+        if os.path.exists(filename) is False:
+            print("Missing README.rst. Please add one in %s" % self.alias)
+        data = open(filename, 'r').read()
+        for line in data.split("\n"):
+            for prefix in ['title', 'summary', 'synapse page']:
+                if line.lower().startswith(":" + prefix + ":"):
+                    N = len(prefix) + 2
+                    metadata[prefix] = line[N:].strip()
+
+        for k,v in metadata.iteritems():
+            if metadata[k] == 'undefined':
+                if self.debug:
+                    print("Did not find %s in README.rst" % k)
+        metadata['synapseId'] = metadata['synapse page'].split("!Synapse:")[1]
+
+        return metadata
 
     def test(self):
         if len(self.sub_challenges) == 0:
@@ -187,5 +229,5 @@ class Challenge(object):
         else:
             for subname in self.sub_challenges:
                 self.download_template(subname)
-                self.download_goldstandard(subname)
+                self.download_goldstandard(subname)                
         print(self)
