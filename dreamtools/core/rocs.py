@@ -27,11 +27,14 @@ __all__ = ['ROC', 'ROCDiscovery', 'D3D4ROC', 'MCC']
 class BinaryClassifier(object):
     """The roc module coontains lots of duplicated code that
     will be cleanup in the future. To do so, we will 
-    use this class
+    use this class, which is used e.g., in D6C1.
 
     """
     def __init__(self):
-        pass
+        self.recall = []
+        self.precision = []
+        self.fpr = []
+        self.tpr = []
 
     def roc(self):
         pass
@@ -110,7 +113,7 @@ class ROC(ROCBase):
         >>> r.classes = [1,0,1,0,1,1]
         >>> r.compute_auc()
         0.4375
-    
+
 
     """
     def __init__(self, scores=None, classes=None):

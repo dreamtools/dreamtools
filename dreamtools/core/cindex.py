@@ -6,13 +6,11 @@ Based on R code provided by Ben Sauerwine and Erhan Bilal
 double checked with concordance.index from survcomp R package.
 """
 # some resources : ftp://ftp.esat.kuleuven.be/sista/vanbelle/reports/07-213.pdf
-
+# nice blog : http://sauerwine.blogspot.co.uk/2012/03/concordance-index-and-cox-modeling.html
 # See notebook concordanceIndex
 # Cython version speedup the code by 1.5 times only.
 
-from cno.misc.profiler import do_profile
 
-@do_profile()
 def concordanceIndex(prediction, survtime, survevent):
     """Function to compute the concordance index for a risk prediction,
     i.e. the probability that, for a pair of randomly chosen
@@ -53,7 +51,7 @@ def concordanceIndex(prediction, survtime, survevent):
                     if (prediction[i] > prediction[j]) :
                         score = score + 2
                     if (prediction[i] == prediction[j]):
-                        score = score + 1
+                        score = score + 1  # This line needs a test !!
 
                 if (survtime[i] == survtime[j]) :
                     if (prediction[i] == prediction[j]) :
