@@ -16,11 +16,7 @@
 ##############################################################################
 """This is a standlone ranking independent of synapse that may be used in the
 future"""
-
-
-
 import json
-import os
 import pandas as pd
 from dreamtools.dream8.D8C1 import submissions
 from dreamtools.dream8.D8C1 import scoring
@@ -33,8 +29,7 @@ class Ranking(object):
         self.yours = 'YOUR_SUBMISSION'
 
     def _getdata(self, filename):
-        path2data = os.path.split(os.path.abspath(__file__))[0]
-        return os.sep.join([path2data, 'data', filename])
+        return self.getpath_data(filename)
 
     def add_team(self):
         raise NotImplementedError

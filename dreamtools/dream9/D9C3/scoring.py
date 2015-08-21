@@ -28,8 +28,7 @@ class D9C3(Challenge):
 
         """
         super(D9C3, self).__init__('D9C3')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
-        self._init()
+        #self._init()
         self.sub_challenges = ['sc1', 'sc2', 'sc3']
 
     def _init(self):
@@ -68,7 +67,7 @@ class D9C3(Challenge):
         pass
 
     def _score_q3(self, filename):
-        # Question 3 - Predict change in MMSE from image features
+        #Question 3 - Predict change in MMSE from image features
         # -----------------
 
         """wer case sample IDs ex: "sample8" which should be "Sample8"
@@ -97,11 +96,11 @@ class D9C3(Challenge):
     def download_template(self, subname=None):
         # should return full path to a template file
         if subname == 'sc1':
-            filename = self.get_pathname('q1.final.example.txt')
+            filename = self.getpath_template('q1.final.example.txt')
         elif subname == 'sc2':
-            filename = self.get_pathname('q2.final.example.txt')
+            filename = self.getpath_template('q2.final.example.txt')
         elif subname == 'sc3':
-            filename = self.get_pathname('q3.final.example.txt')
+            filename = self.getpath_template('q3.final.example.txt')
         return filename
 
     def download_goldstandard(self, subname=None):

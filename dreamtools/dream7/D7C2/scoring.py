@@ -1,9 +1,7 @@
-
 """
 
 
 """
-import os
 from dreamtools.core.challenge import Challenge
 
 
@@ -31,7 +29,6 @@ customPredict()
 
         """
         super(D7C2, self).__init__('D7C2')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = []
 

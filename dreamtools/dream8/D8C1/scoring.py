@@ -141,7 +141,6 @@ class HPNScoring( ZIP):
 
     def __init__(self, verbose=True):
         super(HPNScoring, self).__init__()
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
         #: List of valid cell lines (e.g, BT20)
         self.valid_cellLines =  commons.cellLines
@@ -463,7 +462,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
 
         """
         self.true_descendants = dict([(x,{}) for x in self.valid_cellLines])
-        filename = os.sep.join([self._path2data, "goldstandard", "TrueDescVectors.zip"])
+        filename = self.getpath_gs("TrueDescVectors.zip")
 
         zipdata = zipfile.ZipFile(filename)
         if self.verbose:
@@ -970,7 +969,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             from dreamtools.dream8.D8C1 import scoring
             import os
             s = scoring.HPNScoringNetwork()
-            filename = s._path2data + os.sep + 'templates'+os.sep +'alphabeta-Network.zip'
+            filename = s.getpath_template('alphabeta-Network.zip')
             s.load_submission(filename)
             s.compute_score()
             s.plot_all_rocs()
@@ -1210,7 +1209,7 @@ class HPNScoringNetwork_ranking(HPNScoring):
         import sc1a_tools
         null = sc1a_tools.AUCnull(self.valid_cellLines, self.valid_ligands, verbose=False)
         filename = 'sc1a_null_aucs_mean_sigma.dat'
-        filename = os.sep.join([self._path2data, "data", filename])
+        filename = self.getpath_data(filename)
         null.loadaucs(filename)
         mean = null.get_mean_dict()
         sigma = null.get_sigma_dict()
@@ -1228,7 +1227,7 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
         from dreamtools.dream8.D8C1 import HPNScoringNetworkInsilico
         s = HPNScoringNetworkInsilico()
         import os
-        filename = s._path2data + os.sep + 'templates' + os.sep + 'alphabeta-Network-Insilico.zip'
+        filename = s.getpath_template(lphabeta-Network-Insilico.zip')
         s.read_file(filename)
 
 
@@ -1267,7 +1266,7 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
         The ZIP file should contain a 20 by 20 matrix
 
         """
-        filename = os.sep.join([self._path2data, "goldstandard", "TrueGraph.csv"])
+        filename = self.getpath_gs("TrueGraph.csv")
         reader = csv.reader(open(filename, "r"))
         data = np.array(list(reader), dtype="float")
         return data
@@ -1368,7 +1367,7 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
             import os
 
             s = HPNScoringNetworkInsilico()
-            filename = s._path2data + os.sep + 'templates' + os.sep + 'alphabeta-Network-Insilico.zip'
+            filename = s.getpath_template('alphabeta-Network-Insilico.zip')
             s.read_file(filename)
             aucs, auprs = s.get_null_auc_aupr(1000)
             s.plot_null_distribution(aucs)
@@ -1446,9 +1445,10 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
             pass
 
 
-class HPNScoringPredictionBase(HPNScoring):
+class HPNScoringPredictionBase(HPNScoring, Challenge):
     def __init__(self, filename=None, verbose=False):
         super(HPNScoringPredictionBase, self).__init__(verbose=verbose)
+        Challenge.__init__(self, challenge_name='D8C1')
         self.times = [0, 5, 15, 30, 60, 120,240]
         self.load_species()
         self.filename = filename
@@ -1467,8 +1467,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         assert version in [1, 2]
         self._version = version
 
-        filename = os.sep.join([self._path2data, "goldstandard", 
-            "TruePrediction.zip"])
+        filename = self.getpath_gs("TruePrediction.zip")
         self.true_desc_filename = filename
 
         # same as species_to_ignore + mTOR + target of the inhibitors email
@@ -1752,7 +1751,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         for filename in filenames:
             dummy, cell = filename.split("-")
             cell, other = cell.split("_", 1)
-            filename = self._path2data + os.sep + 'data' + os.sep +filename
+            filename = self.getpath_data(filename)
             if self.verbose:print("Scanning %s" % filename)
 
             data_iter = csv.reader(open(filename, "r"), delimiter=",")
@@ -1908,10 +1907,10 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         # WRONG NETWORK as used in the official LB
         self.version = version
         if self.version == 1:
-            fname = os.sep.join([self._path2data, "goldstandard", "TruePredictionInsilico.zip"])
+            fname = self.getpath_gs("TruePredictionInsilico.zip")
         elif self.version == 2:
             # CORRECT NETWORK
-            fname = os.sep.join([self._path2data, "goldstandard",  "TruePredictionInsilico2.zip"])
+            fname = self.getpath_gs("TruePredictionInsilico2.zip")
         else:
             raise ValueError("version must be either 1 or 2")
         self.true_desc_filename = fname
@@ -2168,7 +2167,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
 
     def get_training_data(self):
         self.training = {}
-        filenames = [os.sep.join([self._path2data, "data", "MD_insilico.csv"])]
+        filenames = self.getpath_data("MD_insilico.csv")
 
         for filename in filenames:
             if self.verbose:
@@ -2244,7 +2243,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
     def _get_mean_and_sigma_null_parameters(self):
         """Retrieve mean and sigma for 32 combi from a null AUC distribution"""
         filename = 'sc2b_null_mu_sigma.dat'
-        filename = os.sep.join([self._path2data, "data", filename])
+        filename = self.getpath_data(filename)
         # a dict contain dict (phospho) of dict (phospho) of dict (mu,sigma)
         mu_sigma = pickle.load(open(filename, "r"))
         mu = {}
@@ -2418,7 +2417,7 @@ class HPNScoringPrediction_ranking(HPNScoring):
     def _get_mean_and_sigma_null_parameters(self):
         """Retrieve mean and sigma for 4 celllines and phosphos"""
         filename = 'sc2a_null_mu_sigma_new.dat'
-        filename = os.sep.join([self._path2data, "data", filename])
+        filename = self.getpath_data(filename)
         mu_sigma = pickle.loads(open(filename, "r").read())
         mu = {}
         sigma = {}
@@ -2617,7 +2616,7 @@ class HPNScoringPredictionInsilico_ranking(HPNScoring):
     def _get_mean_and_sigma_null_parameters(self):
         """Retrieve mean and sigma for 32 combi from a null AUC distribution"""
         filename = 'sc2b_null_mu_sigma.dat'
-        filename = os.sep.join([self._path2data, "data", filename])
+        filename = self.getpath_data(filename)
         # a dict contain dict (phospho) of dict (phospho) of dict (mu,sigma)
         mu_sigma = pickle.load(open(filename, "r"))
         mu = {}

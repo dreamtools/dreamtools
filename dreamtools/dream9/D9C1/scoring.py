@@ -59,7 +59,6 @@ class D9C1(Challenge):
 
         """
         super(D9C1, self).__init__('D9C1')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self._init()
         self.sub_challenges = ['sc1','sc3','sc2']
 
@@ -84,7 +83,7 @@ class D9C1(Challenge):
         self._download_data('D9C1_template_sc3.zip', 'syn4595588')
 
         # download gold standard for sc2
-        filename = self._pj([self._path2data, 'goldstandard', 'D9C1_goldstandard_sc2.txt'])
+        filename = self.getpath_gs( 'D9C1_goldstandard_sc2.txt')
         self.gs_priority = pd.read_csv(filename, sep='\t', header=None)
 
     def _read_gct(self, filename):

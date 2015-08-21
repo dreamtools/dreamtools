@@ -1,9 +1,7 @@
 """
 
 
-
 """
-import os
 from dreamtools.core.challenge import Challenge
 
 import pandas as pd
@@ -28,7 +26,6 @@ class D7C3(Challenge):
 
         """
         super(D7C3, self).__init__('D7C3')
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
         self.sub_challenges = []
 
     def score(self, filename, subname=None, goldstandard=None):

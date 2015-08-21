@@ -15,11 +15,10 @@
 #  website: http://github.org/dreamtools
 ##############################################################################
 #from dreamtools.core.challenge import Challenge
-import os
 import pandas
 import numpy
 from scipy.stats.stats import pearsonr
-
+from dreamtools import Challenge
 
 def get_corrn_true_vs_predicted(truth,pred):
     #caculate correlation for the given drug against both 
@@ -40,7 +39,7 @@ def get_corrn_true_vs_predicted(truth,pred):
 
 
 
-class D8dot5C1_sc1():
+class D8dot5C1_sc1(Challenge):
     """Scoring class for D8dot5C1 sub challenge 1
 
     ::
@@ -52,11 +51,11 @@ class D8dot5C1_sc1():
     """
 
     def __init__(self, filename):
+        super(D8dot5C1_sc1, self).__init__('D8dot5C1')
         self.filename = filename
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
     def load_gold_standard(self):
-        filename = self._path2data + '/goldstandard/dummy_goldStandard.csv'
+        filename = self.getpath_gs('dummy_goldStandard.csv')
         df = pandas.read_csv(filename)
         self.goldstandard = df.copy()
 

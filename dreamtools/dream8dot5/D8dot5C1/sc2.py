@@ -21,7 +21,7 @@ import numpy as np
 from sklearn.utils import shuffle
 from sklearn.metrics import roc_curve, auc, precision_recall_curve
 
-
+from dreamtools import Challenge
 
 
 def __get_blockWise_stats(sub_stats):
@@ -163,7 +163,7 @@ def get_AUC_PR_N_ROC_curve(truth, pred):
 
 
 
-class D8dot5C1_sc2():
+class D8dot5C1_sc2(Challenge):
     """Scoring class for D8dot5C1 sub challenge 2
 
     ::
@@ -175,11 +175,11 @@ class D8dot5C1_sc2():
     """
 
     def __init__(self, filename):
+        super(D8dot5C1_sc2, self).__init__('D8dot5C1')
         self.filename = filename
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
     def load_gold_standard(self):
-        filename = self._path2data + '/goldstandard/dummy_goldStandard.csv'
+        filename = self.getpath_gs('dummy_goldStandard.csv')
         df = pandas.read_csv(filename)
         self.goldstandard = df.copy()
 
