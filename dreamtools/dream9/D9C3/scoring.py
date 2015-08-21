@@ -1,12 +1,8 @@
+"""D9C3 scoring function
 
-"""
 
-:Title: 
-:Nickname: D9C3
-:Summary: 
-:SubChallenges: 
-:Synapse page: https://www.synapse.org/#!Synapse:synXXXXXXX
-
+Based on original source code from Mette Peters found at
+https://www.synapse.org/#!Synapse:syn4308980
 
 """
 import os
@@ -58,9 +54,7 @@ class D9C3(Challenge):
         self.goldstandard = self.prediction.copy()
 
         #merge
-
         #calculate correlation 
-
         #pearson on clin
         #pearson on clin_gen
         #spearman on clin
