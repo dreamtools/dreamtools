@@ -43,5 +43,19 @@ Downloader
     :undoc-members:
 
 
+Layout
+----------
+
+.. automodule:: dreamtools.core.layout
+    :members:
+    :undoc-members:
+
+Concordance Index
+---------------------
+
+.. automodule:: dreamtools.core.cindex
+    :members:
+    :undoc-members:
+
 
 

@@ -1,6 +1,16 @@
 ChangeLog
 ==============
 
+
+
+0.10.0
+--------
+
+All challenges from DREAM2 to DREAM8 are included except for D6C2, D7C2 and
+D8C3. D6C2 and D7C2 may be included soon and D8C3 is available on an external
+site. D8.5 and D9.5 and D9C1 also available.
+
+
 0.9.2
 -------
 
