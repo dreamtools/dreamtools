@@ -2,7 +2,7 @@
 
 
 ############################################################################
-DreamTools
+DREAMTools
 ############################################################################
 
 .. contents::
@@ -10,7 +10,7 @@ DreamTools
 Overview
 ---------
 
-**DreamTools** aims at sharing code used in the scoring of `DREAM <http://dreamchallenges.org>`_ challenges.
+**DREAMTools** aims at sharing code used in the scoring of `DREAM <http://dreamchallenges.org>`_ challenges.
 
 The main goals are to provide:
 
@@ -19,7 +19,7 @@ The main goals are to provide:
 
 
 Code related to aggregation, leaderboards, or more complex analysis are not
-guaranteed to be found in dreamtools even though it may be in some challenges
+guaranteed to be found in DREAMTools even though it may be in some challenges
 (e.g. D8C1). Some functionalities may be restricted with some access to synapse.
 Some challenges will require to download public data sets from
 `Synapse <www.synapse.org>`_ (in which case you will need to register).
@@ -27,10 +27,10 @@ Some challenges will require to download public data sets from
 The **dreamtools** executable
 -------------------------------
 
-For users, **dreamtools** package provides one executable called **dreamtools**, which should be installed automatically during the installation. Knowing the name of the challenge (and possibly sub-challenge), it works as follows::
+For users, **DREAMTools** package provides one executable called **dreamtools**, which should be installed automatically during the installation. Knowing the name of the challenge (and possibly sub-challenge), it works as follows::
 
     dreamtools --challenge d8c1 --sub-challenge sc1a --submission example.zip
-    
+
 It prints some information and the score of the submision for instance for the example above::
 
      Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
@@ -39,9 +39,8 @@ It prints some information and the score of the submision for instance for the e
 Available challenges
 -------------------------
 
-
-The goal of **Dreamtools** is to cover all challenges. 
-So far 27 challenges out of the 33 closed challenges are included. 
+The primary goal of **DREAMTools** is to provide scoring functions used in all DREAM challenges. Currently,
+**DREAMTools** includes about 80% of DREAM challenges from DREAM2 to DREAM9.5
 
 Most of them are implemented in pure Python. A couple rely on Perl script and
 5-6 call R behind the scene. However, the user interface is identical for all of them.
@@ -49,8 +48,8 @@ Most of them are implemented in pure Python. A couple rely on Perl script and
 Installation
 ---------------
 
-**DreamTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically
-installed with **dreamtools** using pip executable::
+**DREAMTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically
+installed with **DREAMTools** using pip executable::
 
     pip install dreamtools
 
