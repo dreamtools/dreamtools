@@ -17,7 +17,6 @@ from dreamtools.core.rtools import RTools
 from dreamtools.core.challenge import Challenge
 import os
 
-
 class D8C2_sc1(Challenge, RTools):
     """Scoring class for D8C2 sub challenge 1
 
@@ -38,7 +37,6 @@ class D8C2_sc1(Challenge, RTools):
         RTools.__init__(self, verboseR=verboseR)
 
         self.filename = filename
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
     def run(self):
         """Compute the score and populates :attr:`df` attribute with results
@@ -64,7 +62,7 @@ class D8C2_sc1(Challenge, RTools):
             """
 
         print("Running the scoring function. This may take a couple of minutes.")
-        params = {'filename':self.filename, 'path':self._path2data + os.sep}
+        params = {'filename':self.filename, 'path':self.classpath + os.sep}
         self.session.run(script % params)
         self.res = self.session.res
         self.df = self.res['summaryScores']

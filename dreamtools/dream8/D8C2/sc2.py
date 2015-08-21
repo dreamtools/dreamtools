@@ -17,8 +17,8 @@ from dreamtools.core.challenge import Challenge
 from dreamtools.core.rtools import RTools
 import os
 
-
 __all__ = ['D8C2_sc2']
+
 
 class D8C2_sc2(Challenge, RTools):
     """D8C2 Tox challenge scoring (sub challenge 2)
@@ -41,7 +41,6 @@ class D8C2_sc2(Challenge, RTools):
         RTools.__init__(self, verboseR=verboseR)
 
         self.filename = filename
-        self._path2data = os.path.split(os.path.abspath(__file__))[0]
 
     def run(self):
         """Compute the score and populates :attr:`df` attribute with results"""
@@ -65,7 +64,7 @@ class D8C2_sc2(Challenge, RTools):
             """
 
         print("Running the scoring function. This may take a couple of minutes.")
-        params = {'filename':self.filename, 'path':self._path2data + os.sep}
+        params = {'filename':self.filename, 'path':self.classpath + os.sep}
         self.session.run(script % params)
         self.df = self.session.res.copy()
         self.df.index = ['bestPerformer','randomSubmission','yourSubmission']
