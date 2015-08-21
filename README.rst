@@ -1,4 +1,4 @@
-DreamTools
+DREAMTools
 ==========
 
 
@@ -14,7 +14,7 @@ DreamTools
 .. image:: https://badge.waffle.io/dreamtools/dreamtools.png?label=issues&title=issues
    :target: https://waffle.io/dreamtools/dreamtools
 
-:note: DreamTools is tested for Python 2.7
+:note: DREAMTools is tested for Python 2.7
 :Contributions: Please join https://github.com/dreamtools/dreamtools and share your notebooks https://github.com/dreamtools/dreamtools/notebooks
 
 :Online documentation: `On pypi website <http://pythonhosted.org/dreamtools/>`_,
@@ -29,7 +29,7 @@ DreamTools
 Overview
 ----------------
 
-**DreamTools** aims at sharing code used in the scoring of `DREAM <http://dreamchallenges.org>`_ challenges.
+**DREAMTools** aims at sharing code used in the scoring of `DREAM <http://dreamchallenges.org>`_ challenges.
 
 The main goals are to provide:
 
@@ -37,17 +37,17 @@ The main goals are to provide:
    application.
 #. a place for **developers** involved in the dream challenges to share code
 
-
-Code related to aggregation, leaderboards, or more complex analysis are not
-guaranteed to be found in dreamtools even though it may be in some challenges
-(e.g. D8C1). Some functionalities may be restricted with some access to synapse.
-Some challenges will require to download public data sets from `Synapse
+**DREAMTools** does not provide code related to aggregation,
+leaderboards, or more complex analysis even though such code
+can be provided (e.g. D8C1 challenge). Note that some functionalities
+may be restricted with some access to synapse platform. Indeed, 
+some challenges will require to download public data sets from `Synapse
 <www.synapse.org>`_ (in which case you will need to register).
 
 Installation
 ---------------
 
-**DreamTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically
+**DREAMTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically
 installed with **dreamtools** using pip executable::
 
     pip install dreamtools
@@ -62,11 +62,10 @@ From source, download the source code and install the package with Python::
 The **dreamtools-scoring** executable
 ------------------------------------------
 
-For users, **dreamtools** provide one executable called **dreamtools-scoring**, which should be installed automatically
-when installing dreamtools. Knowing the name of the challenge (and possibly sub-challenge), it works as  follows::
+For users, **DREAMTools** provides an executable called **dreamtools**, which should be installed automatically. Knowing the name of the challenge (and possibly sub-challenge), it works as  follows::
 
-    dreamtools-scoring --challenge d8c1 --sub-challenge sc1a --submission example.zip
-    
+    dreamtools --challenge d8c1 --sub-challenge sc1a --submission example.zip
+
 It prints some information and the score of the submision for instance for the example above::
 
      Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
@@ -77,41 +76,24 @@ It prints some information and the score of the submision for instance for the e
 Available challenges
 -------------------------
 
-**Dreamtools** software does not include all scoring functions but more will be
-implemented in the future. Here is the list of challenges available 
+**DREAMTools** includes about 80% of DREAM challenges from DREAM2 to DREAM9.5
 
 
-#. DREAM9.5
+Templates
+-------------
 
-    * D9dot5C1 olfaction challenge
+All template location can be retrieved using **dreamtools** executable::
 
-#. DREAM9
-#. DREAM8.5
-#. DREAM8
+    dreamtools --challenge d5c2 --download-template
 
-    * D8C1 (HPN breat cancer)  sub challenges named sc1a, sc1b, sc2a, sc2b. 
-      See `Synapse page D8C1 <https://www.synapse.org/#!Synapse:syn1720047>`_ for details
-    * D8C2 (Toxoxicology) sub challenges named sc1, sc2. 
-      See `Synapse page D8C2 <https://www.synapse.org/#!Synapse:syn1761567>`_ for details
-    * D8C3 coming soon
 
-#. DREAM7
+Gold standard
+--------------
 
-    * D7C1 (Network Parameter Estimation)
-    * D7C4 (Network Parameter Estimation)
+All gold standard are retrieved automatically. You can obtain a GS location as
+follows::
 
-#. DREAM6
-
-    * D6C1 (Network Parameter Estimation) WONT be included (see D7C1 instead)
-    
-#. DREAM5  : all challenges available
-#. DREAM4: all challenges available
-#. DREAM3: all challenges available
-#. DREAM2: all challenges available
-
-**Format** of the template for each challenge should be found in the README of each subchallenge. For instance, for Dream8 Challenge1, 
-please see ./dreamtools/dream8/D8C1/README.rst
-
+    dreamtools --challenge d5c2 --download-goldstandard
 
 Issues
 -----------
