@@ -46,7 +46,7 @@ from dreamtools.core import rocs
 from dreamtools.dream8.D8C1 import cython_scoring
 from dreamtools.core.ziptools import ZIP
 from dreamtools.core.rocs import ROC
-from dreamtools.core.challenge import Challenge
+from dreamtools.core.challenge import Challenge, LocalData
 from dreamtools.dream8.D8C1 import commons
 
 
@@ -111,7 +111,7 @@ class ScoringError(Exception):
         return repr("ScoringError(HPN-DREAM8): %s " % self.value )
 
 
-class HPNScoring( ZIP):
+class HPNScoring( ZIP, LocalData):
     """Base class common to all scoring classes
 
     The HPN challenges use data from 32 types of combinaison of cell lines (4) and
@@ -141,7 +141,7 @@ class HPNScoring( ZIP):
 
     def __init__(self, verbose=True):
         super(HPNScoring, self).__init__()
-
+        LocalData.__init__(self)
         #: List of valid cell lines (e.g, BT20)
         self.valid_cellLines =  commons.cellLines
         #: List of valid ligands (e.g, EGF)
@@ -212,13 +212,12 @@ class HPNScoring( ZIP):
             self.species[cell] = phosphos
 
 
-class HPNScoringNetworkBase(HPNScoring, Challenge):
+class HPNScoringNetworkBase(HPNScoring):
     test_synapse_id = "syn1971273"
     true_synapse_id = "syn1971278"
 
     def __init__(self, filename=None, verbose=True):
         HPNScoring.__init__(self, verbose=verbose)
-        Challenge.__init__(self, challenge_name='D8C1')
         self.filename = filename
         self.load_species()
 
@@ -905,8 +904,8 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
              store_rocs=False, distr="uniform"):
         """Computes the null distribution for a given combinaison
 
-          * Creates a uniformly distribution of a EDA file and stores it in the
-            edge_score attribute.
+          * Creates a uniformly distribution of a EDA file and stores 
+            it in the edge_score attribute.
           * recompute the corresponding descendancy matrix
           * Get the corresponding true prediction
           * compute the ROC and AUC
@@ -1445,10 +1444,9 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
             pass
 
 
-class HPNScoringPredictionBase(HPNScoring, Challenge):
+class HPNScoringPredictionBase(HPNScoring):
     def __init__(self, filename=None, verbose=False):
         super(HPNScoringPredictionBase, self).__init__(verbose=verbose)
-        Challenge.__init__(self, challenge_name='D8C1')
         self.times = [0, 5, 15, 30, 60, 120,240]
         self.load_species()
         self.filename = filename
@@ -1805,16 +1803,18 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
     def get_null(self, N=100, tag="sc2a"):
         """
 
-        s = HPNScoringPrediction()
-        nulls = s.get_null(1000)
-        # the nulls contains the 4 cell lines
-        # let us save the first one
-        for name in ['UACC812', 'BT549', 'MCF7', 'BT20']:
-            data = [x[name] for x in nulls]
-            fh = open('%s.json' % name, 'w')
-            import json
-            json.dump(data, fh)
-            fh.close()
+        ::
+        
+            s = HPNScoringPrediction()
+            nulls = s.get_null(1000)
+            # the nulls contains the 4 cell lines
+            # let us save the first one
+            for name in ['UACC812', 'BT549', 'MCF7', 'BT20']:
+                data = [x[name] for x in nulls]
+                fh = open('%s.json' % name, 'w')
+                import json
+                json.dump(data, fh)
+                fh.close()
 
         """
         self.get_training_data()

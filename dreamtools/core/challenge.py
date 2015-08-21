@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-#  This file is part of DreamTools software
+#  This file is part of DREAMTools software
 #
 #  Copyright (c) 2014-2015 - EBI-EMBL
 #
@@ -20,8 +20,37 @@ import re
 
 from dreamtools import configuration as cfg
 
+__all__ = ['LocalData', 'Challenge']
 
-class Challenge(object):
+class LocalData(object):
+    def __init__(self):
+        # dynamically find the path of the module.
+        filename = os.path.abspath(sys.modules[self.__module__].__file__)
+        self.classpath = filename.rsplit(os.sep, 1)[0]
+
+    def getpath_data(self, filename):
+        filename = self._pj([self.classpath, 'data', filename])
+        assert os.path.exists(filename), 'file %s does not exists' % filename
+        return filename
+
+    def getpath_template(self, filename):
+        filename = self._pj([self.classpath, 'templates', filename])
+        assert os.path.exists(filename), 'file %s does not exists' % filename
+        return filename
+
+    def getpath_gs(self, filename):
+        filename = self._pj([self.classpath, 'goldstandard', filename])
+        assert os.path.exists(filename), 'file %s does not exists' % filename
+        return filename
+
+    def _pj(self, listdir):
+        return os.sep.join(listdir)
+
+
+
+
+
+class Challenge(LocalData):
     """Common class to all challenges"""
 
     def __init__(self, challenge_name):
@@ -32,6 +61,8 @@ class Challenge(object):
             e.g. D9.5 should be encoded as D9dot5CY
 
         """
+        super(Challenge, self).__init__()
+
         #: alias of the challenge as DXCY form with X, Y being 2 numbers
         self.debug = False
         self.alias = challenge_name
@@ -42,9 +73,7 @@ class Challenge(object):
         # More METADATA
         self.sub_challenges = []
 
-        # dynamically find the path of the module.
-        filename = os.path.abspath(sys.modules[self.__module__].__file__)
-        self.classpath = filename.rsplit(os.sep, 1)[0]
+        # Get data from the README if possible
         try:
             metadata = self._get_metadata()
             self.synapseId = metadata['synapseId']
@@ -93,27 +122,9 @@ class Challenge(object):
         """Must be provided"""
         raise NotImplementedError
 
-    def getpath_data(self, filename):
-        filename = self._pj([self.classpath, 'data', filename])
-        assert os.path.exists(filename), 'file %s does not exists' % filename
-        return filename
-
-    def getpath_template(self, filename):
-        filename = self._pj([self.classpath, 'templates', filename])
-        assert os.path.exists(filename), 'file %s does not exists' % filename
-        return filename
-
-    def getpath_gs(self, filename):
-        filename = self._pj([self.classpath, 'goldstandard', filename])
-        assert os.path.exists(filename), 'file %s does not exists' % filename
-        return filename
-
     def score(self, filename, sub_challenge=None):
         """Must be provided"""
         raise NotImplementedError
-
-    def _pj(self, listdir):
-        return os.sep.join(listdir)
 
     def import_scoring_class(self):
         """Dynamic import of a challenge class

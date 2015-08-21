@@ -21,7 +21,7 @@ from easydev.console import red, purple, darkgreen
 from easydev import DevTools
 from dreamtools import Challenge
 import dreamtools
-
+import textwrap
 
 def get_challenge(challenge_name):
     """Test validity of the challenge and returns an instance
@@ -205,14 +205,9 @@ class Options(argparse.ArgumentParser):
 
         usage = """usage: python %s --challenge d8c1 --sub-challenge sc1a --submission <filename>\n""" % prog
         usage += """      python %s --challenge d5c2 --submission <filename>""" % prog
-        epilog="""Author(s):
-
-        - Thomas Cokelaer: DREAMTools package and framework.
-        - Challenges have been developed by numerous authors from the DREAM
-          consortium. Please see the credits in the GitHub
-          repository on
-          http://github.com/dreamtools/dreamtools/doc/source/credits.rst
-
+        epilog="""Author(s): Thomas Cokelaer (DREAMTools framework) and authors from 
+the DREAM consortium. Please see the scoring files headers for details 
+and the GitHub repository.
 
 Source code on: https://github.com/dreamtools/dreamtools
 Issues or bug report ? Please fill an issue on http://github.com/dreamtools/dreamtools/issues """
@@ -226,16 +221,14 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
     documentation http://pythonhosted.org/dreamtools/ or within the source code
     hosted on github http://github.org/dreamtools/dreamtools
 
-    Registered challenge so far (and sub-challenges) are:
-    """
-        description +="\n"
-
+    Registered challenge so far (and sub-challenges) are: 
+"""
         # FIXME : not robust but will work for now
         registered = sorted([x for x in dir(dreamtools) if x.startswith('D')
                  and 'C' in x])
-        for c in registered:
-            description +=  "    - " + c + ": "
-            description += "\n"
+    
+        for this in textwrap.wrap(", ".join(registered), 80):
+            description += this + "\n"
 
         super(Options, self).__init__(usage=usage, version=version, prog=prog, 
                 epilog=epilog, description=description,

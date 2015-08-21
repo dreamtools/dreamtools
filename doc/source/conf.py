@@ -37,8 +37,8 @@ except Exception, e:
 import pkg_resources
 version = pkg_resources.require(pkg_name)[0].version
 release = version
-author = "Thomas Cokelaer and the DreamTools developers"
-title = "DreamTools"
+author = "Thomas Cokelaer and the DREAMTools developers"
+title = "DREAMTools"
 copyright = author + ", 2014"
 project = pkg_name
 

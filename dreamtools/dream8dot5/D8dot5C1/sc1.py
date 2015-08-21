@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-
 # -*- python -*-
 #
-#  This file is part of DreamTools software
+#  This file is part of DREAMTools software
 #
 #  Copyright (c) 2014-2015 - Sage Bionetworks
 #
@@ -16,7 +15,6 @@
 ##############################################################################
 #from dreamtools.core.challenge import Challenge
 import pandas
-import numpy
 from scipy.stats.stats import pearsonr
 from dreamtools import Challenge
 

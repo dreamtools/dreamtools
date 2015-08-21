@@ -8,7 +8,7 @@ configuration = settings.DREAMToolsConfig(verbose=False)
 dreampath = configuration.user_config_dir
 
 
-from dreamtools.core.challenge import Challenge
+from dreamtools.core.challenge import Challenge, LocalData
 
 
 from dream2.D2C1.scoring import D2C1

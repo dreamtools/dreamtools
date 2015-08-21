@@ -8,12 +8,11 @@ import pandas as pd
 import numpy as np
 
 
-__all__ = "D5C1"
+__all__ = ["D5C1"]
 
 
 class D5C1(Challenge):
     """A class dedicated to D5C1 challenge
-
 
     ::
 
@@ -22,13 +21,9 @@ class D5C1(Challenge):
         filename = s.download_template()
         s.score(filename)
 
-    Data and templates are downloaded from Synapse. You must have a login.
-
     """
     def __init__(self):
-        """.. rubric:: constructor
-
-        """
+        """.. rubric:: constructor"""
         super(D5C1, self).__init__('D5C1')
         self._init()
         self.sub_challenges = []

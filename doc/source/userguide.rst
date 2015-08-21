@@ -2,11 +2,11 @@ User Guide
 ===========
 
 
-For a user, there are 2 ways to use **dreamtools**. Either using the executable
+For a user, there are 2 ways to use **DREAMTools**. Either using the executable
 **dreamtools** or by scripting the library. 
 
 Before explaining the two approches, let us simply explain the idea of the
-scoring functions. It may sound obvious but to score a submission one need to have a submission ! Given the complexity and diversity of challenges, the templates are also complex and diverse. The format must be correct and the scoring functions in **DreamTools** do not have thorough format validators so it would be handy to retrieve a template submission, which is possible as shown hereafter.
+scoring functions. It may sound obvious but to score a submission one need to have a submission ! Given the complexity and diversity of challenges, the templates are also complex and diverse. The format must be correct and the scoring functions in **DREAMTools** do not have thorough format validators so it would be handy to retrieve a template submission, which is possible as shown hereafter.
 
 The scoring will internally download a gold standard file, which can also be
 retrieved independently. 
@@ -87,4 +87,18 @@ If you have sub challenges, they can be found in the attribute sub_challenges::
     print(results)
 
 
+Getting information about the challenge
+--------------------------------------------
 
+
+From the Python command line, for a given challenge, you can get a brief summary
+and more importantly the Synpase page::
+
+    from dreamtools import D9C1
+    s = D9C1()
+    print(s)
+
+
+You can also use the **dreamtools** executable::
+
+    dreamtools --challenge D9C1 --info

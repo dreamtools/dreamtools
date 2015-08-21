@@ -22,9 +22,13 @@ from dreamtools.dream8.D8C1 import submissions
 from dreamtools.dream8.D8C1 import scoring
 
 
-class Ranking(object):
+from dreamtools import LocalData
+
+
+class Ranking(LocalData):
 
     def __init__(self, name):
+        super(Ranking, self).__init__()
         self.name = name
         self.yours = 'YOUR_SUBMISSION'
 
@@ -199,7 +203,7 @@ class SC1B_ranking(Ranking):
             'Submission Id': subId,
             'Entity Id': entityId,
             'AUC': auc,
-            'zscore':zscore,
+            'zscore': zscore,
         })
         df = self._sort_df(df)
         return df

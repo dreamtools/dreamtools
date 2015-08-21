@@ -66,6 +66,14 @@ Contributions
 
 Please join https://github.com/dreamtools/dreamtools
 
+User Guide
+------------
+
+.. toctree::
+    :maxdepth: 1
+
+    userguide.rst
+
 Others
 --------
 
@@ -75,7 +83,6 @@ contains basic usage and information about the challenge.
 .. toctree::
     :maxdepth: 1
 
-    userguide.rst
     developers.rst
     credits.rst
     references.rst

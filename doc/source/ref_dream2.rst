@@ -45,6 +45,7 @@ D3C1
 .. automodule:: dreamtools.dream3.D3C1.scoring
     :members:
     :undoc-members:
+
 D3C2
 ~~~~~~~
 .. automodule:: dreamtools.dream3.D3C2.scoring
@@ -98,10 +99,21 @@ D5C1
 D5C2
 ~~~~~~~
 
-Transcription Factor 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 .. automodule:: dreamtools.dream5.D5C2.scoring
+    :members:
+    :undoc-members:
+
+D5C3
+~~~~~~~
+
+.. automodule:: dreamtools.dream5.D5C3.scoring
+    :members:
+    :undoc-members:
+
+D5C4
+~~~~~~~
+
+.. automodule:: dreamtools.dream5.D5C4.scoring
     :members:
     :undoc-members:
 
@@ -109,16 +121,59 @@ Transcription Factor
 DREAM6 
 --------------------
 
+D6C1
+~~~~~
+
+.. automodule:: dreamtools.dream6.D6C1.scoring
+    :members:
+    :undoc-members:
+
+D6C2
+~~~~~
+
+.. automodule:: dreamtools.dream6.D6C2.scoring
+    :members:
+    :undoc-members:
+
+D6C3
+~~~~~
+
+.. automodule:: dreamtools.dream6.D6C3.scoring
+    :members:
+    :undoc-members:
+
+
+D6C4
+~~~~~
+
+.. automodule:: dreamtools.dream6.D6C4.scoring
+    :members:
+    :undoc-members:
+
 DREAM7 
 --------------------
 
 D7C1
 ~~~~~
-
-Parameter Estimation and Network Topology 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 .. automodule:: dreamtools.dream7.D7C1.scoring
+    :members:
+    :undoc-members:
+
+D7C2
+~~~~~
+.. automodule:: dreamtools.dream7.D7C2.scoring
+    :members:
+    :undoc-members:
+
+D7C3
+~~~~~
+.. automodule:: dreamtools.dream7.D7C3.scoring
+    :members:
+    :undoc-members:
+
+D7C4
+~~~~~~
+.. automodule:: dreamtools.dream7.D7C4.scoring
     :members:
     :undoc-members:
 
@@ -128,49 +183,13 @@ DREAM8
 
 D8C1
 ~~~~
-
-.. HPN/synapse
-   ^^^^^^^^^^^^^^^^
-   .. automodule:: dreamtools.dream8.D8C1.hpn
-    :members:
-    :undoc-members:
-
-
-
-Scoring
-^^^^^^^^^^^^^^^^
 .. automodule:: dreamtools.dream8.D8C1.scoring
     :members:
     :undoc-members:
 
-admin
-^^^^^^^^^^^^^^^^
-
-.. automodule:: dreamtools.dream8.D8C1.submissions
-    :members:
-    :undoc-members:
-
-
-downloads
-^^^^^^^^^^^^^^^^
-
-.. automodule:: dreamtools.dream8.D8C1.downloads
-    :members:
-    :undoc-members:
-
-
-
-aggregation
-^^^^^^^^^^^^^^^^
-.. automodule:: dreamtools.dream8.D8C1.aggregation
-    :members:
-
 
 D8C2
 ~~~~~~~~~
-
-NIEHS-NCATS-UNC DREAM Toxicogenetics 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: dreamtools.dream8.D8C2.scoring
     :members:

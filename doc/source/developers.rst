@@ -15,7 +15,7 @@ Now, all you need to do is to go to dreamtools/dreamtools/dream8 and type::
 
 Some sub directories and files are created including the **scoring.py** with a basic class were to code the scoring function.
 
-.. note:: It the directory **dream8** does not exists, create it and add an empty file called **__init__.py** inside.
+.. note:: If the directory **dream8** does not exists, create it and add an empty file called **__init__.py** inside.
 
 If data file or templates are too large, we strongly recommend to store them in a project on Synapse. we have created a synapse project called `dreamtools <https://www.synapse.org/#!Synapse:syn4483180>`_
 where for example the D5C2 data files have been stored. Other files can all be
