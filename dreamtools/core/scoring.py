@@ -68,11 +68,7 @@ def get_subchallenges(challenge_name):
     return class_inst.sub_challenges
 
 
-
-
-
-
-# -------------------------------------------------- The User Interface
+# ------------------------------------------------ The User Interface
 def print_color(txt, func_color, underline=False):
     import easydev
     try:
