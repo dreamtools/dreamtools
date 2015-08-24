@@ -1,10 +1,10 @@
 ChangeLog
 ==============
 
-0.10.0
--------
+0.10.1 and 0.10.2
+-------------------------
 
-Fix MANIFEST to add missing cython file.
+Fix MANIFEST to add missing cython file and README.rst
 
 0.10.0
 --------

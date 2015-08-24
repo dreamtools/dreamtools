@@ -6,7 +6,7 @@ from Cython.Build import cythonize
 
 _MAJOR               = 0
 _MINOR               = 10
-_MICRO               = 1
+_MICRO               = 2
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
@@ -68,10 +68,10 @@ setup(
     # remove parasites). alternatively to global inclusion, list the file 
     # to include
     package_data = {'' : ['*.txt', '*.pyx', '*.so', '*.zip', 
-        '*.csv', '*.ini', '*.R'],},
+        '*.csv', '*.ini', '*.R', 'README.rst'],},
 
     install_requires = ['cython', 'numpy', 'matplotlib', 'pandas', 'appdirs',
-        'easydev>=0.8.5', 'fitter', 'synapseclient', 'tabulate'],
+        'easydev>=0.8.5', 'fitter', 'synapseclient', 'tabulate', 'scipy'],
 
     ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"]),
 
