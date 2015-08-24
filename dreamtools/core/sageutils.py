@@ -15,20 +15,15 @@
 ##############################################################################
 """A module dedicated to synapse
 
-The class :class:`SynapseClient` is a specialised class built upon synapseclient
-package, which source code is on GIT::
+The class :class:`SynapseClient` is a specialised class built upon 
+synapseclient package, which source code is on GitHub::
  
     git clone git://github.com/Sage-Bionetworks/synapsePythonClient.git
     cd synapsePythonClient
     python setup.py install
 
-When I started to build dream8 synapse pages and leaderboards, the synapseclient
-was still in development. In order to test the system, I built this class
-(SynapseClient) to add high level functionalities. These functionalities have
-been included later in the synapseclient. After successive cleanups, I've still
-have a couple of methods that may be redundant with synapse or not...
+This class may be removed but for now it is used in D8C1 challenge.
 
-This class may be removed but for now it is used
 
 ::
 
@@ -62,7 +57,7 @@ class Login(object):
         Trying to login automatically. 
         Welcome, *****************
         You're logged in Synapse
-        Welcome, cokelaer@ebi.ac.uk!
+        Welcome, XXX
 
         In [10]: l = sageutils.Login(l)
 

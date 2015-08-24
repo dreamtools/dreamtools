@@ -13,24 +13,25 @@
 #  website: http://github.org/dreamtools
 #
 ##############################################################################
-"""
-
-
-"""
+"""Layout to create a new challenge from scratch"""
 import os
 import sys
 import argparse
 from easydev import Logging
+
+
+__all__ = ['Layout', 'layout']
+
 
 README_templates = '''
 Overview
 ===========
 
 
-:Title: 
+:Title:
 :Nickname: %(alias)s
-:Summary: 
-:SubChallenges: 
+:Summary:
+:SubChallenges:
 :Synapse page: https://www.synapse.org/#!Synapse:synXXXXXXX
 
 
@@ -44,8 +45,8 @@ Scoring
 
     from dreamtools import %(alias)s
     s = %(alias)s()
-    filename = s.download_template() 
-    s.score(filename) 
+    filename = s.download_template()
+    s.score(filename)
 
 
 '''
@@ -64,8 +65,8 @@ class %(alias)s(Challenge):
 
         from dreamtools import %(alias)s
         s = %(alias)s()
-        filename = s.download_template() 
-        s.score(filename) 
+        filename = s.download_template()
+        s.score(filename)
 
     Data and templates are downloaded from Synapse. You must have a login.
 
@@ -120,7 +121,7 @@ class Layout(Logging):
         self._create_directory(self.name)
 
         self._create_file(self._pj('__init__.py'))
-        for directory in ['misc', 'leaderboard', 'generator', 'data', 
+        for directory in ['misc', 'leaderboard', 'generator', 'data',
                 'paper', 'templates', 'goldstandard']:
             self._create_directory(self._pj(directory))
 
@@ -185,6 +186,7 @@ def layout(args=None):
     lay = Layout(options.challenge_name)
     lay.create_layout()
 
+
 class Options(argparse.ArgumentParser):
     description = "tests"
     def __init__(self, version="1.0", prog=None):
@@ -214,7 +216,7 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
         D8C1/misc/
         D8C1/paper/
     """
-        super(Options, self).__init__(usage=usage, version=version, prog=prog, 
+        super(Options, self).__init__(usage=usage, version=version, prog=prog,
                 epilog=epilog, description=description,
                 formatter_class=argparse.RawDescriptionHelpFormatter)
         self.add_input_options()
@@ -229,7 +231,7 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
 
 
         group.add_argument("--challenge-name", dest='challenge_name',
-                         default=None, type=str, 
+                         default=None, type=str,
                          help="alias of the challenge (e.g., D8C1 stands for"
                          "dream8 challenge 1). Intermediate challenge such as first challenge of DREAM9.5 must be encoded as D9dot5C1")
 

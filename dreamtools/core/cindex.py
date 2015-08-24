@@ -1,6 +1,4 @@
-"""
-
-Concordance index computation (exact version)
+"""Concordance index computation (exact version)
 
 Based on R code provided by Ben Sauerwine and Erhan Bilal
 double checked with concordance.index from survcomp R package.
@@ -11,27 +9,38 @@ double checked with concordance.index from survcomp R package.
 # Cython version speedup the code by 1.5 times only.
 
 
+#    This code seems to be much faster (10-20 times) than R code
+#    exactConcordanceIndex.R to be found in D7C2/misc and 2 times
+#    faster than original R code exactConcordanceIndexV.R
+#    (vectorised) to be found in the same directory.
+#
+#    A Cython version showed a slight increase of 1.5, so we keep a pure Python
+#    implementation for simplicity.
+
+
 def concordanceIndex(prediction, survtime, survevent):
+    return cindex(prediction, survtime, survevent)
+
+
+def cindex(prediction, survtime, survevent):
     """Function to compute the concordance index for a risk prediction,
-    i.e. the probability that, for a pair of randomly chosen
+    i.e., the probability that, for a pair of randomly chosen
     comparable samples, the sample with the higher risk prediction
     will experience an event before the other sample or belongs to a
     higher binary class.
 
-    Based on survcomp function (survcomp R package)
-
     :param prediction: a vector of risk predictions.
     :param survtime: a vector of event times.
-    :param survevent: a vector of event occurence indicators (True and False). 
+    :param survevent: a vector of event occurence indicators (True and False).
 
+    :: 
 
-    This code seems to be much faster (10-20 times) than R code 
-    exactConcordanceIndex.R to be found in D7C2/misc and 2 times 
-    faster than original R code exactConcordanceIndexV.R
-    (vectorised) to be found in the same directory.
+        >>> from dreamtools.core.cindex import cindex
+        >>> print(cindex([0, 1, 3,4], [0, 4, 3, 1], [True]*4))
+        0.5
+        >>> print(cindex([0, 1, 3,4], [0, 1, 3, 4], [True]*4))
+        0.0
 
-    A Cython version showed a slight increase of 1.5, so we keep a pure Python
-    implementation for simplicity.
     """
     count = 0
     score = 0
@@ -66,20 +75,21 @@ def concordanceIndex(prediction, survtime, survevent):
 
 
 class ConcordanceIndex(object):
-    """See :func:`concordanceIndex` function for details"""
+    """See :func:`cindex` function for details"""
     def __init__(self, survtime=None, survevent=None):
         print('Experimental version. API may change. Use the function concordanceIndex instead.')
         self.survtime = survtime
         self.survevent = survevent
 
     def cindex(self, prediction):
-        return concordanceIndex(prediction, self.survtime, self.survevent) 
+        """Returns concordance index"""
+        return concordanceIndex(prediction, self.survtime, self.survevent)
 
-    def test(self):
-        self.survtime = [1.078304837, 2.646866651, 1.165920248, 
-                0.537903100, 1.726597615, 1.166453794, 0.080994131, 
-                0.102762485, 2.434480043, 0.170285918, 0.211224424, 
-                0.335248849, 1.172972616, 0.018286180, 0.810920450, 
+    def _test(self):
+        self.survtime = [1.078304837, 2.646866651, 1.165920248,
+                0.537903100, 1.726597615, 1.166453794, 0.080994131,
+                0.102762485, 2.434480043, 0.170285918, 0.211224424,
+                0.335248849, 1.172972616, 0.018286180, 0.810920450,
                 0.447176348, 1.034328426, 0.504800631, 0.159534333,
                 0.583315557]
         self.survevent = [True] * len(self.survtime)

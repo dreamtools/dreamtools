@@ -17,12 +17,6 @@ settings
     :members:
     :undoc-members:
 
-scoring
------------
-.. automodule:: dreamtools.core.scoring
-    :members:
-    :undoc-members:
-
 
 Synapse utilities
 ----------------------

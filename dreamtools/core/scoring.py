@@ -23,6 +23,7 @@ from dreamtools import Challenge
 import dreamtools
 import textwrap
 
+
 def get_challenge(challenge_name):
     """Test validity of the challenge and returns an instance
 

@@ -74,6 +74,14 @@ class D9dot5C1(Challenge):
         fh.delete()
         return df
 
+
+        # score sub1 = (zint +zple +zdec)/3
+        # sigma_int = 0.0787
+        # sigma_ple = 0.176
+        # signa_dec = 0.0042
+
+        # final is average of zscores
+
     def score_sc2(self, prediction_file):
         fh = TempFile()
         _, gs2 = self.download_gs()
@@ -84,6 +92,22 @@ class D9dot5C1(Challenge):
         df = pd.read_csv(fh.name, sep='\t', index_col=None).ix[0]
         fh.delete()
         return df
+
+        # intensity + pleasantness + dec_19others and sigma_int
+        # score sub2 = 1/6 * (z_int + z_ple z_dec + z_sigma_int + z_sigma_ple +
+        # z_sigma_dec)
+        # sigma_int = 0.1193
+        # sigma_ple = 0.1265
+        # sigma_dec = 0.0265
+        # sigma_sigma_int = 0.1195
+        # sigma_sigma_ple = 0.1149
+        # sigma_sigma_dec = 0.0281
+
+
+
+
+
+
 
     def download_template(self, name):
         filename1, filename2 = self.download_templates()

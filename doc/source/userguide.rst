@@ -3,15 +3,27 @@ User Guide
 
 
 For a user, there are 2 ways to use **DREAMTools**. Either using the executable
-**dreamtools** or by scripting the library. 
+**dreamtools** or by scripting the library.
 
 Before explaining the two approches, let us simply explain the idea of the
 scoring functions. It may sound obvious but to score a submission one need to have a submission ! Given the complexity and diversity of challenges, the templates are also complex and diverse. The format must be correct and the scoring functions in **DREAMTools** do not have thorough format validators so it would be handy to retrieve a template submission, which is possible as shown hereafter.
 
 The scoring will internally download a gold standard file, which can also be
-retrieved independently. 
+retrieved independently.
 
-Finally, note that some challenges have sub-challenges, which name must be provided. 
+Finally, note that some challenges have sub-challenges, which name must be provided.
+
+Synapse login
+----------------
+
+You will need a Synapse login. You can create a local authentication by creating
+a file called **.synapseConfig** in your home directory.
+
+::
+
+    [authentication]
+    username: email
+    password: password
 
 
 The **dreamtools** executable
@@ -21,10 +33,10 @@ In a shell, type ::
 
     dreamtools --help
 
-to obtain some basic help about the usage. 
+to obtain some basic help about the usage.
 
 First, let us choose a challenge. Challenge are named DXCY where X starts from
-number 2 to indicate the DREAM session. Y indicates the challenge itself. 
+number 2 to indicate the DREAM session. Y indicates the challenge itself.
 
 ::
 
@@ -46,7 +58,7 @@ This prints the path to a template, which can now be scored::
 
 similarly one can download the gold standard. This is a good way to check the
 scoring function by the way::
-    
+
     dreamtools --challenge D5C1 --download-gold-standard
     dreamtools --challenge D5C1 --filename <path2gold>
 
@@ -67,7 +79,7 @@ Scripting
 -----------
 
 All challenges have a single class inside the library. For instance the
-challenge 3 in DREAM 5 class is named D5C3. 
+challenge 3 in DREAM 5 class is named D5C3.
 
 The layout of those classes are identical throughout the challenges::
 
