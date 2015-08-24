@@ -1,7 +1,10 @@
 ChangeLog
 ==============
 
+0.10.0
+-------
 
+Fix MANIFEST to add missing cython file.
 
 0.10.0
 --------

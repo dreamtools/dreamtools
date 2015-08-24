@@ -6,7 +6,7 @@ from Cython.Build import cythonize
 
 _MAJOR               = 0
 _MINOR               = 10
-_MICRO               = 0
+_MICRO               = 1
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
@@ -64,19 +64,16 @@ setup(
     # package installation
 
     include_package_data = True,
-    # (you can provide an exclusion dictionary named exclude_package_data to remove parasites).
-    # alternatively to global inclusion, list the file to include
-    package_data = {'' : ['*.txt', '*.so', '*.zip', '*.csv', '*.ini', '*.R'],},
+    # (you can provide an exclusion dictionary named exclude_package_data to 
+    # remove parasites). alternatively to global inclusion, list the file 
+    # to include
+    package_data = {'' : ['*.txt', '*.pyx', '*.so', '*.zip', 
+        '*.csv', '*.ini', '*.R'],},
 
-
-    # distutils in rtools.package
-    #install_requires = [ 'pandas', 'bioservices', 'colormap>=0.9.3'],
-    install_requires = ['numpy', 'matplotlib', 'pandas', 'appdirs',
-        'easydev>=0.8.5', 'fitter',
-        'synapseclient', 'tabulate', 'cython'],
+    install_requires = ['cython', 'numpy', 'matplotlib', 'pandas', 'appdirs',
+        'easydev>=0.8.5', 'fitter', 'synapseclient', 'tabulate'],
 
     ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"]),
-
 
     entry_points = {
         'console_scripts': [
