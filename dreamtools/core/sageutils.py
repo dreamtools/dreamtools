@@ -15,9 +15,9 @@
 ##############################################################################
 """A module dedicated to synapse
 
-The class :class:`SynapseClient` is a specialised class built upon 
+The class :class:`SynapseClient` is a specialised class built upon
 synapseclient package, which source code is on GitHub::
- 
+
     git clone git://github.com/Sage-Bionetworks/synapsePythonClient.git
     cd synapsePythonClient
     python setup.py install
@@ -33,7 +33,7 @@ This class may be removed but for now it is used in D8C1 challenge.
 
 """
 import synapseclient
-from synapseclient import entity, Submission, SubmissionStatus
+from synapseclient import entity
 
 
 __all__ = ["SynapseClient", "Login"]
@@ -49,12 +49,12 @@ class Login(object):
         creation is fast. Otherwise, the default behaviour is to create a new
         connection.
 
-    :: 
+    ::
 
         >>> from dreamtools.sageutils import Login
         >>> l = Login()
-        This is a SynapseClient built on top of Synapse class. 
-        Trying to login automatically. 
+        This is a SynapseClient built on top of Synapse class.
+        Trying to login automatically.
         Welcome, *****************
         You're logged in Synapse
         Welcome, XXX
@@ -65,7 +65,6 @@ class Login(object):
     def __init__(self, client=None, username=None, password=None):
         if client is None:
             self.client = SynapseClient(username, password)
-
         else:
             self.client = client
 
@@ -73,11 +72,11 @@ class Login(object):
 # additional base class here below that contains Synapse and object as base
 # classes
 class SynapseClient(synapseclient.Synapse, object):
-    """This class inherits all methods from synapseClient. 
+    """This class inherits all methods from synapseClient.
 
     Be aware that most of the functionalities are now available in synapseclient
     itself. So, most of the methods that were written are hidden (double
-    underscore) and may be removed in the future. 
+    underscore) and may be removed in the future.
 
     The only remaining feature is the automatic login, and simple version of the
     downloadSubmission method. There is also a :meth:`json` method used
@@ -97,7 +96,6 @@ class SynapseClient(synapseclient.Synapse, object):
             username: yourlogin
             password: yourpassword
 
-
         """
         super(SynapseClient, self).__init__()
         # TODO: should be moved to Login ??
@@ -106,10 +104,17 @@ class SynapseClient(synapseclient.Synapse, object):
         try:
             self.login(username, password)
             print("You're logged in Synapse")
-        except Exception, e:
-            print(e)
-            print("Failed to login automatically. Please try manual login")
-            raise Exception
+        except Exception as err:
+            print("Failed to login automatically.")
+            print("You must have a synapse account")
+            print("Create a Synapse login on http://synapse.org")
+            print("Create a file called .synapseConfig in your HOME directory")
+            print("Add this code in the file:\n")
+            print("[authentication]")
+            print("username: yourlogin")
+            print("password: yourpassword")
+            print(err)
+            raise Exception(err)
 
     def __getDataPath(self, entity, version=1):
         """
@@ -125,11 +130,12 @@ class SynapseClient(synapseclient.Synapse, object):
         return e['path']
 
     def downloadSubmissionAndFilename(self, sub, downloadFile=True, **kargs):
-        """Return filename of a submission downloaded from synapse. 
+        """Return filename of a submission downloaded from synapse.
 
         :param sub:  A submission (as a dictionary).
-        :param version:  The specific version to get. Defaults to the most recent version.
-        :param downloadFile: Whether associated files(s) should be downloaded.  
+        :param version:  The specific version to get. Defaults to the most
+            recent version.
+        :param downloadFile: Whether associated files(s) should be downloaded.
              Defaults to True. If set to False, downloadLocation and ifcollision are ignored
         :param downloadLocation: Directory where to download the Synapse File Entity.
             Defaults to the local cache.
@@ -143,7 +149,7 @@ class SynapseClient(synapseclient.Synapse, object):
 
         if isinstance(sub, dict) == False:
             raise TypeError("input must be a submission (dictionary)")
-            
+
 
         if downloadFile == False:
             filename = self.getSubmission(sub, downloadFile=False)['filePath']
@@ -177,11 +183,11 @@ class SynapseClient(synapseclient.Synapse, object):
     def __createWiki(self, owner, title, markdown, owner_type=None):
         """
 
-        :param owner: the owner object (entity, competition, evaluation) 
+        :param owner: the owner object (entity, competition, evaluation)
             with which the new wiki page will be associated
         :param markdown: the contents of the wiki page in markdown
         :param owner_type: if not provided, the client tries to figure out the type.
-            e.g., Works for evaluation 
+            e.g., Works for evaluation
         """
         try:
             res = self._createWiki(owner, title, markdown, owner_type=owner_type)
@@ -230,17 +236,5 @@ class SynapseClient(synapseclient.Synapse, object):
         return data
 
 
-def __time2datetime(timedate):
-    """not used anymore ???"""
-    import datetime
-
-    date = [int(x) for x in timedate.split("T")[0].split("-")]
-    time = timedate.split("T")[1].split(":")
-    print time
-    time[2] = time[2].split(".")[0]
-    time = [int(x) for x in time]
-    this = datetime.datetime(date[0], date[1], date[2], time[0], time[1], time[2])
-    return this
-    
 
 

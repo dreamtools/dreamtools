@@ -51,7 +51,20 @@ class LocalData(object):
 
 
 class Challenge(LocalData):
-    """Common class to all challenges"""
+    """Common class to all challenges
+    
+    
+    If you have not setup a .synapseConfig in your HOME, 
+    you must provide a synapse client
+
+    ::
+
+        from dreamtools import *
+        s = Challenge('D2C1')
+        client = Login(username=username, password=pwd).client
+        s.client = client
+
+    """
 
     def __init__(self, challenge_name):
         """.. rubric:: constructor

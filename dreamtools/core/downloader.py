@@ -32,7 +32,7 @@ class Downloader(Challenge, Login):
 
 
     """
-    def __init__(self, challenge, client=None):
+    def __init__(self, challenge, client=None, username=None, password=None):
         """.. rubric:: constructor
 
         :param str challenge: alias of a challenge (e.g., D5C1)
@@ -46,7 +46,8 @@ class Downloader(Challenge, Login):
 
         """
         Challenge.__init__(self, challenge_name=challenge)
-        Login.__init__(self, client=client)
+        Login.__init__(self, client=client, username=username, 
+                password=password)
 
     def download(self, synid):
         """Download a file into the dreamtools directory
