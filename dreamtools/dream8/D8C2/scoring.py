@@ -73,7 +73,8 @@ class D8C2(Challenge):
         else:
             ValueError("Invalid sub challenge. Use one of %s" % self.sub_challenges)
 
-
+    def download_goldstandard(self, subname):
+        raise NotImplementedError
 
 
 

@@ -10,6 +10,7 @@ dreampath = configuration.user_config_dir
 
 from dreamtools.core.challenge import Challenge, LocalData
 
+# could we have something dynamic here ?
 
 from dream2.D2C1.scoring import D2C1
 from dream2.D2C2.scoring import D2C2

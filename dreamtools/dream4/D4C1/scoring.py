@@ -1,6 +1,6 @@
 """D4C1 scoring function
 
-Based on an original matlab code from  
+Based on an original matlab code from
 Gustavo A. Stolovitzky, and Robert Prill.
 
 """
@@ -77,9 +77,13 @@ class D4C1(Challenge):
             self.prediction.append(df)
 
     def download_template(self):
-        filename = self._pj([self.classpath, 'templates', 
+        filename = self._pj([self.classpath, 'templates',
             'D4C1_templates.txt'])
         return filename
+
+    def download_goldstandard(self):
+        return  self._pj([self.classpath, 'goldstandard',
+            'D4C1_goldstandard.txt'])
 
     def _probability(self, X, Y, x):
         dx = X[1]-X[0]
@@ -163,7 +167,7 @@ class D4C1(Challenge):
         self.results['sh3']['offset'] = all_offsets
 
     def _frobenius_norm(self):
-        return [np.linalg.norm(self.golddata[i]-self.prediction[i]) 
+        return [np.linalg.norm(self.golddata[i]-self.prediction[i])
                 for i in range(0, 13)]
 
     def _init(self):

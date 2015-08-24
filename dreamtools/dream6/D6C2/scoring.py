@@ -31,15 +31,17 @@ class D6C2(Challenge):
 
         msg = "This challenge was re-done in DREAM7. "
         msg += "Please, use D7C1 challenge instead"
-        raise NotImplementedError(msg)
+        print(msg)
 
     def score(self, prediction_file):
         raise NotImplementedError
 
     def download_template(self):
         # should return full path to a template file
-        raise NotImplementedError
+        pass
+        #raise NotImplementedError
 
     def download_goldstandard(self):
         # should return full path to a gold standard file
-        raise NotImplementedError
+        pass
+        #raise NotImplementedError

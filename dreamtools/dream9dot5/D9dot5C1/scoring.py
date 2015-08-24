@@ -15,7 +15,6 @@
 ##############################################################################
 """D9dot5C1 challenge scoring functions"""
 import os
-from os.path import join as pj
 import numpy as np
 import pandas as pd
 import tempfile
@@ -103,12 +102,6 @@ class D9dot5C1(Challenge):
         # sigma_sigma_ple = 0.1149
         # sigma_sigma_dec = 0.0281
 
-
-
-
-
-
-
     def download_template(self, name):
         filename1, filename2 = self.download_templates()
         if name == 'sc1':
@@ -141,4 +134,13 @@ class D9dot5C1(Challenge):
             d.download(synid)
 
         return filename
+
+    def download_goldstandard(self, subname):
+        gs1, gs2 = self.download_gs()
+        if subname == 'gs1':
+            return gs1
+        elif subname == 'gs2':
+            return gs2
+
+
 

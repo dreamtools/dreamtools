@@ -81,6 +81,9 @@ class D8C1(Challenge):
             raise ValueError('Invalid name. Use one of %s' % self.sub_challenges)
         return self.getpath_template(filename)
 
+    def download_goldstandard(self, subname):
+        raise NotImplementedError
+
     def score(self, filename, subname=None):
         if subname == 'SC1A':
             s = HPNScoringNetwork(filename)
