@@ -71,7 +71,7 @@ setup(
         '*.csv', '*.ini', '*.R', 'README.rst'],},
 
     install_requires = ['cython', 'numpy', 'matplotlib', 'pandas', 'appdirs',
-        'easydev>=0.8.5', 'fitter', 'synapseclient', 'tabulate', 'scipy'],
+        'easydev>=0.8.7', 'fitter', 'synapseclient', 'tabulate', 'scipy'],
 
     ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"]),
 
