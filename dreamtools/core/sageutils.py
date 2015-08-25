@@ -102,7 +102,6 @@ class SynapseClient(synapseclient.Synapse, object):
         print("This is a SynapseClient built on top of Synapse class. ")
         print("Trying to login automatically. ")
         try:
-            a/0
             self.login(username, password)
             print("You're logged in Synapse")
         except Exception as err:
