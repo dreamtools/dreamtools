@@ -102,19 +102,33 @@ class SynapseClient(synapseclient.Synapse, object):
         print("This is a SynapseClient built on top of Synapse class. ")
         print("Trying to login automatically. ")
         try:
+            a/0
             self.login(username, password)
             print("You're logged in Synapse")
         except Exception as err:
             print("Failed to login automatically.")
+            print("Either the login is wrong or missing")
             print("You must have a synapse account")
             print("Create a Synapse login on http://synapse.org")
             print("Create a file called .synapseConfig in your HOME directory")
             print("Add this code in the file:\n")
             print("[authentication]")
+            print("For now, let us try to login manually:")
             print("username: yourlogin")
             print("password: yourpassword")
-            print(err)
-            raise Exception(err)
+            print("")
+
+            # use input instead of raw_input (Python3 has only input())
+            try:
+                input = raw_input
+            except NameError: pass
+            username = str(input("Synapse username:"))
+            password = str(input("Synapse password:"))
+
+            try:
+                self.login(username, password)
+            except Exception as err2:
+                raise Exception(err2)
 
     def __getDataPath(self, entity, version=1):
         """
