@@ -67,11 +67,14 @@ setup(
     # (you can provide an exclusion dictionary named exclude_package_data to 
     # remove parasites). alternatively to global inclusion, list the file 
     # to include
-    package_data = {'' : ['*.txt', '*.pyx', '*.so', '*.zip', 
-        '*.csv', '*.ini', '*.R', 'README.rst'],},
+    package_data = {
+        '' : ['*.pl', '*.txt', '*xls', '*.pyx', '*.so', '*.zip', '*.csv', 
+            '*.ini', '*.R', 'README.rst'],
+        },
 
     install_requires = ['cython', 'numpy', 'matplotlib', 'pandas', 'appdirs',
-        'easydev>=0.8.7', 'fitter', 'synapseclient', 'tabulate', 'scipy'],
+        'easydev>=0.8.7', 'fitter', 'synapseclient', 'tabulate', 'scipy',
+        'xlrd'],
 
     ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"]),
 

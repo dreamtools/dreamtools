@@ -1,9 +1,67 @@
-recursive-include dreamtools *.R *.csv
-
-recursive-include dreamtools/dream8/D8C1 *pyx
+include README.rst setup.cfg
+recursive-include dreamtools *.R
+recursive-include dreamtools *.csv
+recursive-include dreamtools *.pyx
+recursive-include dreamtools *.pl
+recursive-include dreamtools/dream2/D2C2/goldstandard *
+recursive-include dreamtools/dream2/D2C2/templates *
+recursive-include dreamtools/dream2/D2C2/data *
+recursive-include dreamtools/dream2/D2C3/goldstandard *
+recursive-include dreamtools/dream2/D2C3/templates *
+recursive-include dreamtools/dream2/D2C3/data *
+recursive-include dreamtools/dream2/D2C1/goldstandard *
+recursive-include dreamtools/dream2/D2C1/templates *
+recursive-include dreamtools/dream2/D2C1/data *
+recursive-include dreamtools/dream3/D3C1/goldstandard *
+recursive-include dreamtools/dream3/D3C1/templates *
+recursive-include dreamtools/dream3/D3C3/goldstandard *
+recursive-include dreamtools/dream3/D3C3/templates *
+recursive-include dreamtools/dream3/D3C4/templates *
+recursive-include dreamtools/dream3/D3C2/goldstandard *
+recursive-include dreamtools/dream3/D3C2/templates *
+recursive-include dreamtools/dream4/D4C1/goldstandard *
+recursive-include dreamtools/dream4/D4C1/templates *
+recursive-include dreamtools/dream4/D4C3/goldstandard *
+recursive-include dreamtools/dream4/D4C3/templates *
+recursive-include dreamtools/dream4/D4C3/data *
+recursive-include dreamtools/dream4/D4C2/goldstandard *
+recursive-include dreamtools/dream4/D4C2/templates *
+recursive-include dreamtools/dream5/D5C3/goldstandard *
+recursive-include dreamtools/dream5/D5C3/templates *
+#recursive-include dreamtools/dream5/D5C3/data *
+recursive-include dreamtools/dream5/D5C2/data *
+recursive-include dreamtools/dream5/D5C1/data *
+recursive-include dreamtools/dream6/D6C4/goldstandard *
+recursive-include dreamtools/dream6/D6C4/templates *
+recursive-include dreamtools/dream6/D6C4/data *
+recursive-include dreamtools/dream6/D6C4/codeanddata *
+recursive-include dreamtools/dream6/D6C3/goldstandard *
+recursive-include dreamtools/dream6/D6C3/templates *
+recursive-include dreamtools/dream6/D6C3/data *
+recursive-include dreamtools/dream6/D6C2/goldstandard *
+recursive-include dreamtools/dream6/D6C2/data *
+recursive-include dreamtools/dream6/D6C2/templates *
+recursive-include dreamtools/dream7/D7C4/goldstandard *
+recursive-include dreamtools/dream7/D7C4/templates *
+recursive-include dreamtools/dream7/D7C4/data *
+recursive-include dreamtools/dream7/D7C2/data *
+recursive-include dreamtools/dream7/D7C3/goldstandard *
+recursive-include dreamtools/dream7/D7C3/templates *
+recursive-include dreamtools/dream7/D7C1/goldstandard *
+recursive-include dreamtools/dream7/D7C1/templates *
+recursive-include dreamtools/dream7/D7C1/data *
+recursive-include dreamtools/dream8/D8C3/goldstandard *
+recursive-include dreamtools/dream8/D8C1/goldstandard *
 recursive-include dreamtools/dream8/D8C1/templates *
-recursive-include dreamtools/dream8/D8C1/goldstandard *.csv *.zip 
+recursive-include dreamtools/dream8/D8C1/data *
+recursive-include dreamtools/dream8/D8C2/data *
+recursive-include dreamtools/dream8dot5/D8dot5C1/goldstandard *
+recursive-include dreamtools/dream8dot5/D8dot5C1/templates *
+recursive-include dreamtools/dream9/D9C1/goldstandard *
+recursive-include dreamtools/dream9/D9C1/templates *
+recursive-include dreamtools/dream9/D9C2/templates *
+recursive-include dreamtools/dream9/D9C3/templates *
+
 recursive-include dreamtools/dream8/D8C1/data *.csv *.json *dat
-recursive-include dreamtools/dream5/D5C2/data *.csv 
-recursive-include dreamtools README.rst
+recursive-exclude dreamtools/dream6/D6C4/codeanddata *
 
