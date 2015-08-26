@@ -33,3 +33,6 @@ Inside the IPython shell, you can try **DREAMTools** directly::
     s.Ntf = 2 # to speed up the test
     s.score(s.download_template))
 
+
+We also provide a Docker for ubuntu (See Dockerfile_ubuntu and dreamtools_install_ubuntu.sh).
+
