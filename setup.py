@@ -5,8 +5,8 @@ from Cython.Build import cythonize
 
 
 _MAJOR               = 0
-_MINOR               = 10
-_MICRO               = 4
+_MINOR               = 11
+_MICRO               = 0
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
@@ -23,9 +23,11 @@ metainfo = {
     'url' : ['https://github.com/dreamtools/dreamtools'],
     'description':'Scoring functions for the dream / sage challenges' ,
     'platforms' : ['Linux', 'Unix', 'MacOsX', 'Windows'],
-    'keywords' : ['DREAM challenges', 'DREAM', 'System Biology', 'Leaderboard'],
+    'keywords' : ['DREAM challenges', 'DREAM', 'System Biology', 
+        'Leaderboard', 'ROC', 'scoring', 'synapse','statistics' ],
+    'bugtrack_url': 'https://github.com/dreamtools/issues',
     'classifiers' : [
-          'Development Status :: 1 - Planning',
+          'Development Status :: 1 - Production/Stable',
           'Intended Audience :: Developers',
           'Intended Audience :: Science/Research',
           'License :: OSI Approved :: BSD License',
