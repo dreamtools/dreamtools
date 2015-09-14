@@ -27,7 +27,7 @@ metainfo = {
         'Leaderboard', 'ROC', 'scoring', 'synapse','statistics' ],
     'bugtrack_url': 'https://github.com/dreamtools/issues',
     'classifiers' : [
-          'Development Status :: 1 - Production/Stable',
+          'Development Status :: 5 - Production/Stable',
           'Intended Audience :: Developers',
           'Intended Audience :: Science/Research',
           'License :: OSI Approved :: BSD License',

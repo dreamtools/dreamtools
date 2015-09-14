@@ -1,6 +1,23 @@
 ChangeLog
 ==============
 
+
+0.11
+------
+
+* adding license
+* adding onweb option in the executable.
+* settings now uses CustomConfig class from easydev rather than a local
+  implementation.
+
+0.10.3 to 0.10.5
+-----------------
+
+* fixing the distribution (MANIFEST)
+* adding a docker example
+* fixing Login to be interactive not jsut an error
+
+
 0.10.1 and 0.10.2
 -------------------------
 

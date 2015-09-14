@@ -38,9 +38,6 @@ recursive-include dreamtools/dream6/D6C4/codeanddata *
 recursive-include dreamtools/dream6/D6C3/goldstandard *
 recursive-include dreamtools/dream6/D6C3/templates *
 recursive-include dreamtools/dream6/D6C3/data *
-recursive-include dreamtools/dream6/D6C2/goldstandard *
-recursive-include dreamtools/dream6/D6C2/data *
-recursive-include dreamtools/dream6/D6C2/templates *
 recursive-include dreamtools/dream7/D7C4/goldstandard *
 recursive-include dreamtools/dream7/D7C4/templates *
 recursive-include dreamtools/dream7/D7C4/data *

@@ -15,9 +15,7 @@
 ##############################################################################
 """D9dot5C1 challenge scoring functions"""
 import os
-import numpy as np
 import pandas as pd
-import tempfile
 
 from easydev import TempFile, shellcmd
 from dreamtools.core.ziptools import ZIP

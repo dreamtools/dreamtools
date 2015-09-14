@@ -472,7 +472,8 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
 
         """
         self.true_descendants = dict([(x,{}) for x in self.valid_cellLines])
-        filename = self.get_pathname("TrueDescVectors.zip")
+        c = Challenge('D8C1')
+        filename = c.get_pathname("TrueDescVectors.zip")
 
         zipdata = zipfile.ZipFile(filename)
         if self.verbose:
@@ -979,7 +980,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             from dreamtools.dream8.D8C1 import scoring
             import os
             s = scoring.HPNScoringNetwork()
-            filename = s.getpath_template('alphabeta-Network.zip')
+            filename = s.download_template('SC1A')
             s.load_submission(filename)
             s.compute_score()
             s.plot_all_rocs()
@@ -1237,7 +1238,7 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
         from dreamtools.dream8.D8C1 import HPNScoringNetworkInsilico
         s = HPNScoringNetworkInsilico()
         import os
-        filename = s.getpath_template(lphabeta-Network-Insilico.zip')
+        filename = s.download_template("SC1B")
         s.read_file(filename)
 
 
@@ -1476,7 +1477,8 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         assert version in [1, 2]
         self._version = version
 
-        filename = self.get_pathname("TruePrediction.zip")
+        c = Challenge('D8C1')
+        filename = c.get_pathname("TruePrediction.zip")
         self.true_desc_filename = filename
 
         # same as species_to_ignore + mTOR + target of the inhibitors email
@@ -1918,10 +1920,12 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         # WRONG NETWORK as used in the official LB
         self.version = version
         if self.version == 1:
-            fname = self.get_pathname("TruePredictionInsilico.zip")
+            c = Challenge('D8C1')
+            fname = c.get_pathname("TruePredictionInsilico.zip")
         elif self.version == 2:
             # CORRECT NETWORK
-            fname = self.get_pathname("TruePredictionInsilico2.zip")
+            c = Challenge('D8C1')
+            fname = c.get_pathname("TruePredictionInsilico2.zip")
         else:
             raise ValueError("version must be either 1 or 2")
         self.true_desc_filename = fname
