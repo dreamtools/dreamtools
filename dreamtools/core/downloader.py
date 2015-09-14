@@ -46,15 +46,15 @@ class Downloader(Challenge, Login):
 
         """
         Challenge.__init__(self, challenge_name=challenge)
-        Login.__init__(self, client=client, username=username, 
+        Login.__init__(self, client=client, username=username,
                 password=password)
 
     def download(self, synid):
         """Download a file into the dreamtools directory
-        
+
         :param synid: a valid synapse id (e.g., syn123456)
 
-        You must have a login on synapse website. 
+        You must have a login on synapse website.
         """
         assert synid.startswith('syn'), "synid must be a valid synapse identifier e.g., syn123456"
         self.client.get(synid, downloadLocation=self.directory)

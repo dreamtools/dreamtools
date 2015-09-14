@@ -80,7 +80,7 @@ class D5C4(Challenge, D3D4ROC):
 
         aupr = -np.mean(np.log10([res1['p_aupr'], res3['p_aupr'], res4['p_aupr']]))
         auroc = -np.mean(np.log10([res1['p_auroc'], res3['p_auroc'], res4['p_auroc']]))
-        print aupr, auroc, np.mean([aupr, auroc])
+        print(aupr, auroc, np.mean([aupr, auroc]))
 
         df = pd.TimeSeries()
         df['Overall Score'] = np.mean([aupr, auroc])

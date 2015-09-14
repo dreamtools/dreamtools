@@ -205,9 +205,9 @@ class SynapseClient(synapseclient.Synapse, object):
         try:
             res = self._createWiki(owner, title, markdown, owner_type=owner_type)
             return res
-        except Exception, e:
+        except Exception as err:
             print("Could not create the wiki. Exists already ?")
-            raise Exception
+            raise Exception(err)
 
     def __getWiki_TC(self, owner, owner_type):
         """Returns wiki given owner and owner_type
@@ -239,7 +239,7 @@ class SynapseClient(synapseclient.Synapse, object):
         prof =  self.getMyProfile()
         try:
             self.restPOST("/evaluation/%s/participant/%s" % (evalId, prof['ownerId']), list())
-        except Exception, e:
+        except Exception as err:
             print("Joining evaluation failed. Maybe you've already joined.")
 
     def json(self, data):

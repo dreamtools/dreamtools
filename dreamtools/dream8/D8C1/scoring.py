@@ -157,7 +157,7 @@ class HPNScoring( ZIP, LocalData):
         self.valid_cellLines =  commons.cellLines
         #: List of valid ligands (e.g, EGF)
         self.valid_ligands = commons.stimuli
-        #: length of the vectors to be found within each cell line 
+        #: length of the vectors to be found within each cell line
         # ignoring TAZ_p89 and FOXO3a_pS318
         # sometimes, like in the true descendants, the TAZ and FOX are inlcude
         # but set to None, which may be confusing
@@ -165,8 +165,8 @@ class HPNScoring( ZIP, LocalData):
         self.valid_length_extended = {'BT549': 45, 'MCF7': 41, 'UACC812': 45,
                                       'BT20': 48}
 
-        #: indices of the mTOR species in the different cell lines within 
-        # the true descendants vectors assuming length are 44, 39, 44, 46 that 
+        #: indices of the mTOR species in the different cell lines within
+        # the true descendants vectors assuming length are 44, 39, 44, 46 that
         # is excludnig  the taz and fox phosphos
         self.mTor_index = {'BT20': 23, 'UACC812': 21, 'MCF7':21, 'BT549':21}
         #indices are computed using:
@@ -584,7 +584,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
                             "MEK1_pS217_pS221": "MEK1_pS217_S221",
                             "EGFR_pY922": "EGFR_pY992"
                         }
-                for k,v in mapping.iteritems():
+                for k,v in mapping.items():
                     if x == k:
                         print("Warning mapping required in the EDA")
                         x = v
@@ -623,7 +623,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         #if M>1:
         #    print("!!!!!!!!!!!!!!!!!!!!1, %s %s" % (cellLine, ligand))
         #    self.edge_scores[cellLine][ligand] /= float(M)
-        
+
         # max is now computed across all networks
         # https://github.com/dreamtools/dreamtools/issues/16
         # self.edge_scores[cellLine][ligand] /= float(M)
@@ -916,7 +916,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
              store_rocs=False, distr="uniform"):
         """Computes the null distribution for a given combinaison
 
-          * Creates a uniformly distribution of a EDA file and stores 
+          * Creates a uniformly distribution of a EDA file and stores
             it in the edge_score attribute.
           * recompute the corresponding descendancy matrix
           * Get the corresponding true prediction
@@ -1036,8 +1036,8 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
                 # ["Serum","PBS", "EGF", "Insulin", "FGF1", "HGF", "NRG1", "IGF1"]:
                 roc = self.compute_roc(c, l)
                 auc = self.compute_auc(roc)
-                print auc,"\t ",
-            print
+                print('AUC',auc,"\t "),
+            print()
 
     def get_mean_and_sigma_null_parameters(self):
         """Retrieve mean and sigma for 32 combi from a null AUC distribution"""
@@ -1138,7 +1138,8 @@ class HPNScoringNetwork_ranking(HPNScoring):
                 # get this AUC for all participant
                 aucs = [x[c][l] for x in self.aucs]
                 M = len([x[c][l] for x in self.aucs if x[c][l]==0])
-                if M>0:print "what is M: ",M
+                if M>0:
+                    print("what is M: ",M)
                 # but use a reverse order hence 1-x for the sorting
                 if invalid:
                     indices = np.argsort([1-x for x in aucs])
@@ -1173,7 +1174,7 @@ class HPNScoringNetwork_ranking(HPNScoring):
         integer_ranks = {}
 
         # get teams and ranks
-        teams_ranks = list(ranking.iteritems())
+        teams_ranks = list(ranking.items())
         teams = [x[0] for x in teams_ranks]
         mean_ranks = [x[1] for x in teams_ranks]
 
@@ -1259,15 +1260,15 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
         self.filename = filename
         try:
             self.loadZIPFile(self.filename)
-        except Exception, e:
-            print e
+        except Exception as err:
+            print(err.message)
             # it not read permission loadZIP and get_eda will fail,
             self.error("Could not read the data (invalid ZIP ?)")
 
         try:
             self.user_graph = self._get_participant_eda()
-        except Exception, e:
-            print e
+        except Exception as err:
+            print(err.message)
             # it not read permission loadZIP and get_eda will fail,
             self.error("Could not compute EDA")
 
@@ -1506,7 +1507,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
 
         if len(filenames) != 4:
             self.error("Got (%s) files with a correct pattern. Expected 4" % len(filenames))
-            print filenames
+            print(filenames)
 
         if self.verbose:
             print("Loading MIDAS files")
@@ -1572,7 +1573,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
                         try:
                             datum = float(datum)
                         except Exception:
-                            print row
+                            print(row)
                             raise Exception
                     self.user_prediction[cell][phospho][this_stimulus][itime] = datum
 
@@ -1712,7 +1713,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
     def compute_all_rmse(self):
         """Some species were removed on purpose during the analysis
 
-        Those are hardcoded. To compute null distribution, we can keep 
+        Those are hardcoded. To compute null distribution, we can keep
         all the species, in which case, _version parameter must be 0
         must be set to False.
         """
@@ -1741,7 +1742,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
                     if c == 'BT549' and l in ['BAD_pS112', 'HER3_pY1298',
                             'PKC-delta']:
                         continue
-                    
+
                 else: # keep going don't skip anything (for null distro)
                     pass
 
@@ -1763,7 +1764,8 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
             dummy, cell = filename.split("-")
             cell, other = cell.split("_", 1)
             filename = self.getpath_data(filename)
-            if self.verbose:print("Scanning %s" % filename)
+            if self.verbose:
+                print("Scanning %s" % filename)
 
             data_iter = csv.reader(open(filename, "r"), delimiter=",")
 
@@ -1817,7 +1819,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         """
 
         ::
-        
+
             s = HPNScoringPrediction()
             nulls = s.get_null(1000)
             # the nulls contains the 4 cell lines
@@ -1844,7 +1846,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
 
     def create_random_data(self):
         """ Here, we don't want the true prediction that contains only what is
-        requested (AZD8055) but the orignal training data with 2 or 3 
+        requested (AZD8055) but the orignal training data with 2 or 3
         inhibitors such as GSK and PD17 so that we can shuffle them.
 
         We want to select for a given cell line and phosphos a data set to fill
@@ -1911,7 +1913,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
             anything else to use correct network
 
         .. note:: This code use the official gold standard used
-            in https://www.synapse.org/#!Synapse:syn1720047/wiki/60532 . Note, 
+            in https://www.synapse.org/#!Synapse:syn1720047/wiki/60532 . Note,
             however, that a new corrected version is now provided and may be used.
             Differences with the official version should be small and have no effect on
             the ranking shown in the synapse page.
@@ -1933,8 +1935,8 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         #self.loadZIPFile(self.filename)
         self.valid_cellLines = [""]
         self.times = [0, 1,2,4,6,10,15,30,60,120]
-        self.stimuli = ["loLIG1", "hiLIG1", "loLIG2", "hiLIG2",  
-                "loLIG1_loLIG2", "loLIG1_hiLIG2", "hiLIG1_loLIG2", 
+        self.stimuli = ["loLIG1", "hiLIG1", "loLIG2", "hiLIG2",
+                "loLIG1_loLIG2", "loLIG1_hiLIG2", "hiLIG1_loLIG2",
                 "hiLIG1_hiLIG2"]
         self.inhibitors = ["AB%s"%x for x in range(1,21)]
         self.phosphos = ["AB%s"%x for x in range(1,21)]
@@ -2156,7 +2158,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
                 # based on the participants submissions.
                 # To get the same results for a new participants, those nodes
                 # should be keep the same. Although, we a entirely new set of
-                # participants, those should be updated. 
+                # participants, those should be updated.
                 if null is True:
                     dummy_nodes = []
                 else:
@@ -2250,7 +2252,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
             for p in self.training.keys():
                 data[c][p] = {}
                 for s in self.true_prediction[c][p].keys():
-                    # select randomly for 10 time points for each 
+                    # select randomly for 10 time points for each
                     # inhibitor (8) (no 45 minute point).
                     data[c][p][s] = random.sample(self.training[c], 10)[:]
         return data
@@ -2398,7 +2400,7 @@ class HPNScoringPrediction_ranking(HPNScoring):
         integer_ranks = {}
 
         # get teams and ranks
-        teams_ranks = list(ranking.iteritems())
+        teams_ranks = list(ranking.items())
         teams = [x[0] for x in teams_ranks]
         mean_ranks = [x[1] for x in teams_ranks]
 
@@ -2583,7 +2585,7 @@ class HPNScoringPredictionInsilico_ranking(HPNScoring):
         integer_ranks = {}
 
         # get teams and ranks
-        teams_ranks = list(ranking.iteritems())
+        teams_ranks = list(ranking.items())
         teams = [x[0] for x in teams_ranks]
         mean_ranks = [x[1] for x in teams_ranks]
 

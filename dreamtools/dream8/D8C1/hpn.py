@@ -282,12 +282,12 @@ class HPNAdmin(HPN):
             submission_status['score'] = scoring.score
         submission_status['report'] = scoring.report
 
-        print scoring.status, scoring.score, scoring.report
+        print(scoring.status, scoring.score, scoring.report)
         if scoring.exception:
             assert scoring.status == "INVALID"
-            print scoring.exception.value
+            print(scoring.exception.value)
             submission_status['report'] = scoring.exception.value
-        print submission_status
+        print(submission_status)
         URI = "/evaluation/submission/%s/status" % eid
         if production == True:
             self.client.restPUT(URI, self.json(submission_status))
@@ -363,7 +363,7 @@ class HPNAdmin(HPN):
             self.score_submission_SC1B(submission, 1, production=production)
 
     def _get_ranking_network(self, submissions):
-        print "Using %s submissions to compute the ranking" % len(submissions)
+        print("Using %s submissions to compute the ranking" % len(submissions))
         ranking = HPNScoringNetwork_ranking(client=self.client)
         for i, submission in enumerate(submissions):
             try:
@@ -390,7 +390,7 @@ class HPNAdmin(HPN):
         return ranking
 
     def _get_ranking_prediction(self, submissions):
-        print "Using %s submissions to compute the ranking" % len(submissions)
+        print("Using %s submissions to compute the ranking" % len(submissions))
         ranking = HPNScoringPrediction_ranking(client=self.client)
         for i, submission in enumerate(submissions):
             try:
@@ -415,7 +415,7 @@ class HPNAdmin(HPN):
         return ranking
 
     def _get_ranking_prediction_insilico(self, submissions):
-        print "Using %s submissions to compute the ranking" % len(submissions)
+        print("Using %s submissions to compute the ranking" % len(submissions))
         ranking = HPNScoringPredictionInsilico_ranking(client=self.client)
         for i, submission in enumerate(submissions):
             try:
@@ -842,7 +842,7 @@ class HPNAdmin(HPN):
                 thisdate = dateutil.parser.parse(subs.sc2b_weeks[i][1])
             else:
                 raise NotImplementedError
-            print now, thisdate, thisdate<now
+            print(now, thisdate, thisdate<now)
             if (thisdate < now) == False:
                 return i-1
 
@@ -917,7 +917,7 @@ class HPNAdmin(HPN):
             self.logger.debug("1st try block")
             scoring = self.invalid_score("Failed to retrieve submitted file.")
 
-        print filename
+        print(filename)
         try:
             print("scoring"),
             scoring = HPNScoringNetwork(filename=filename, verbose=False,
@@ -1035,7 +1035,7 @@ class HPNAdmin(HPN):
             self.logger.debug("1st try block")
             scoring = self.invalid_score("Failed to retrieve submitted file.")
 
-        print filename
+        print(filename)
         try:
             scoring = HPNScoringPredictionInsilico(filename=filename,
                 client=self.client)
@@ -1082,7 +1082,7 @@ class HPNAdmin(HPN):
             filename = "dummy"
             self.logger.debug("1st try block")
             scoring = self.invalid_score("Failed to retrieve submitted file.")
-        print filename
+        print(filename)
         self.update_submission_status(submission, scoring, production=production)
         return (scoring)
 

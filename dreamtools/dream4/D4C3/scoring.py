@@ -132,8 +132,11 @@ class D4C3(Challenge):
         self.prediction_score = -pylab.mean(pylab.log10(self.pvals.values()))
 
         if self.edge_count is None:
-            edge_count = int(raw_input("Please enter an edge count values\n" + 
-            "It should be number of edges in your network (20 for the temlate):"))
+            try:
+                input = raw_input
+            except NameError: pass
+            edge_count = int(input("Please enter an edge count values\n" + 
+            "It should be number of edges in your network (20 for the template):"))
             assert edge_count >= 0
         else:
             edge_count = self.edge_count

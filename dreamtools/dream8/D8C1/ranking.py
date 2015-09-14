@@ -271,12 +271,8 @@ class SC2A_ranking(Ranking):
 
     def append_submission(self, res):
         try:
-            print res
-            print self.version
             res = scoring.HPNScoringPrediction(res, version=self.version)
-            print 1
             res.compute_all_rmse()
-            print 2
         except:
             pass
 

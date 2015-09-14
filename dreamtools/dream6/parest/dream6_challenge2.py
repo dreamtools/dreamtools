@@ -1134,7 +1134,8 @@ class D6C2(object):
 
         # sorte the team versus scores
         import operator
-        sorted_teams = [team[0] for team in sorted(self.scores.iteritems(), key=operator.itemgetter(1), reverse=True)]
+        sorted_teams = [team[0] for team in sorted(self.scores.items(), 
+            key=operator.itemgetter(1), reverse=True)]
 
         if teamNames == None:
             for i, team in enumerate(sorted_teams[0:nBestTeams]):
@@ -1339,10 +1340,10 @@ class D6C2(object):
         assert datatype in ['parameters', 'time_course']
 
         # first, we retrieve all model1 results for each team
-        data = dict([(team, models[model]) for team, models in self.pvalue_parameters.iteritems()])
+        data = dict([(team, models[model]) for team, models in self.pvalue_parameters.items()])
         # then, we print the sorted list
         import operator
-        sorted_x = sorted(data.iteritems(), key=operator.itemgetter(1))
+        sorted_x = sorted(data.items(), key=operator.itemgetter(1))
         for x in sorted_x:
             print x[0], x[1]
 
@@ -1531,7 +1532,7 @@ class D6C2(object):
 
             # sort by values (not by team names)
             import operator
-            sorted_x = sorted(self.scores.iteritems(), key=operator.itemgetter(1))
+            sorted_x = sorted(self.scores.items(), key=operator.itemgetter(1))
             for x in sorted_x:
                 str += "%20s \t | %s\n" % (x[0], x[1])
 

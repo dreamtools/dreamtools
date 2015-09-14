@@ -16,7 +16,6 @@
 ############################################################################### -*- python -*-
 import copy
 import os
-import glob
 import json
 
 import numpy as np
@@ -208,7 +207,7 @@ class SC1AggregationPlotting(object):
             aggr.compute_score()
             mu = self.compute_grand_mean_auc(aggr.auc)
             mean_aucs.append(mu)
-            print i, mu
+            print(i, mu)
             self.results.append(aggr.auc)
 
         self._mean_auc = mean_aucs[:]
@@ -336,7 +335,7 @@ class SC2AggregationPlotting(object):
             aggr.compute_all_rmse()
             rmse = self._get_mean_rmse(aggr.rmse)
             mean_rmses.append(rmse)
-            print i, rmse
+            print(i, rmse)
 
         iauc = [self.df.ix[x].mean_rmse for x in range(0,N)]
 
@@ -483,7 +482,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
                         edge_scores[c][l].append(individual.edge_scores[c][l])
 
                         if edge_scores[c][l][0].max()>1:
-                            print c,l,edge_scores[c][l][0].max()
+                            print(c,l,edge_scores[c][l][0].max())
 
         for c in aggregate.edge_scores.keys():
             for l in aggregate.edge_scores[c].keys():

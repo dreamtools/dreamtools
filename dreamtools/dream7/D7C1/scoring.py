@@ -657,7 +657,7 @@ class D7C1(Challenge):
             pass
 
         # any gene and sign found in GS?
-        for gene, signs in dgenes_data.iteritems():
+        for gene, signs in dgenes_data.items():
             if gene in dgenes.keys():
                 Ni[i] += 1
                 if signs[-1] in dgenes[gene]:
@@ -670,11 +670,11 @@ class D7C1(Challenge):
         # Create a random topology submission
         data = pd.DataFrame()
 
-        sign1 = ["+" if x ==1 else "-" for x in np.random.randint(0,2,3)]
-        sign2 = ["+" if x ==1 else "-" for x in np.random.randint(0,2,3)]
-        regulator = np.random.randint(0,12,3)
-        g1 = np.random.randint(0,12,3)
-        g2 = np.random.randint(0,12,3)
+        sign1 = ["+" if x ==1 else "-" for x in np.random.randint(0, 2, 3)]
+        sign2 = ["+" if x ==1 else "-" for x in np.random.randint(0, 2, 3)]
+        regulator = np.random.randint(0, 12, 3)
+        g1 = np.random.randint(0, 12, 3)
+        g2 = np.random.randint(0, 12, 3)
 
         data['regulator'] = regulator
         data['sign1'] = sign1

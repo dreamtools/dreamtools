@@ -20,6 +20,7 @@ import re
 
 from dreamtools import configuration as cfg
 
+
 __all__ = ['LocalData', 'Challenge']
 
 
@@ -48,14 +49,11 @@ class LocalData(object):
         return os.sep.join(listdir)
 
 
-
-
-
 class Challenge(LocalData):
     """Common class to all challenges
-    
-    
-    If you have not setup a .synapseConfig in your HOME, 
+
+
+    If you have not setup a .synapseConfig in your HOME,
     you must provide a synapse client
 
     ::
@@ -163,7 +161,7 @@ class Challenge(LocalData):
         return class_inst
 
     def _download_data(self, name, synid):
-        # name is not strictly required but if already found, 
+        # name is not strictly required but if already found,
         # it will not be downloaded again
         from dreamtools.core.downloader import  Downloader
 
@@ -179,7 +177,7 @@ class Challenge(LocalData):
         return filename
 
     def get_pathname(self, filename):
-        """Return pathname of a file to be found on ./config/dreamtools 
+        """Return pathname of a file to be found on ./config/dreamtools
         if available"""
         filename = self.directory + os.sep + filename
         if os.path.exists(filename) is False:
@@ -246,7 +244,7 @@ class Challenge(LocalData):
                     N = len(prefix) + 2
                     metadata[prefix] = line[N:].strip()
 
-        for k,v in metadata.iteritems():
+        for k, v in metadata.items():
             if metadata[k] == 'undefined':
                 if self.debug:
                     print("Did not find %s in README.rst" % k)
@@ -261,5 +259,5 @@ class Challenge(LocalData):
         else:
             for subname in self.sub_challenges:
                 self.download_template(subname)
-                self.download_goldstandard(subname)                
+                self.download_goldstandard(subname)
         print(self)
