@@ -8,13 +8,13 @@ DREAMTools
 .. image:: https://secure.travis-ci.org/dreamtools/dreamtools.png
     :target: http://travis-ci.org/dreamtools/dreamtools
 
-.. image:: https://coveralls.io/repos/dreamtools/dreamtools/badge.png?branch=master 
-   :target: https://coveralls.io/r/dreamtools/dreamtools?branch=master 
+.. image:: https://coveralls.io/repos/dreamtools/dreamtools/badge.png?branch=master
+   :target: https://coveralls.io/r/dreamtools/dreamtools?branch=master
 
 .. image:: https://badge.waffle.io/dreamtools/dreamtools.png?label=issues&title=issues
    :target: https://waffle.io/dreamtools/dreamtools
 
-:note: DREAMTools is tested for Python 2.7
+:Note: DREAMTools is tested for Python 2.7
 :Contributions: Please join https://github.com/dreamtools/dreamtools and share your notebooks https://github.com/dreamtools/dreamtools/notebooks
 
 :Online documentation: `On pypi website <http://pythonhosted.org/dreamtools/>`_,
@@ -40,7 +40,7 @@ The main goals are to provide:
 **DREAMTools** does not provide code related to aggregation,
 leaderboards, or more complex analysis even though such code
 can be provided (e.g. D8C1 challenge). Note that some functionalities
-may be restricted with some access to synapse platform. Indeed, 
+may be restricted with some access to synapse platform. Indeed,
 some challenges will require to download public data sets from `Synapse
 <www.synapse.org>`_ (in which case you will need to register).
 
@@ -51,7 +51,7 @@ Installation
 installed with **dreamtools** using pip executable::
 
     pip install dreamtools
-    
+
 From source, download the source code and install the package with Python::
 
    git clone git@github.com:dreamtools/dreamtools.git
@@ -59,14 +59,14 @@ From source, download the source code and install the package with Python::
    sudo python setup.py install
 
 
-The **dreamtools-scoring** executable
+The **dreamtools** executable
 ------------------------------------------
 
-For users, **DREAMTools** provides an executable called **dreamtools**, which should be installed automatically. Knowing the name of the challenge (and possibly sub-challenge), it works as  follows::
+For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. Knowing the name of the challenge (and possibly sub-challenge), it works as  follows::
 
     dreamtools --challenge d8c1 --sub-challenge sc1a --submission example.zip
 
-It prints some information and the score of the submision for instance for the example above::
+It prints some information and the score of the submission for instance for the example above::
 
      Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
      AUROC: 0.803628919403
@@ -118,7 +118,9 @@ Credits
 Please see doc/source/credits.rst
 
 
+More documentation ?
+------------------------
 
-
-
+Please see the doc directory, which is processed and posted on 
+`pypi website <http://pythonhosted.org/dreamtools/>`_ with each release.
 

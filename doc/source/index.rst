@@ -27,11 +27,11 @@ Some challenges will require to download public data sets from
 The **dreamtools** executable
 -------------------------------
 
-For users, **DREAMTools** package provides one executable called **dreamtools**, which should be installed automatically during the installation. Knowing the name of the challenge (and possibly sub-challenge), it works as follows::
+For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically during the installation. Knowing the name of the challenge (and possibly sub-challenge), it works as follows::
 
     dreamtools --challenge d8c1 --sub-challenge sc1a --submission example.zip
 
-It prints some information and the score of the submision for instance for the example above::
+It prints some information and the score of the submission for instance for the example above::
 
      Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
      AUROC: 0.781937275711
@@ -52,6 +52,12 @@ Installation
 installed with **DREAMTools** using pip executable::
 
     pip install dreamtools
+
+From source, download the source code and install the package with Python::
+
+    git clone git@github.com:dreamtools/dreamtools.git
+    cd dreamtools
+    sudo python setup.py install
 
 
 

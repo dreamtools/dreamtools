@@ -9,8 +9,9 @@ def test_d2c1():
     d = s.score(filename)
     assert_almost_equal(d['AUPR'], 0.2563463, 7)
 
-
     from easydev import TempFile
     fh = TempFile()
     s._create_templates(filename=fh.name)
     fh.delete()
+
+    s.score_and_compare_with_lb(s.download_template())

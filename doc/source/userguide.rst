@@ -11,13 +11,13 @@ scoring functions. It may sound obvious but to score a submission one need to ha
 The scoring will internally download a gold standard file, which can also be
 retrieved independently.
 
-Finally, note that some challenges have sub-challenges, which name must be provided.
+Finally, note that some challenges have sub-challenges whose names must be provided.
 
 Synapse login
 ----------------
 
 You will need a Synapse login. You can create a local authentication by creating
-a file called **.synapseConfig** in your home directory.
+a file called **.synapseConfig** in your home directory and add this content.
 
 ::
 
@@ -43,7 +43,7 @@ number 2 to indicate the DREAM session. Y indicates the challenge itself.
     dreamtools --challenge D5C1
 
 
-This will raise an error becaseu there is no submission provided. A
+This will raise an error because there is no submission provided. A
 template/example can be easily retrieved::
 
 
@@ -104,7 +104,7 @@ Getting information about the challenge
 
 
 From the Python command line, for a given challenge, you can get a brief summary
-and more importantly the Synpase page::
+and  the Synapse page identifier::
 
     from dreamtools import D9C1
     s = D9C1()
@@ -114,3 +114,13 @@ and more importantly the Synpase page::
 You can also use the **dreamtools** executable::
 
     dreamtools --challenge D9C1 --info
+
+
+Openning the Synapse page
+-----------------------------
+
+::
+
+    dreamtools --challenge D9C1 --onweb
+
+    

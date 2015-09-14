@@ -9,15 +9,20 @@ executable called **dreamtools-layout** (from :mod:`dreamtools.core.layout` modu
 You first need to think about a challenge nickname. Let us assume a challenge
 for DREAM8 session, which is the fourth one. Its nickname would be D8C4.
 
-Now, all you need to do is to go to dreamtools/dreamtools/dream8 and type::
+First, move in the github tree structure to the **dream8** directory::
+
+    cd dreamtools
+    cd dream8
+
+if the directory **dream8** does not exist, create it and add an empty file
+called **__init__.py**. Then, all you need to do is to go to *dreamtools/dream8* directory and type::
 
     dreamtools-layout --challenge-name D8C4
 
-Some sub directories and files are created including the **scoring.py** with a basic class were to code the scoring function.
+Some sub directories and files are created including the **scoring.py** with a basic class were to code or wrap your scoring function.
 
-.. note:: If the directory **dream8** does not exists, create it and add an empty file called **__init__.py** inside.
 
-If data file or templates are too large, we strongly recommend to store them in a project on Synapse. we have created a synapse project called `dreamtools <https://www.synapse.org/#!Synapse:syn4483180>`_
+If data file or templates are too large, we strongly recommend to store them in a project on Synapse. We have created a synapse project called `dreamtools <https://www.synapse.org/#!Synapse:syn4483180>`_
 where for example the D5C2 data files have been stored. Other files can all be
 stored there. This may be duplicated with existing projects but would ease the
 maintenance of the 30-40 DREAM challenges already available in **DREAMTools**.

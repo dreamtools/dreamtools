@@ -1,4 +1,4 @@
-Team, 1st, 2nd, 5th, 20th, Area Under Prec-Rec Curve, Area Under ROC Curve 
+Team, precision_1st, precision_2nd, precision_5th, precision_20th, AUPR, AUROC
 Team 106, 1.000000, 1.000000, 1.000000, 0.800000, 0.721037, 0.847516
 Team 114, 1.000000, 0.666667, 0.625000, 0.408163, 0.385721, 0.631626
 Team 122, 0.111111, 0.066667, 0.100000, 0.206186, 0.204881, 0.391606

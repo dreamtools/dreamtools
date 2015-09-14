@@ -20,7 +20,7 @@ class D2C3(Challenge, D3D4ROC, DREAM2):
         filename = s.download_template(subname)
         s.score(filename, subname)
 
-    There are 12 gold standards and temlates. There are scored
+    There are 12 gold standards and templates. There are scored
     independently (6 for the chip case and 6 for the qPCR). 
 
     Although there is no sub-challenge per se, there are 12 different
@@ -34,7 +34,7 @@ class D2C3(Challenge, D3D4ROC, DREAM2):
         # although there is no sub challenges per se,
         # 12 different GS were used to score 12 types
         # of network. We use those TAGS
-        #: sub challenges
+        #: sub challenges (12 different values)
         self.sub_challenges = [
             "DIRECTED-SIGNED_EXCITATORY_chip",
             "DIRECTED-SIGNED_EXCITATORY_qPCR",

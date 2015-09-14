@@ -6,7 +6,6 @@ Gustavo A. Stolovitzky.
 """
 import pandas as pd
 import numpy as np
-import os
 from dreamtools.core.challenge import Challenge
 from dreamtools.core.rocs import D3D4ROC, DREAM2
 
@@ -72,6 +71,30 @@ class D2C1(Challenge, D3D4ROC, DREAM2):
             'precision at nth correct prediction':  spec_prec}
 
         results = {'AUPR':AUC, 'AUROC':AUROC }
-        results['precision at nth correct prediction'] = spec_prec
+        # precision at nth correct prediction
+        results['precision_1st'] = spec_prec[1]
+        results['precision_2nd'] = spec_prec[2]
+        results['precision_5th'] = spec_prec[5]
+        results['precision_20th'] = spec_prec[20]
 
         return results
+
+    def score_and_compare_with_lb(self, filename):
+        """Example of a comparative leaderboard that scores """
+        lbofficial = self.load_leaderboard()
+        df = self.score(filename)
+        df = pd.DataFrame(df, index=[0])
+        df['Team'] = 'DREAMTools'
+        lb = pd.concat([lbofficial, df])
+        lb = lb.sort(columns='AUROC', ascending=False)
+        lb = lb[lbofficial.columns]
+        lb.set_index('Team')
+        return lb
+
+    def load_leaderboard(self):
+        filename = self.getpath_lb("D2C1_leaderboard.csv")
+        df = pd.read_csv(filename)
+        df.columns = [x.strip() for x in df.columns]
+        return df
+
+

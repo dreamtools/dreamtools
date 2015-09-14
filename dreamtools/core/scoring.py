@@ -91,7 +91,7 @@ def scoring(args=None):
     """
     d = DevTools()
 
-    if args == None:
+    if args is None:
         args = sys.argv[:]
     user_options = Options(prog="dreamtools")
 
@@ -121,15 +121,15 @@ def scoring(args=None):
         this = class_inst.import_scoring_class()
         print(this)
         sys.exit()
-    
+
+    # or open the synapse project page
     if options.onweb is True:
         this = class_inst.import_scoring_class()
-        url = "https://www.synapse.org/#!Synapse:%s" 
+        url = "https://www.synapse.org/#!Synapse:%s"
         url = url % this.synapseId
         print(url)
         import webbrowser
         webbrowser.open_new(url)
-
         sys.exit()
 
 
@@ -151,6 +151,7 @@ def scoring(args=None):
             print_color(txt, red)
             sys.exit()
 
+    # maybe users just need a template
     if options.download_template is True:
         c = Challenge(options.challenge)
         class_inst = c.import_scoring_class()
@@ -170,6 +171,8 @@ def scoring(args=None):
             print(class_inst.download_goldstandard(options.sub_challenge))
         return
 
+
+    # finally, we need a submission
     if options.filename is None:
         txt = "---> filename not provided. You must provide a filename with correct format\n"
         txt += "You may get a template using --download-template option\n"
@@ -177,7 +180,7 @@ def scoring(args=None):
         print_color(txt, red)
         sys.exit()
 
-    # filename 
+    # filename
     # filename in general is a single string but could be a list of filenames
     # Because on the parser, we must convert the string into a single string
     # if the list haa a length of 1
@@ -186,14 +189,13 @@ def scoring(args=None):
             raise IOError("file %s does not seem to exists" % filename)
     if len(options.filename) == 1:
         options.filename = options.filename[0]
-    
 
-    print_color("Dreamtools scoring", purple, underline=True)
+    print_color("DREAMTools scoring", purple, underline=True)
     print('Challenge %s (sub challenge %s)\n\n' % (options.challenge, options.sub_challenge))
 
-    res = generic_scoring(options.challenge, 
-            options.filename, 
-            subname=options.sub_challenge, 
+    res = generic_scoring(options.challenge,
+            options.filename,
+            subname=options.sub_challenge,
             goldstandard=options.goldstandard)
 
     txt = "Solution for %s in challenge %s" % (options.filename, options.challenge)
@@ -217,8 +219,8 @@ class Options(argparse.ArgumentParser):
 
         usage = """usage: python %s --challenge d8c1 --sub-challenge sc1a --submission <filename>\n""" % prog
         usage += """      python %s --challenge d5c2 --submission <filename>""" % prog
-        epilog="""Author(s): Thomas Cokelaer (DREAMTools framework) and authors from 
-the DREAM consortium. Please see the scoring files headers for details 
+        epilog="""Author(s): Thomas Cokelaer (DREAMTools framework) and authors from
+the DREAM consortium. Please see the scoring files headers for details
 and the GitHub repository.
 
 Source code on: https://github.com/dreamtools/dreamtools
@@ -233,16 +235,16 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
     documentation http://pythonhosted.org/dreamtools/ or within the source code
     hosted on github http://github.org/dreamtools/dreamtools
 
-    Registered challenge so far (and sub-challenges) are: 
+    Registered challenge so far (and sub-challenges) are:
 """
         # FIXME : not robust but will work for now
         registered = sorted([x for x in dir(dreamtools) if x.startswith('D')
                  and 'C' in x])
-    
+
         for this in textwrap.wrap(", ".join(registered), 80):
             description += this + "\n"
 
-        super(Options, self).__init__(usage=usage, version=version, prog=prog, 
+        super(Options, self).__init__(usage=usage, version=version, prog=prog,
                 epilog=epilog, description=description,
                 formatter_class=argparse.RawDescriptionHelpFormatter)
         self.add_input_options()
@@ -256,10 +258,10 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
         group = self.add_argument_group("General", 'General options (compulsary or not)')
 
         group.add_argument("--challenge", dest='challenge',
-                         default=None, type=str, 
+                         default=None, type=str,
                          help="alias of the challenge (e.g., D8C1 stands for"
                          "dream8 challenge 1).")
-        group.add_argument("--sub-challenge", dest='sub_challenge', 
+        group.add_argument("--sub-challenge", dest='sub_challenge',
                          default=None, type=str,
                          help="Name of the data files")
         group.add_argument("--verbose", dest='verbose',
@@ -270,26 +272,24 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
         group.add_argument("--filename", dest='filename', nargs='*',
                          help="submission/filename to score.")
         group.add_argument("--gold-standard", dest='goldstandard',
-                         help="""a gold standard filename. This may be 
+                         help="""a gold standard filename. This may be
                          required in some challenges e.g. D2C3""")
-        group.add_argument("--onweb", dest='onweb',action='store_true', 
+        group.add_argument("--onweb", dest='onweb',action='store_true',
                 help="Open synapse project page in a browser")
         group.add_argument("--info", dest='info', action="store_true",
                 help="Prints general information about the challenge")
-        group.add_argument("--download-template", 
+        group.add_argument("--download-template",
                 dest='download_template',
-                help="""Download template. Templates for challenge may be 
-                downloaded using this option. It returns the path to 
-                template.""", 
+                help="""Download template. Templates for challenge may be
+                downloaded using this option. It returns the path to
+                template.""",
                 action='store_true')
         group.add_argument("--download-gold-standard",
                 dest='download_goldstandard',
                 help="""Download a gold standard, which can be used as a
-                submissions as well. It returns the location of the file.""", 
+                submissions as well. It returns the location of the file.""",
                 action='store_true')
 
-
-    
 
 if __name__ == "__main__":
     scoring(sys.argv)

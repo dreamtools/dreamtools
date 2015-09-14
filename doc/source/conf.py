@@ -40,7 +40,7 @@ release = version
 author = "Thomas Cokelaer and the DREAMTools developers"
 title = "DREAMTools"
 copyright = author + ", 2014"
-project = pkg_name
+project = "DREAMTools"
 
 
 

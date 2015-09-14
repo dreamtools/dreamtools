@@ -30,6 +30,7 @@ class D2C4(Challenge, D3D4ROC, DREAM2):
         # although there is no sub challenges per se,
         # 12 different GS were used to score 12 types
         # of network. We use those TAGS 
+        #: 12 different sub challenges 
         self.sub_challenges = []
 
         for name in ['InSilico1', 'InSilico2', 'InSilico3']:

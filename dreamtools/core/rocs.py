@@ -15,7 +15,6 @@
 ##############################################################################
 """Provides tools related to Receiver Operating Characteristic (ROC).
 
-
 Those code were directly translation of Perl or matlab
 codes but we should be using scikit-learn in the future."""
 import numpy as np
@@ -478,7 +477,7 @@ class DREAM2(object):
     def compute_specific_precision_values(self, P, rec):
 
         spec_prec = {}
-        for x in [1, 2, 3, 20, 100, 500, 1000]:
+        for x in [1, 2, 5, 20, 100, 500, 1000]:
             if x > P:
                 break
             rec0 = x / float(P)

@@ -980,7 +980,8 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             from dreamtools.dream8.D8C1 import scoring
             import os
             s = scoring.HPNScoringNetwork()
-            filename = s.download_template('SC1A')
+            from dreamtools import D8C1
+            filename = D8C1().download_template('SC1A')
             s.load_submission(filename)
             s.compute_score()
             s.plot_all_rocs()

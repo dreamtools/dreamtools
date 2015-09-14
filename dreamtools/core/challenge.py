@@ -45,6 +45,11 @@ class LocalData(object):
         assert os.path.exists(filename), 'file %s does not exists' % filename
         return filename
 
+    def getpath_lb(self, filename):
+        filename = self._pj([self.classpath, 'leaderboard', filename])
+        assert os.path.exists(filename), 'file %s does not exists' % filename
+        return filename
+
     def _pj(self, listdir):
         return os.sep.join(listdir)
 
