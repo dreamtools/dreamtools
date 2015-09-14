@@ -23,14 +23,14 @@ exec("import %s" % pkg_name)
 try:
     exec("import %s" % pkg_name)
 except Exception, e:
-    print "Install %s or set your PYTHONPATH properly" % pkg_name
+    print("Install %s or set your PYTHONPATH properly" % pkg_name)
     raise Exception
 
 try:
     import easydev
     from easydev import get_path_sphinx_themes
 except Exception, e:
-    print "Install easydev or set your PYTHONPATH properly"
+    print("Install easydev or set your PYTHONPATH properly")
     raise Exception
 
 

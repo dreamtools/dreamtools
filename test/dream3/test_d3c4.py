@@ -11,7 +11,7 @@ def test_d3c4_10():
     aurocs = []
     for batch in ['Ecoli1', 'Ecoli2', 'Yeast1']:
         filename = s.download_template('10_'+ batch)
-        print filename
+        print(filename)
         aurocs.append(s.score(filename, '10')['AUPR'])
 
     assert_list_almost_equal(aurocs,
