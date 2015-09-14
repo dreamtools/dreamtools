@@ -22,6 +22,7 @@ from dreamtools import configuration as cfg
 
 __all__ = ['LocalData', 'Challenge']
 
+
 class LocalData(object):
     def __init__(self):
         # dynamically find the path of the module.
