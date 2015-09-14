@@ -61,25 +61,33 @@ class D8C1(Challenge):
 
     def __init__(self, version=2):
         super(D8C1, self).__init__('D8C1')
-        self.sub_challenges = ['SC1A','SC1B','SC2A','SC2B']
+        self.sub_challenges = ['SC1A', 'SC1B', 'SC2A', 'SC2B']
         self._init()
         self.version = version
 
     def _init(self):
         self._download_data('experimental.zip', 'syn1920412')
+        self._download_data('alphabeta-Network.zip', 'syn4939071')
+        self._download_data('alphabeta-Network-Insilico.zip', 'syn4939076')
+        self._download_data('alphabeta-Prediction.zip', 'syn4939077')
+        self._download_data('alphabeta-Prediction-Insilico.zip', 'syn4939078')
+        self._download_data('TruePrediction.zip', 'syn4939080')
+        self._download_data('TruePredictionInsilico.zip', 'syn4939081')
+        self._download_data('TruePredictionInsilico2.zip', 'syn4939079')
+        self._download_data('TrueDescVectors.zip', 'syn4939082')
 
     def download_template(self, subname):
         if subname == 'SC1A':
-            filename = 'alphabeta-Network.zip'
+            filename = self.get_pathname('alphabeta-Network.zip')
         elif subname == 'SC1B':
-            filename = 'alphabeta-Network-Insilico.zip'
+            filename = self.get_pathname('alphabeta-Network-Insilico.zip')
         elif subname == 'SC2A':
-            filename = 'alphabeta-Prediction.zip'
+            filename = self.get_pathname('alphabeta-Prediction.zip')
         elif subname == 'SC2B':
-            filename = 'alphabeta-Prediction-Insilico.zip'
+            filename = self.get_pathname('alphabeta-Prediction-Insilico.zip')
         else:
             raise ValueError('Invalid name. Use one of %s' % self.sub_challenges)
-        return self.getpath_template(filename)
+        return filename
 
     def download_goldstandard(self, subname):
         raise NotImplementedError
@@ -464,7 +472,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
 
         """
         self.true_descendants = dict([(x,{}) for x in self.valid_cellLines])
-        filename = self.getpath_gs("TrueDescVectors.zip")
+        filename = self.get_pathname("TrueDescVectors.zip")
 
         zipdata = zipfile.ZipFile(filename)
         if self.verbose:
@@ -1468,7 +1476,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         assert version in [1, 2]
         self._version = version
 
-        filename = self.getpath_gs("TruePrediction.zip")
+        filename = self.get_pathname("TruePrediction.zip")
         self.true_desc_filename = filename
 
         # same as species_to_ignore + mTOR + target of the inhibitors email
@@ -1910,10 +1918,10 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
         # WRONG NETWORK as used in the official LB
         self.version = version
         if self.version == 1:
-            fname = self.getpath_gs("TruePredictionInsilico.zip")
+            fname = self.get_pathname("TruePredictionInsilico.zip")
         elif self.version == 2:
             # CORRECT NETWORK
-            fname = self.getpath_gs("TruePredictionInsilico2.zip")
+            fname = self.get_pathname("TruePredictionInsilico2.zip")
         else:
             raise ValueError("version must be either 1 or 2")
         self.true_desc_filename = fname
