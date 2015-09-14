@@ -5,13 +5,12 @@ Based on original source code from Mette Peters found at
 https://www.synapse.org/#!Synapse:syn4308980
 
 """
-import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
 
+
 class D9C3(Challenge):
     """A class dedicated to D9C3 challenge
-
 
     ::
 
@@ -30,6 +29,7 @@ class D9C3(Challenge):
         super(D9C3, self).__init__('D9C3')
         #self._init()
         self.sub_challenges = ['sc1', 'sc2', 'sc3']
+        print("GS is not released. Challenge not availabl.")
 
     def _init(self):
         # should download files from synapse if required.
@@ -105,5 +105,6 @@ class D9C3(Challenge):
 
     def download_goldstandard(self, subname=None):
         # should return full path to a gold standard file
+        # GS is not released!
         raise NotImplementedError
 
