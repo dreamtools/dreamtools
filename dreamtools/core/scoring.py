@@ -121,6 +121,17 @@ def scoring(args=None):
         this = class_inst.import_scoring_class()
         print(this)
         sys.exit()
+    
+    if options.onweb is True:
+        this = class_inst.import_scoring_class()
+        url = "https://www.synapse.org/#!Synapse:%s" 
+        url = url % this.synapseId
+        print(url)
+        import webbrowser
+        webbrowser.open_new(url)
+
+        sys.exit()
+
 
     # Checks name of the sub-challenges
     subchallenges = get_subchallenges(options.challenge)
@@ -261,6 +272,8 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
         group.add_argument("--gold-standard", dest='goldstandard',
                          help="""a gold standard filename. This may be 
                          required in some challenges e.g. D2C3""")
+        group.add_argument("--onweb", dest='onweb',action='store_true', 
+                help="Open synapse project page in a browser")
         group.add_argument("--info", dest='info', action="store_true",
                 help="Prints general information about the challenge")
         group.add_argument("--download-template", 
