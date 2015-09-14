@@ -9,6 +9,7 @@ Overview
 :SubChallenges: None
 :SCoring metric: AUPR and AUC
 :Synapse page: https://www.synapse.org/#!Synapse:syn2825374
+:Leaderboard: https://www.synapse.org/#!Synapse:syn2825374/wiki/71146
 
 
 .. contents::
