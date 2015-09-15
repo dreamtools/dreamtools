@@ -1,3 +1,19 @@
+# -*- python -*-
+# -*- coding: utf-8 -*-
+#
+#  This file is part of DREAMTools software
+#
+#  Copyright (c) 2015, DREAMTools Development Team
+#  All rights reserved
+#
+#  Distributed under the BSD 3-Clause License.
+#  See accompanying file LICENSE distributed with this software
+#
+#  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
+#
+#  website: http://github.com/dreamtools
+#
+##############################################################################
 """D2C2 scoring function
 
 Class imlemented in Python based on original code in MATLAB from

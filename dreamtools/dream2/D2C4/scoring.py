@@ -1,3 +1,19 @@
+# -*- python -*-
+# -*- coding: utf-8 -*-
+#
+#  This file is part of DREAMTools software
+#
+#  Copyright (c) 2015, DREAMTools Development Team
+#  All rights reserved
+#
+#  Distributed under the BSD 3-Clause License.
+#  See accompanying file LICENSE distributed with this software
+#
+#  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
+#
+#  website: http://github.com/dreamtools
+#
+##############################################################################
 """D2C4 scoring function
 
 original code in MATLAB by Gustavo Stolovitzky
@@ -34,12 +50,12 @@ class D2C4(Challenge, D3D4ROC, DREAM2):
         self.sub_challenges = []
 
         for name in ['InSilico1', 'InSilico2', 'InSilico3']:
-            self.sub_challenges.append('DIRECTED-UNSIGNED_%s' %name)
-            self.sub_challenges.append('UNDIRECTED-UNSIGNED_%s' %name)
-            self.sub_challenges.append('UNDIRECTED-SIGNED_EXCITATORY_%s' %name)
-            self.sub_challenges.append('UNDIRECTED-SIGNED_INHIBITORY_%s' %name)
-            self.sub_challenges.append('DIRECTED-SIGNED_EXCITATORY_%s' %name)
-            self.sub_challenges.append('DIRECTED-SIGNED_INHIBITORY_%s' %name)
+            self.sub_challenges.append('DIRECTED-UNSIGNED_%s' % name)
+            self.sub_challenges.append('UNDIRECTED-UNSIGNED_%s' % name)
+            self.sub_challenges.append('UNDIRECTED-SIGNED_EXCITATORY_%s' % name)
+            self.sub_challenges.append('UNDIRECTED-SIGNED_INHIBITORY_%s' % name)
+            self.sub_challenges.append('DIRECTED-SIGNED_EXCITATORY_%s' % name)
+            self.sub_challenges.append('DIRECTED-SIGNED_INHIBITORY_%s' % name)
 
     def _init(self):
         # should download files from synapse if required.
@@ -65,8 +81,8 @@ class D2C4(Challenge, D3D4ROC, DREAM2):
         if goldstandard is None:
             goldstandard = self.download_goldstandard(subname)
 
-        self.gold_edges =  pd.read_csv(goldstandard, sep='\t', header=None)
-        self.prediction =  pd.read_csv(filename, sep='\t', header=None)
+        self.gold_edges = pd.read_csv(goldstandard, sep='\t', header=None)
+        self.prediction = pd.read_csv(filename, sep='\t', header=None)
         newtest = pd.merge(self.prediction, self.gold_edges, how='inner', on=[0,1])
 
         test = list(newtest['2_x'])
@@ -79,12 +95,11 @@ class D2C4(Challenge, D3D4ROC, DREAM2):
         spec_prec = self.compute_specific_precision_values(P, rec)
 
         # for plotting
-        self.metrics = {'AUPR':AUC, 'AUROC':AUROC ,
-            'tpr':  tpr, 'fpr':  fpr,
-            'rec':  rec, 'prec':  prec,
+        self.metrics = {'AUPR': AUC, 'AUROC': AUROC ,
+            'tpr': tpr, 'fpr': fpr,
+            'rec': rec, 'prec': prec,
             'precision at nth correct prediction': spec_prec}
 
-        results = {'AUPR':AUC, 'AUROC':AUROC }
-        results['precision at nth correct prediction'] =spec_prec
+        results = {'AUPR': AUC, 'AUROC': AUROC }
+        results['precision at nth correct prediction'] = spec_prec
         return results
-
