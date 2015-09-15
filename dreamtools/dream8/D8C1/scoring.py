@@ -1377,10 +1377,11 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
             :width: 80%
 
             from dreamtools.dream8.D8C1 import HPNScoringNetworkInsilico
+            from dreamtools import D8C1
             import os
 
             s = HPNScoringNetworkInsilico()
-            filename = s.getpath_template('alphabeta-Network-Insilico.zip')
+            filename = D8C1().download_template('SC1B')
             s.read_file(filename)
             aucs, auprs = s.get_null_auc_aupr(1000)
             s.plot_null_distribution(aucs)
