@@ -1,7 +1,18 @@
+import pkg_resources
+try:
+    version = pkg_resources.require("dreamtools")[0].version
+    __version__ = version
+except:
+    # update this manually is possible when the version in the
+    # setup changes
+    version = "0.99"
+
+
 
 # this is used in D8C1. could be simplified.
 from .core.sageutils import Login
 from .core import settings
+from .core.ziptools import ZIP
 import os
 
 configuration = settings.DREAMToolsConfig(verbose=False)
