@@ -1,16 +1,17 @@
 # -*- python -*-
+# -*- coding: utf-8 -*-
 #
 #  This file is part of DREAMTools software
 #
-#  Copyright (c) 2014-2015 - EBI-EMBL
+#  Copyright (c) 2015, DREAMTools Development Team
+#  All rights reserved
+#
+#  Distributed under the BSD 3-Clause License.
+#  See accompanying file LICENSE distributed with this software
 #
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
 #
-#  Distributed under the GPLv3 License.
-#  See accompanying file LICENSE.txt or copy at
-#      http://www.gnu.org/licenses/gpl-3.0.html
-#
-#  website: http://github.org/dreamtools
+#  website: http://github.com/dreamtools
 #
 ##############################################################################
 import zipfile
@@ -36,7 +37,7 @@ class ZIP(object):
 
         """
         # USED in D8C1 and D5C2 do not change
-        if zipfile.is_zipfile(filename) == False:
+        if zipfile.is_zipfile(filename) is False:
             raise ValueError("Input file (%s) is not a valid ZIP file. " % filename)
         else:
             self.zip_data = zipfile.ZipFile(filename)

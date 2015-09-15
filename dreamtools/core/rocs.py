@@ -1,16 +1,17 @@
 # -*- python -*-
+# -*- coding: utf-8 -*-
 #
 #  This file is part of DREAMTools software
 #
-#  Copyright (c) 2014-2015 - EBI-EMBL
+#  Copyright (c) 2015, DREAMTools Development Team
+#  All rights reserved
+#
+#  Distributed under the BSD 3-Clause License.
+#  See accompanying file LICENSE distributed with this software
 #
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
 #
-#  Distributed under the GPLv3 License.
-#  See accompanying file LICENSE.txt or copy at
-#      http://www.gnu.org/licenses/gpl-3.0.html
-#
-#  website: http://github.org/dreamtools
+#  website: http://github.com/dreamtools
 #
 ##############################################################################
 """Provides tools related to Receiver Operating Characteristic (ROC).
@@ -335,11 +336,9 @@ class ROCDiscovery(ROCBase):
         return AUPR / (1-1./P)
 
 
-
 class D3D4ROC(ROCBase):
     def __init__(self):
         super(D3D4ROC, self).__init__()
-
 
     def plot(self):
         metrics = self.metrics

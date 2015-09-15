@@ -1,21 +1,20 @@
 # -*- python -*-
+# -*- coding: utf-8 -*-
 #
 #  This file is part of DREAMTools software
 #
-#  Copyright (c) 2014-2015 - EBI-EMBL
+#  Copyright (c) 2015, DREAMTools Development Team
+#  All rights reserved
+#
+#  Distributed under the BSD 3-Clause License.
+#  See accompanying file LICENSE distributed with this software
 #
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
 #
-#  Distributed under the GPLv3 License.
-#  See accompanying file LICENSE.txt or copy at
-#      http://www.gnu.org/licenses/gpl-3.0.html
-#
-#  website: http://github.org/dreamtools
+#  website: http://github.com/dreamtools
 #
 ##############################################################################
 """Utility to download a synapse project in the dreamtools directory"""
-
-# import os
 
 from dreamtools.core.sageutils import Login
 from dreamtools.core.challenge import Challenge
@@ -28,8 +27,6 @@ class Downloader(Challenge, Login):
     """Factory to download gold standard files
 
     Download a synpase file once for all in the dreamtools directory.
-
-
 
     """
     def __init__(self, challenge, client=None, username=None, password=None):
@@ -58,16 +55,3 @@ class Downloader(Challenge, Login):
         """
         assert synid.startswith('syn'), "synid must be a valid synapse identifier e.g., syn123456"
         self.client.get(synid, downloadLocation=self.directory)
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -132,7 +132,6 @@ def scoring(args=None):
         webbrowser.open_new(url)
         sys.exit()
 
-
     # Checks name of the sub-challenges
     subchallenges = get_subchallenges(options.challenge)
 
@@ -171,7 +170,6 @@ def scoring(args=None):
             print(class_inst.download_goldstandard(options.sub_challenge))
         return
 
-
     # finally, we need a submission
     if options.filename is None:
         txt = "---> filename not provided. You must provide a filename with correct format\n"
@@ -203,11 +201,6 @@ def scoring(args=None):
         txt += " (sub-challenge %s)" % options.sub_challenge
     txt += " is :\n"
 
-    #try:
-    #    import pandas as pd
-    #    df = pd.TimeSeries(res['Results'])
-    #    print(df)
-    #except:
     for k in sorted(res.keys()):
         txt += darkgreen("     %s:\n %s\n" %(k, res[k]))
     print(txt)

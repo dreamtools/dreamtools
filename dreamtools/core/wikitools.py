@@ -1,21 +1,20 @@
 # -*- python -*-
 # -*- coding: utf-8 -*-
 #
-#  This file is part of dreamtools software
+#  This file is part of DREAMTools software
 #
-#  Copyright (c) 2013-2014 - EBI-EMBL
+#  Copyright (c) 2015, DREAMTools Development Team
+#  All rights reserved
+#
+#  Distributed under the BSD 3-Clause License.
+#  See accompanying file LICENSE distributed with this software
 #
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
-#
-#  Distributed under the GPLv3 License.
-#  See accompanying file LICENSE.txt or copy at
-#      http://www.gnu.org/licenses/gpl-3.0.html
 #
 #  website: http://github.com/dreamtools
 #
 ##############################################################################
 __all__ = ['dataframe_towiki']
-
 
 
 def dataframe_towiki(df):
@@ -36,7 +35,7 @@ def dataframe_towiki(df):
     txt += formatter % tuple(header) + "\n"
 
     # no spaces before/after the pipe character.
-    txt += formatter.replace(" ", "") % tuple([ "-"*20 for x in range(0, N)]) + "\n"
+    txt += formatter.replace(" ", "") % tuple(["-"*20 for x in range(0, N)]) + "\n"
 
     for row in df.iterrows():
         txt += formatter % tuple(row[1].values)

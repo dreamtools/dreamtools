@@ -1,16 +1,17 @@
 # -*- python -*-
+# -*- coding: utf-8 -*-
 #
 #  This file is part of DREAMTools software
 #
-#  Copyright (c) 2014-2015 - EBI-EMBL
+#  Copyright (c) 2015, DREAMTools Development Team
+#  All rights reserved
+#
+#  Distributed under the BSD 3-Clause License.
+#  See accompanying file LICENSE distributed with this software
 #
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
 #
-#  Distributed under the GPLv3 License.
-#  See accompanying file LICENSE.txt or copy at
-#      http://www.gnu.org/licenses/gpl-3.0.html
-#
-#  website: http://github.org/dreamtools
+#  website: http://github.com/dreamtools
 #
 ##############################################################################
 """Tools to handle a configuration file."""
@@ -35,8 +36,3 @@ class DREAMToolsConfig(CustomConfig):
             print(" >>> filename = c.download_template()")
             print(" >>> c.score(filename)\n")
             print(" Any issues/suggestions ? Visit http://github.com/dreamtools/\n\n")
-
-
-
-
-

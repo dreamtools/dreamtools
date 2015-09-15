@@ -1,16 +1,17 @@
 # -*- python -*-
+# -*- coding: utf-8 -*-
 #
 #  This file is part of DREAMTools software
 #
-#  Copyright (c) 2014-2015 - EBI-EMBL
+#  Copyright (c) 2015, DREAMTools Development Team
+#  All rights reserved
+#
+#  Distributed under the BSD 3-Clause License.
+#  See accompanying file LICENSE distributed with this software
 #
 #  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
 #
-#  Distributed under the GPLv3 License.
-#  See accompanying file LICENSE.txt or copy at
-#      http://www.gnu.org/licenses/gpl-3.0.html
-#
-#  website: http://github.org/dreamtools
+#  website: http://github.com/dreamtools
 #
 ##############################################################################
 """Simple class to handld R packages
@@ -31,9 +32,9 @@ class RTools(object):
        
     def _get_verboseR(self):
         return self._verboseR
+
     def _set_verboseR(self, value):
         assert value in [True, False]
         self._verboseR = value
         self.session.dump_stdout = value
     verboseR = property(_get_verboseR, _set_verboseR)
-

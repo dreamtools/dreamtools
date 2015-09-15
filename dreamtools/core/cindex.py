@@ -1,3 +1,19 @@
+# -*- python -*-
+# -*- coding: utf-8 -*-
+#
+#  This file is part of DREAMTools software
+#
+#  Copyright (c) 2015, DREAMTools Development Team
+#  All rights reserved
+#
+#  Distributed under the BSD 3-Clause License.
+#  See accompanying file LICENSE distributed with this software
+#
+#  File author(s): Thomas Cokelaer <cokelaer@ebi.ac.uk>
+#
+#  website: http://github.com/dreamtools
+#
+##############################################################################
 """Concordance index computation (exact version)
 
 Based on R code provided by Ben Sauerwine and Erhan Bilal
@@ -101,6 +117,3 @@ class ConcordanceIndex(object):
                 2.594689418,  3.701121718, 9.671040180, 7.414466980,
                 3.289922854]
         return self.cindex(self.predictions)
-
-
-
