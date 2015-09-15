@@ -5,7 +5,7 @@ from Cython.Build import cythonize
 
 
 _MAJOR               = 0
-_MINOR               = 11
+_MINOR               = 99
 _MICRO               = 0
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
@@ -15,7 +15,6 @@ release              = '%d.%d' % (_MAJOR, _MINOR)
 metainfo = {
     'authors': {
         'Cokelaer':('Thomas Cokelaer','cokelaer@gmail.com'),
-        'Eduati': ('Federica Eduati', 'eduati@ebi.ac.uk')
         },
     'version': version,
     'license' : 'BSD',

@@ -63,8 +63,9 @@ they should indicate their copyright in the commit message of the change
 when they commit the change to one of the DREAMTools repositories.
 With this in mind, the following banner should be used in any source code
 file to indicate the copyright and license terms:
+
 #-----------------------------------------------------------------------------
-# Copyright (c) 2012, DREAMTools Development Team
+# Copyright (c) 2015, DREAMTools Development Team
 # All rights reserved.
 #
 # Distributed under the terms of the BSD Simplified License.
