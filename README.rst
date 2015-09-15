@@ -64,7 +64,8 @@ The **dreamtools** executable
 
 For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. Knowing the name of the challenge (and possibly sub-challenge), it works as  follows::
 
-    dreamtools --challenge d8c1 --sub-challenge sc1a --submission example.zip
+    dreamtools --challenge d8c1 --sub-challenge sc1a \
+        --submission example.zip
 
 It prints some information and the score of the submission for instance for the example above::
 
