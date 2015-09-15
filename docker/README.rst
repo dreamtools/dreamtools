@@ -3,7 +3,7 @@ Docker example
 
 In principle, you should be able to install **DREAMTools** without problems
 using **pip** tool. However, we provide here a docker image http://www.docker.io
-that may be use to try **DREAMTools**
+that may be use to try **DREAMTools**. This provides a FEDORA/Linux docker.
 
 To build an image with docker, go into the docker directory and build the
 image::

@@ -1,5 +1,5 @@
 #!/bin/bash
-# instructions to use dreamtools inside a Fedora docker (22)
+# instructions to use dreamtools inside an Ubuntu docker 
 
 apt-get update
 apt-get -y install python-dev

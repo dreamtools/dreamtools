@@ -3,7 +3,7 @@
 FROM fedora:22
 MAINTAINER Thomas Cokelaer
 
-RUN echo "0.10.5" > /version
+RUN echo "0.99.0" > /version
 
 ADD dreamtools_install.sh /
 
