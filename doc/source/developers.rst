@@ -4,7 +4,7 @@ For developers
 How to structure a new challenge:
 -------------------------------------
 
-If you wish to include a scoring function in **DREAMTools**, we provide an 
+If you wish to include a scoring function in **DREAMTools**, we provide an
 executable called **dreamtools-layout** (from :mod:`dreamtools.core.layout` module). It creates a minimalist layout automatically to help you to start.
 You first need to think about a challenge nickname. Let us assume a challenge
 for DREAM8 session, which is the fourth one. Its nickname would be D8C4.
@@ -32,7 +32,7 @@ Naming conventions
 
 There is no strict conventions but to help creating more uniformed code, try to
 name the template after the challenge nicknname for instance **D3C1_template**.
-Irrespective of the name, place it in the templates/ directory. Similarly for gold standards: start the filename with **D3C1_goldstandard** tag. 
+Irrespective of the name, place it in the templates/ directory. Similarly for gold standards: start the filename with **D3C1_goldstandard** tag.
 
 Again, if those files are too large, consider placing them in synapse and use
 tools inside DREAMTools to retrieve them automatically (see below).
@@ -52,8 +52,8 @@ Basic Structure of the Challenge class
 
             from dreamtools import D7C4
             s = D7C4()
-            filename = s.download_template() 
-            s.score(filename) 
+            filename = s.download_template()
+            s.score(filename)
 
         Data and templates are downloaded from Synapse. You must have a login.
 
@@ -87,14 +87,14 @@ Storing large files
 In the example above, templates and goldstandard locations are in the directory
 of DREAMTools. Using the methods :meth:`getpath_template` automatically found
 the path of directory and one simply needs to provide the filename. However,
-large files should not be stored in DREAMTools repository but on synapse in 
+large files should not be stored in DREAMTools repository but on synapse in
 `dreamtools <https://www.synapse.org/#!Synapse:syn4483180>`_
 
-If your class inherits from :class:`dreamtools.core.challenge.Challenge`, 
+If your class inherits from :class:`dreamtools.core.challenge.Challenge`,
 you can then just type this kind of command to (1) download the file and get its
 local location::
 
-    filename = self._download_data('DREAM5_GoldStandard_probes.zip', 
+    filename = self._download_data('DREAM5_GoldStandard_probes.zip',
                 'syn2898469')
 
 
@@ -103,5 +103,13 @@ All files downloaded from Synapse are then stored in a local directory. For
 instance in /home/user/.config/dreamtools/dream5/D5C2 for the example above.
 
 
+License/header
+----------------
+
+Please add this :download:`header <header.txt>` at the top of your Python files:
+
+
+.. include:: header.txt
+    :literal:
 
 
