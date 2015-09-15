@@ -25,4 +25,4 @@ def test_cindex():
 
 def test_cindex_class():
     ci = ConcordanceIndex()
-    ci.test()
+    ci._test()
