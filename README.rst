@@ -13,6 +13,9 @@ DREAMTools
 
 .. image:: https://badge.waffle.io/dreamtools/dreamtools.png?label=issues&title=issues
    :target: https://waffle.io/dreamtools/dreamtools
+   
+.. image:: https://zenodo.org/badge/18543/dreamtools/dreamtools.svg
+   :target: https://zenodo.org/badge/latestdoi/18543/dreamtools/dreamtools
 
 :Note: DREAMTools is tested for Python 2.7
 :Contributions: Please join https://github.com/dreamtools/dreamtools and share your notebooks https://github.com/dreamtools/dreamtools/notebooks
