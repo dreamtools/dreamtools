@@ -20,8 +20,12 @@ DREAMTools
 :Note: DREAMTools is tested for Python 2.7
 :Contributions: Please join https://github.com/dreamtools/dreamtools and share your notebooks https://github.com/dreamtools/dreamtools/notebooks
 
-:Online documentation: `On pypi website <http://pythonhosted.org/dreamtools/>`_,
-:Issues and bug reports: `On github <https://github.com/dreamtools/dreamtools/issues>`_,
+:Online documentation: `On pypi website <http://pythonhosted.org/dreamtools/>`_
+:Issues and bug reports: `On github <https://github.com/dreamtools/dreamtools/issues>`_
+:How to cite: Cokelaer T, Bansal M, Bare C et al. DREAMTools: a Python 
+    package for scoring collaborative challenges [version 1; referees: 
+    awaiting peer review] F1000Research 2015, 4:1030 
+    (doi: 10.12688/f1000research.7118.1)
 
 
 .. image:: doc/dreamtools_logo.png
@@ -36,22 +40,23 @@ Overview
 
 The main goals are to provide:
 
-#. scoring functions for the Dream challenges for **end-users** via the **dreamtools-scoring** standalone
+#. scoring functions for the DREAM challenges for **end-users** via the **dreamtools-scoring** standalone
    application.
-#. a place for **developers** involved in the dream challenges to share code
+#. a place for **developers** involved in the DREAM challenges to share code
 
 **DREAMTools** does not provide code related to aggregation,
 leaderboards, or more complex analysis even though such code
 can be provided (e.g. D8C1 challenge). Note that some functionalities
 may be restricted with some access to synapse platform. Indeed,
 some challenges will require to download public data sets from `Synapse
-<www.synapse.org>`_ (in which case you will need to register).
+<www.synapse.org>`_ , **in which case you will need to register and accept the
+terms of agreements**.
 
 Installation
 ---------------
 
 **DREAMTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically
-installed with **dreamtools** using pip executable::
+installed with **DREAMTools** using pip executable (note the small caps)::
 
     pip install dreamtools
 
