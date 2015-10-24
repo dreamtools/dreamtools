@@ -26,7 +26,7 @@ DREAMTools
     package for scoring collaborative challenges [version 1; referees: 
     awaiting peer review] F1000Research 2015, 4:1030 
     (doi: 10.12688/f1000research.7118.1)
-
+    `F1000 link <http://f1000research.com/articles/4-1030/v1>`_
 
 .. image:: doc/dreamtools_logo.png
     :width: 50%
