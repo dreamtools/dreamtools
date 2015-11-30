@@ -401,10 +401,10 @@ class D3D4ROC(ROCBase):
 
             else: # the edge is NOT present in the gold standard
                 #%% icrement FPk
-		        FPk = FPk + 1.
+                FPk = FPk + 1.
 
             # do NOT update area under P-R
-	        #remember
+            #remember
             rec.append(TPk/float(P))
             prec.append(TPk/float(k))
             tpr.append(rec[k-1])
