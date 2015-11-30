@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
 import os
 from setuptools import setup, find_packages
-from Cython.Build import cythonize
+try:
+    from Cython.Build import cythonize
+except ImportError:
+    print("-----------------------------------------------------------")
+    print("DREAMTools installation:: please install **cython** package")
+    print("-----------------------------------------------------------")
+    print("You can try to install it using **pip** as follows::")
+    print("")
+    print("    pip install cython")
+    print("")
+    exit()
 
 
 _MAJOR               = 1
