@@ -1,45 +1,42 @@
 language: python
 
-# with site-packagses work only for 2.7 and 3.3 not 3.4 or 2.6
-python:
-  - "2.7_with_system_site_packages"
-
-cache: 
-  directories: 
-   - $HOME/.config
-   - $HOME/.config/dreamtools
-   - $HOME/.cache/pip
-
-# installing numpy/scipy from source takes a long time.
-# we do not need latest version so let us just try the ubuntu releases
-#virtualenv:
-#    system_site_package: true
+matrix:
+    include:
+        - python: 2.7
+        - python: 3.3
+        - python: 3.4
+        - python: 3.5
 
 
+
+# solution based on https://gist.github.com/dan-blanchard/7045057
+# setup anaconda to install scipy and numpy easily and quickly
+# Update TC: Nov5 somehow miniconda is now stored in miniconda2 directory 
+# so needed to update the PATH env variable
 before_install:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sudo apt-get install -q libatlas3gf-base libatlas-dev liblapack-dev gfortran python-numpy python-scipy python-pandas
+    - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+    - chmod +x miniconda.sh
+    - ./miniconda.sh -b
+    - export PATH=/home/travis/miniconda2/bin:$PATH
+    - conda update --yes conda
+    # are not specific to using mini
+    - sudo rm -rf /dev/shm
+    - sudo ln -s /run/shm /dev/shm
+    # This help testing code with pylab
+    - "export DISPLAY=:99.0"
+    - "sh -e /etc/init.d/xvfb start"
 
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
+# command to install dependencies, e.g. pip install -r requirements.txt --use-mir
+rors
 install:
-  - pip install numpy matplotlib 
-  - pip install nose coverage
-  - pip install cython
-  - pip install easydev
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas cython numpy scipy matplotlib nose pandas coverage 
+  # coverage packages are elsewhere
+  #- conda install --yes -c python-coveralls nose-cov
+  - pip install nose easydev --upgrade
+  - pip install coveralls
   - pip install biokit
   - pip install synapseclient
-  
-# - travis_wait pip install pandas
-
 # # command to run tests, e.g. python setup.py test
+script:
+  - python setup.py nosetests --with-coverage --cover-package dreamtools
 
-script:  
-
-  - python setup.py sdist 
-
-# nosetests would require a login/password
-# python setup.py nosetests --with-coverage --cover-package dreamtools --logging-level ERROR --attr '!skip'
-    
-#after_success:
-#  coveralls
