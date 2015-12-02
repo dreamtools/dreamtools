@@ -23,7 +23,7 @@ This implementation is independent of the web server.
 import os
 from os.path import join as pj
 import zipfile
-import StringIO
+from io import BytesIO
 import collections
 import numpy as np
 import pandas as pd
@@ -131,7 +131,8 @@ class D5C2(Challenge):
         z = ZIP()
         z.loadZIPFile(filename)
         data = z.read('Answers.txt')
-        self.gs = pd.read_csv(StringIO.StringIO(data), sep='\t')
+        self.gs = pd.read_csv(BytesIO(data), sep='\t')
+        print(len(self.gs))
 
         # download 4 other filenames from dreamtools synapse project
         self._download_data('all_8mers.txt', 'syn4483185')
@@ -153,6 +154,8 @@ class D5C2(Challenge):
 
     def _split_data(self, precision=6):
         """precision is to get same results as in the original perl script"""
+        #FIXME::
+
         mask = self.gs.Flag == 0
         self.user_data_clean = self.user_data[mask].copy()
         print('Splitting the user data set and removing flagged data (%s out of %s)' % (self.gs.shape[0] - mask.sum(), self.gs.shape[0]))
@@ -192,7 +195,7 @@ class D5C2(Challenge):
         else:
             raise IOError("input file must be gzipped or zipped")
 
-        df = pd.read_csv(StringIO.StringIO(data), sep='\t');# engine='python')
+        df = pd.read_csv(BytesIO(data), sep='\t');# engine='python')
         self.user_data = df
 
     def _preprocessing(self):
@@ -237,8 +240,13 @@ class D5C2(Challenge):
             sequence = data[['Sequence']].ix[self.gs.Id==tag]
             answer = data.Signal_Mean[data.TF_Id == tag]
             df = pd.concat([sequence, answer], axis=1)
-            df.sort(columns=['Signal_Mean', 'Sequence'], 
+            try:
+                df.sort_values(by=['Signal_Mean', 'Sequence'], 
                     ascending=[False, False], inplace=True)
+            except:
+                df.sort(columns=['Signal_Mean', 'Sequence'], 
+                    ascending=[False, False], inplace=True)
+
             df['Signal_Mean'] = df['Signal_Mean'].map(lambda x: round(x,6))
 
             self._probes[i] = df
@@ -271,9 +279,9 @@ class D5C2(Challenge):
             for seq, score in zip(tf.Sequence, tf.Score):
                 # scan the sequence by chunk of octomers using a generator
                 # for speed (although gain is small)
-                generator = (seq[i:i+8] for i in xrange(0,28))
+                generator = (seq[i:i+8] for i in range(0,28))
                 for curR in generator:
-                    if mapping1.has_key(curR) is False:
+                    if curR not in mapping1.keys():
                         curR = mapping2[curR]
                     ids[curR].append(score)
                 # Using a set does not help speeding up the code
@@ -285,12 +293,14 @@ class D5C2(Challenge):
             # now let us build the new dataframe for the indices found
             df = pd.DataFrame({0:[k for k in  ids.keys()],
                                1:[np.median(v) for v in ids.values()]})
-            df.sort(columns=[1,0], ascending=[False, False], inplace=True)
+            try:
+                df.sort_values(by=[1,0], ascending=[False, False], inplace=True)
+            except:
+                df.sort(columns=[1,0], ascending=[False, False], inplace=True)
             df[1] = df[1].map(lambda x: round(x,6))
 
             df.to_csv(self._setfile(tf_index, 'Out'), sep=' ', index=False, header=None, float_format="%.6f")
             pb.animate(tf_index)
-        print("ooooooooooo")
         ################################################# 2 create the DVP
 
         pb = progress_bar(self.Ntf, interval=1)
@@ -408,7 +418,11 @@ class D5C2(Challenge):
         table['Final Rank (average)'] = mean_ranks.values
         table['Final Rank'] = table['Final Rank (average)'].rank(method='first')
         table = table[['Team', 'Model type', 'Final Rank', 'Final Rank (average)'] + rank_columns]
-        table = table.sort(columns=['Final Rank'])
+        try:
+            table = table.sort_values(by=['Final Rank'])
+        except:
+            table = table.sort(columns=['Final Rank'])
+
         return table
 
     def _get_table(self):

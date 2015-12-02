@@ -8,7 +8,7 @@ Original code in R. Translated to Python by Thomas Cokelaer
 
 """
 import os
-import StringIO
+from io import BytesIO
 
 from dreamtools.core.challenge import Challenge
 from dreamtools.core.ziptools import ZIP
@@ -70,7 +70,7 @@ class D9C1(Challenge):
         z = ZIP()
         z.loadZIPFile(self.get_pathname('D9C1_goldstandard.gct.zip'))
         data = z.read('D9C1_goldstandard.gct')
-        self.goldstandard = pd.read_csv(StringIO.StringIO(data), sep='[ \t]',
+        self.goldstandard = pd.read_csv(BytesIO(data), sep='[ \t]',
                 skiprows=2, engine='python')
         self.goldstandard.drop(['Description'], axis=1, inplace=True)
         self.goldstandard.set_index('Name', inplace=True)
@@ -90,7 +90,7 @@ class D9C1(Challenge):
         if os.path.exists(filename):
             gct = pd.read_csv(filename, sep='[ \t]',  skiprows=2, engine='python')
         else:
-            gct = pd.read_csv(StringIO.StringIO(filename),
+            gct = pd.read_csv(BytesIO(filename),
                               sep='[ \t]',  skiprows=2, engine='python')
         gct.drop(['Description'], axis=1, inplace=True)
         gct.set_index('Name', inplace=True)
@@ -101,7 +101,7 @@ class D9C1(Challenge):
         if os.path.exists(filename):
             return pd.read_csv(filename, sep='\t', header=None)
         else:
-            return pd.read_csv(StringIO.StringIO(filename),
+            return pd.read_csv(BytesIO(filename),
                                sep='\t', header=None)
 
     def score(self, filename, subname=None):

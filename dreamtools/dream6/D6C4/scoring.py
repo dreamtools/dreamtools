@@ -90,7 +90,11 @@ class D6C4(Challenge):
 
         # The Precision of the predictions, defined as the
         # fraction of correct AML patients amongst the first 20 predictions.
-        prec = df.sort('Label_y', ascending=False)['Label_x'][0:20]
+        try:
+            prec = df.sort_values(by='Label_y', ascending=False)['Label_x'][0:20]
+        except:
+            prec = df.sort('Label_y', ascending=False)['Label_x'][0:20]
+
         results['precision'] = sum(prec)/20.
 
         # The Recall of the predictions, defined as the proportion of AML

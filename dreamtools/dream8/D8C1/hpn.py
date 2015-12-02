@@ -38,10 +38,13 @@ from dateutil import tz
 
 from dreamtools.core.sageutils import Login
 from dreamtools.core.ziptools import ZIP
-from scoring import *
-from submissions import SubmissionTools
+from .scoring import *
+from .submissions import SubmissionTools
+
 
 __all__  = ["HPNAdmin"]
+
+
 # this is an evaluation that can be used for READ/WRITE and tests
 test_evaluationID = 1963028
 
@@ -185,7 +188,8 @@ class HPNAdmin(HPN):
                     else:
                         print("submission with following filenames are Invalid: %s" % filenames)
                         print("  extra info: id={} date={}".format(submission['id'], submission['createdOn']))
-                        self.tag_submission_as_invalid(submission, "Invalid filename provided %s " % filename)
+                        self.tag_submission_as_invalid(submission, 
+                        "Invalid filename provided %s " % filenames)
 
                 else:
                     keeping.append(submission)
@@ -929,11 +933,11 @@ class HPNAdmin(HPN):
                 raise ScoringError
         except ScoringError:
             print("caught scoring error. will be reported")
-        except Exception, e:
+        except Exception as err:
             self.logger.debug("2nd try blocl")
             report = "Error when scoring submission %s (version %s)" % (submission['id'], submission['versionNumber'])
             print(report)
-            report += "\nError may be related to : " + type(e).__name__ +  str(e.args)
+            report += "\nError may be related to : " + type(err).__name__ + str(err.args)
             scoring = self.invalid_score(report)
 
         self.update_submission_status(submission, scoring, production=production)
@@ -964,11 +968,11 @@ class HPNAdmin(HPN):
                 raise ScoringError
         except ScoringError:
             print("caught scoring error. will be reported")
-        except Exception,e:
+        except Exception as err:
             self.logger.debug("2nd try block")
             report = "Error when scoring submission %s (version %s)" % (submission['id'], submission['versionNumber'])
             print(report)
-            report += "\nError may be related to : " + type(e).__name__ +  str(e.args)
+            report += "\nError may be related to : " + type(err).__name__ +  str(e.args)
             scoring = self.invalid_score(report)
 
         if scoring.status == None:
@@ -1004,10 +1008,10 @@ class HPNAdmin(HPN):
                 raise scoring.exception
         except ScoringError:
             print("caught scoring error. will be reported")
-        except Exception, e:
+        except Exception as err:
             self.logger.debug("2nd try block")
             report = "Unknown error when scoring submission %s (version %s)" % (submission['id'], submission['versionNumber'])
-            report += "\nError may be related to : " + type(e).__name__ +  str(e.args)
+            report += "\nError may be related to : " + type(err).__name__ +  str(e.args)
             print(report)
             scoring = self.invalid_score(report)
 
@@ -1046,10 +1050,10 @@ class HPNAdmin(HPN):
                 raise scoring.exception
         except ScoringError:
             print("caught scoring error. will be reported")
-        except Exception, e:
+        except Exception as err:
             self.logger.debug("2nd try block")
             report = "Error when scoring submission %s (version %s)" % (submission['id'], submission['versionNumber'])
-            report += "\nError may be related to : " + type(e).__name__ +  str(e.args)
+            report += "\nError may be related to : " + type(err).__name__ +  str(e.args)
             print(report)
             scoring = self.invalid_score(report)
 

@@ -16,7 +16,7 @@ compute the scores.
     >>> from dream6_challenge2 import D6C2
     >>> d6c2 = D6C2(path_to_files='whatever_is_relevant', N=10000)
     >>> d6c2.compute_scores() # 10000 is the number of trial used to compute the null model
-    >>> print d6c2 # we show the scores in alphabetic and numeric orders
+    >>> print(d6c2) # we show the scores in alphabetic and numeric orders
 
 For sanity check, or see where a team did badly in predicting the parameter, use::
 
@@ -217,7 +217,7 @@ class D6C2(object):
 
         # Reading the time course simulated data that are expected to be
         # found in ./simulations
-        print 'Reading the simulated data sets',
+        print('Reading the simulated data sets'),
         try:
             self.time_course_simulated = self._read_data(path_to_files,
                     tag='dream6_parest_timecourse', team_name='simulations',
@@ -225,34 +225,36 @@ class D6C2(object):
             self.parameters_simulated = self._read_data(path_to_files,
                     tag='dream6_parest_parameters', team_name='simulations',
                     verbose=verbose)
-        except Exception, e:
-            print '...failed'
-            print e
+        except Exception as err:
+            print('...failed')
+            print(err)
         finally:
-            print '...done'
+            print('...done')
 
         # reading all team predictions
         self.time_course_predicted = {}
         self.parameters_predicted = {}
 
         self.teams = self._get_teams(path_to_files)
-        print 'Found %s teams: ' % len(self.teams)
+        print('Found %s teams: ' % len(self.teams))
 
         for team in self.teams:
-            print '---Reading data sets from %s\t' % team,
+            print('---Reading data sets from %s\t' % team),
             try:
                 self.time_course_predicted[team] = self._read_data(path_to_files, tag='dream6_parest_timecourse', team_name=team, verbose=verbose)
-            except Exception, e:
-                print 'Problem(s) while reading time course data from %s ' %(team)
-                print e
+            except Exception as err:
+                print('Problem(s) while reading time course data from %s '
+                %(team))
+                print(err)
             else:
-                print '...done.'
+                print('...done.')
 
             try:
                 self.parameters_predicted[team] = self._read_data(path_to_files, tag='dream6_parest_parameters', team_name=team, verbose=verbose)
-            except Exception, e:
-                print 'Problem(s) while reading parameters data from %s ' %(team)
-                print e
+            except Exception as err:
+                print('Problem(s) while reading parameters data from %s '
+                        %(team))
+                print(e)
 
 
         # once th data is read, we compute some max/median data that will be
@@ -311,13 +313,16 @@ class D6C2(object):
         self.parameters_distances_random = None
         self.time_course_distances_random = None
 
-        print "Data ready for processing."
-        print "The fit model for the time course data will be: %s " % (self._time_course_model)
-        print "The fit model for the parameters data will be: %s " % (self._parameters_model)
-        print "You can change the parameter fit model to normal is needed\n\n"
+        print("Data ready for processing.")
+        print("The fit model for the time course data will be: %s " %
+            (self._time_course_model))
+        print("The fit model for the parameters data will be: %s " %
+            (self._parameters_model))
+        print("You can change the parameter fit model to normal is needed\n\n")
 
-        print "You can now call compute_scoring() to compute the scores stored in scores attribute\n"
-        print "The default number of simulations is %s, which can be changed." % (self.N)
+        print("You can now call compute_scoring() to compute the scores stored in scores attribute\n")
+        print("The default number of simulations is %s, which can be changed." %
+            (self.N))
 
 
 
@@ -396,7 +401,8 @@ class D6C2(object):
             raise ValueError("Found 0 files. path to files (%s)or team name (%s)may be incorrect" % (path_to_files, team_name))
         else:
             if verbose==True:
-                print 'Found %s files in %s' % (len(files), pj(path_to_files, team_name))
+                print('Found %s files in %s' % (len(files), pj(path_to_files,
+                    team_name)))
 
         # initiate the expected structure of the input data according to the tag.
         if tag == 'dream6_parest_timecourse':
@@ -422,17 +428,17 @@ class D6C2(object):
         # look at each file found in a directory
         for file in files:
             if verbose == True:
-                print 'Looking at ', file
+                print('Looking at ', file)
             # check if it tagged with model1, model2 or model3
             for this_model in [1, 2, 3]:
                 model_tag = 'model' + str(this_model)
                 filename = tag + '_model_' + str(this_model)
                 if verbose == True:
-                    print '    compare with filename ', filename,
+                    print('    compare with filename ', filename),
 
 
                 if filename in file:
-                    if self.verbose == True: print ''
+                    if self.verbose == True: print('')
                     # read its CSV content using the tabulation delimiter only.
                     #data = csv.reader(open(file, 'r'), delimiter='\t')
 
@@ -455,8 +461,8 @@ class D6C2(object):
                                     # 3 colums expected, skipped first one hence the +1.
 
                                     simulations[model_tag][i].append(row[i+1])
-                        except Exception, e:
-                            print e, row
+                        except Exception as  err:
+                            print(err, row)
                         # once the entire columns are parsed, convert to float.
                         simulations[model_tag][0] = numpy.array(simulations[model_tag][0], dtype=float)
                         simulations[model_tag][1] = numpy.array(simulations[model_tag][1], dtype=float)
@@ -481,7 +487,7 @@ class D6C2(object):
 
                 else:
                     if verbose == True:
-                        print '----skipped'
+                        print('----skipped')
 
         return simulations
 
@@ -527,7 +533,8 @@ class D6C2(object):
         assert nrows_parameters[model] == len(pred[0]), "wronf size expected %s found %s" %(nrows_parameters[model], len(pred[0]))
 
         if self.verbose == True:
-            print "Time Course Scoring team %s (model %s)=%s" % (team, model, D_param_model)
+            print("Time Course Scoring team %s (model %s)=%s" % (team, model,
+                D_param_model))
         return D_param_model
 
     def _get_time_course_distance(self, sim, pred, team , model):
@@ -547,7 +554,8 @@ class D6C2(object):
         norm = 3. * self.Nt  # normalisation by 3 models and N data
         D_prot_model /= norm
         if self.verbose == True:
-            print "Time Course Scoring team %s (model %s)=%s" % (team, model, D_prot_model)
+            print("Time Course Scoring team %s (model %s)=%s" % (team, model,
+                D_prot_model))
         return D_prot_model
 
     def compute_parameters_distances(self):
@@ -594,7 +602,7 @@ class D6C2(object):
         for _i in range(self.N):
             # just to print the time remaining
             if numpy.random.randint(0,10) == 1:
-                print '%3s%%\r' % int(float(_i)/self.N*100),
+                print( '%3s%%\r' % int(float(_i)/self.N*100)),
             sys.stdout.flush()
 
             # the actual code here
@@ -623,7 +631,7 @@ class D6C2(object):
         for _i in range(N):
             # just to print the time remaining
             if numpy.random.randint(0,10) == 1:
-                print '%3s%%\r' % int(float(_i)/self.N*100),
+                print('%3s%%\r' % int(float(_i)/self.N*100))
             sys.stdout.flush()
 
             # actual code here below
@@ -1084,22 +1092,22 @@ class D6C2(object):
 
         """
         # compute distances for al teams
-        print 'Computing the parameters distances'
+        print( 'Computing the parameters distances')
         self.compute_parameters_distances()
-        print 'Computing the time course distances'
+        print('Computing the time course distances')
         self.compute_time_course_distances()
 
         # compute pvalues
 
-        print 'Computing the parameters pvalues--------------',
+        print('Computing the parameters pvalues--------------')
         self.compute_pvalue_parameters()
-        print 'done'
-        print 'Computing the time course pvalues----------',
+        print('done')
+        print('Computing the time course pvalues----------')
         self.compute_pvalue_time_course()
-        print 'done'
+        print('done')
 
         # compute scores now
-        print 'Computing the Scores'
+        print('Computing the Scores')
         self.scores = {}
         for team in self.teams:
             param = self.pvalue_parameters[team]
@@ -1281,11 +1289,11 @@ class D6C2(object):
         if model2fit=='normal':
             mu = params.rx2('estimate')[0]
             std_ = params.rx2('estimate')[1]
-            print 'Loglikelihood = %s' % params.rx2('loglik')
-            print ' Mean = %s; STD = %s' % (mu, std_)
+            print('Loglikelihood = %s' % params.rx2('loglik'))
+            print(' Mean = %s; STD = %s' % (mu, std_))
 
             ks = kstest(dist, 'norm', args=([mu, std_]))
-            print 'KS test (twosided) D=%s' % ks[0]
+            print('KS test (twosided) D=%s' % ks[0])
             if ks[0] > self.kstol:
                 raise ValueError("""Non-normal distribution found: KS test > %s%%.
                     Consider setting the attributs kstol to a larger value""" % self.kstol)
@@ -1296,12 +1304,12 @@ class D6C2(object):
             rate = params.rx2('estimate')[1]
             scale = 1./params.rx2('estimate')[1]
             loc = 0
-            print 'Loglikelihood = %s' % params.rx2('loglik')
-            print ' shape = %s; Rate =%s, scale=%s' % (shape, rate, scale)
+            print('Loglikelihood = %s' % params.rx2('loglik'))
+            print(' shape = %s; Rate =%s, scale=%s' % (shape, rate, scale))
             # let us suppose that location is zero
-            print shape, loc, scale
+            print(shape, loc, scale)
             ks = kstest(dist, 'gamma', args=([shape, 0, scale]))
-            print 'KS test (twosided) D=%s' % ks[0]
+            print('KS test (twosided) D=%s' % ks[0])
             if ks[0] > self.kstol:
                 raise ValueError("""Non-normal distribution found: KS test > %s%%.
                     Consider setting the attributs kstol to a larger value""", self.kstol)
@@ -1345,7 +1353,7 @@ class D6C2(object):
         import operator
         sorted_x = sorted(data.items(), key=operator.itemgetter(1))
         for x in sorted_x:
-            print x[0], x[1]
+            print(x[0], x[1])
 
     def print_scores_per_model(self):
         """
@@ -1371,7 +1379,7 @@ class D6C2(object):
             scores[model] = scores_per_model
 
         print(" ".join(["="*40 ,"="*30,"="*30, "="*30  ]))
-        print "%40s %30s %30s %30s" % ('Team', 'Scores model1', 'Scores model2', 'Scores model3')
+        print("%40s %30s %30s %30s" % ('Team', 'Scores model1', 'Scores model2', 'Scores model3'))
         print(" ".join(["="*40 ,"="*30,"="*30, "="*30  ]))
 
         for team in self.teams:
@@ -1379,7 +1387,7 @@ class D6C2(object):
                                           scores['model1'][team],
                                           scores['model2'][team],
                                           scores['model3'][team])  )
-        print " ".join(["="*40, "="*30, "="*30, "="*30  ])
+        print(" ".join(["="*40, "="*30, "="*30, "="*30  ]))
 
 
     def print_pvalues(self):
@@ -1387,17 +1395,17 @@ class D6C2(object):
         pt = self.pvalue_time_course
         formats = "%40s %15s %15s %15s %15s %15s %15s"
         formatf = "%40s %15f %15f %15f %15f %15f %15f"
-        print formats % ("="*40, "="*15,"="*15,"="*15, "="*15,"="*15,"="*15   )
-        print formats % ('Team','Model1(param)','Model2(param)','Model3(param)',
-                               'Model1(prot)','Model2(prot)','Model3(prot)')
-        print formats % ("="*40, "="*15,"="*15,"="*15, "="*15,"="*15,"="*15   )
+        print(formats % ("="*40, "="*15,"="*15,"="*15, "="*15,"="*15,"="*15   ))
+        print(formats % ('Team','Model1(param)','Model2(param)','Model3(param)', 'Model1(prot)','Model2(prot)','Model3(prot)'))
+
+        print(formats % ("="*40, "="*15,"="*15,"="*15, "="*15,"="*15,"="*15   ))
         for team in self.teams:
             p = pp[team]
             t = pt[team]
-            print formatf % (team,
+            print(formatf % (team,
                         p['model1'], p['model2'], p['model3'],
-                        t['model1'], t['model2'], t['model3'])
-        print formats % ("="*40, "="*15,"="*15,"="*15, "="*15,"="*15,"="*15   )
+                        t['model1'], t['model2'], t['model3']))
+        print(formats % ("="*40, "="*15,"="*15,"="*15, "="*15,"="*15,"="*15   ))
 
 
     def plot_distances_params_vs_distances_time(self):
@@ -1585,7 +1593,7 @@ def main():
     path = sys.argv[1]
     d6c2 = D6C2(path_to_files=path, N=1000)
     d6c2.compute_scores()
-    print d6c2
+    print(d6c2)
 
 if __name__ == "__main__":
     main()

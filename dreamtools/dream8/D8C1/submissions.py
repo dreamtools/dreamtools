@@ -18,7 +18,8 @@
 import copy
 import dateutil.parser
 import json
-import scoring
+
+from . import scoring
 
 import numpy as np
 import pandas as pd
@@ -56,6 +57,7 @@ class SubmissionTools(Login):
     """
     def __init__(self, client=None, username=None, password=None, name="notset"):
         super(SubmissionTools, self).__init__(client=client)
+        # 1000 keys stands for collaborative
         self.sc1a_weeks = {
             1: ("2013-07-15T08:00:00.000Z", "2013-07-30T08:00:00.000Z"),
             2: ("2013-07-30T08:00:00.000Z", "2013-08-06T11:00:00.000Z"),  # was published using 11am
@@ -67,7 +69,7 @@ class SubmissionTools(Login):
             8: ("2013-09-10T08:00:00.000Z", "2013-09-17T08:00:00.000Z"),
             9: ("2013-09-17T08:00:00.000Z", "2013-09-23T08:00:00.000Z"),
             10: ("2013-09-23T08:00:00.000Z", "2013-09-30T08:00:00.000Z"),
-            "collaborative": ("2013-11-01T08:00:00.000Z", "2014-01-31T08:00:00.000Z")
+            1000: ("2013-11-01T08:00:00.000Z", "2014-01-31T08:00:00.000Z")
         }
 
         self.sc1b_weeks = {
@@ -81,7 +83,7 @@ class SubmissionTools(Login):
             8: ("2013-09-10T08:00:00.000Z", "2013-09-17T08:00:00.000Z"),
             9: ("2013-09-17T08:00:00.000Z", "2013-09-23T08:00:00.000Z"),
             10: ("2013-09-23T08:00:00.000Z", "2013-09-30T08:00:00.000Z"),
-            "collaborative": ("2013-11-01T08:00:00.000Z", "2014-01-31T08:00:00.000Z")
+            1000: ("2013-11-01T08:00:00.000Z", "2014-01-31T08:00:00.000Z")
         }
 
         self.sc2a_weeks = {
@@ -93,7 +95,7 @@ class SubmissionTools(Login):
             6: ("2013-09-10T08:00:00.000Z", "2013-09-17T08:00:00.000Z"),
             7: ("2013-09-17T08:00:00.000Z", "2013-09-23T08:00:00.000Z"),
             8: ("2013-09-23T08:00:00.000Z", "2013-09-30T08:00:00.000Z"),
-            "collaborative": ("2013-11-01T08:00:00.000Z", "2014-01-31T08:00:00.000Z")
+            1000: ("2013-11-01T08:00:00.000Z", "2014-01-31T08:00:00.000Z")
         }
 
         self.sc2b_weeks = {
@@ -104,7 +106,7 @@ class SubmissionTools(Login):
             5: ("2013-09-10T08:00:00.000Z", "2013-09-17T08:00:00.000Z"),
             6: ("2013-09-17T08:00:00.000Z", "2013-09-23T08:00:00.000Z"),
             7: ("2013-09-23T08:00:00.000Z", "2013-09-30T08:00:00.000Z"),
-            "collaborative": ("2013-11-01T08:00:00.000Z", "2014-01-31T08:00:00.000Z")
+            1000: ("2013-11-01T08:00:00.000Z", "2014-01-31T08:00:00.000Z")
         }
         self.name = name
         self.submissions = []
@@ -139,7 +141,9 @@ class SubmissionTools(Login):
             raise NotImplementedError
 
         result = None
-        for week in sorted(weeks.keys()):
+
+        weeks_keys = list(weeks.keys())
+        for week in sorted(weeks_keys):
             dstart = dateutil.parser.parse(weeks[week][0])
             dend = dateutil.parser.parse(weeks[week][1])
             if d >= dstart and d<=dend:
@@ -238,7 +242,7 @@ class SC1ASubmissions(SubmissionTools):
     """
     def __init__(self, client=None, name="SC1A"):
         super(SC1ASubmissions, self).__init__(client=client, name=name)
-        from hpn import HPNAdmin
+        from .hpn import HPNAdmin
         self.hpn = HPNAdmin(client=self.client)
 
     def load_submissions(self, startweek=0, endweek=9, keep_latest=True):
@@ -360,7 +364,7 @@ class SC1ASubmissions(SubmissionTools):
 class SC1BSubmissions(SubmissionTools, ST2):
     def __init__(self, client=None, name="SC1B"):
         super(SC1BSubmissions, self).__init__(client=client, name=name)
-        from hpn import HPNAdmin
+        from .hpn import HPNAdmin
         self.hpn = HPNAdmin(client=self.client)
 
     def load_submissions(self, startweek=0, endweek=9, keep_latest=True):
@@ -459,7 +463,7 @@ class SC2ASubmissions(SubmissionTools, ST2):
     def __init__(self, client=None, version=2):
         super(SC2ASubmissions, self).__init__(client=client, name='SC2A')
         # should be here to avoid import cycling
-        from hpn import HPNAdmin
+        from .hpn import HPNAdmin
         self.hpn = HPNAdmin(client=self.client)
         self.version = version
 
@@ -474,10 +478,15 @@ class SC2ASubmissions(SubmissionTools, ST2):
         print("Got %s SCORED submissions" % len(self.submissions))
 
         # attach week and filter the submissions
-        self.submissions = self.attach_week_to_submissions(self.submissions,"sc2a")
-        self.submissions = [sub for sub in self.submissions if sub['week']<=endweek]
-        self.submissions = [sub for sub in self.submissions if sub['week']>=startweek]
-        print("Keeping %s submissions in the week range requested" % len(self.submissions))
+        self.submissions = self.attach_week_to_submissions(self.submissions,
+                "sc2a")
+        self.submissions = [sub for sub in self.submissions 
+                if sub['week']<=endweek]
+        self.submissions = [sub for sub in self.submissions 
+                if sub['week']>=startweek]
+
+        print("Keeping %s submissions in the week range requested" % 
+                len(self.submissions))
 
         if keep_latest:
             self.submissions = self._keep_latest_only()
@@ -609,7 +618,7 @@ class SC2BSubmissions(SubmissionTools, ST2):
     def __init__(self, client=None, version=2):
         super(SC2BSubmissions, self).__init__(client=client, name="SC2B")
         self.version = version
-        from hpn import HPNAdmin
+        from .hpn import HPNAdmin
         self.hpn = HPNAdmin(client=self.client)
 
         # download missing file automatically if needed.

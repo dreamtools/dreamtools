@@ -66,7 +66,11 @@ class D5C1(Challenge):
         data = pd.merge(prediction, gold, how='inner', on=['sequence'],
                 suffixes=['_pred', '_gold'])
         # sory by prediction
-        data.sort(columns=['value_pred'], ascending=False, inplace=True)
+
+        try:
+            data.sort_values(by=['value_pred'], ascending=False, inplace=True)
+        except:
+            data.sort(columns=['value_pred'], ascending=False, inplace=True)
         data.columns = ['Sequence', 'prediction_values', 'prediction']
 
         self.data = data

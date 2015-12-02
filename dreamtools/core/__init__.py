@@ -1,1 +1,1 @@
-from cindex import concordanceIndex
+from .cindex import concordanceIndex

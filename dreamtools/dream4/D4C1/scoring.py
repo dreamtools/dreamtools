@@ -4,7 +4,10 @@ Based on an original matlab code from
 Gustavo A. Stolovitzky, and Robert Prill.
 
 """
-import StringIO
+try:
+    from StringIO import StringIO
+except:
+    from io import StringIO
 from dreamtools.core.challenge import Challenge
 
 import scipy.io
@@ -56,7 +59,7 @@ class D4C1(Challenge):
         # each matrix that is not a header hence header=None
         self.golddata = []
         for i in range(0, 13):
-            df = pd.read_csv(StringIO.StringIO(data.split("\n\n")[i]),
+            df = pd.read_csv(StringIO(data.split("\n\n")[i]),
                     header=None, sep='\t', skiprows=1, index_col=0)
             self.golddata.append(df)
 
@@ -67,13 +70,13 @@ class D4C1(Challenge):
         # each matrix that is not a header hence header=None
         self.prediction = []
         for i in range(0, 13):
-            df = pd.read_csv(StringIO.StringIO(data.split("\n\n")[i]),
+            df = pd.read_csv(StringIO(data.split("\n\n")[i]),
                     header=None, sep='\t', skiprows=1, index_col=0)
 
             if all(df.apply(lambda x: abs(x.sum()-1) < 1e-12)) is False:
-                print all(df.apply(lambda x: abs(x.sum()-1) < 1e-12))
+                print(all(df.apply(lambda x: abs(x.sum()-1) < 1e-12)))
                 print('WARNING In Matrix %s, the sum over a column is not equal to 1!!' % (i+1))
-                print df.sum()
+                print(df.sum())
             self.prediction.append(df)
 
     def download_template(self):
@@ -110,7 +113,9 @@ class D4C1(Challenge):
             mydists[i] = mydist
             pvals[i] = pval
 
-        self.results['kinase']['overall_score'] = -np.mean(np.log10(pvals.values()))
+        # cast to list required in py3
+        self.results['kinase']['overall_score'] = -np.mean(
+                np.log10(list(pvals.values())))
         self.results['kinase']['pvals'] = pvals
         self.results['kinase']['distances'] = mydists
 
@@ -131,7 +136,9 @@ class D4C1(Challenge):
             mydists[i] = mydist
             pvals[i] = pval
 
-        self.results['pdz']['overall_score'] = -np.mean(np.log10(pvals.values()))
+        # cast to list required in py3
+        self.results['pdz']['overall_score'] = -np.mean(
+                np.log10(list(pvals.values())))
         self.results['pdz']['pvals'] = pvals
         self.results['pdz']['distances'] = mydists
 
@@ -196,8 +203,8 @@ class D4C1(Challenge):
         for t_start in [6, 5, 4, 3, 2, 1]:
             g_stop = 10 - t_start + 1
 
-            idx_t = range(t_start, t_stop+1)
-            idx_g = range(g_start, g_stop+1)
+            idx_t = list(range(t_start, t_stop+1))
+            idx_g = list(range(g_start, g_stop+1))
 
             # matrix of element distances
             d = G[idx_g].values - T[idx_t].values
@@ -222,8 +229,8 @@ class D4C1(Challenge):
         for t_stop in range(9, 5-1, -1):
             g_start = 10 - t_stop + 1
 
-            idx_t = range(t_start, t_stop+1)
-            idx_g = range(g_start, g_stop+1)
+            idx_t = list(range(t_start, t_stop+1))
+            idx_g = list(range(g_start, g_stop+1))
 
             # matrix of element distances
             d = G[idx_g].values - T[idx_t].values

@@ -14,7 +14,6 @@
 #  website: http://github.com/dreamtools
 #
 ##############################################################################
-import pickle
 import glob
 import os
 
@@ -22,7 +21,7 @@ import pylab
 
 import numpy as np
 from scipy.stats import kstest
-
+import json
 import easydev
 
 __all__ = ["AUCnull"]
@@ -50,15 +49,16 @@ class AUCnull(object):
         self.cellLines = valid_cellLines[:]
         self.verbose = verbose
 
-    def loadaucs(self, pickleName=None):
-        if pickleName == None:
-            pickleName = 'sc1a_null_aucs_mean_sigma.dat'
-            pickleName = easydev.get_share_file("dreamtools", "data/dream8hpn",
-                    pickleName)
-        self.aucs = pickle.load(open(pickleName, "r"))
-
-    def saveaucs(self, pickleName="sc1a_null_aucs.dat"):
-        pickle.dump(self.aucs, open(pickleName, "w"))
+    def loadaucs(self, filename=None):
+        if filename is None:
+            c = Challenge('D8C1')
+            filename = 'sc1a_null_aucs_mean_sigma.json'
+            filename = c.getpath_data(filename)
+        else:
+            print('skipped')
+        print(filename)
+        with open(filename, 'r') as fh:
+            self.aucs = json.load(fh)
 
     def loaddata(self, directory=None, tag="AUC"):
         """Loads bunch of AUCS stored in files

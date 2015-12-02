@@ -129,7 +129,9 @@ class D4C3(Challenge):
             self.y_log[species] = y_log.copy()
             self.pvals[species] = self._probability(X, Y, self.errors[species])
 
-        self.prediction_score = -pylab.mean(pylab.log10(self.pvals.values()))
+        # cast to list is required in py3
+        self.prediction_score = -pylab.mean(pylab.log10(
+            list(self.pvals.values())))
 
         if self.edge_count is None:
             try:

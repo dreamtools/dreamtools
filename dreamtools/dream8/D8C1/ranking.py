@@ -148,7 +148,10 @@ class SC1A_ranking(Ranking):
         del aucs['BT20_Insulin']
 
         df = aucs.rank(ascending=False, method='min').mean(axis=1)
-        df.sort()
+        try:
+            df.sort_values(inplace=True)
+        except:
+            df.sort(inplace=True)
         return df
 
     def __str__(self):
@@ -156,7 +159,7 @@ class SC1A_ranking(Ranking):
 
     def append_submission(self, res):
         try:
-            res = scoring.HPNScoringNetwork(res, self.version)
+            res = scoring.HPNScoringNetwork(res)
             res.compute_all_aucs()
         except Exception:
             if getattr(res, 'aucs') is False:
@@ -177,7 +180,11 @@ class SC1B_ranking(Ranking):
         self.version = version # does not matter. to have same API
 
     def _sort_df(self, df):
-        df.sort('AUC', inplace=True, ascending=False)
+        try:
+            df.sort_values(by='AUC', inplace=True, ascending=False)
+        except:
+            df.sort('AUC', inplace=True, ascending=False)
+
         df = df.reset_index(drop=True)
         df['Final Rank'] = df.index
         df = df[['Final Rank', 'Team Name', 'Team Id', 'Submission Id',
@@ -252,7 +259,11 @@ class SC2A_ranking(Ranking):
             self.ranked_df = pd.read_json(self._getdata("SC2A_results_v2.json"))
 
     def _sort_df(self, df):
-        df.sort('Mean Rank', inplace=True)
+        try:
+            df.sort_by_values(by='Mean Rank', inplace=True)
+        except:
+            df.sort('Mean Rank', inplace=True)
+
         df = df[['Final Rank', 'Team Name', 'Team Id', 'Submission Id',
                  'Entity Id', 'Mean RMSE', 'Mean Rank']]
         df = df.reset_index(drop=True)
@@ -266,7 +277,10 @@ class SC2A_ranking(Ranking):
         rmses = self.get_rmses()
         # Here we use ascending True because we have RMSE (lower=better)
         df = rmses.rank(ascending=True, method='min').mean(axis=1)
-        df.sort()
+        try:
+            df.sort_values(inplace=True)
+        except:
+            df.sort(inplace=True)
         return df
 
     def append_submission(self, res):
@@ -290,7 +304,7 @@ class SC2B_ranking(Ranking):
     subs = submissions.SC1ASubmissions()
     subs.load_submissions()
 
-    ranking = SC1A_ranking(subs.submissions)
+    ranking = SC2B_ranking(subs.submissions)
 
     """
     # 375805/alphabeta is a test from TC
@@ -311,7 +325,10 @@ class SC2B_ranking(Ranking):
         self.version = version
 
     def _sort_df(self, df):
-        df.sort('Mean Rank', inplace=True)
+        try:
+            df.sort_values(by='Mean Rank', inplace=True)
+        except:
+            df.sort('Mean Rank', inplace=True)
         df = df[['Final Rank', 'Team Name', 'Team Id', 'Submission Id',
                  'Entity Id', 'Mean RMSE', 'Mean Rank']]
 
@@ -329,7 +346,10 @@ class SC2B_ranking(Ranking):
         rmses = self.get_rmses()
         # Here we use ascending True because we have RMSE (lower=better)
         df = rmses.rank(ascending=True, method='min').mean(axis=1)
-        df.sort()
+        try:
+            df.sort_values(inplace=True)
+        except:
+            df.sort(inplace=True)
         return df
 
     def append_submission(self, res):

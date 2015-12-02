@@ -208,7 +208,7 @@ def scoring(args=None):
 
 class Options(argparse.ArgumentParser):
     description = "tests"
-    def __init__(self, version="1.0", prog=None):
+    def __init__(self, prog=None):
 
         usage = """usage: python %s --challenge d8c1 --sub-challenge sc1a --submission <filename>\n""" % prog
         usage += """      python %s --challenge d5c2 --submission <filename>""" % prog
@@ -236,8 +236,7 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
 
         for this in textwrap.wrap(", ".join(registered), 80):
             description += this + "\n"
-
-        super(Options, self).__init__(usage=usage, version=version, prog=prog,
+        super(Options, self).__init__(usage=usage, prog=prog,
                 epilog=epilog, description=description,
                 formatter_class=argparse.RawDescriptionHelpFormatter)
         self.add_input_options()

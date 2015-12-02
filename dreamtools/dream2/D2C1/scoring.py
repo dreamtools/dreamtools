@@ -39,7 +39,10 @@ class D2C1(Challenge, D3D4ROC, DREAM2):
         templates['scores'] = np.random.random(200)
         df = templates[['Entrez GeneID', 'scores']]
 
-        df = df.sort(columns=['scores'], ascending=[False])
+        try:
+            df = df.sort_values(by=['scores'], ascending=[False])
+        except:
+            df = df.sort(columns=['scores'], ascending=[False])
         df.to_csv(filename, sep='\t', header=None, index=False)
 
     def download_template(self):
@@ -102,7 +105,10 @@ class D2C1(Challenge, D3D4ROC, DREAM2):
         df = pd.DataFrame(df, index=[0])
         df['Team'] = 'DREAMTools'
         lb = pd.concat([lbofficial, df])
-        lb = lb.sort(columns='AUROC', ascending=False)
+        try:
+            lb = lb.sort_values(by='AUROC', ascending=False)
+        except:
+            lb = lb.sort(columns='AUROC', ascending=False)
         lb = lb[lbofficial.columns]
         lb.set_index('Team')
         return lb

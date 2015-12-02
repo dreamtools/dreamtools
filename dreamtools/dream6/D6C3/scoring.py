@@ -94,7 +94,7 @@ class D6C3(Challenge):
             rs2 = rs2 / float(pt)
             r2 = r2 + (rn1*rn1) / rs2
 
-        results = pd.TimeSeries()
+        results = pd.Series()
         results['chi2'] = chi.values[0]
         results['R-square'] = r2.values[0]
         results['Spearman(Sp)'] = Sp
