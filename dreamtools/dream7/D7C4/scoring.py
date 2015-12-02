@@ -164,7 +164,11 @@ class D7C4(Challenge):
         gold['pairs'] = pairs
 
         # sort by excess of over Bliss
-        gold = gold.sort(columns=['Excess over Bliss'])
+        try:
+            gold = gold.sort_values(by=['Excess over Bliss'])
+        except:
+            gold = gold.sort(columns=['Excess over Bliss'])
+
 
         self.p_matrix = self._probability_matrix(gold['Excess over Bliss'], gold['SEM'])
 
@@ -196,13 +200,14 @@ class D7C4(Challenge):
         Nmax = 10000
         cindex_nulldist =np.zeros(Nmax)
         for i in range(0, Nmax):
-            randx = range(N)
+            # cast to list for py3
+            randx = list(range(N))
             random.shuffle(randx) # in place
             cindex_nulldist[i] = self._concordance(randx, range(0,N), self.p_matrix)
 
         pvalues = sum(cindex_nulldist>= weighted_cindex)/float(Nmax)
 
-        results = pd.TimeSeries()
+        results = pd.Series()
         results['weighted cindex'] = weighted_cindex
         results['pvalue'] = pvalues
 

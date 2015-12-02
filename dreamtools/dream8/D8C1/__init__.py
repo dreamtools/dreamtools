@@ -1,9 +1,7 @@
-import commons
-import scoring
-from scoring import *
-import hpn
-from hpn import *
-import submissions
+from . import commons
+from .scoring import *
+from .hpn import *
+from . import submissions
 
 import os
 from dreamtools import dreampath

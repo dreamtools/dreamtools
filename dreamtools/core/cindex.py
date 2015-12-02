@@ -63,8 +63,8 @@ def cindex(prediction, survtime, survevent):
 
     N = len(survtime)
 
-    for i in xrange(0, N-1):
-        for j in xrange(i+1, N): # For each pair of observations
+    for i in range(0, N-1):
+        for j in range(i+1, N): # For each pair of observations
             if (((survevent[i] == True) and (survevent[j] == True)) or \
                 ((survevent[i] == True) and (survtime[j] >= survtime[i])) or \
                 ((survevent[j] == True) and (survtime[i] >= survtime[j]))):

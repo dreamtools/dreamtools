@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
 import os
 from setuptools import setup, find_packages
-from Cython.Build import cythonize
+try:
+    from Cython.Build import cythonize
+except ImportError:
+    print("-----------------------------------------------------------")
+    print("DREAMTools installation:: please install **cython** package")
+    print("-----------------------------------------------------------")
+    print("You can try to install it using **pip** as follows::")
+    print("")
+    print("    pip install cython")
+    print("")
+    exit()
 
 
 _MAJOR               = 1
 _MINOR               = 0
-_MICRO               = 0
+_MICRO               = 1
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
@@ -74,8 +84,8 @@ setup(
         },
 
     install_requires = ['cython', 'numpy', 'matplotlib', 'pandas', 'appdirs',
-        'easydev>=0.8.7', 'fitter', 'synapseclient', 'tabulate', 'scipy',
-        'xlrd'],
+        'easydev>=0.9.6', 'fitter', 'synapseclient', 'tabulate', 'scipy',
+        'biokit','xlrd'],
 
     ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"]),
 

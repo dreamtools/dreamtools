@@ -2,6 +2,18 @@ ChangeLog
 ==============
 
 
+1.1.0
+----------
+
+* Starting migration to python3
+* Add missing data files in D7C1
+
+1.0.0
+--------
+first official release synchronized with submission to F1000
+`F1000 link <http://f1000research.com/articles/4-1030/v1>`_
+
+
 0.11
 ------
 

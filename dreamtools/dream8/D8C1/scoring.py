@@ -32,11 +32,14 @@ Here is an example related to the Network subchallenge::
 https://www.synapse.org/#!Synapse:syn1720047/wiki/60530
 
 
+.. changes:: version 1.1 had major changes in the way data is read to make the
+   code compatible with py3
+
 """
 import csv
 import os
 import copy
-import pickle
+import json
 import zipfile
 
 import pylab
@@ -215,7 +218,11 @@ class HPNScoring( ZIP, LocalData):
         z = zipfile.ZipFile(filename)
         self.species = {}
         for cell in self.valid_cellLines:
-            header = z.read("experimental/MIDAS/MD_%s_main.csv" % cell).split("\n")[0]
+            print("experimental/MIDAS/MD_%s_main.csv" % cell)
+            ## in py3, z.read returns a bytes hence the str cast
+            thisdata = z.read("experimental/MIDAS/MD_%s_main.csv" % cell).decode()
+            header = thisdata.splitlines()[0]
+
             phosphos = [x.split(":")[1] for x in header.split(",") if x.startswith("DV")]
 
             phosphos = [x for x in phosphos if x not in self.species_to_ignore[cell]]
@@ -253,10 +260,10 @@ class HPNScoringNetworkBase(HPNScoring):
         # read the data and stores it into vectors
         #index = self.zip_filenames.index(filename)
         #tail = os.path.split(self.zip_filenames[index])[-1]
-        zipdata = self.zip_data.open(filename)
+        zipdata = self.zip_data.read(filename).decode()
 
         # prevent issue with NULL byte from Boston team
-        data_iter = [x.replace("\x00", "") for x in zipdata]
+        data_iter = [x.replace("\x00", "") for x in zipdata.splitlines()]
         data_iter = [x.replace("\t", " ") for x in data_iter]
         data_iter = [self._str_cleanup(x) for x in data_iter if len(x)]
 
@@ -482,11 +489,13 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         for filename in zipdata.namelist():
             try:
                 teamName, cellLine, ligand = os.path.splitext(filename)[0].split("_")
-                data = zipdata.open(filename).next()
+                data = zipdata.read(filename).decode()
+                data = data.splitlines()[0] # look at the  header
                 data = [int(x) if x!="NaN" else None for x in data.strip().split(',')]
                 self.true_descendants[cellLine][ligand] = data[:]
-            except:
-                #print("note: skipping " + filename)
+            except Exception as err:
+                print("note: skipping " + filename)
+                print(err)
                 pass
 
     def load_all_eda_files_from_zip(self):
@@ -533,8 +542,8 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             # read the data and stores it into vectors
             index = self.zip_filenames.index(filename)
             tail = os.path.split(self.zip_filenames[index])[-1]
-            zipdata = self.zip_data.open(filename)
-            data_iter = [x for x in zipdata]
+            zipdata = self.zip_data.read(filename).decode()
+            data_iter = zipdata.splitlines()
 
         if len(data_iter) and "EdgeScore" in data_iter[0]:
             del data_iter[0]
@@ -680,7 +689,6 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
             FP = float(sorted_classes[0:i].count(0))
             TPR = TP/P
             FPR = FP/N
-            #print classes[i], sorted_scores[i], threshold, TP, FP, TPR, FPR, TP+FP
             precision = TP / (TP+FP)
             recall = TP / P
             if recall >0 and precision >0 :
@@ -1044,8 +1052,8 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
         """Retrieve mean and sigma for 32 combi from a null AUC distribution"""
         import sc1a_tools
         null = sc1a_tools.AUCnull(self.valid_cellLines, self.valid_ligands, verbose=False)
-        #filename = 'sc1a_null_aucs_mean_sigma.dat'
-        null.loadaucs()
+        filename = 'sc1a_null_aucs_mean_sigma.json'
+        null.loadaucs(filename)
         mean = null.get_mean_dict()
         sigma = null.get_sigma_dict()
         return mean, sigma
@@ -1199,7 +1207,6 @@ class HPNScoringNetwork_ranking(HPNScoring):
         zscores = {}
         for i,k in enumerate(self.participants):
             zscore = self._get_zscores(self.aucs[i])
-            #print zscore
             mu = np.mean([zscore[k1][k2] for k1 in zscore.keys()
                 for k2 in zscore[k1].keys()])
             zscores[k] = mu
@@ -1219,9 +1226,9 @@ class HPNScoringNetwork_ranking(HPNScoring):
     # duplicated from HPNScoringNetwork to update leadeboard easily
     def _get_mean_and_sigma_null_parameters(self):
         """Retrieve mean and sigma for 32 combi from a null AUC distribution"""
-        import sc1a_tools
+        from . import sc1a_tools
         null = sc1a_tools.AUCnull(self.valid_cellLines, self.valid_ligands, verbose=False)
-        filename = 'sc1a_null_aucs_mean_sigma.dat'
+        filename = 'sc1a_null_aucs_mean_sigma.json'
         filename = self.getpath_data(filename)
         null.loadaucs(filename)
         mean = null.get_mean_dict()
@@ -1262,7 +1269,7 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
         try:
             self.loadZIPFile(self.filename)
         except Exception as err:
-            print(err.message)
+            print(err)
             # it not read permission loadZIP and get_eda will fail,
             self.error("Could not read the data (invalid ZIP ?)")
 
@@ -1505,7 +1512,8 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
         # look only at inhibitor 3
         self.user_prediction = {}
 
-        filenames = [x for x in self.zip_filenames if x.endswith(".csv") if "TestInhib3" in x and "MACOS" not in x]
+        filenames = [x for x in self.zip_filenames if x.endswith(".csv")
+                if "TestInhib3" in x and "MACOS" not in x]
 
         if len(filenames) != 4:
             self.error("Got (%s) files with a correct pattern. Expected 4" % len(filenames))
@@ -1520,11 +1528,16 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
             if cell not in self.valid_cellLines:
                 self.error("filename with invalid cellLine %s " % cell)
 
-            zipdata = self.zip_data.open(filename, "rU")  # somehow fneeded for mac users
-            data_iter = csv.reader(zipdata, delimiter=",")
+            # not easy to find universal way of reading zip file and decode it
+            # under max/linux/windows across py2 and py3...
+            zipdata = self.zip_data.read(filename).decode()
+            zipdata = zipdata.splitlines()
+            #data_iter = csv.reader(zipdata, delimiter=",")
 
             # get the header
-            header = data_iter.next()
+            header = zipdata[0]
+            header = [x.strip() for x in header.split(",")]
+
             # There should be 56 lines exacly with the 8 stimuli times 7 times
             # for all phosphos
             if len(header) == 0:
@@ -1533,12 +1546,16 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
 
             if header[0] != "TR:%s:CellLine" % cell:
                 self.error("Error in the header of %s (first row)" % filename )
+
             stimuli = [x.split(":")[1] for x in header[1:9]]
             if sorted(stimuli) != sorted(self.valid_ligands):
                 self.error("Error in the header of %s (invalid stimuli ?)" % filename )
+
             if header[9] not in ["DA:ALL", "DA::ALL"]:
                 self.error("Expected a DA:ALL column in the header at column 10, which was not found")
+
             phosphos = [x.split(":")[1] for x in header[10:]]
+
             if len(phosphos) != self.valid_length[cell] and len(phosphos) != self.valid_length_extended[cell]:
                 print("WARNING: length don't seem correct")
 
@@ -1553,8 +1570,8 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
                     self.user_prediction[cell][phospho][ligand] = [0,0,0,0,0,0,0] # 7 times
 
             # TODO: check that phosphos agree with the true prediction ?
-            for iter, row in enumerate(data_iter):
-                # get time index
+            for iter, row in enumerate(zipdata[1:]):
+                row = row.split(",")# get time index
                 if len(row)==0:
                     continue
                 time = int(row[9])
@@ -1568,7 +1585,6 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
 
                 for ip, phospho in enumerate(phosphos):
                     datum = row[10 + ip]
-                    #print cell, phospho, this_stimulus, itime
                     if datum == "NA":
                         datum = np.nan
                     else:
@@ -1593,19 +1609,23 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
             self.true_prediction[cell] = {}
 
             filename = [x for x in zipdata.namelist() if "%s_main_Test.csv" % cell in x][0]
-            data = zipdata.open(filename)
+            data = zipdata.read(filename).decode().splitlines()
 
             #filename = "SC2A/%s_main_Test.csv" % cell
             #print("Reading true prediction from %s" % filename)
             #fh = open(filename, "r")
             #data = csv.reader(fh)
+            # skip first line
+            data = data[1:]
 
-            slideId = data.next()
             if cell == "UACC812": # skip another line
-                slideId = data.next()
-            names = data.next()
-            hugoId = data.next()
-            dummy = data.next()# skip a line
+                data = data[1:]
+
+            names = data[0][:]
+            hugoId = data[1][:]
+            # skip another line
+            data = data[3:]
+            #dummy = str(next(data))
 
             names = [x.strip() for x in names.split(",")]
             # now the data with col1 = cellline, co2=inhibito, col3=stimulus,
@@ -1637,7 +1657,7 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
             # now scan the data
             times = ["0min", "5min", "15min", "30min", "60min", "2hr", "4hr"]
             for row in data:
-                row = [x.strip() for x in row.split(",")]
+                row = [x.strip() for x in str(row).split(",")]
                 if row[1] == "AZD8055": # this is the inhibitor we are interested in
                     ligand = row[2]
                     if ligand not in self.valid_ligands and ligand!="":
@@ -1809,7 +1829,6 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
                 # inhibitor+DMSO and times
                 for ip, phospho in enumerate(phosphos):
                     datum = row[N+8+2+ip]
-                    #print cell, phospho, this_stimulus, itime
                     if datum == "NA":
                         datum = np.nan
                     else:
@@ -1876,9 +1895,10 @@ class HPNScoringPrediction(HPNScoringPredictionBase):
 
     def _get_mean_and_sigma_null_parameters(self):
         """Retrieve mean and sigma for 4 celllines and phosphos"""
-        filename = 'sc2a_null_mu_sigma_new.dat'
+        filename = 'sc2a_null_mu_sigma_new.json'
         filename = os.sep.join(["data", filename])
-        mu_sigma = pickle.loads(open(filename, "r").read())
+        with open(filename) as fh:
+            mu_sigma = json.load(fh)
         mu = {}
         sigma = {}
         for c in self.valid_cellLines:
@@ -1974,10 +1994,11 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
             results[inhib] = {}
 
             # read data
-            data = zipdata.open(filename)
+            data = zipdata.read(filename).decode() # from bytes to str
+            data = data.splitlines()
 
             # get header
-            header = data.next()
+            header = data[0]
             header = [x.strip() for x in header.split(",")]
 
             stimuli = [x.split(":")[1] for x in header if x.endswith("Stimuli")]
@@ -1997,7 +2018,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
                     pass
 
             # now scan the data
-            for row in data:
+            for row in data[1:]:
                 row = [x.strip() for x in row.split(",")]
 
                 these_stimuli = row[1:5] #we have only 4 stimuli im Michael file.
@@ -2057,22 +2078,27 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
             results[inhib] = {}
 
             # read data
-            data = zipdata.open(filename, "rU") # universal mode for MAC
+            data = zipdata.read(filename).decode()
+            data = data.splitlines()
+
 
             # get header
-            header = data.next()
+            header = data[0]
             header = [x.strip() for x in header.split(",")]
 
             stimuli = [x.split(":")[1] for x in header if x.endswith("Stimuli")]
             stimuli = [x.replace("+", "_") for x in stimuli]  # some users put "+" instead of "_" ...
             phosphos = [x.split(":")[1] for x in header if x.startswith("DV:")]
-            if len(phosphos)!=20:
-                self.error("Number of expected phosphos (20 )is incorrect (Found %s in %s)  " %(len(phosphos), filename))
+            if len(phosphos) != 20:
+                self.error("Number of expected phosphos (20 )is incorrect (Found %s in %s)  "
+                        %(len(phosphos), filename))
                 continue
 
             if len(stimuli) != 8:
-                self.error("Number of expected stimuli (8) is incorrect (Found %s in %s)  " %(len(stimuli), filename))
+                self.error("Number of expected stimuli (8) is incorrect (Found %s in %s)  "
+                        %(len(stimuli), filename))
                 continue
+
             for s in stimuli:
                 if s not in self.stimuli:
                     self.error("found incorrect stimuli (%s) in %s" % (s, filename))
@@ -2088,11 +2114,12 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
                     pass
 
             # now scan the data
-            for i, row in enumerate(data):
+            # skip header
+            for i, row in enumerate(data[1:]):
                 row = [x.strip() for x in row.split(",")]
 
                 these_stimuli = [int(float(x)) for x in row[1:9]]
-                stim_index = [i for  i,stim in enumerate(these_stimuli) if stim == 1 ]
+                stim_index = [i for  i, stim in enumerate(these_stimuli) if stim == 1 ]
                 #assert len(stim_index)==0, "no stimuli found on line %s in %s" % (i, filename)
                 assert len(stim_index)==1, "more than 1 stimuli on line %s in %s" % (i, filename)
                 stim_index = stim_index[0]
@@ -2217,7 +2244,6 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
                 # inhibitor+DMSO and times
                 for ip, phospho in enumerate(phosphos):
                     datum = row[7+2+ip]
-                    #print cell, phospho, this_stimulus, itime
                     if datum == "NA":
                         datum = np.nan
                     else:
@@ -2261,10 +2287,11 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
 
     def _get_mean_and_sigma_null_parameters(self):
         """Retrieve mean and sigma for 32 combi from a null AUC distribution"""
-        filename = 'sc2b_null_mu_sigma.dat'
+        filename = 'sc2b_null_mu_sigma.json'
         filename = self.getpath_data(filename)
         # a dict contain dict (phospho) of dict (phospho) of dict (mu,sigma)
-        mu_sigma = pickle.load(open(filename, "r"))
+        with open(filename) as fh:
+            mu_sigma = json.load(fh)
         mu = {}
         sigma = {}
         for c in self.phosphos:
@@ -2435,9 +2462,10 @@ class HPNScoringPrediction_ranking(HPNScoring):
     # Duplicated from HPNScoringPrediction
     def _get_mean_and_sigma_null_parameters(self):
         """Retrieve mean and sigma for 4 celllines and phosphos"""
-        filename = 'sc2a_null_mu_sigma_new.dat'
+        filename = 'sc2a_null_mu_sigma_new.json'
         filename = self.getpath_data(filename)
-        mu_sigma = pickle.loads(open(filename, "r").read())
+        with open(filename) as fh:
+            mu_sigma = json.load(fh)
         mu = {}
         sigma = {}
         for c in self.valid_cellLines:
@@ -2453,7 +2481,6 @@ class HPNScoringPrediction_ranking(HPNScoring):
         zscores = {}
         for i,k in enumerate(self.participants):
             zscore = self._get_zscores(self.rmse[i])
-            #print zscore
             data = [zscore[k1][k2] for k1 in zscore.keys() for k2 in zscore[k1].keys()]
             data = [x for x in data if np.isnan(x)==False]
             mu = np.mean(data)
@@ -2625,7 +2652,6 @@ class HPNScoringPredictionInsilico_ranking(HPNScoring):
         zscores = {}
         for i,k in enumerate(self.participants):
             zscore = self._get_zscores(self.rmse[i])
-            #print zscore
             data = [zscore[k1][k2] for k1 in zscore.keys() for k2 in zscore[k1].keys()]
             data = [x for x in data if np.isnan(x)==False]
             mu = np.mean(data)
@@ -2634,10 +2660,13 @@ class HPNScoringPredictionInsilico_ranking(HPNScoring):
 
     def _get_mean_and_sigma_null_parameters(self):
         """Retrieve mean and sigma for 32 combi from a null AUC distribution"""
-        filename = 'sc2b_null_mu_sigma.dat'
+        filename = 'sc2b_null_mu_sigma.json'
         filename = self.getpath_data(filename)
         # a dict contain dict (phospho) of dict (phospho) of dict (mu,sigma)
-        mu_sigma = pickle.load(open(filename, "r"))
+
+        with open(filename) as fh:
+            mu_sigma = json.load(fh)
+
         mu = {}
         sigma = {}
         for c in self.inhibitors:

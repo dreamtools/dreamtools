@@ -22,15 +22,15 @@ import numpy as np
 import pylab
 import pandas as pd
 
-import submissions
+from . import submissions
 from dreamtools import Login
 from dreamtools.core.ziptools import ZIP
 
-from scoring import HPNScoringPrediction
-from scoring import HPNScoringPredictionInsilico
-from scoring import HPNScoringNetwork
-from scoring import HPNScoringNetworkInsilico
-import commons
+from .scoring import HPNScoringPrediction
+from .scoring import HPNScoringPredictionInsilico
+from .scoring import HPNScoringNetwork
+from .scoring import HPNScoringNetworkInsilico
+from . import commons
 
 from dreamtools.dream8.D8C1 import d8c1path
 from dreamtools.dream8.D8C1 import scoring
@@ -92,7 +92,7 @@ class AggregationTools(Login):
 
         """
         # select N random submissions
-        indices = range(0, len(self.df.index))
+        indices = list(range(0, len(self.df.index)))
         pylab.shuffle(indices)
         indices = indices[0:N]
         aggregate = self._aggregate(indices)
@@ -144,11 +144,20 @@ class AggregationTools(Login):
             df['filename'] = [this['filename'] for this in subs]
 
         if self.name == "SC1A" or self.name == "SC2A":
-            df.sort(columns="mean_rank", inplace=True)
+            try:
+                df.sort_values(by="mean_rank", inplace=True)
+            except:
+                df.sort(columns="mean_rank", inplace=True)
         elif self.name == "SC1B":
-            df.sort(columns="auc", ascending=False, inplace=True)
+            try:
+                df.sort_values(by="auc", ascending=False, inplace=True)
+            except:
+                df.sort(columns="auc", ascending=False, inplace=True)
         elif self.name == "SC2B":
-            df.sort(columns='mean_rmse', ascending=True, inplace=True)
+            try:
+                df.sort_values(by='mean_rmse', ascending=True, inplace=True)
+            except:
+                df.sort(columns='mean_rmse', ascending=True, inplace=True)
 
         df.reset_index(inplace=True)
         return df
@@ -160,7 +169,8 @@ class AggregationTools(Login):
 
         for i in range(0,74):
             ranks = df.set_index("submitterAlias")['ranks'][i]
-            print mean([ranks[k1][k2] for k1 in ranks.keys() for k2 in ranks[k1].keys()]) == df['mean_rank'][i]
+            print(mean([ranks[k1][k2] for k1 in ranks.keys() for k2 in
+            ranks[k1].keys()]) == df['mean_rank'][i])
 
         """
         self.load_submissions()
@@ -454,6 +464,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
             filename = self.df.ix[index].filename
             aggregate = HPNScoringNetwork(filename=filename,
                                           true_descendants=self.true_descendants)
+            del aggregate.zip_data
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -475,6 +486,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
                     filename =self.df.ix[sub].filename
                     individual = HPNScoringNetwork(filename=filename,
                         true_descendants=self.true_descendants)
+                    del individual.zip_data
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.edge_scores.keys():
                     for l in aggregate.edge_scores[c].keys():
@@ -505,7 +517,7 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
             auc_min = []
             for i in range(0,74):
                 es = s.plot_aggregate_edge_rank(i, ss=ss)
-                print es
+                print(es)
                 auc_min.append(es)
             plot(auc, label="min")
 
@@ -615,6 +627,7 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
         else:
             filename = self.df.ix[index].filename
             aggregate = HPNScoringNetworkInsilico(filename=filename)
+            del aggregate.zip_data
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -632,6 +645,7 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
                 else:
                     filename =self.df.ix[sub].filename
                     individual = HPNScoringNetworkInsilico(filename=filename)
+                    del individual.zip_data
                     self._individuals[sub] = copy.deepcopy(individual)
                 user_graph.append(individual.user_graph)
         if self.mode == "mean":
@@ -683,6 +697,7 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
         else:
             filename = self.df.ix[index].filename
             aggregate = HPNScoringPrediction(filename=filename, version=self.version)
+            del aggregate.zip_data  # not serialisable in py3
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -707,6 +722,7 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
                 else:
                     filename = self.df.ix[sub].filename
                     individual = HPNScoringPrediction(filename=filename, version=self.version)
+                    del individual.zip_data
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.user_prediction.keys():
                     for l in aggregate.user_prediction[c].keys():
@@ -764,6 +780,10 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
         else:
             filename = self.df.ix[index].filename
             aggregate = HPNScoringPredictionInsilico(filename=filename, version=self.version)
+            #try:
+            #    del aggregate.zip_data
+            #except;
+            #   pass
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -787,6 +807,8 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
                     filename = self.df.ix[sub].filename
                     individual = HPNScoringPredictionInsilico(filename=filename,
                                                               version=self.version)
+
+                    del individual.zip_data
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.user_prediction.keys():
                     for l in aggregate.user_prediction[c].keys():

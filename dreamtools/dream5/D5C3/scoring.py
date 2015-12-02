@@ -157,7 +157,7 @@ class D5C3(Challenge, D3D4ROC):
         auroc_score = -np.mean(np.log10([x['p_aupr'] for x in results]))
         score = (aupr_score + auroc_score)/2.
 
-        df = pd.TimeSeries()
+        df = pd.Series()
         df['Overall Score'] = score
         df['AUPR score (pval)'] = aupr_score
         df['AUROC score (pval)'] = aupr_score

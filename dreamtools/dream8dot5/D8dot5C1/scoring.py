@@ -36,7 +36,7 @@ def sanity_check_userSubmission(goldStandard, user_predicted_response,
     user_submitted_ids = set(user_predicted_response.ID)
     testSamples_id = set(goldStandard.ID)
     if(len(user_submitted_ids.difference(testSamples_id)) !=0 or len(testSamples_id.difference(user_submitted_ids)) != 0 ):
-       print 'missing rows(IDs) in the submission'
+       print('missing rows(IDs) in the submission')
        return
 
     #check for missing values in any of the rows
