@@ -1,12 +1,11 @@
 language: python
 
 matrix:
-    include:
-        - python: 2.7
-        - python: 3.3
-        - python: 3.4
-        - python: 3.5
-
+  include:
+    - python: 2.7
+    - python: 3.3
+    - python: 3.4
+    - python: 3.5
 
 
 # solution based on https://gist.github.com/dan-blanchard/7045057
@@ -17,6 +16,7 @@ before_install:
     - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
     - chmod +x miniconda.sh
     - ./miniconda.sh -b
+    - export PATH=/home/travis/miniconda/bin:$PATH
     - export PATH=/home/travis/miniconda2/bin:$PATH
     - conda update --yes conda
     # are not specific to using mini

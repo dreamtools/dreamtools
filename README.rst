@@ -55,8 +55,11 @@ terms of agreements**.
 Installation
 ---------------
 
-**DREAMTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically
-installed with **DREAMTools** using pip executable (note the small caps)::
+**DREAMTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically installed with **DREAMTools** using pip executable (note the small caps). However, one package must be installed before (if not already installed), which is called **Cython**. To install cython, type::
+
+    pip install cython
+
+Then, install **DREAMTools** itself::    
 
     pip install dreamtools
 
@@ -65,6 +68,26 @@ From source, download the source code and install the package with Python::
    git clone git@github.com:dreamtools/dreamtools.git
    cd dreamtools
    sudo python setup.py install
+
+Python3.X
+~~~~~~~~~~
+**DREAMTools** is currently developed and tested for Python2.7, however, 
+it has recently been ported to Python3.4. Most of the dependencies are available
+in Python except synapseclient package. We forked this package and provide
+a version compatible for Python3 and **DREAMTools**.  You will need to install
+it manually as follows::
+
+    pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient
+
+Fortunately, synapseclient will be ported soon to Python3 and this command will
+not be needed anymore. Then, as above, type::    
+
+    # if you do not have cython already installed:
+    pip install cython
+
+and::
+
+    pip install dreamtools
 
 
 The **dreamtools** executable
