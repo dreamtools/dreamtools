@@ -21,8 +21,8 @@ before_install:
     - "export DISPLAY=:99.0"
     - "sh -e /etc/init.d/xvfb start"
 
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mir
-rors
+
+
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION cython numpy scipy matplotlib nose pandas coverage 
   # coverage packages are elsewhere
@@ -36,3 +36,5 @@ install:
 script:
   - python setup.py nosetests --with-coverage --cover-package dreamtools
 
+after_success:
+  coveralls
