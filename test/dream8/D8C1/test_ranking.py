@@ -34,4 +34,3 @@ def test_sc2b_ranking():
         "CGR-Prediction-Insilico.zip"]))
     assert r.get_rank_your_submission() == 2
 
-test_sc1b_ranking()
