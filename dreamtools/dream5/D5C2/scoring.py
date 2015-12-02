@@ -131,7 +131,8 @@ class D5C2(Challenge):
         z = ZIP()
         z.loadZIPFile(filename)
         data = z.read('Answers.txt')
-        self.gs = pd.read_csv(StringIO.StringIO(data), sep='\t')
+        from io import BytesIO
+        self.gs = pd.read_csv(BytesIO(data), sep='\t')
 
         # download 4 other filenames from dreamtools synapse project
         self._download_data('all_8mers.txt', 'syn4483185')
