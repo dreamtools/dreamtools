@@ -15,14 +15,14 @@ before_install:
     - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
     - chmod +x miniconda.sh
     - ./miniconda.sh -b
-    - export PATH=/home/travis/miniconda/bin:$PATH
-    - export PATH=/home/travis/miniconda2/bin:$PATH
+    - export PATH=$HOME/miniconda/bin:$PATH
+    - export PATH=$HOME/miniconda2/bin:$PATH
+    - hash -r
     - conda update --yes conda
     # are not specific to using mini
     # - sudo rm -rf /dev/shm
     # - sudo ln -s /run/shm /dev/shm
     - sudo apt-get install r-base r-base-dev
-    - sudo apt-get install cython
     # This help testing code with pylab
     - "export DISPLAY=:99.0"
     - "sh -e /etc/init.d/xvfb start"
@@ -33,7 +33,8 @@ before_install:
 install:
   # sometimes cython compilation of the cython files takes forever
   # here we install cython with specific options
-  # https://mail.python.org/pipermail/cython-devel/2014-November/004263.html
+  # https://miail.python.org/pipermail/cython-devel/2014-November/004263.html
+  - pip install --install-option="--no-cython-compile" cython --upgrade
   - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib nose pandas coverage scikit-learn numexpr xlrd
   # coverage packages are elsewhere
   #- conda install --yes -c python-coveralls nose-cov
