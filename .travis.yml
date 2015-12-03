@@ -22,6 +22,7 @@ before_install:
     # - sudo rm -rf /dev/shm
     # - sudo ln -s /run/shm /dev/shm
     - sudo apt-get install r-base r-base-dev
+    - sudo apt-get install cython
     # This help testing code with pylab
     - "export DISPLAY=:99.0"
     - "sh -e /etc/init.d/xvfb start"
@@ -36,7 +37,6 @@ install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib nose pandas coverage scikit-learn numexpr xlrd
   # coverage packages are elsewhere
   #- conda install --yes -c python-coveralls nose-cov
-  - pip install cython
   - pip install nose easydev --upgrade
   - pip install coveralls -v
   - pip install biokit fitter -v 
