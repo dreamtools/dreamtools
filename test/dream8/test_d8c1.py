@@ -4,13 +4,13 @@ from nose.tools import assert_almost_equal
 from nose.plugins.attrib import attr
 
 
-@attr("skip")
+#@attr("skip")
 def test_score_sc1a():
     s = D8C1()
     res = s.score(s.download_template('SC1A'), 'SC1A')
     assert_almost_equal(res['meanAUROC'], 0.80362891940311265)
 
-@attr("skip")
+#@attr("skip")
 def test_score_sc1b():
     s = D8C1()
     res = s.score(s.download_template('SC1B'), 'SC1B')
