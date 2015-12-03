@@ -30,10 +30,10 @@ install:
   # coverage packages are elsewhere
   #- conda install --yes -c python-coveralls nose-cov
   - pip install nose easydev --upgrade
-  - pip install coveralls
-  - pip install biokit fitter
-  - pip install tabulate
-  - pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient
+  - pip install coveralls -v
+  - pip install biokit fitter -v 
+  - pip install tabulate -v
+  - pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient -v
 
 # # command to run tests, e.g. python setup.py test
 script:
