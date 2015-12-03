@@ -15,19 +15,16 @@ except ImportError:
     print("")
     exit()
 
-
 # On travis, Cython compilation hangs forever.
 # We will skip the D8C1 tests where cython is required.
 # On travis, we create a variable called  __TRAVIS_DREAMTOOLS
-if os.environ.get('__TRAVIS_DREAMTOOLS'):
-    ext_modules = []
-else:
-    ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"])
+#if os.environ.get('__TRAVIS_DREAMTOOLS'):
+#    ext_modules = []
+#else:
+ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"])
 
 
-
-
-
+#ext_modules = []
 
 
 _MAJOR               = 1
