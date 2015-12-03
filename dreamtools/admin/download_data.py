@@ -59,6 +59,7 @@ def download_template(name):
     :param name: a valid nickname e.g. D2C1"""
     _generic_download(name, 'template')
 
+
 class DREAMToolsBundle(object):
     def __init__(self, verbose=True):
         self.verbose = True

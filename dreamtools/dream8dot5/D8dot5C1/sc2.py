@@ -31,7 +31,7 @@ def __get_blockWise_stats(sub_stats):
     grouped = sub_stats.groupby(['predict'], sort=False)
     #instantiate a pandas dataframe to store the results for each group (tied values)
 
-    result = pandas.DataFrame.from_dict({'block':xrange(len(grouped)),
+    result = pandas.DataFrame.from_dict({'block':list(range(len(grouped))),
                                          'block_numElements'  : np.nan,
                                          'block_truePos_density' : np.nan,
                                          'block_truePos'      : np.nan,
@@ -196,6 +196,7 @@ class D8dot5C1_sc2(Challenge):
         result = get_AUC_PR_N_ROC_curve(self.goldstandard,self.prediction)
 
         df = pandas.DataFrame({'ROC_auc_gen' : result[0] ,'ROC_auc_gen+clin' : result[1], 
-                               'PR_auc_gen' :  result[2] , 'PR_auc_gen+clin'  :  result[3]}, index=xrange(1))
+                               'PR_auc_gen' :  result[2] , 'PR_auc_gen+clin'  :
+                               result[3]}, index=list(range(1)))
 
         return df

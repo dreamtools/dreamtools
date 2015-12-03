@@ -5,6 +5,8 @@ ChangeLog
 1.1.0
 ----------
 
+* Fix a remaining Python3 issue in D8.5
+* Fix test error due to D9C3, which is not yet included.
 * Starting migration to python3
 * Add missing data files in D7C1
 

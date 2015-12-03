@@ -95,6 +95,8 @@ class D9C3(Challenge):
 
     def download_template(self, subname=None):
         # should return full path to a template file
+        raise NotImplementedError
+
         if subname == 'sc1':
             filename = self.getpath_template('q1.final.example.txt')
         elif subname == 'sc2':
