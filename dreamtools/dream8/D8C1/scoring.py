@@ -1276,7 +1276,7 @@ class HPNScoringNetworkInsilico(HPNScoringNetworkBase):
         try:
             self.user_graph = self._get_participant_eda()
         except Exception as err:
-            print(err.message)
+            print(err)
             # it not read permission loadZIP and get_eda will fail,
             self.error("Could not compute EDA")
 

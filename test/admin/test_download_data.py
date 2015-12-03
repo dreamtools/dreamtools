@@ -1,6 +1,8 @@
 import dreamtools.admin.download_data as ds
+from nose.plugins import attr
 
 
+@attr('skip')
 def test_ds():
 
 

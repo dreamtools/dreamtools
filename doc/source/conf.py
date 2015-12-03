@@ -22,7 +22,7 @@ pkg_name = "dreamtools"
 exec("import %s" % pkg_name)
 try:
     exec("import %s" % pkg_name)
-except Exception, e:
+except Exception as err:
     print("Install %s or set your PYTHONPATH properly" % pkg_name)
     raise Exception
 

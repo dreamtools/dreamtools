@@ -91,6 +91,45 @@ From source, download the source code and install the package with Python::
 
 
 
+te for Python3.X
+~~~~~~~~~~~~~~~~~~~~~~
+**DREAMTools** is compatible with Python2 and Python3. However, 
+**DREAMTools** depends on a package that is currently not available for Python3
+(synapseclient). As a temporary solution, we forked this package and provide
+a version compatible for Python3 and **DREAMTools**.  You will need to install
+it manually as follows::
+
+    pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient
+
+Then, as above, type::    
+
+    # if you do not have cython already installed:
+    pip install cython
+
+and::
+
+    pip install dreamtools
+
+If you are new to Python
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you are not familiar with Python, or have issues with the previous method
+(e.g., compilation failure), or do not have root access, we would recommend to
+use the `Anaconda <https://www.continuum.io/downloads>`_ solution.
+
+Anaconda is a free Python distribution. It includes most popular Python packages for science and data analysis. Anaconda will install the software required by
+**DREAMTools**. Since it does not require root access, it should not interfere with your system.
+
+Please, visit the `Anaconda <https://www.continuum.io/downloads>`_ website 
+and follow the instructions. You may need to
+choose between 2 versions of Python (2.X or 3.5). **DREAMTools** is tested under Python 2.7 and 3.5 so the version should not matter.
+
+
+
+
+
+
+
 Issues
 -----------
 
