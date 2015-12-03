@@ -34,8 +34,8 @@ install:
   # sometimes cython compilation of the cython files takes forever
   # here we install cython with specific options
   # https://miail.python.org/pipermail/cython-devel/2014-November/004263.html
-  - pip install --install-option="--no-cython-compile" cython --upgrade
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib nose pandas coverage scikit-learn numexpr xlrd
+  #- pip install --install-option="--no-cython-compile" cython --upgrade
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib nose pandas coverage scikit-learn numexpr xlrd cython
   # coverage packages are elsewhere
   #- conda install --yes -c python-coveralls nose-cov
   - pip install nose easydev --upgrade
