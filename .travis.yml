@@ -32,6 +32,7 @@ install:
   - pip install nose easydev --upgrade
   - pip install coveralls
   - pip install biokit fitter
+  - pip install tabulate
   - pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient
 
 # # command to run tests, e.g. python setup.py test
