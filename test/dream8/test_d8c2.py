@@ -12,6 +12,7 @@ def test_sc1():
     # not deterministic but 4 digits should be correct.
     # 0.51384570949323804534
 
+@attr('skip')
 def test_sc2():
     s = D8C2()
     filename = s.download_template('sc2')
@@ -22,5 +23,3 @@ def test_sc2():
 
 
 
-
-test_sc1()
