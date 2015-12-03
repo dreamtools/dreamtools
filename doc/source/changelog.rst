@@ -2,11 +2,10 @@ ChangeLog
 ==============
 
 
-1.0.1
+1.1.0
 ----------
 
 * Portage to Python3
-* Fix test error due to D9C3, which is not yet included.
 * Add missing data files in D7C1
 * Discard tests related to D9C3, which is not yet included.
 
