@@ -85,7 +85,7 @@ setup(
 
     install_requires = ['cython', 'numpy', 'matplotlib', 'pandas', 'appdirs',
         'easydev>=0.9.6', 'fitter', 'synapseclient', 'tabulate', 'scipy',
-        'biokit','xlrd', 'numpexpr'],
+        'biokit','xlrd', 'numpexpr', 'sklearn'],
 
     ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"]),
 
