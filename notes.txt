@@ -12,9 +12,21 @@ that looks like::
     username: email@somewhere
     password: xxxx
 
-Let assume the input file is called test.synapseConfig, then just type::
+Let assume the input file is called test.synapseConfig, then type::
 
-    openssl aes-256-cbc -in test.synapseConfig -out test.synapseConfig.enc
+    openssl aes-256-cbc -in test.synapseConfig -out test.synapseConfig.enc -p -nosalt
 
-You will need to enter a password, which is the encrypted file.
+You will need to enter a password, which is the encrypted file. Keep the
+password  !
 
+The -nosalt option seems recommended.  http://security.stackexchange.com/questions/29106/openssl-recover-key-and-iv-by-passphrase
+
+The -p option will print information (key + iv) These should be keep for
+decryption !
+
+
+To decrypt::
+
+openssl aes-256-cbc -K
+C152765FB55FC312775CA146EE24A0EC04C3CD745747A412916848F7780C851C -iv
+82E85ADBAA6C87CF8058C7A7B31C99FD -in test.synapseConfig.enc -d -out test.dec
