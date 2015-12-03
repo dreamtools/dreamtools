@@ -2,7 +2,10 @@ from dreamtools import D5C2
 from nose.tools import assert_almost_equal
 import os
 
+from nose.plugins.attrib import attr
 
+
+@attr('skip')
 def test_d5c2():
     # load data first
     s = D5C2(Ntf=2)  # temporary directory will be created 
