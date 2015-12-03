@@ -15,8 +15,8 @@ before_install:
     - export PATH=/home/travis/miniconda2/bin:$PATH
     - conda update --yes conda
     # are not specific to using mini
-    - sudo rm -rf /dev/shm
-    - sudo ln -s /run/shm /dev/shm
+    # - sudo rm -rf /dev/shm
+    # - sudo ln -s /run/shm /dev/shm
     - sudo apt-get install r-base r-base-dev
     # This help testing code with pylab
     - "export DISPLAY=:99.0"
@@ -37,7 +37,8 @@ install:
 
 # # command to run tests, e.g. python setup.py test
 script:
-  - travis_wait python setup.py nosetests --with-coverage --cover-package dreamtools
+  - travis_wait 30
+  - python setup.py nosetests --with-coverage --cover-package dreamtools
 
 after_success:
   coveralls
