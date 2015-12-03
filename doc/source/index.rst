@@ -5,6 +5,35 @@
 DREAMTools
 ############################################################################
 
+.. image:: https://badge.fury.io/py/dreamtools.svg
+    :target: https://pypi.python.org/pypi/dreamtools
+
+.. image:: https://secure.travis-ci.org/dreamtools/dreamtools.png
+     :target: http://travis-ci.org/dreamtools/dreamtools
+
+.. image:: https://coveralls.io/repos/dreamtools/dreamtools/badge.png?branch=master
+    :target: https://coveralls.io/r/dreamtools/dreamtools?branch=master
+
+.. image::  https://badge.waffle.io/dreamtools/dreamtools.png?label=issues&title=issues
+    :target: https://waffle.io/dreamtools/dreamtools
+        
+.. image:: https://zenodo.org/badge/18543/dreamtools/dreamtools.svg
+    :target: https://zenodo.org/badge/latestdoi/18543/dreamtools/dreamtools
+
+:Note: DREAMTools is tested for Python 2.7
+:Contributions: Please join https://github.com/dreamtools/dreamtools and share
+  your notebooks https://github.com/dreamtools/dreamtools/notebooks
+:Online documentation: 
+    `On pypi website <http://pythonhosted.org/dreamtools/>`_
+:Issues and bug reports: 
+    `On github <https://github.com/dreamtools/dreamtools/issues>`_
+:How to cite: Cokelaer T, Bansal M, Bare C et al. DREAMTools: a Python 
+    package for scoring collaborative challenges [version 1; referees: 
+    awaiting peer review] F1000Research 2015, 4:1030 
+    (doi: 10.12688/f1000research.7118.1)
+    `F1000 link <http://f1000research.com/articles/4-1030/v1>`_
+
+
 .. contents::
 
 Overview
@@ -14,15 +43,16 @@ Overview
 
 The main goals are to provide:
 
-#. scoring functions for the Dream challenges for **end-users** via the **dreamtools** standalone application.
-#. a place for **developers** involved in the dream challenges to share code
+#. scoring functions for the DREAM challenges for **end-users** via the **dreamtools** standalone application.
+#. a place for **developers** involved in the DREAM challenges to share code
 
 
 Code related to aggregation, leaderboards, or more complex analysis are not
 guaranteed to be found in DREAMTools even though it may be in some challenges
 (e.g. D8C1). Some functionalities may be restricted with some access to synapse.
 Some challenges will require to download public data sets from
-`Synapse <www.synapse.org>`_ (in which case you will need to register).
+`Synapse <www.synapse.org>`_ , **in which case you will need to register and
+accept the terms of agreements**.
 
 The **dreamtools** executable
 -------------------------------
@@ -49,7 +79,7 @@ Installation
 ---------------
 
 **DREAMTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically
-installed with **DREAMTools** using pip executable::
+installed with **DREAMTools** using pip executable (note the small caps)::
 
     pip install dreamtools
 

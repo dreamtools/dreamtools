@@ -1,5 +1,4 @@
 language: python
-
 matrix:
   include:
     - python: 2.7
@@ -8,10 +7,6 @@ matrix:
     - python: 3.5
 
 
-# solution based on https://gist.github.com/dan-blanchard/7045057
-# setup anaconda to install scipy and numpy easily and quickly
-# Update TC: Nov5 somehow miniconda is now stored in miniconda2 directory 
-# so needed to update the PATH env variable
 before_install:
     - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
     - chmod +x miniconda.sh
@@ -26,17 +21,20 @@ before_install:
     - "export DISPLAY=:99.0"
     - "sh -e /etc/init.d/xvfb start"
 
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mir
-rors
+
+
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas cython numpy scipy matplotlib nose pandas coverage 
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION cython numpy scipy matplotlib nose pandas coverage 
   # coverage packages are elsewhere
   #- conda install --yes -c python-coveralls nose-cov
   - pip install nose easydev --upgrade
   - pip install coveralls
   - pip install biokit
-  - pip install synapseclient
+  - pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient
+
 # # command to run tests, e.g. python setup.py test
 script:
   - python setup.py nosetests --with-coverage --cover-package dreamtools
 
+after_success:
+  coveralls
