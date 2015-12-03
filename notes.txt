@@ -1,0 +1,20 @@
+To test dreamtools/synapseclient on travis, we must provide a login/password.
+
+Of course, it cannot be added in the repository. Instead, we will provide an
+encoded version (test.synapseConfig.enc). On travis side, a hidden environment
+variable will contain the key to decode that file. 
+
+We need to create the file test.synapseConfig.enc ; Starting from the input file
+that looks like::
+
+
+    [authentication]
+    username: email@somewhere
+    password: xxxx
+
+Let assume the input file is called test.synapseConfig, then just type::
+
+    openssl aes-256-cbc -in test.synapseConfig -out test.synapseConfig.enc
+
+You will need to enter a password, which is the encrypted file.
+
