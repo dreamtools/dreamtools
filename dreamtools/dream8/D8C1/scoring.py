@@ -32,8 +32,6 @@ Here is an example related to the Network subchallenge::
 https://www.synapse.org/#!Synapse:syn1720047/wiki/60530
 
 
-.. changes:: version 1.1 had major changes in the way data is read to make the
-   code compatible with py3
 
 """
 import csv
