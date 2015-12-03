@@ -17,6 +17,7 @@ before_install:
     # are not specific to using mini
     - sudo rm -rf /dev/shm
     - sudo ln -s /run/shm /dev/shm
+    - sudo apt-get install R
     # This help testing code with pylab
     - "export DISPLAY=:99.0"
     - "sh -e /etc/init.d/xvfb start"
