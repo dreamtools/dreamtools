@@ -1,4 +1,8 @@
 language: python
+cache:
+  directories:
+    - $HOME/.cache/pip
+
 matrix:
   include:
     - python: 2.7
@@ -29,10 +33,10 @@ install:
   # sometimes cython compilation of the cython files takes forever
   # here we install cython with specific options
   # https://mail.python.org/pipermail/cython-devel/2014-November/004263.html
-  - pip install --install-option="--no-cython-compile" cython
   - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib nose pandas coverage scikit-learn numexpr xlrd
   # coverage packages are elsewhere
   #- conda install --yes -c python-coveralls nose-cov
+  - pip install cython
   - pip install nose easydev --upgrade
   - pip install coveralls -v
   - pip install biokit fitter -v 
