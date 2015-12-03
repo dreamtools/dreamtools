@@ -1,5 +1,5 @@
 import dreamtools.admin.download_data as ds
-from nose.plugins import attr
+from nose.plugins.attrib import attr
 
 
 @attr('skip')

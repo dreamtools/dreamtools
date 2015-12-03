@@ -54,8 +54,15 @@ def __get_blockWise_stats(sub_stats):
 
 def get_precision_recall_fpr(y_predict, y_true):
     
-    sub_stats = pandas.DataFrame.from_dict({'predict':y_predict, 'truth':y_true}, dtype='float64')
-    sub_stats = sub_stats.sort(['predict'],ascending=False)
+    sub_stats = pandas.DataFrame.from_dict(
+            {'predict':y_predict, 'truth':y_true}, dtype='float64')
+    try:
+        sub_stats = sub_stats.sort_values(by=['predict'],
+                ascending=False)
+    except:
+        sub_stats = sub_stats.sort(['predict'],
+                ascending=False)
+
 
     blockWise_stats = __get_blockWise_stats(sub_stats)
     grouped = sub_stats.groupby(['predict'],sort=False)

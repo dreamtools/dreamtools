@@ -125,8 +125,14 @@ class D6C4(Challenge):
         # Finally the JSC (jaccard)
         try:
             from sklearn.metrics import jaccard_similarity_score as JSC
-            true = df.sort('Label_y', ascending=False)['Label_x'].values
-            pred = df.sort('Label_y', ascending=False)['Label_y'].values
+            try:
+                true = df.sort_values(by='Label_y', 
+                        ascending=False)['Label_x'].values
+                pred = df.sort_values(by='Label_y', 
+                        ascending=False)['Label_y'].values
+            except:
+                true = df.sort('Label_y', ascending=False)['Label_x'].values
+                pred = df.sort('Label_y', ascending=False)['Label_y'].values
             results['JSC'] = JSC(true[0:20], pred.round()[0:20])
             # TODO: this is not exactly the same as in the LB
         except:
