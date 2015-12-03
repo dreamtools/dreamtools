@@ -1,17 +1,33 @@
 # -*- coding: utf-8 -*-
 import os
 from setuptools import setup, find_packages
+
+
 try:
     from Cython.Build import cythonize
 except ImportError:
     print("-----------------------------------------------------------")
-    print("DREAMTools installation:: please install **cython** package")
+    print("DREAMTools installation:: **cython** package not found")
     print("-----------------------------------------------------------")
     print("You can try to install it using **pip** as follows::")
     print("")
     print("    pip install cython")
     print("")
     exit()
+
+
+# On travis, Cython compilation hangs forever.
+# We will skip the D8C1 tests where cython is required.
+# On travis, we create a variable called  __TRAVIS_DREAMTOOLS
+if os.environ.get('__TRAVIS_DREAMTOOLS'):
+    ext_modules = []
+else:
+    ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"])
+
+
+
+
+
 
 
 _MAJOR               = 1
@@ -87,7 +103,8 @@ setup(
         'easydev>=0.9.7', 'fitter', 'synapseclient', 'tabulate', 'scipy',
         'biokit','xlrd', 'numexpr', 'scikit-learn'],
 
-    ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"]),
+    #ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"]),
+    ext_modules = ext_modules,
 
     entry_points = {
         'console_scripts': [
