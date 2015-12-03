@@ -37,7 +37,7 @@ install:
 
 # # command to run tests, e.g. python setup.py test
 script:
-  - python setup.py nosetests --with-coverage --cover-package dreamtools
+  - travis_wait python setup.py nosetests --with-coverage --cover-package dreamtools
 
 after_success:
   coveralls

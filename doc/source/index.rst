@@ -20,7 +20,7 @@ DREAMTools
 .. image:: https://zenodo.org/badge/18543/dreamtools/dreamtools.svg
     :target: https://zenodo.org/badge/latestdoi/18543/dreamtools/dreamtools
 
-:Note: DREAMTools is tested for Python 2.7
+:Note: DREAMTools is compatible for Python 2.7, 3.3, 3.4, 3.5
 :Contributions: Please join https://github.com/dreamtools/dreamtools and share
   your notebooks https://github.com/dreamtools/dreamtools/notebooks
 :Online documentation: 
@@ -78,6 +78,9 @@ Most of them are implemented in pure Python. A couple rely on Perl script and
 Installation
 ---------------
 
+Python2
+~~~~~~~~~
+
 **DREAMTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically
 installed with **DREAMTools** using pip executable (note the small caps)::
 
@@ -91,7 +94,7 @@ From source, download the source code and install the package with Python::
 
 
 
-te for Python3.X
+Note for Python3.X
 ~~~~~~~~~~~~~~~~~~~~~~
 **DREAMTools** is compatible with Python2 and Python3. However, 
 **DREAMTools** depends on a package that is currently not available for Python3
