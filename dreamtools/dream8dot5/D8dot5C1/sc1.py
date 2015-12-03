@@ -68,6 +68,7 @@ class D8dot5C1_sc1(Challenge):
         self.load_user_prediction()
         self.load_gold_standard()
         result = get_corrn_true_vs_predicted(self.goldstandard, self.prediction)
-        result = pandas.DataFrame({'cor_gen' : result[0] , 'cor_gen+clin' : result[1]}, index=xrange(1))
+        result = pandas.DataFrame({'cor_gen' : result[0] , 'cor_gen+clin' :
+            result[1]}, index=list(range(1)))
         return(result)
 
