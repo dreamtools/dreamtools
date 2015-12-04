@@ -113,7 +113,7 @@ def scoring(args=None):
     try:
         class_inst.import_scoring_class()
     except NotImplementedError as err:
-        print("\n"+err.message)
+        print("\n"+str(err))
         sys.exit()
 
     # User may just request some information about the challenge.
@@ -146,7 +146,7 @@ def scoring(args=None):
             d.check_param_in_list(options.sub_challenge, subchallenges)
         except ValueError as err:
             txt = "DREAMTools error: unknown sub challenge or not implemented"
-            txt += "--->" + err.message
+            txt += "--->" + str(err)
             print_color(txt, red)
             sys.exit()
 

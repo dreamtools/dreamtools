@@ -112,7 +112,8 @@ class D8C1(Challenge):
             s.compute_all_rmse()
             return {'meanRMSE': s.get_mean_rmse()}
         else:
-            raise ValueError('Invalid name. Use one of %s' % self.sub_challenges)
+            raise ValueError('Invalid name. Use one of %s. You provided %s.' 
+                    % (self.sub_challenges, subname))
 
 
 class ScoringError(Exception):
@@ -492,8 +493,7 @@ class HPNScoringNetwork(HPNScoringNetworkBase):
                 data = [int(x) if x!="NaN" else None for x in data.strip().split(',')]
                 self.true_descendants[cellLine][ligand] = data[:]
             except Exception as err:
-                print("note: skipping " + filename)
-                print(err)
+                print("note: skipping %s in your zipped file" % filename)
                 pass
 
     def load_all_eda_files_from_zip(self):
