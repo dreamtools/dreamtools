@@ -217,7 +217,7 @@ class HPNScoring( ZIP, LocalData):
         z = zipfile.ZipFile(filename)
         self.species = {}
         for cell in self.valid_cellLines:
-            print("experimental/MIDAS/MD_%s_main.csv" % cell)
+            #print("experimental/MIDAS/MD_%s_main.csv" % cell)
             ## in py3, z.read returns a bytes hence the str cast
             thisdata = z.read("experimental/MIDAS/MD_%s_main.csv" % cell).decode()
             header = thisdata.splitlines()[0]
