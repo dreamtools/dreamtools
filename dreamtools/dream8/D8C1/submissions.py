@@ -392,7 +392,7 @@ class SC1BSubmissions(SubmissionTools, ST2):
         print("attaching submissions")
         self.submissions = self.attach_status_to_submissions(self.submissions)
 
-        print("remove soem users")
+        print("remove some users")
         self.remove_users()
 
         print("attaching scores and compute final ranking")
