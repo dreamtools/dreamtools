@@ -60,7 +60,7 @@ class SubmissionsDownloader(Login):
         subs.load_submissions()
         for i, sub in enumerate(subs.submissions):
             subs.client.downloadSubmissionAndFilename(sub, downloadFile=True,
-                    downloadLocation=self._get_location("sc1a"))
+                    downloadLocation=self._get_location(location))
             print("downloading %s/%s"  % (i+1, len(subs.submissions)))
 
     def download_all_sc1a_final_submissions(self):
