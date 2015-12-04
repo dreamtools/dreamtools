@@ -1,6 +1,15 @@
 ChangeLog
 ==============
 
+1.1.1
+--------
+
+* Fixes a couple of Python3 issues
+* Finalise travis integration. Coverage and testing simplified but 
+  allows Travis to finish on time. May add back tests little by little in the
+  future.
+* Update README and doc.
+
 
 1.1.0
 ----------

@@ -18,6 +18,9 @@ DREAMTools
    :target: https://zenodo.org/badge/latestdoi/18543/dreamtools/dreamtools
 
 :Note: DREAMTools is compatible for Python 2.7, 3.3, 3.4, 3.5
+:Note about coverage: We do not run the entire test suite on Travis, which
+                      reports a 40% test coverage. Note however, that the actual
+                      test coverage is about 80%.
 :Contributions: Please join https://github.com/dreamtools/dreamtools and share your notebooks https://github.com/dreamtools/dreamtools/notebooks
 
 :Online documentation: `On pypi website <http://pythonhosted.org/dreamtools/>`_
