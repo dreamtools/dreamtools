@@ -11,7 +11,7 @@ DREAMTools
 .. image:: https://coveralls.io/repos/dreamtools/dreamtools/badge.png?branch=master
    :target: https://coveralls.io/r/dreamtools/dreamtools?branch=master
 
-.. image:: https://badge.waffle.io/dreamtools/dreamtools.png?label=issues&title=issues
+.. image:: https://badge.waffle.io/dreamtools/dreamtools.png?label=ready&title=ready
    :target: https://waffle.io/dreamtools/dreamtools
    
 .. image:: https://zenodo.org/badge/18543/dreamtools/dreamtools.svg
