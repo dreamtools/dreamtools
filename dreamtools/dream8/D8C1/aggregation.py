@@ -464,7 +464,11 @@ class SC1A_aggregation(AggregationTools, SC1AggregationPlotting):
             filename = self.df.ix[index].filename
             aggregate = HPNScoringNetwork(filename=filename,
                                           true_descendants=self.true_descendants)
-            del aggregate.zip_data
+            try:
+                # to allow a deepcopy
+                del aggregate.zip_data
+            except:
+                pass
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
