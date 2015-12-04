@@ -631,7 +631,10 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
         else:
             filename = self.df.ix[index].filename
             aggregate = HPNScoringNetworkInsilico(filename=filename)
-            del aggregate.zip_data
+            try:
+                del aggregate.zip_data
+            except:
+                pass
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -649,7 +652,10 @@ class SC1B_aggregation(AggregationTools, SC1AggregationPlotting):
                 else:
                     filename =self.df.ix[sub].filename
                     individual = HPNScoringNetworkInsilico(filename=filename)
-                    del individual.zip_data
+                    try:
+                        del individual.zip_data
+                    except:
+                        pass
                     self._individuals[sub] = copy.deepcopy(individual)
                 user_graph.append(individual.user_graph)
         if self.mode == "mean":
@@ -701,7 +707,10 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
         else:
             filename = self.df.ix[index].filename
             aggregate = HPNScoringPrediction(filename=filename, version=self.version)
-            del aggregate.zip_data  # not serialisable in py3
+            try:
+                del aggregate.zip_data  # not serialisable in py3
+            except:
+                pass
             self._individuals[index] = copy.deepcopy(aggregate)
         return aggregate
 
@@ -726,7 +735,10 @@ class SC2A_aggregation(AggregationTools, SC2AggregationPlotting):
                 else:
                     filename = self.df.ix[sub].filename
                     individual = HPNScoringPrediction(filename=filename, version=self.version)
-                    del individual.zip_data
+                    try:
+                        del individual.zip_data
+                    except:
+                        pass
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.user_prediction.keys():
                     for l in aggregate.user_prediction[c].keys():
