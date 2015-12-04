@@ -114,12 +114,28 @@ Then, as above, type::
 The **dreamtools** executable
 ------------------------------------------
 
-For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. Knowing the name of the challenge (and possibly sub-challenge), it works as  follows::
+For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. Knowing the name of the challenge (and possibly sub-challenge), you first need to create a submission file. 
 
-    dreamtools --challenge d8c1 --sub-challenge sc1a \
+Information about a challenge can be (in general) obtained from Synapse pages as
+follows::
+
+    dreamtools --challenge D8C1 --onweb
+
+and templates can be (in general) obtained as follows::
+
+    dreamtools --challenge D8C1 --download-template
+
+Note however that some challenges (like the D8C1 challenge) have sub-challenges. For instance in D8C1, there are 4 sub-challenges named (e.g., SC1A). So, you would need to be more specific and to provide the name of a sub-challenge:: 
+
+    dreamtools --challenge D8C1 --download-template --sub-challenge SC1A
+
+This should give the path to a template (let us assume it is called
+example.zip). To score that submission example, type::
+
+    dreamtools --challenge d8c1 --sub-challenge SC1A \
         --submission example.zip
 
-It prints some information and the score of the submission for instance for the example above::
+This command should print some information and the score of the submission for instance for the example above::
 
      Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
      AUROC: 0.803628919403
