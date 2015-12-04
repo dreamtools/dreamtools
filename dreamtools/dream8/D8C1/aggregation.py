@@ -812,7 +812,10 @@ class SC2B_aggregation(AggregationTools, SC2AggregationPlotting):
                     individual = HPNScoringPredictionInsilico(filename=filename,
                                                               version=self.version)
 
-                    del individual.zip_data
+                    try:
+                        del individual.zip_data
+                    except:
+                        pass
                     self._individuals[sub] = copy.deepcopy(individual)
                 for c in aggregate.user_prediction.keys():
                     for l in aggregate.user_prediction[c].keys():
