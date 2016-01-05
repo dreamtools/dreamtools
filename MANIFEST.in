@@ -1,5 +1,6 @@
 include README.rst setup.cfg
 recursive-include dreamtools *.R
+recursive-include dreamtools README.rst
 recursive-include dreamtools *.csv
 recursive-include dreamtools *.pyx
 recursive-include dreamtools *.pl
