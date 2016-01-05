@@ -87,11 +87,23 @@ class D8C1(Challenge):
         elif subname == 'SC2B':
             filename = self.get_pathname('alphabeta-Prediction-Insilico.zip')
         else:
-            raise ValueError('Invalid name. Use one of %s' % self.sub_challenges)
+            raise ValueError('Invalid name. Use one of %s' %
+                    self.sub_challenges)
         return filename
 
     def download_goldstandard(self, subname):
-        raise NotImplementedError
+        if subname == 'SC1A':
+            filename = self.get_pathname('TrueDescVectors.zip')
+        elif subname == 'SC1B':
+            filename = self.getpath_gs("TrueGraph.csv")
+        elif subname == 'SC2A':
+            filename = self.get_pathname('TruePrediction.zip')
+        elif subname == 'SC2B':
+            filename = self.get_pathname('TruePredictionInsilico2.zip')
+        else:
+            raise ValueError('Invalid name. Use one of %s' %
+                    self.sub_challenges)
+        return filename
 
     def score(self, filename, subname=None):
         if subname == 'SC1A':
@@ -112,7 +124,7 @@ class D8C1(Challenge):
             s.compute_all_rmse()
             return {'meanRMSE': s.get_mean_rmse()}
         else:
-            raise ValueError('Invalid name. Use one of %s. You provided %s.' 
+            raise ValueError('Invalid name. Use one of %s. You provided %s.'
                     % (self.sub_challenges, subname))
 
 
@@ -127,8 +139,8 @@ class ScoringError(Exception):
 class HPNScoring( ZIP, LocalData):
     """Base class common to all scoring classes
 
-    The HPN challenges use data from 32 types of combinaison of cell lines (4) and
-    ligands (8). This class provides aliases to:
+    The HPN challenges use data from 32 types of combinaison of cell lines (4) 
+    and ligands (8). This class provides aliases to:
 
      * valid cell lines (:attr:`~dreamtools.dream8.D8C1.scoring.HPNScoring.valid_cellLines`)
      * valid ligands (:attr:`~dreamtools.dream8.D8C1.scoring.HPNScoring.valid_ligands`)
@@ -180,10 +192,11 @@ class HPNScoring( ZIP, LocalData):
             'UACC812': ['TAZ_pS89']
             }
 
-        # We need to retrieve list of phosphos as coded in the experimental data sets .
+        # We need to retrieve list of phosphos as coded in the 
+        # experimental data sets .
         self.cellLines_names_steven = ['UACC812', 'BT549', 'MCF7', 'BT20']
-        self.ligands_names_steven = ['Serum', 'PBS', 'EGF', 'Insulin', 'FGF1', 'HGF', 'NRG1', 'IGF1']
-
+        self.ligands_names_steven = ['Serum', 'PBS', 'EGF', 'Insulin', 
+                'FGF1', 'HGF', 'NRG1', 'IGF1']
         self._score = None
         self.verbose = verbose
 
@@ -209,7 +222,8 @@ class HPNScoring( ZIP, LocalData):
         ScoringError(message)
 
     def load_species(self):
-        """Loads names of the expected phospho names for each cell line from the synapse files provided to the users"""
+        """Loads names of the expected phospho names for each cell 
+        line from the synapse files provided to the users"""
         # need to refactor that...
         c = Challenge('D8C1')
         filename = c.get_pathname('experimental.zip')
@@ -1939,7 +1953,7 @@ class HPNScoringPredictionInsilico(HPNScoringPredictionBase):
             the ranking shown in the synapse page.
         """
         super(HPNScoringPredictionInsilico, self).__init__(filename)
-        # WRONG NETWORK as used in the official LB
+        # WRONG NETWORK as used in the official LB before final corrections
         self.version = version
         if self.version == 1:
             c = Challenge('D8C1')
