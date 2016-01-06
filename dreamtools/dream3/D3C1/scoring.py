@@ -28,6 +28,8 @@ class D3C1(Challenge):
         self._init()
 
     def _init(self):
+        if self._standalone is True:
+            return
         self._load_proba()
         self.G = self._read_challenge1_file(self.download_goldstandard())
 
