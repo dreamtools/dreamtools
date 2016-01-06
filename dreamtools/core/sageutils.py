@@ -33,9 +33,8 @@ This class may be removed but for now it is used in D8C1 challenge.
 
 
 """
+import os
 import synapseclient
-from synapseclient import entity
-
 
 __all__ = ["SynapseClient", "Login"]
 
@@ -52,7 +51,7 @@ class Login(object):
 
     ::
 
-        >>> from dreamtools.sageutils import Login
+        >>> from dreamtools.core.sageutils import Login
         >>> l = Login()
         This is a SynapseClient built on top of Synapse class.
         Trying to login automatically.
@@ -98,50 +97,59 @@ class SynapseClient(synapseclient.Synapse, object):
             password: yourpassword
 
         """
-        super(SynapseClient, self).__init__()
-        # TODO: should be moved to Login ??
-        print("This is a SynapseClient built on top of Synapse class. ")
-        print("Trying to login automatically. ")
+        from requests import ConnectionError
+        try:
+            super(SynapseClient, self).__init__()
+            self._connected = True
+        except ConnectionError:
+            self._connected = False
+
+        self._try_to_login()
+
+    def _try_to_login(self):
+        if self._connected is False:
+            return
+
+        from synapseclient.exceptions import SynapseAuthenticationError
         try:
             self.login(username, password)
-            print("You're logged in Synapse")
+            if verbose:
+                print("You're logged in Synapse")
         except Exception as err:
-            print("Failed to login automatically.")
-            print("Either the login is wrong or missing")
-            print("You must have a synapse account")
-            print("Create a Synapse login on http://synapse.org")
-            print("Create a file called .synapseConfig in your HOME directory")
-            print("Add this code in the file:\n")
-            print("[authentication]")
-            print("For now, let us try to login manually:")
-            print("username: yourlogin")
-            print("password: yourpassword")
-            print("")
+            print("Could not login automatically to Synapse " + 
+                    "(http://synapse.org).")
+            print("Indeed, no .synapseConfig file could be found " +
+                    "in your HOME directory.")
+            print("Let us try to login manually (you must have a valid " +
+                  "login and password associated with Synapse)\n")
 
             # use input instead of raw_input (Python3 has only input())
             try:
                 input = raw_input
             except NameError: pass
-            username = str(input("Synapse username:"))
-            password = str(input("Synapse password:"))
+
+            username = str(input("Please enter your Synapse login: "))
+            password = str(input("and its password: "))
 
             try:
                 self.login(username, password)
-            except Exception as err2:
-                raise Exception(err2)
 
-    def __getDataPath(self, entity, version=1):
-        """
-
-        obsolet .to be deleted. Feb 2014
-
-        """
-        try:
-            eid = entity['id']
-            e = self.get(eid, version=version, downloadFile=True)
-        except:
-            e = self.get(entity, version=version, downloadFile=True)
-        return e['path']
+                print('\n')
+                print("For future usage, you may login automatically to Synapse as follows::\n")
+                print("1 - create a file called .synapseConfig in your HOME" + 
+                        " directory (%s)" % os.getenv('HOME'))
+                print("2 - Copy and paste the following text in the file"+
+                      "changing the login and password with your credentials:\n")
+                print("[authentication]")
+                print("username: yourlogin")
+                print("password: yourpassword")
+                print("\n")
+                _dummy = str(input("Press enter to continue"))
+            except SynapseAuthenticationError:
+                print("Invalid username and/or password ?")
+                raise Exception
+            except Exception as err:
+                raise Exception(err)
 
     def downloadSubmissionAndFilename(self, sub, downloadFile=True, **kargs):
         """Return filename of a submission downloaded from synapse.
@@ -171,76 +179,9 @@ class SynapseClient(synapseclient.Synapse, object):
 
         return filename
 
-    def __setProvenance(self, entity, name):
-        """Set provenance
-
-        :param entity: a valid entity object
-        :param name: name to set on an activity
-
-        ::
-
-            s.setProvenance("syn375811", name="test")
-
-        .. warning:: may be obsolet. Look into original synapseclient instead
-        """
-        activity = synapseclient.Activity(name=name)
-        super(SynapseClient, self).setProvenance(entity, activity)
-
-    def __getEvaluation(self, eid):
-        """Returns an evaluation
-
-        obsolet available in synapseclient now"""
-        e = self.restGET("/evaluation/%s" % eid)
-        return e
-
-    def __createWiki(self, owner, title, markdown, owner_type=None):
-        """
-
-        :param owner: the owner object (entity, competition, evaluation)
-            with which the new wiki page will be associated
-        :param markdown: the contents of the wiki page in markdown
-        :param owner_type: if not provided, the client tries to figure out the type.
-            e.g., Works for evaluation
-        """
-        try:
-            res = self._createWiki(owner, title, markdown, owner_type=owner_type)
-            return res
-        except Exception as err:
-            print("Could not create the wiki. Exists already ?")
-            raise Exception(err)
-
-    def __getWiki_TC(self, owner, owner_type):
-        """Returns wiki given owner and owner_type
-
-        """
-        res = self.restGET("/%s/%s/wiki" % (owner_type, owner['id']))
-        return res
-
-    def __createWikiChild(self, owner, title):
-        # retrieve the main wiki
-        wiki = self.getWiki_TC(owner, "evaluation")
-        wikiURI = "/evaluation/%s/wiki" % owner['id']
-
-        print(wikiURI)
-        wikiChild = synapseclient.Wiki(title=title, markdown="", parentWikiId=wiki['id'])
-        res = self.restPOST(wikiURI, wikiChild.getjson())
-
-        return res
-
     def getMyProfile(self):
         """Returns user profile"""
         return self.restGET("/userProfile")
-
-    def __joinEvaluation(self, evalId):
-        """Join an existing evaluation
-
-        :param evalIe: a valid evaluation identifier
-        """
-        prof =  self.getMyProfile()
-        try:
-            self.restPOST("/evaluation/%s/participant/%s" % (evalId, prof['ownerId']), list())
-        except Exception as err:
-            print("Joining evaluation failed. Maybe you've already joined.")
 
     def json(self, data):
         """Transform relevant object into json object"""
