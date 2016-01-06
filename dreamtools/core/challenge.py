@@ -69,8 +69,7 @@ class Challenge(LocalData):
         s.client = client
 
     """
-
-    def __init__(self, challenge_name):
+    def __init__(self, challenge_name, verbose=False):
         """.. rubric:: constructor
 
         :param str challenge_name: Must be formatted as DXCY
@@ -78,6 +77,7 @@ class Challenge(LocalData):
             e.g. D9.5 should be encoded as D9dot5CY
 
         """
+        self.verbose = verbose
         super(Challenge, self).__init__()
 
         #: alias of the challenge as DXCY form with X, Y being 2 numbers
@@ -104,6 +104,7 @@ class Challenge(LocalData):
         # initialisation
         self.mkdir()
 
+
         self.client = None
 
     def _get_directory(self):
@@ -126,7 +127,7 @@ class Challenge(LocalData):
         return "dream" + str(version)
 
     def mkdir(self):
-        """Creates local dreamtools directory"""
+        """Create local dreamtools directory"""
         directory = self._get_challenge_directory()
         directory = os.sep.join([self.mainpath, directory])
         if os.path.exists(directory) is False:
@@ -163,6 +164,7 @@ class Challenge(LocalData):
         py_mod = imp.load_source('scoring', pathname)
         class_inst = getattr(py_mod, self.alias)()
 
+
         return class_inst
 
     def _download_data(self, name, synid):
@@ -173,7 +175,10 @@ class Challenge(LocalData):
         filename = self.directory + os.sep + name
         if os.path.exists(filename) is False:
             # must download the data now
-            print("File %s not found. Downloading from Synapse." % filename)
+            shortfilename = os.path.split(filename)[1]
+            if self.verbose:
+                print("Note that file %s not found. Downloading from www.synapse.org." 
+                    % shortfilename)
             d = Downloader(self.alias, self.client)
             d.download(synid)
             # save the login if needed again, it will be faster
