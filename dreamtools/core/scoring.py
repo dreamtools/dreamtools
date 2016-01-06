@@ -127,7 +127,7 @@ def scoring(args=None):
         this = class_inst.import_scoring_class()
         url = "https://www.synapse.org/#!Synapse:%s"
         url = url % this.synapseId
-        print(url)
+        print("Openning %s" % url)
         import webbrowser
         webbrowser.open_new(url)
         sys.exit()

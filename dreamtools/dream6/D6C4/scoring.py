@@ -42,7 +42,8 @@ class D6C4(Challenge):
         return filename
 
     def _init(self):
-
+        if self._standalone is True:
+            return
         # Reads the test file with missing values
         df = pd.read_csv(self._pj([self.classpath, 'data', 'AMLTraining.csv']),
                 index_col=0)

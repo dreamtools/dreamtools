@@ -59,6 +59,8 @@ class D2C4(Challenge, D3D4ROC, DREAM2):
 
     def _init(self):
         # should download files from synapse if required.
+        if self._standalone is True:
+            return
         self._download_data('D2C4_goldstandard.zip', 'syn4565570')
         self.unzip('D2C4_goldstandard.zip')
 

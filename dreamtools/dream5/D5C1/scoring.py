@@ -29,6 +29,9 @@ class D5C1(Challenge):
         self.sub_challenges = []
 
     def _init(self):
+        if self._standalone is True:
+            return
+
         # should download files from synapse if required.
         self._download_data('AUPR.mat', 'syn4560154')
         self._download_data('AUROC.mat', 'syn4560158')

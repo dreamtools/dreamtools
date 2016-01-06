@@ -59,14 +59,20 @@ __all__ = ["HPNScoringNetwork", "HPNScoring", "HPNScoringNetworkInsilico",
 
 
 class D8C1(Challenge):
+    """Factory for the D8C1 (HPN-Breast challenge)"""
 
     def __init__(self, version=2):
         super(D8C1, self).__init__('D8C1')
+
         self.sub_challenges = ['SC1A', 'SC1B', 'SC2A', 'SC2B']
         self._init()
         self.version = version
+        # download (_init) only on request so that --info and --onweb 
+        # can run without connection to synapse
 
     def _init(self):
+        if self._standalone is True:
+            return
         self._download_data('experimental.zip', 'syn1920412')
         self._download_data('alphabeta-Network.zip', 'syn4939071')
         self._download_data('alphabeta-Network-Insilico.zip', 'syn4939076')
@@ -106,6 +112,8 @@ class D8C1(Challenge):
         return filename
 
     def score(self, filename, subname=None):
+        self._init()
+
         if subname == 'SC1A':
             s = HPNScoringNetwork(filename)
             s.compute_all_aucs()

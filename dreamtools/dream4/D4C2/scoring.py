@@ -34,6 +34,8 @@ class D4C2(Challenge, D3D4ROC):
         self.sub_challenges = ['10', '100', '100_multifactorial']
 
     def _init(self):
+        if self._standalone is True:
+            return
         # should download files from synapse if required.
         self._download_data('pdf_size100_1.mat', 'syn4558445')
         self._download_data('pdf_size100_2.mat', 'syn4558446')

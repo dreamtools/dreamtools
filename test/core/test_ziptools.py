@@ -1,4 +1,4 @@
-from dreamtools import ZIP
+from dreamtools.core.ziptools import ZIP
 
 
 # most of the ZIP class is tests in various challenges

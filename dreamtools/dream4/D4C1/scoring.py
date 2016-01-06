@@ -178,6 +178,8 @@ class D4C1(Challenge):
                 for i in range(0, 13)]
 
     def _init(self):
+        if self._standalone is True:
+            return
         self._download_data('pdf_1.mat', 'syn4552308')
         self._download_data('pdf_2.mat', 'syn4552309')
         self._download_data('pdf_3.mat', 'syn4552310')

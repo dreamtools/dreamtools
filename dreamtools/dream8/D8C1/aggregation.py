@@ -23,8 +23,7 @@ import pylab
 import pandas as pd
 
 from . import submissions
-from dreamtools import Login
-from dreamtools.core.ziptools import ZIP
+from dreamtools.core.sageutils import Login
 
 from .scoring import HPNScoringPrediction
 from .scoring import HPNScoringPredictionInsilico

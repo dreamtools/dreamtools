@@ -45,6 +45,9 @@ class D5C3(Challenge, D3D4ROC):
     def _init(self):
         # should download files from synapse if required.
         # The templates
+        if self._standalone is True:
+            return
+
         prefix = 'DREAM5_SysGen'
         self._download_data(prefix + 'A100_myteam_Network1.txt', 'syn4561478')
         self._download_data(prefix + 'A100_myteam_Network2.txt', 'syn4561482')

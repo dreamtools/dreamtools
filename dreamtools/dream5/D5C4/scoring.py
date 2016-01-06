@@ -34,7 +34,9 @@ class D5C4(Challenge, D3D4ROC):
 
     def _init(self):
         # should download files from synapse if required.
-        pass
+        if self._standalone is True:
+            return
+
         # Get goldstandard and unpack zipped files
         self._download_data('D5C4_goldstandard.zip', 'syn4564722')
         self.unzip('D5C4_goldstandard.zip')

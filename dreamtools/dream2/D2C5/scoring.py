@@ -18,7 +18,6 @@
 
 Original code in MATLAB by Gustavo Stolovitzky
 """
-import os
 from dreamtools.core.challenge import Challenge
 import pandas as pd
 from dreamtools.core.rocs import D3D4ROC, DREAM2
@@ -49,6 +48,8 @@ class D2C5(Challenge, D3D4ROC, DREAM2):
             'UNSIGNED']
 
     def _init(self):
+        if self._standalone is True:
+            return
         # should download files from synapse if required.
         self._download_data('D2C5_goldstandard.zip', 'syn4565584')
         self.unzip('D2C5_goldstandard.zip')

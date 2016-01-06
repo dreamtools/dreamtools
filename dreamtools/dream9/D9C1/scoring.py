@@ -28,27 +28,29 @@ class D9C1(Challenge):
         s.score(filename)
 
 
-    For consistency, all gene essentiality and genomic data files will be given in
-    the same gct file format.
+    For consistency, all gene essentiality and genomic data files will 
+    be given in the same gct file format.
 
     Briefly, this means:
 
-    The first and second lines contains the version string and numbers indicating the
-    size of the data table that is contained in the remainder of the file::
+    The first and second lines contains the version string and numbers 
+    indicating the size of the data table that is contained in the remainder 
+    of the file::
 
         #1.2
         (# of data rows) (tab) (# of data columns)
 
-    The third line contains a list of identifiers for the samples associated with
-    each of the columns in the remainder of the file::
+    The third line contains a list of identifiers for the samples associated 
+    with each of the columns in the remainder of the file::
 
         Name (tab) Description (tab) (sample 1 name) (tab) (sample 2 name) (tab) ... (sample N name)
 
      And the remainder of the data file contains data for each of the genes.
      There is one line for each gene and one column for each of the samples.
-     The first two fields in the line contain name and descriptions for the genes
-     (names and descriptions can contain spaces since fields are separated by tabs).
-     The number of lines should agree with the number of data rows specified on line 2.:
+     The first two fields in the line contain name and descriptions for the 
+     genes (names and descriptions can contain spaces since fields are 
+     separated by tabs). The number of lines should agree with the number of 
+     data rows specified on line 2.:
 
         (gene name) (tab) (gene description) (tab) (col 1 data) (tab) (col 2 data) (tab) ... (col N data)
 
@@ -60,9 +62,12 @@ class D9C1(Challenge):
         """
         super(D9C1, self).__init__('D9C1')
         self._init()
-        self.sub_challenges = ['sc1','sc3','sc2']
+        self.sub_challenges = ['sc1', 'sc3', 'sc2']
 
     def _init(self):
+        if self._standalone is True:
+            return
+
         # should download files from synapse if required.
         self._download_data('D9C1_goldstandard.gct.zip', 'syn4595275')
 

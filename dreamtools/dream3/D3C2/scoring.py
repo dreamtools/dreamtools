@@ -33,6 +33,9 @@ class D3C2(Challenge):
         self._init()
 
     def _init(self):
+        if self._standalone is True:
+           return
+
         self._download_data('D3C2_proba_cytokine.mat', 'syn4555587')
         self._download_data('D3C2_proba_phospho.mat', 'syn4555588')
 

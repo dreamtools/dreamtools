@@ -29,9 +29,12 @@ class D9C3(Challenge):
         super(D9C3, self).__init__('D9C3')
         #self._init()
         self.sub_challenges = ['sc1', 'sc2', 'sc3']
-        print("GS is not released. Challenge not availabl.")
+        print("GS is not released. Challenge not available.")
 
     def _init(self):
+        if self._standalone is True:
+            return
+
         # should download files from synapse if required.
         self._download_data('q1.final.example.txt', 'syn2703452')
         self._download_data('q1.example_submission.txt', 'syn2509073')
