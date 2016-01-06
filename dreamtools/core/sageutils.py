@@ -104,17 +104,15 @@ class SynapseClient(synapseclient.Synapse, object):
         except ConnectionError:
             self._connected = False
 
-        self._try_to_login()
+        self._try_to_login(username, password)
 
-    def _try_to_login(self):
+    def _try_to_login(self, username, password):
         if self._connected is False:
             return
 
         from synapseclient.exceptions import SynapseAuthenticationError
         try:
             self.login(username, password)
-            if verbose:
-                print("You're logged in Synapse")
         except Exception as err:
             print("Could not login automatically to Synapse " + 
                     "(http://synapse.org).")
