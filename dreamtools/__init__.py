@@ -1,3 +1,4 @@
+import sys
 import pkg_resources
 try:
     version = pkg_resources.require("dreamtools")[0].version
@@ -8,21 +9,16 @@ except:
     version = "0.99"
 
 
-
-# this is used in D8C1. could be simplified.
-from .core.sageutils import Login
+if '--info' in sys.argv or '--onweb' in sys.argv:
+    print('Loading modules and fetching information about the challenge.\n')
 from .core import settings
-from .core.ziptools import ZIP
-import os
 
 configuration = settings.DREAMToolsConfig(verbose=False)
 dreampath = configuration.user_config_dir
 
 
 from dreamtools.core.challenge import Challenge, LocalData
-
 # could we have something dynamic here ?
-
 from .dream2.D2C1.scoring import D2C1
 from .dream2.D2C2.scoring import D2C2
 from .dream2.D2C3.scoring import D2C3
@@ -61,4 +57,3 @@ from .dream9.D9C1.scoring import D9C1
 from .dream9.D9C3.scoring import D9C3
 
 from .dream9dot5.D9dot5C1.scoring import D9dot5C1
-
