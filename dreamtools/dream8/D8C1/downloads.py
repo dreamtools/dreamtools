@@ -83,8 +83,3 @@ class SubmissionsDownloader(Login):
         """Download all submissions from the SC2B subchallenge"""
         subs = submissions.SC2BSubmissions()
         self._download(subs, 'sc2b')
-
-
-
-
-
