@@ -34,8 +34,8 @@ class Downloader(Challenge, Login):
 
         :param str challenge: alias of a challenge (e.g., D5C1)
 
-        To automatically connect to synapse, create a file called .synapseConfig with this
-        content::
+        To automatically connect to synapse, create a file 
+        called .synapseConfig with this content::
 
             [authentication]
             username: email
@@ -43,6 +43,7 @@ class Downloader(Challenge, Login):
 
         """
         Challenge.__init__(self, challenge_name=challenge)
+        # Login provides the synapse client. See client attribute
         Login.__init__(self, client=client, username=username,
                 password=password)
 
@@ -53,5 +54,11 @@ class Downloader(Challenge, Login):
 
         You must have a login on synapse website.
         """
-        assert synid.startswith('syn'), "synid must be a valid synapse identifier e.g., syn123456"
+        # If not connected, nothing will be possible, so just skip the download
+        # step.
+        if self.client._connected is False:
+            return 
+
+        assert synid.startswith('syn'), \
+                "synid must be a valid synapse identifier e.g., syn123456"
         self.client.get(synid, downloadLocation=self.directory)
