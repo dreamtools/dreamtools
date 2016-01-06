@@ -23,7 +23,6 @@
 
 
 """
-import os
 import time
 import copy
 import dateutil.parser
@@ -38,8 +37,8 @@ from dateutil import tz
 
 from dreamtools.core.sageutils import Login
 from dreamtools.core.ziptools import ZIP
-from .scoring import *
-from .submissions import SubmissionTools
+from dreamtools.core.scoring import *
+from dreamtools.dream8.D8C1.submissions import SubmissionTools
 
 
 __all__  = ["HPNAdmin"]
