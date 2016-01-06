@@ -104,8 +104,12 @@ class Challenge(LocalData):
         # initialisation
         self.mkdir()
 
-
         self.client = None
+
+        self._standalone = '--info' in sys.argv or '--onweb' in sys.argv
+
+    def _init(self):
+        pass
 
     def _get_directory(self):
         """Gets directory where data will be stored."""
