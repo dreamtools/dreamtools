@@ -262,8 +262,10 @@ class D5C2(Challenge):
         ########################################  1 Create the Out/TF_XX.dat files
         octomers = self.octomers.octomer
         octomersRC = self.octomers.octomerRC
-        mapping1  = dict([(k,v) for k,v in zip(octomers.values, octomersRC.values)])
-        mapping2  = dict([(k,v) for k,v in zip(octomersRC.values, octomers.values)])
+        mapping1  = dict([(k,v) for k,v in 
+            zip(octomers.values, octomersRC.values)])
+        mapping2  = dict([(k,v) for k,v in 
+            zip(octomersRC.values, octomers.values)])
         keys = tuple(sorted(octomers.values))
 
         lm = set(octomers.values)
@@ -274,31 +276,33 @@ class D5C2(Challenge):
             tf = self._probes[tf_index]
             tf.columns = ['Sequence', 'Score']
             ids = collections.defaultdict(list)
-            ###### TODO: most of the time is spent in the "for curR in generator" loop
+            ## TODO: most of the time is spent in "for curR in generator" loop
+        
             for seq, score in zip(tf.Sequence, tf.Score):
                 # scan the sequence by chunk of octomers using a generator
                 # for speed (although gain is small)
-                generator = (seq[i:i+8] for i in range(0,28))
-                for curR in generator:
-                    if curR not in mapping1.keys():
-                        curR = mapping2[curR]
-                    ids[curR].append(score)
-                # Using a set does not help speeding up the code
+                generator = (seq[i:i+8] for i in range(0, 28))
                 #for curR in generator:
-                #    if curR not in lm:
+                #    if curR not in mapping1.keys():
                 #        curR = mapping2[curR]
                 #    ids[curR].append(score)
-
+                # Using a set does help speeding up the code
+                for curR in generator:
+                    if curR not in lm:
+                        curR = mapping2[curR]
+                    ids[curR].append(score)
             # now let us build the new dataframe for the indices found
-            df = pd.DataFrame({0:[k for k in  ids.keys()],
-                               1:[np.median(v) for v in ids.values()]})
+            df = pd.DataFrame({0: [k for k in  ids.keys()],
+                               1: [np.median(v) for v in ids.values()]})
             try:
-                df.sort_values(by=[1,0], ascending=[False, False], inplace=True)
+                df.sort_values(by=[1, 0], ascending=[False, False], 
+                        inplace=True)
             except:
-                df.sort(columns=[1,0], ascending=[False, False], inplace=True)
-            df[1] = df[1].map(lambda x: round(x,6))
+                df.sort(columns=[1, 0], ascending=[False, False], inplace=True)
+            df[1] = df[1].map(lambda x: round(x, 6))
 
-            df.to_csv(self._setfile(tf_index, 'Out'), sep=' ', index=False, header=None, float_format="%.6f")
+            df.to_csv(self._setfile(tf_index, 'Out'), 
+                    sep=' ', index=False, header=None, float_format="%.6f")
             pb.animate(tf_index)
         ################################################# 2 create the DVP
 
@@ -401,7 +405,8 @@ class D5C2(Challenge):
         userdf = self.compute_statistics()
         userdf = userdf.mean().to_frame().T
         userdf.index = [20] # there are 20 participants, let us add this user as the 21st
-        userdf = userdf[['Pearson', 'Pearson_Log', 'Spearman', 'AUROC_8mer', 'AUPR_8mer']]
+        userdf = userdf[['Pearson', 'Pearson_Log', 'Spearman', 
+            'AUROC_8mer', 'AUPR_8mer']]
         userdf['Team'] = 'Your team'
         userdf['Model type'] = 'Your model'
 
