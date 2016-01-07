@@ -59,7 +59,7 @@ The **dreamtools** executable
 
 For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically during the installation. Knowing the name of the challenge (and possibly sub-challenge), it works as follows::
 
-    dreamtools --challenge d8c1 --sub-challenge sc1a --submission example.zip
+    dreamtools --challenge d8c1 --sub-challenge SC1A --submission example.zip
 
 It prints some information and the score of the submission for instance for the example above::
 
@@ -121,14 +121,14 @@ This will install the last release. However, you can also get the latest code: d
 
 Note for Python3.X
 ~~~~~~~~~~~~~~~~~~~~~~
-**DREAMTools** is compatible with Python2 and Python3. However, 
+**DREAMTools** is compatible with Python2 and Python3. However,
 **DREAMTools** depends on a package that is currently not available for Python3
 (synapseclient). As a temporary solution, we forked this package and provide
 a compatible version.  You will need to install it manually as follows::
 
     pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient
 
-Then, as above, type::    
+Then, as above, type::
 
     pip install dreamtools
 
