@@ -1,6 +1,5 @@
 from dreamtools import D5C2
 from nose.tools import assert_almost_equal
-import os
 
 from nose.plugins.attrib import attr
 
