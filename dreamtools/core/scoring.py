@@ -102,35 +102,40 @@ def scoring(args=None):
 
     # Check on the challenge name
     if options.challenge is None:
-        print_color('--challenge and --sub-challenge must be provided', red)
+        print_color('--challenge must be provided', red)
         sys.exit()
     else:
         options.challenge = options.challenge.upper()
         options.challenge = options.challenge.replace('DOT', 'dot')
 
+        from dreamtools.admin.download_data import get_challenge_list
+        if options.challenge not in get_challenge_list():
+            print_color("This challenge %s is not registered in dreamtools." %
+                    options.challenge, red)
+            print("Here is the list of registered challenges: " + 
+                ", ".join(get_challenge_list()))
+            sys.exit()
+
     # Check that the challenge can be loaded
     class_inst = get_challenge(options.challenge)
     try:
-        class_inst.import_scoring_class()
+        this = class_inst.import_scoring_class()
     except NotImplementedError as err:
         print("\n"+str(err))
         sys.exit()
+    else:
+        # User may just request some information about the challenge.
+        if options.info is True:
+            print(this)
+            sys.exit()
+        elif options.onweb is True:
 
-    # User may just request some information about the challenge.
-    if options.info is True:
-        this = class_inst.import_scoring_class()
-        print(this)
-        sys.exit()
-
-    # or open the synapse project page
-    if options.onweb is True:
-        this = class_inst.import_scoring_class()
-        url = "https://www.synapse.org/#!Synapse:%s"
-        url = url % this.synapseId
-        print("Openning %s" % url)
-        import webbrowser
-        webbrowser.open_new(url)
-        sys.exit()
+            url = "https://www.synapse.org/#!Synapse:%s"
+            url = url % this.synapseId
+            print("Opening %s" % url)
+            import webbrowser
+            webbrowser.open_new(url)
+            sys.exit()
 
     # Checks name of the sub-challenges
     subchallenges = get_subchallenges(options.challenge)
@@ -189,14 +194,17 @@ def scoring(args=None):
         options.filename = options.filename[0]
 
     print_color("DREAMTools scoring", purple, underline=True)
-    print('Challenge %s (sub challenge %s)\n\n' % (options.challenge, options.sub_challenge))
+    print('Challenge %s (sub challenge %s)\n\n' % (options.challenge,
+        options.sub_challenge))
 
     res = generic_scoring(options.challenge,
             options.filename,
             subname=options.sub_challenge,
             goldstandard=options.goldstandard)
 
-    txt = "Solution for %s in challenge %s" % (options.filename, options.challenge)
+    txt = "Solution for %s in challenge %s" % (options.filename, 
+            options.challenge)
+
     if options.sub_challenge is not None:
         txt += " (sub-challenge %s)" % options.sub_challenge
     txt += " is :\n"
@@ -210,8 +218,8 @@ class Options(argparse.ArgumentParser):
     description = "tests"
     def __init__(self, prog=None):
 
-        usage = """usage: python %s --challenge d8c1 --sub-challenge sc1a --submission <filename>\n""" % prog
-        usage += """      python %s --challenge d5c2 --submission <filename>""" % prog
+        usage = """usage: python %s --challenge D8C1 --sub-challenge SC1A --submission <filename>\n""" % prog
+        usage += """      python %s --challenge D5C2 --submission <filename>""" % prog
         epilog="""Author(s): Thomas Cokelaer (DREAMTools framework) and authors from
 the DREAM consortium. Please see the scoring files headers for details
 and the GitHub repository.
@@ -219,14 +227,15 @@ and the GitHub repository.
 Source code on: https://github.com/dreamtools/dreamtools
 Issues or bug report ? Please fill an issue on http://github.com/dreamtools/dreamtools/issues """
         description = """General Description:
-    You must provide the challenge alias (e.g., d8c1 for Dream8, Challenge 1) and
-    if there were several sub-challenges, you also must provide the sub-challenge
-    alias (e.g., sc1). Finally, the submission has to be provided. The format must
-    be in agreement with the description of the challenge itself.
+    You must provide the challenge alias (e.g., D8C1 for DREAM8, Challenge 1)
+    and if there were several sub-challenges, you also must provide the
+    sub-challenge alias (e.g., sc1). Finally, the submission has to be
+    provided. The format must be in agreement with the description of the
+    challenge itself.
 
-    Help and documentation about the templates may be found either within the online
-    documentation http://pythonhosted.org/dreamtools/ or within the source code
-    hosted on github http://github.org/dreamtools/dreamtools
+    Help and documentation about the templates may be found either within
+    the online documentation http://pythonhosted.org/dreamtools/ or within
+    the source code hosted on github http://github.org/dreamtools/dreamtools.
 
     Registered challenge so far (and sub-challenges) are:
 """
