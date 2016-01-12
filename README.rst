@@ -118,11 +118,9 @@ Then, as above, type::
 The **dreamtools** executable
 ------------------------------------------
 
-.. note:: Challenges available within DREAMTools provide a mechanism to obtain a template and the gold standard used in the scoring. However, some data have restrictions and require the user to accept conditions of use. 
-
-    In the current version of DREAMTools, you will need to create a login/password on www.synapse.org , which will be used to download some data files. 
-
-    The first time you run a challenge within DREAMTools, files will be downloaded from Synapse. You may be asked to accept some conditions of use (e.g. D8C1challenge). 
+:Note: Challenges available within DREAMTools provide a mechanism to obtain a template and the gold standard used in the scoring. However, some data have restrictions and require the user to accept conditions of use. 
+:note about synapse: In the current version of DREAMTools, you will need to create a login/password on www.synapse.org , which will be used to download some data files. 
+:restrictions: The first time you run a challenge within DREAMTools, files will be downloaded from Synapse. You may be asked to accept some conditions of use (e.g. D8C1challenge). 
 
 For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. 
 
