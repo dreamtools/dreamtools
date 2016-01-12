@@ -113,27 +113,16 @@ Then, as above, type::
     pip install dreamtools
 
 
-Note about the data
-----------------------
-
-Before starting, we should emphasize the each DREAM challenge has its own
-specificities: scientific topics are diverse and the conditions of use of the
-data provided may also difer from one challenge to the other. 
-
-Challenges available within DREAMTools provide a mechanism to obtain a template
-and the gold standard used in the scoring. However, some data have restrictions
-and require the user to accept conditions of use. 
-
-In the current version of DREAMTools, you will need to create a login/password
-on www.synapse.org , which will be used to download some data files. 
-
-The first time you run a challenge within DREAMTools, files will be downloaded
-from Synapse. You may be asked to accept some conditions of use (e.g. D8C1
-challenge). 
 
 
 The **dreamtools** executable
 ------------------------------------------
+
+.. note:: Challenges available within DREAMTools provide a mechanism to obtain a template and the gold standard used in the scoring. However, some data have restrictions and require the user to accept conditions of use. 
+
+    In the current version of DREAMTools, you will need to create a login/password on www.synapse.org , which will be used to download some data files. 
+
+    The first time you run a challenge within DREAMTools, files will be downloaded from Synapse. You may be asked to accept some conditions of use (e.g. D8C1challenge). 
 
 For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. 
 
