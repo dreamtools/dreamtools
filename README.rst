@@ -118,9 +118,9 @@ Then, as above, type::
 The **dreamtools** executable
 ------------------------------------------
 
-:Note: Challenges available within DREAMTools provide a mechanism to obtain a template and the gold standard used in the scoring. However, some data have restrictions and require the user to accept conditions of use. 
-:note about synapse: In the current version of DREAMTools, you will need to create a login/password on www.synapse.org , which will be used to download some data files. 
-:restrictions: The first time you run a challenge within DREAMTools, files will be downloaded from Synapse. You may be asked to accept some conditions of use (e.g. D8C1challenge). 
+:Note: Challenges available within DREAMTools provide a mechanism to obtain a template and the gold standard used in the scoring. However, some data have restrictions and require the user to accept conditions of use.  
+:Note about Synapse: In the current version of DREAMTools, you will need to create a login/password on www.synapse.org , which will be used to download some data files. 
+:Restrictions: The first time you run a challenge within DREAMTools, files will be downloaded from Synapse. You may be asked to accept some conditions of use (e.g. D8C1challenge). 
 
 For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. 
 
@@ -129,11 +129,11 @@ To obtain some help, type::
     dreamtools --help
 
 You should see a list of challenges: D2C1,D2C3, D2C3,... Those are aliases to 
-DREAM challenges. Information about a challenge can be (in general) obtained from Synapse pages as follows::
+DREAM challenges. Information about a challenge can be (in general) obtained from the Synapse page of the challenge using the --onweb option::
 
     dreamtools --challenge D6C3 --onweb
 
-Brief information can also be printed in the terminal::
+Brief information can also be printed in the terminal as follows::
 
     dreamtools --challenge D6C3 --info
 
@@ -156,8 +156,7 @@ This command should print some information and the score of the submission for i
      dtype: float64}
 
 All outputs will contain a json-like output. The synapse page of the challenge
-should give information about the scoring methodology. 
-
+should give information about the scoring methodology.
 
 Note that some challenges (like the D8C1 challenge) have sub-challenges. For instance in D8C1, there are 4 sub-challenges names (e.g., SC1A). So, you would need to be more specific and to provide the name of a sub-challenge. For instance:: 
 
