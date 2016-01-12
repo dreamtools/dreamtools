@@ -1,10 +1,16 @@
 ChangeLog
 ==============
 
+1.2.1
+------
+
+* Some synapse data requires the synapse's user to accept the conditions of use on the synapse web page (by clicking on some widgets. In dreamtools, if the terms have not been accepted, there was just an error message from synapse. We now catch the error, print a more friendly message and open the synapse project so that the user can browse through the project directly to accept the conditions. 
+
 1.2.0
 ------
 
-* 
+* Better handling of errors and more friendly messages in the dreamtools standalone app.
+
 
 1.1.1
 --------
