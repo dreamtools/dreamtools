@@ -10,12 +10,17 @@ DREAMTools depends on packages (e.g., numpy, cython) that requires a C compilato
   pip install cython
   pip install dreamtools
 
+What are the challenges available in DREAMTools ?
+----------------------------------------------------
 
+You can either check this reference http://f1000research.com/articles/4-1030/v1 (Table1), or type::
 
-I cannot find the gold standard or template in the source code ?
---------------------------------------------------------------------
+  dreamtools --help
 
-To keep the DREAMTools package light-weight, we have moved most of the data files 
+I cannot find the gold standard or template in the source code, why  ?
+------------------------------------------------------------------------
+
+To keep DREAMTools package light-weight, we have moved some of the data files 
 on Synapse website. However, data (templates and gold standard) are downloaded 
 on request and stored locally in a common directory. For instance under Linux, 
 the files are stored in /home/user/.config/dreamtools/
