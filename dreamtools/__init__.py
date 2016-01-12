@@ -60,3 +60,11 @@ from .dream9.D9C1.scoring import D9C1
 from .dream9.D9C3.scoring import D9C3
 
 from .dream9dot5.D9dot5C1.scoring import D9dot5C1
+
+
+def test():
+    s = D6C3()
+    filename = s.download_template()
+    s.score(filename)
+    print('Ran 1 test. ok\n')
+    print('More tests available in ./test directory\n')
