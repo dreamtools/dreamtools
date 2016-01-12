@@ -141,8 +141,8 @@ def scoring(args=None):
     subchallenges = get_subchallenges(options.challenge)
 
     if len(subchallenges) and options.sub_challenge is None:
-        txt = "This challenge requires a sub challenge name."
-        txt += "Please provide one amongst %s " % subchallenges
+        txt = "This challenge requires a sub challenge name. "
+        txt += "Please use --sub-challenge followed by one value in %s " % subchallenges
         print_color(txt, red)
         sys.exit(0)
 
@@ -178,7 +178,8 @@ def scoring(args=None):
     # finally, we need a submission
     if options.filename is None:
         txt = "---> filename not provided. You must provide a filename with correct format\n"
-        txt += "You may get a template using --download-template option\n"
+        txt += "You may get a template using --download-template \n"
+        txt += "Alternatively, you can user either --info or --onweb option to get information about the challenge.\n"
         txt += "https://github.com/dreamtools/dreamtools, or http://dreamchallenges.org\n"
         print_color(txt, red)
         sys.exit()
