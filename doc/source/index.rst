@@ -9,24 +9,25 @@ DREAMTools
     :target: https://pypi.python.org/pypi/dreamtools
 
 .. image:: https://secure.travis-ci.org/dreamtools/dreamtools.png
-     :target: http://travis-ci.org/dreamtools/dreamtools
+    :target: http://travis-ci.org/dreamtools/dreamtools
 
 .. image:: https://coveralls.io/repos/dreamtools/dreamtools/badge.png?branch=master
-    :target: https://coveralls.io/r/dreamtools/dreamtools?branch=master
+   :target: https://coveralls.io/r/dreamtools/dreamtools?branch=master
 
-.. image::  https://badge.waffle.io/dreamtools/dreamtools.png?label=issues&title=issues
-    :target: https://waffle.io/dreamtools/dreamtools
-        
+.. image:: https://badge.waffle.io/dreamtools/dreamtools.png?label=ready&title=ready
+   :target: https://waffle.io/dreamtools/dreamtools
+   
 .. image:: https://zenodo.org/badge/18543/dreamtools/dreamtools.svg
-    :target: https://zenodo.org/badge/latestdoi/18543/dreamtools/dreamtools
+   :target: https://zenodo.org/badge/latestdoi/18543/dreamtools/dreamtools
 
 :Note: DREAMTools is compatible for Python 2.7, 3.3, 3.4, 3.5
-:Contributions: Please join https://github.com/dreamtools/dreamtools and share
-  your notebooks https://github.com/dreamtools/dreamtools/notebooks
-:Online documentation: 
-    `On pypi website <http://pythonhosted.org/dreamtools/>`_
-:Issues and bug reports: 
-    `On github <https://github.com/dreamtools/dreamtools/issues>`_
+:Note about coverage: We do not run the entire test suite on Travis, which
+                      reports a 40% test coverage. Note however, that the actual
+                      test coverage is about 80%.
+:Contributions: Please join https://github.com/dreamtools/dreamtools and share your notebooks https://github.com/dreamtools/dreamtools/notebooks
+
+:Online documentation: `On pypi website <http://pythonhosted.org/dreamtools/>`_
+:Issues and bug reports: `On github <https://github.com/dreamtools/dreamtools/issues>`_
 :How to cite: Cokelaer T, Bansal M, Bare C et al. DREAMTools: a Python 
     package for scoring collaborative challenges [version 1; referees: 
     awaiting peer review] F1000Research 2015, 4:1030 
@@ -37,47 +38,25 @@ DREAMTools
 .. contents::
 
 Overview
----------
+----------------
 
 **DREAMTools** aims at sharing code used in the scoring of `DREAM <http://dreamchallenges.org>`_ challenges.
 
 The main goals are to provide:
 
-#. scoring functions for the DREAM challenges for **end-users** via the **dreamtools** standalone application.
+#. scoring functions for the DREAM challenges for **end-users** via the **dreamtools-scoring** (or just **dreamtools**) standalone application.
 #. a place for **developers** involved in the DREAM challenges to share code
 
-
-Code related to aggregation, leaderboards, or more complex analysis are not
-guaranteed to be found in DREAMTools even though it may be in some challenges
-(e.g. D8C1). Some functionalities may be restricted with some access to synapse.
-Some challenges will require to download public data sets from
-`Synapse <www.synapse.org>`_ , **in which case you will need to register and
-accept the terms of agreements**.
-
-The **dreamtools** executable
--------------------------------
-
-For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically during the installation. Knowing the name of the challenge (and possibly sub-challenge), it works as follows::
-
-    dreamtools --challenge d8c1 --sub-challenge SC1A --submission example.zip
-
-It prints some information and the score of the submission for instance for the example above::
-
-     Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
-     AUROC: 0.781937275711
-
-Available challenges
--------------------------
-
-The primary goal of **DREAMTools** is to provide scoring functions used in all DREAM challenges. Currently,
-**DREAMTools** includes about 80% of DREAM challenges from DREAM2 to DREAM9.5
-
-Most of them are implemented in pure Python. A couple rely on Perl script and
-5-6 call R behind the scene. However, the user interface is identical for all of them.
+**DREAMTools** does not provide code related to aggregation,
+leaderboards, or more complex analysis even though such code
+can be provided (e.g. D8C1 challenge). Note that some functionalities
+may be restricted with some access to synapse platform. Indeed,
+some challenges will require to download public data sets from `Synapse
+<www.synapse.org>`_ , **in which case you will need to register and accept the
+terms of agreements**.
 
 Installation
 ---------------
-
 
 If you are new to Python
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -106,37 +85,97 @@ You may also use::
 
     conda install cython
 
-Python2
-~~~~~~~~~~~~~~~
-
-**DREAMTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically installed with **DREAMTools** using **pip**::
+An finally, install **DREAMTools** itself::
 
     pip install dreamtools
 
-This will install the last release. However, you can also get the latest code: download the source code and install the package as follows::
+Installation from source
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The previous method (using **pip**) install the latest release of
+**DREAMTools**. If you prefer to use the source code, you can also get the latest version as follows::
 
    git clone git@github.com:dreamtools/dreamtools.git
    cd dreamtools
-   sudo python setup.py install
+   python setup.py install
+
 
 Note for Python3.X
 ~~~~~~~~~~~~~~~~~~~~~~
-**DREAMTools** is compatible with Python2 and Python3. However,
+**DREAMTools** is compatible with Python2 and Python3. However, 
 **DREAMTools** depends on a package that is currently not available for Python3
 (synapseclient). As a temporary solution, we forked this package and provide
 a compatible version.  You will need to install it manually as follows::
 
     pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient
 
-Then, as above, type::
+Then, as above, type::    
 
     pip install dreamtools
 
 
 
 
+The **dreamtools** executable
+------------------------------------------
+
+:Note: Challenges available within DREAMTools provide a mechanism to obtain a template and the gold standard used in the scoring. However, some data have restrictions and require the user to accept conditions of use. 
+:note about synapse: In the current version of DREAMTools, you will need to create a login/password on www.synapse.org , which will be used to download some data files. 
+:restrictions: The first time you run a challenge within DREAMTools, files will be downloaded from Synapse. You may be asked to accept some conditions of use (e.g. D8C1challenge). 
+
+For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. 
+
+To obtain some help, type::
+
+    dreamtools --help
+
+You should see a list of challenges: D2C1,D2C3, D2C3,... Those are aliases to 
+DREAM challenges. Information about a challenge can be (in general) obtained from Synapse pages as follows::
+
+    dreamtools --challenge D8C1 --onweb
+
+Brief information can also be printed in the terminal::
+
+    dreamtools --challenge D8C1 --info
+
+Next, you may want to score one of your submission. We provide access to
+templates for each challenge. For instance::
+
+    dreamtools --challenge D6C3 --download-template
+
+Note however that some challenges (like the D8C1 challenge) have sub-challenges. For instance in D8C1, there are 4 sub-challenges named (e.g., SC1A). So, you would need to be more specific and to provide the name of a sub-challenge:: 
+
+    dreamtools --challenge D8C1 --download-template --sub-challenge SC1A
+
+.. seealso:: see Note here above about the data. You will be asked to accept
+    conditions of use of the data.
+
+The sub-challenge names can be obtained using --info option (see here above).     
+Now that you have a template, you can fill its contents with your own data and
+score it (let us assume it is called example.zip)::
+
+    dreamtools --challenge D8C1 --sub-challenge SC1A \
+        --submission example.zip
+
+This command should print some information and the score of the submission for instance for the example above::
+
+     Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
+     meanAUROC: 0.803628919403
 
 
+Available challenges
+-------------------------
+
+**DREAMTools** includes about 80% of DREAM challenges from DREAM2 to DREAM9.5
+
+
+Gold standards
+-----------------
+
+All gold standards are retrieved automatically. You can obtain the location of a gold standard file as
+follows::
+
+    dreamtools --challenge d5c2 --download-goldstandard
 
 Issues
 -----------
@@ -145,7 +184,7 @@ Please fill bug report in https://github.com/dreamtools/dreamtools/issues
 
 
 Contributions
-----------------
+---------------
 
 Please join https://github.com/dreamtools/dreamtools
 

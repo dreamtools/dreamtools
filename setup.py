@@ -43,7 +43,7 @@ metainfo = {
     'license' : 'BSD',
     'download_url' : ['http://pypi.python.org/pypi/dreamtools'],
     'url' : ['https://github.com/dreamtools/dreamtools'],
-    'description':'Scoring functions for the dream / sage challenges' ,
+    'description':'Scoring functions for the DREAM / SAGE challenges' ,
     'platforms' : ['Linux', 'Unix', 'MacOsX', 'Windows'],
     'keywords' : ['DREAM challenges', 'DREAM', 'System Biology', 
         'Leaderboard', 'ROC', 'scoring', 'synapse','statistics' ],

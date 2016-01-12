@@ -140,7 +140,7 @@ Brief information can also be printed in the terminal::
 Next, you may want to score one of your submission. We provide access to
 templates for each challenge. For instance::
 
-    dreamtools --challenge D6C2 --download-template
+    dreamtools --challenge D6C3 --download-template
 
 Note however that some challenges (like the D8C1 challenge) have sub-challenges. For instance in D8C1, there are 4 sub-challenges named (e.g., SC1A). So, you would need to be more specific and to provide the name of a sub-challenge:: 
 
@@ -151,7 +151,7 @@ Note however that some challenges (like the D8C1 challenge) have sub-challenges.
 
 The sub-challenge names can be obtained using --info option (see here above).     
 Now that you have a template, you can fill its contents with your own data and
-score is (let us assume it is called example.zip)::
+score it (let us assume it is called example.zip)::
 
     dreamtools --challenge D8C1 --sub-challenge SC1A \
         --submission example.zip
@@ -168,18 +168,10 @@ Available challenges
 **DREAMTools** includes about 80% of DREAM challenges from DREAM2 to DREAM9.5
 
 
-Templates
--------------
+Gold standards
+-----------------
 
-All template location can be retrieved using **dreamtools** executable::
-
-    dreamtools --challenge d5c2 --download-template
-
-
-Gold standard
---------------
-
-All gold standard are retrieved automatically. You can obtain a GS location as
+All gold standards are retrieved automatically. You can obtain the location of a gold standard file as
 follows::
 
     dreamtools --challenge d5c2 --download-goldstandard
