@@ -43,8 +43,7 @@ Overview
 
 The main goals are to provide:
 
-#. scoring functions for the DREAM challenges for **end-users** via the **dreamtools-scoring** standalone
-   application.
+#. scoring functions for the DREAM challenges for **end-users** via the **dreamtools-scoring** (or just **dreamtools**) standalone application.
 #. a place for **developers** involved in the DREAM challenges to share code
 
 **DREAMTools** does not provide code related to aggregation,
