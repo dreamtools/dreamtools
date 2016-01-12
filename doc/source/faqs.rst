@@ -20,3 +20,19 @@ a template of gold standard using the following methods (e.g., for D5C1 challeng
   s.download_goldstandard()
   
   
+Is DREAMTools available for Python 3 ?
+---------------------------------------------
+Yes, it is Python3 compatible. Note, however, that some dependencies (e.g., gevent, synapseclient) were not Python3 compatible when we started the DREAMTools project. The gevent version available on the Python repository (pip command) should now be compatible. The synapseclient will be soon. Meanwhile, you should install this version::
+
+    pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient
+
+
+Do I need a Synapse account ?
+--------------------------------
+It depends on the challenge you are interested in. In general, files will be downloaded from synapse so you may need to have an account. Besides, you may be requested to accept conditions of use of some data sets. 
+
+
+
+
+
+
