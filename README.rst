@@ -85,18 +85,20 @@ You may also use::
 
     conda install cython
 
-Python2
-~~~~~~~~~~~~~~~
-
-**DREAMTools** depends on a few libraries such as Pandas, Numpy, Matplotlib. They should be automatically installed with **DREAMTools** using **pip**::
+An finally, install **DREAMTools** itself::
 
     pip install dreamtools
 
-This will install the last release. However, you can also get the latest code: download the source code and install the package as follows::
+Installation from source
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The previous method (using **pip**) install the latest release of
+**DREAMTools**. If you prefer to use the source code, you can also get the latest version as follows::
 
    git clone git@github.com:dreamtools/dreamtools.git
    cd dreamtools
-   sudo python setup.py install
+   python setup.py install
+
 
 Note for Python3.X
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -112,37 +114,66 @@ Then, as above, type::
     pip install dreamtools
 
 
+Note about the data
+----------------------
+
+Before starting, we should emphasize the each DREAM challenge has its own
+specificities: scientific topics are diverse and the conditions of use of the
+data provided may also difer from one challenge to the other. 
+
+Challenges available within DREAMTools provide a mechanism to obtain a template
+and the gold standard used in the scoring. However, some data have restrictions
+and require the user to accept conditions of use. 
+
+In the current version of DREAMTools, you will need to create a login/password
+on www.synapse.org , which will be used to download some data files. 
+
+The first time you run a challenge within DREAMTools, files will be downloaded
+from Synapse. You may be asked to accept some conditions of use (e.g. D8C1
+challenge). 
 
 
 The **dreamtools** executable
 ------------------------------------------
 
-For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. Knowing the name of the challenge (and possibly sub-challenge), you first need to create a submission file. 
+For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. 
 
-Information about a challenge can be (in general) obtained from Synapse pages as
-follows::
+To obtain some help, type::
+
+    dreamtools --help
+
+You should see a list of challenges: D2C1,D2C3, D2C3,... Those are aliases to 
+DREAM challenges. Information about a challenge can be (in general) obtained from Synapse pages as follows::
 
     dreamtools --challenge D8C1 --onweb
 
-and templates can be (in general) obtained as follows::
+Brief information can also be printed in the terminal::
 
-    dreamtools --challenge D8C1 --download-template
+    dreamtools --challenge D8C1 --info
+
+Next, you may want to score one of your submission. We provide access to
+templates for each challenge. For instance::
+
+    dreamtools --challenge D6C2 --download-template
 
 Note however that some challenges (like the D8C1 challenge) have sub-challenges. For instance in D8C1, there are 4 sub-challenges named (e.g., SC1A). So, you would need to be more specific and to provide the name of a sub-challenge:: 
 
     dreamtools --challenge D8C1 --download-template --sub-challenge SC1A
 
-This should give the path to a template (let us assume it is called
-example.zip). To score that submission example, type::
+.. seealso:: see Note here above about the data. You will be asked to accept
+    conditions of use of the data.
 
-    dreamtools --challenge d8c1 --sub-challenge SC1A \
+The sub-challenge names can be obtained using --info option (see here above).     
+Now that you have a template, you can fill its contents with your own data and
+score is (let us assume it is called example.zip)::
+
+    dreamtools --challenge D8C1 --sub-challenge SC1A \
         --submission example.zip
 
 This command should print some information and the score of the submission for instance for the example above::
 
      Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
-     AUROC: 0.803628919403
-     Rank LB: 1
+     meanAUROC: 0.803628919403
 
 
 Available challenges
