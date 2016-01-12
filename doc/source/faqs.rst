@@ -5,9 +5,10 @@ FAQS
 Installation:: compilation issues
 ------------------------------------------------------------
 
-DREAMTools depends on packages (e.g., numpy, cython) that requires a C compilator. 
-If you have issues compilation issues, we would recommend you to use Anaconda. This will also 
-speed up the installation.
+DREAMTools depends on packages (e.g., numpy, cython) that requires a C compilator. When using the **pip** commands dependencies will be compiled. This takes time but more importantly may fail (e.g., missing library). In this situation, we would recommend you to use Anaconda solution. This will also speed up the installation. Visit Anaconda.org and install the software. Once done, open a terminal and type::
+
+  pip install cython
+  pip install dreamtools
 
 
 
