@@ -131,32 +131,47 @@ To obtain some help, type::
 You should see a list of challenges: D2C1,D2C3, D2C3,... Those are aliases to 
 DREAM challenges. Information about a challenge can be (in general) obtained from Synapse pages as follows::
 
-    dreamtools --challenge D8C1 --onweb
+    dreamtools --challenge D6C3 --onweb
 
 Brief information can also be printed in the terminal::
 
-    dreamtools --challenge D8C1 --info
+    dreamtools --challenge D6C3 --info
 
 Next, you may want to score one of your submission. We provide access to
 templates for each challenge. For instance::
 
     dreamtools --challenge D6C3 --download-template
 
-Note however that some challenges (like the D8C1 challenge) have sub-challenges. For instance in D8C1, there are 4 sub-challenges named (e.g., SC1A). So, you would need to be more specific and to provide the name of a sub-challenge:: 
-
-    dreamtools --challenge D8C1 --download-template --sub-challenge SC1A
-
-.. seealso:: see Note here above about the data. You will be asked to accept
-    conditions of use of the data.
-
-The sub-challenge names can be obtained using --info option (see here above).     
 Now that you have a template, you can fill its contents with your own data and
 score it (let us assume it is called example.zip)::
 
-    dreamtools --challenge D8C1 --sub-challenge SC1A \
-        --submission example.zip
+    dreamtools --challenge D6C3 --submission D6C3_template.txt
 
-This command should print some information and the score of the submission for instance for the example above::
+This command should print some information and the score of the submission for instance for the example above, we get the following results::
+
+    {'results': chi2            53.980741
+     R-square        34.733565
+     Spearman(Sp)     0.646917
+     Pearson(Cp)      0.647516
+     dtype: float64}
+
+All outputs will contain a json-like output. The synapse page of the challenge
+should give information about the scoring methodology. 
+
+
+Note that some challenges (like the D8C1 challenge) have sub-challenges. For instance in D8C1, there are 4 sub-challenges names (e.g., SC1A). So, you would need to be more specific and to provide the name of a sub-challenge. For instance:: 
+
+    dreamtools --challenge D8C1 --download-template --sub-challenge SC1A
+
+.. seealso:: In D8C1, you will also need to accept the conditions of use 
+    of the data on a Synapse page, which should pop up.
+
+The sub-challenge names can be obtained using --info option (see here above). Similarly to the simpler case shown above, you can now score that submission as follows::  
+
+    dreamtools --challenge D8C1 --sub-challenge SC1A \
+        --submission D8C1_example.zip
+
+Again, you should get an output with the results::
 
      Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
      meanAUROC: 0.803628919403
@@ -174,7 +189,7 @@ Gold standards
 All gold standards are retrieved automatically. You can obtain the location of a gold standard file as
 follows::
 
-    dreamtools --challenge d5c2 --download-goldstandard
+    dreamtools --challenge D6C3 --download-goldstandard
 
 Issues
 -----------
