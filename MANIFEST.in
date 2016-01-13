@@ -50,7 +50,6 @@ recursive-include dreamtools/dream7/D7C1/templates *
 recursive-include dreamtools/dream7/D7C1/data *
 recursive-include dreamtools/dream8/D8C3/goldstandard *
 recursive-include dreamtools/dream8/D8C1/goldstandard *
-recursive-include dreamtools/dream8/D8C1/templates *
 recursive-include dreamtools/dream8/D8C1/data *
 recursive-include dreamtools/dream8/D8C2/data *
 recursive-include dreamtools/dream8dot5/D8dot5C1/goldstandard *
