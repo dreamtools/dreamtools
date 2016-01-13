@@ -1,6 +1,12 @@
 ChangeLog
 ==============
 
+1.2.2
+------
+
+* NEWS: add --version in dreamtools standalone
+* NEWS: add install.sh
+
 1.2.1
 ------
 

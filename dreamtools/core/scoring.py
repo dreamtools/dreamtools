@@ -100,6 +100,10 @@ def scoring(args=None):
     else:
         options = user_options.parse_args(args[1:])
 
+    if options.version is True:
+        print("%s" % dreamtools.version)
+        sys.exit()
+
     # Check on the challenge name
     if options.challenge is None:
         print_color('--challenge must be provided', red)
@@ -112,7 +116,7 @@ def scoring(args=None):
         if options.challenge not in get_challenge_list():
             print_color("This challenge %s is not registered in dreamtools." %
                     options.challenge, red)
-            print("Here is the list of registered challenges: " + 
+            print("Here is the list of registered challenges: " +
                 ", ".join(get_challenge_list()))
             sys.exit()
 
@@ -203,7 +207,7 @@ def scoring(args=None):
             subname=options.sub_challenge,
             goldstandard=options.goldstandard)
 
-    txt = "Solution for %s in challenge %s" % (options.filename, 
+    txt = "Solution for %s in challenge %s" % (options.filename,
             options.challenge)
 
     if options.sub_challenge is not None:
@@ -257,7 +261,12 @@ Issues or bug report ? Please fill an issue on http://github.com/dreamtools/drea
         Default is None. Keep it that way because otherwise, the contents of
         the ini file is overwritten in :class:`apps.Apps`.
         """
-        group = self.add_argument_group("General", 'General options (compulsary or not)')
+        group = self.add_argument_group("General",
+                "General options (compulsary or not)")
+
+        group.add_argument("--version", dest='version',
+                         action="store_true",
+                         help="verbose option.")
 
         group.add_argument("--challenge", dest='challenge',
                          default=None, type=str,
