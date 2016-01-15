@@ -6,6 +6,19 @@ Installation
 Using Anaconda
 ------------------
 
+Under Linux and Mac
+^^^^^^^^^^^^^^^^^^^^^^
+
+We provide a script called **conda_install.sh** in the source code. You can call it as follows:;
+
+    sh conda_install.sh --python 2
+    
+or::
+
+    sh conda_install.sh --python 2
+    
+The script creates a conda environment called **dreamtools_py2** (or **dreamtools_py3**) and installs the **dreamtools** package from Pypi (latest official release).
+
 Under windows
 ^^^^^^^^^^^^^^^
 
