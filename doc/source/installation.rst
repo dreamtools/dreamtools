@@ -9,31 +9,32 @@ Using Anaconda
 Under Linux and Mac
 ^^^^^^^^^^^^^^^^^^^^^^
 
-We provide a script called `conda_install.sh <https://github.com/dreamtools/dreamtools/blob/master/conda_install.sh>`_ in the source code. Under Linux, you can get it using 
+If not alrady done, you first need to install Anaconda on your system. Please visit https://www.continuum.io/downloads. Keep track of the Python version chosen (2 or 3).
 
+Once Anaconda is installed, you can install DREAMTools. Ideally, you wish to create a specific environment, install DREAMTools and missing dependencies. Although it is not difficult, we provide a script called `conda_install.sh <https://github.com/dreamtools/dreamtools/blob/master/conda_install.sh>`_ in the source code. The script creates a conda environment called **dreamtools_py2** (or **dreamtools_py3**) and installs the **dreamtools** package from Pypi (latest official release). 
 
+First let us download the script. Open a terminal (unix shell) and download the **conda_install.sh** script as follows::
 
-You can call it as follows::
+    curl https://raw.githubusercontent.com/dreamtools/dreamtools/master/conda_install.sh >> conda_install.sh
+
+You can then call it (for Python2 users)::
 
     sh conda_install.sh --python 2
     
-or::
+or (for Python3 users)::
 
-    sh conda_install.sh --python 2
+    sh conda_install.sh --python 3
     
-The script creates a conda environment called **dreamtools_py2** (or **dreamtools_py3**) and installs the **dreamtools** package from Pypi (latest official release).
 
 Under windows
 ^^^^^^^^^^^^^^^
 
 **Tested under Windows 8 (64 bit)**
 
-#. Install anaconda (https://www.continuum.io/downloads#_windows). We recommend to use Python2.7 (see choosing Python 2 or 3 section here below). 
-#. For those who still want to use PYthon3, install git.
+#. Install anaconda (https://www.continuum.io/downloads#_windows). **We recommend to use Python2.7** (see choosing Python 2 or 3 section here below). 
 #. Install a compiler for windows: http://www.microsoft.com/en-us/download/details.aspx?id=44266
 
 Conda provides pre-compiled packages (e.g., Cython) that used specific version of compiler (http://docs.continuum.io/anaconda/faq#how-did-you-compile-cpython). DREAMTools uses cython and therefore Python expects the compiler to be found on your system . You must install a compatible compiled. It appears to be Visual Studio version 2008 for Python 2.7 and is provided by Microsoft (http://www.microsoft.com/en-us/download/details.aspx?id=44266 ). For python3, we did not find the compiler but should be a VS version 2010 (http://stackoverflow.com/questions/29909330/microsoft-visual-c-compiler-for-python-3-4)
-
 
 #. Start a new Anaconda shell: Start -> All Program -> Anaconda2 -> Anaconda Prompt
 #. In the shell type::
