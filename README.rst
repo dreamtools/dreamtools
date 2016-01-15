@@ -31,7 +31,8 @@ DREAMTools
     (doi: 10.12688/f1000research.7118.1)
     `F1000 link <http://f1000research.com/articles/4-1030/v1>`_
 
-.. image:: doc/dreamtools_logo.png
+.. won't appear on github but within the sphinx doc
+.. image:: dreamtools_logo.png
     :width: 50%
 
 .. contents::
@@ -39,23 +40,45 @@ DREAMTools
 Overview
 ----------------
 
-**DREAMTools** aims at sharing code used in the scoring of `DREAM <http://dreamchallenges.org>`_ challenges.
+**DREAMTools** aims at sharing code used in the scoring of `DREAM <http://dreamchallenges.org>`_ challenges that pose fundamental questions about system biology and translational medicine.
 
-The main goals are to provide:
+The main goals of **DREAMTools** are to provide:
 
-#. scoring functions for the DREAM challenges for **end-users** via the **dreamtools-scoring** (or just **dreamtools**) standalone application.
-#. a place for **developers** involved in the DREAM challenges to share code
+#. scoring functions equivalent to those used during past DREAM challenges for **end-users** via a standalone application (called **dreamtools**).
+#. a common place for **developers** involved in the DREAM challenges to share code
 
 **DREAMTools** does not provide code related to aggregation,
 leaderboards, or more complex analysis even though such code
-can be provided (e.g. D8C1 challenge). Note that some functionalities
-may be restricted with some access to synapse platform. Indeed,
-some challenges will require to download public data sets from `Synapse
-<www.synapse.org>`_ , **in which case you will need to register and accept the
-terms of agreements**.
+may be provided (e.g., in D8C1 challenge). 
+
+Note that many scoring functions requires data hosted on `Synapse <www.synapse.org>`_ . We therefore strongly encourage you to **register to Synapse**. Depending on the challenge, you may be requested to accept terms of agreements to use the data. 
+
+
+**DREAMTools** can be used by developers are a Python package::
+
+    >>> from dreamtools import D6C3
+    >>> s = D6C3()
+    >>> s.score(s.download_template())
+    {'results': chi2            53.980741
+    R-square        34.733565
+    Spearman(Sp)     0.646917
+    Pearson(Cp)      0.647516
+    dtype: float64}
+
+Or using the executable **dreamtools** in a terminal::
+
+    dreamtools --challenge D6C3 --submission path_to_a_file
+
+See below for more details about the standalone application.
+
+
+
 
 Installation
 ---------------
+
+
+
 
 If you are new to Python
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,7 +114,7 @@ An finally, install **DREAMTools** itself::
 Installation from source
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The previous method (using **pip**) install the latest release of
+The previous method (using **pip**) installs the latest release of
 **DREAMTools**. If you prefer to use the source code, you can also get the latest version as follows::
 
    git clone git@github.com:dreamtools/dreamtools.git
