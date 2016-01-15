@@ -1,10 +1,10 @@
 .. contents::
 
 Installation
--------------
+===============
 
 Using Anaconda
-~~~~~~~~~~~~~~~~~~
+------------------
 
 Under windows
 ^^^^^^^^^^^^^^^
@@ -28,7 +28,7 @@ Conda provides pre-compiled packages (e.g., Cython) that used specific version o
     dreamtools --help
 
 Choosing between Python2.7 or Python3.5
---------------------------------------------
+=======================================
 
 DREAMTools is compatible with Python2 and Python3. More specifically, it is tested (under Travis) for Python 2.7, 3.3, 3.4 and 3.5. It may work for other versions of course. 
 
