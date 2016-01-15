@@ -9,7 +9,9 @@ Using Anaconda
 Under Linux and Mac
 ^^^^^^^^^^^^^^^^^^^^^^
 
-We provide a script called **conda_install.sh** in the source code. You can call it as follows:;
+We provide a script called `conda_install.sh <https://github.com/dreamtools/dreamtools/repo/blob/master/conda_install.sh>`_
+
+in the source code. You can call it as follows:;
 
     sh conda_install.sh --python 2
     
