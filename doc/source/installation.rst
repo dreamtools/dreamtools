@@ -31,10 +31,9 @@ Under windows
 
 **Tested under Windows 8 (64 bit)**
 
-#. Install anaconda (https://www.continuum.io/downloads#_windows). **We recommend to use Python2.7** (see choosing Python 2 or 3 section here below). 
+#. Install anaconda (https://www.continuum.io/downloads#_windows). **We recommend to use Python2.7** (see 'Choose between Python 2 or 3' section here below). 
 #. Install a compiler for windows: http://www.microsoft.com/en-us/download/details.aspx?id=44266
 
-Conda provides pre-compiled packages (e.g., Cython) that used specific version of compiler (http://docs.continuum.io/anaconda/faq#how-did-you-compile-cpython). DREAMTools uses cython and therefore Python expects the compiler to be found on your system . You must install a compatible compiled. It appears to be Visual Studio version 2008 for Python 2.7 and is provided by Microsoft (http://www.microsoft.com/en-us/download/details.aspx?id=44266 ). For python3, we did not find the compiler but should be a VS version 2010 (http://stackoverflow.com/questions/29909330/microsoft-visual-c-compiler-for-python-3-4)
 
 #. Start a new Anaconda shell: Start -> All Program -> Anaconda2 -> Anaconda Prompt
 #. In the shell type::
@@ -48,10 +47,16 @@ Conda provides pre-compiled packages (e.g., Cython) that used specific version o
 Choosing between Python2.7 or Python3.5
 =======================================
 
-DREAMTools is compatible with Python2 and Python3. More specifically, it is tested (under Travis) for Python 2.7, 3.3, 3.4 and 3.5. It may work for other versions of course. 
+DREAMTools is compatible with Python2 and Python3. More specifically, it is tested (under Travis) for Python 2.7, 3.3, 3.4 and 3.5 under a Linux distribution (Ubuntu).
 
-For new Python users, we would recommend to install Anaconda, which provides a bunch of packages already pre-compiled. This saves lost of time and technical issues. Yet, you will have to choose between Python2 or Python3. Under Linux or Mac, there is no preferences. However, under Windows, we would recommend Python2. Indeed, you will need a compiler and we easily found a compiler for Python2 (Visual C++ for Python2 provided by Microsoft -- see above) but it was not that obvious for Python3. 
+:Short answer: If you are under Windows, choose 2.7. If you are under Linux or
+Mac, keep the one provided with your system. If you know what you are doing
+choose a version greater or equal to 2.7
 
-
-
-
+:Long answer: whatever you choose, you would need a compiler. Under Mac and
+              Linux, this is generally not an issue since it would be g++. 
+              Under Windows, you would need to figure out the best choice. 
+              It could be  Visual C or mingw. If you go for the Anaconda
+              solution, again under Mac or Linux, **DRFEAMTools** would work
+              under Pyhton2 or 3. However, under Windows, we would recommend 
+              Python2. Here is the reason: Conda provides pre-compiled packages (e.g., Cython) that use specific version of a compiler (http://docs.continuum.io/anaconda/faq#how-did-you-compile-cpython). No compilers are required for pure Python packages or pre-compiled packages available on Conda. Since DREAMTools uses cython, you should also install a compatible compilee. It appears to be Visual Studio version 2008 for Python 2.7 and is provided by Microsoft (http://www.microsoft.com/en-us/download/details.aspx?id=44266) for free. For python3, so we would recommend to use Python2 under windows. If you still want to go for Python3, you should get Visual C version 2010 (http://stackoverflow.com/questions/29909330/microsoft-visual-c-compiler-for-python-3-4).

@@ -18,7 +18,6 @@
 from dreamtools.core.sageutils import Login
 from dreamtools.core.challenge import Challenge
 
-from synapseclient.exceptions import SynapseUnmetAccessRestrictions
 
 __all__ = ['Downloader']
 
@@ -66,7 +65,6 @@ class Downloader(Challenge, Login):
                 "synid must be a valid synapse identifier e.g., syn123456"
 
 
-        #synapseclient.exceptions.SynapseUnmetAccessRestrictions:
         try:
             self.client.get(synid, downloadLocation=self.directory)
         except Exception as err:

@@ -54,7 +54,7 @@ may be provided (e.g., in D8C1 challenge).
 Note that many scoring functions requires data hosted on `Synapse <www.synapse.org>`_ . We therefore strongly encourage you to **register to Synapse**. Depending on the challenge, you may be requested to accept terms of agreements to use the data. 
 
 
-**DREAMTools** can be used by developers are a Python package::
+**DREAMTools** can be used by developers as a Python package::
 
     >>> from dreamtools import D6C3
     >>> s = D6C3()
@@ -77,7 +77,14 @@ See below for more details about the standalone application.
 Installation
 ---------------
 
+Familiar with Python ecosystem ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+If you are familiar with Python and have a compiler (e.g., g++), these two
+commands should install **DREAMTools** and its dependencies::
+
+    pip install cython
+    pip install dreamtools
 
 
 If you are new to Python

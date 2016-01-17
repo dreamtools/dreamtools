@@ -29,7 +29,7 @@ ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"])
 
 _MAJOR               = 1
 _MINOR               = 2
-_MICRO               = 2
+_MICRO               = 3
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
@@ -97,7 +97,7 @@ setup(
         },
 
     install_requires = ['cython', 'numpy', 'matplotlib', 'pandas', 
-        'easydev>=0.9.9', 'fitter', 'synapseclient', 'tabulate', 'scipy',
+        'easydev>=0.9.10', 'fitter', 'synapseclient', 'tabulate', 'scipy',
         'biokit','xlrd', 'numexpr', 'scikit-learn'],
 
     #ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"]),
