@@ -16,8 +16,8 @@ If you have issues, please fill a report with the error message,  python version
 Please see also the section here below about  "Choosing between Python2.7 or Python3.5", especially for Windows' users under Python3.
 
 
-For others
-------------------
+You are a Python's beginner or use Anaconda:
+---------------------------------------------------
 
 For all platforms, we would recommend to use the Anaconda solution. Please visit https://www.continuum.io/downloads
 Choose Python 2 or 3 but install only one version of Anaconda (from that version you can create environments for any Python version). For Window users, please choose Python2.
@@ -124,3 +124,20 @@ choose a version greater or equal to 2.7
               solution, again under Mac or Linux, **DRFEAMTools** would work
               under Pyhton2 or 3. However, under Windows, we would recommend 
               Python2. Here is the reason: Conda provides pre-compiled packages (e.g., Cython) that use specific version of a compiler (http://docs.continuum.io/anaconda/faq#how-did-you-compile-cpython). No compilers are required for pure Python packages or pre-compiled packages available on Conda. Since DREAMTools uses cython, you should also install a compatible compilee. It appears to be Visual Studio version 2008 for Python 2.7 and is provided by Microsoft (http://www.microsoft.com/en-us/download/details.aspx?id=44266) for free. For python3, so we would recommend to use Python2 under windows. If you still want to go for Python3, you should get Visual C version 2010 (http://stackoverflow.com/questions/29909330/microsoft-visual-c-compiler-for-python-3-4).
+
+
+Note for Python3.X 
+==========================
+
+**DREAMTools** is compatible with Python2 and Python3. However, **DREAMTools** depends on a package (synapseclient) that is currently not available for Python3 on Pypi website (pip won't provide a Python3-compatible package). As a temporary 
+solution, we forked this package and provide a compatible version.  You will need to install it manually as follows::
+
+    pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient
+
+
+
+
+
+
+
+
