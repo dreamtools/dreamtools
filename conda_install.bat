@@ -30,9 +30,9 @@ set /p VERSION=<version.txt
 @echo:
 @echo:    activate dreamtools_py2
 @echo:
-@echo: Once done, check that DREAMTools is available:\n\n
+@echo: Once done, check that DREAMTools is available
 @echo:
 @echo    dreamtools --help
-
+@echo:
 pause
 
