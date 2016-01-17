@@ -56,15 +56,7 @@ Type this command to see if dreamtools is available::
 
 We also provide a script called `conda_install.sh <https://github.com/dreamtools/dreamtools/blob/master/conda_install.sh>`_ in the source code that does the installation for you. The script creates a conda environment called **dreamtools_py2** (or **dreamtools_py3**) and installs the **dreamtools** package from Pypi (latest official release). You can download the script from here::
 
-    # For MAC and windows, get wget with pip tool:
-    pip install wget
-    
-    # For MAC and Linux systems:
-    wget https://raw.githubusercontent.com/dreamtools/dreamtools/master/conda_install.sh
-
-    # For Windows::
-    wget https://raw.githubusercontent.com/dreamtools/dreamtools/master/conda_install.bat
-
+For Mac or Linux users save the following file in your home directory: `conda_install.sh <https://raw.githubusercontent.com/dreamtools/dreamtools/master/conda_install.sh>`_.
 
 You can then call it (for Python2 users)::
 
@@ -99,6 +91,22 @@ Under windows
 #. Test if the installation worked::
 
     dreamtools --help
+
+
+For Window users download this file: `conda_install.bat <https://raw.githubusercontent.com/dreamtools/dreamtools/master/conda_install.bat>`_.
+
+::
+
+    pip install wget ipython
+
+::
+
+    import wget
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
+    wget.download("https://raw.githubusercontent.com/dreamtools/dreamtools/master/conda_install.bat")
+
+
 
 Choosing between Python2.7 or Python3.5
 =======================================
