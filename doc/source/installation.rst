@@ -10,6 +10,11 @@ You know Python, you know what you're doing:
 
     pip install cython
     pip install dreamtools
+    
+If you have issues, please fill a report with the error message,  python version, platform (https://github.com/dreamtools/dreamtools/issues).    
+
+Please see also the section here below about  "Choosing between Python2.7 or Python3.5", especially for Windows' users under Python3.
+
 
 For others
 ------------------
