@@ -3,13 +3,24 @@
 Installation
 ===============
 
-Using Anaconda
+You know Python, you know what you're doing:
+-----------------------------------------------
+
+**DREAMTools** releases are posted on Pypi repository:: 
+
+    pip install cython
+    pip install dreamtools
+
+For others
 ------------------
+
+For all platforms, we would recommend to use the Anaconda solution. Please visit https://www.continuum.io/downloads
+Choose Python 2 or 3 but install only one version of Anaconda (form that version you can create environment for any Python version). For Window users, please choose Python2.
 
 Under Linux and Mac
 ^^^^^^^^^^^^^^^^^^^^^^
 
-If not alrady done, you first need to install Anaconda on your system. Please visit https://www.continuum.io/downloads. Keep track of the Python version chosen (2 or 3).
+
 
 Once Anaconda is installed, you can install DREAMTools. Ideally, you wish to create a specific environment, install DREAMTools and missing dependencies. Although it is not difficult, we provide a script called `conda_install.sh <https://github.com/dreamtools/dreamtools/blob/master/conda_install.sh>`_ in the source code. The script creates a conda environment called **dreamtools_py2** (or **dreamtools_py3**) and installs the **dreamtools** package from Pypi (latest official release). 
 
@@ -25,7 +36,6 @@ or (for Python3 users)::
 
     sh conda_install.sh --python 3
     
-
 Under windows
 ^^^^^^^^^^^^^^^
 
