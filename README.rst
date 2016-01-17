@@ -131,18 +131,8 @@ The previous method (using **pip**) installs the latest release of
 
 Note for Python3.X
 ~~~~~~~~~~~~~~~~~~~~~~
-**DREAMTools** is compatible with Python2 and Python3. However, 
-**DREAMTools** depends on a package that is currently not available for Python3
-(synapseclient). As a temporary solution, we forked this package and provide
-a compatible version.  You will need to install it manually as follows::
 
-    pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient
-
-Then, as above, type::    
-
-    pip install dreamtools
-
-
+Please see :ref:`installation`.
 
 
 The **dreamtools** executable
