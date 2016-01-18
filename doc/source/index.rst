@@ -104,17 +104,25 @@ use the `Anaconda <https://www.continuum.io/downloads>`_ solution.
 
 Anaconda is a free Python distribution. It includes most popular Python packages
 for science and data analysis. Anaconda will install most of the software 
-required by **DREAMTools**. Besides, since it does not require root access, it should not interfere with your system.
+required by **DREAMTools**. Besides, since it does not require root access, it 
+should not interfere with your system.
 
-You will need to choose between 2 versions of Python (2.X or 3.5). Since **DREAMTools** is compatible with Python 2.7 and 3.5, the version should not matter. **Note, however, that for Windows' users, we would recommend to use Python 2.7** (see :ref:`installation` for explanations).
+You will need to choose between 2 versions of Python (2.X or 3.5). Since **DREAMTools** is 
+compatible with Python 2.7 and 3.5, the version should not matter. **Note, however, that 
+for Windows' users, we would recommend to use Python 2.7** (see :ref:`installation` for explanations).
 
-Please visit the :ref:`installation` section for detailled instructions and installation scripts to install **DREAMTools**.
+Please visit the :ref:`installation` section for detailled instructions and installation 
+scripts to install **DREAMTools**.
 
 
 Installation from source
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The previous methods (using **pip** with and without Anaconda) install the latest release of **DREAMTools**. If you prefer to use the source code, you can also get the github repository and install **DREAMTools** as follows (dependencies such as numpy or scipy will need to be compiled if not found)::
+The previous methods (using **pip** with and without Anaconda) install the latest 
+release of **DREAMTools**. If you prefer to use the source code, you can also get
+ the github repository and install **DREAMTools** as follows (dependencies such 
+as numpy or scipy will need to be compiled if not found)::
+
 
    git clone git@github.com:dreamtools/dreamtools.git
    cd dreamtools
@@ -125,16 +133,25 @@ The previous methods (using **pip** with and without Anaconda) install the lates
 The **dreamtools** executable
 ------------------------------------------
 
-**DREAMTools** provides functions to obtain the template and gold standard(s) used in a given challenge. Some challenge have restrictions of data access and require the user to accept conditions of use. Such data are stored on http://www.synapse.org . You will need to create a login/password on www.synapse.org website. The first time you run a challenge within DREAMTools, files will be downloaded from Synapse. You may be asked to accept some conditions of use (e.g. D8C1 challenge) directly on the website. 
+**DREAMTools** provides functions to obtain the template and gold 
+standard(s) used in a given challenge. Some challenge have restrictions 
+of data access and require the user to accept conditions of use. Such data 
+are stored on http://www.synapse.org. You will need to create a 
+login/password on www.synapse.org website. The first time you run a 
+challenge within DREAMTools, files will be downloaded from Synapse. You 
+may be asked to accept some conditions of use (e.g. D8C1 challenge) 
+directly on the website. 
 
-For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. 
+For users, **DREAMTools** package provides an executable called 
+**dreamtools**, which should be installed automatically. 
 
 To obtain some help, type::
 
     dreamtools --help
 
 You should see a list of challenges: D2C1,D2C3, D2C3,... Those are aliases to 
-DREAM challenges. Information about a challenge can be (in general) obtained from the Synapse page of the challenge using the --onweb option::
+DREAM challenges. Information about a challenge can be (in general) obtained
+ from the Synapse page of the challenge using the --onweb option::
 
     dreamtools --challenge D6C3 --onweb
 
@@ -148,11 +165,13 @@ templates for each challenge. For instance::
     dreamtools --challenge D6C3 --download-template
 
 This command prints the location of the template on your system. Copy that file
-in local/temporary place. Now that you have a copy of the template, you can fill its contents with your own data and score it (let us assume it is called D6C3_template.txt)::
+in local/temporary place. Now that you have a copy of the template, you can fill 
+its contents with your own data and score it (let us assume it is called D6C3_template.txt)::
 
     dreamtools --challenge D6C3 --submission D6C3_template.txt
 
-This command should print some information and the score of the submission for instance for the example above, we get the following results::
+This command should print some information and the score of the submission 
+for instance for the example above, we get the following results::
 
     {'results': chi2            53.980741
      R-square        34.733565

@@ -1,6 +1,6 @@
+############################################################################
 DREAMTools
-==========
-
+############################################################################
 
 .. image:: https://badge.fury.io/py/dreamtools.svg
     :target: https://pypi.python.org/pypi/dreamtools
@@ -32,13 +32,16 @@ DREAMTools
     `F1000 link <http://f1000research.com/articles/4-1030/v1>`_
 
 .. won't appear on github but within the sphinx doc
-.. image:: dreamtools_logo.png
+.. image:: ../dreamtools_logo.png
     :width: 50%
 
 .. contents::
 
 Overview
 ----------------
+
+Motivation
+~~~~~~~~~~~~
 
 **DREAMTools** aims at sharing code used in the scoring of `DREAM <http://dreamchallenges.org>`_ challenges that pose fundamental questions about system biology and translational medicine.
 
@@ -53,7 +56,8 @@ may be provided (e.g., in D8C1 challenge).
 
 Note that many scoring functions requires data hosted on `Synapse <www.synapse.org>`_ . We therefore strongly encourage you to **register to Synapse**. Depending on the challenge, you may be requested to accept terms of agreements to use the data. 
 
-
+Usage
+~~~~~~~~~
 **DREAMTools** can be used by developers as a Python package::
 
     >>> from dreamtools import D6C3
@@ -65,11 +69,11 @@ Note that many scoring functions requires data hosted on `Synapse <www.synapse.o
     Pearson(Cp)      0.647516
     dtype: float64}
 
-Or using the executable **dreamtools** in a terminal::
+A standalone application can be used from a terminal. The executable is called **dreamtools**. Here is an example::
 
     dreamtools --challenge D6C3 --submission path_to_a_file
 
-See below for more details about the standalone application.
+See below for more details about the usage of the standalone application.
 
 
 
@@ -77,11 +81,15 @@ See below for more details about the standalone application.
 Installation
 ---------------
 
+Although there is a dedicated documentation related to the :ref:`installation` of **DREAMTools**, we provide here below a brief summary.
+
+
 Familiar with Python ecosystem ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you are familiar with Python and have a compiler (e.g., g++), these two
-commands should install **DREAMTools** and its dependencies::
+If you are familiar with Python and the **pip** application, these two
+commands should install **DREAMTools** and its dependencies (in a unix or
+windows terminal)::
 
     pip install cython
     pip install dreamtools
@@ -95,61 +103,55 @@ If you are not familiar with Python, or have issues with the previous method
 use the `Anaconda <https://www.continuum.io/downloads>`_ solution.
 
 Anaconda is a free Python distribution. It includes most popular Python packages
-for science and data analysis. Anaconda will install the software required by
-**DREAMTools**. Since it does not require root access, it should not interfere with your system. 
+for science and data analysis. Anaconda will install most of the software 
+required by **DREAMTools**. Besides, since it does not require root access, it 
+should not interfere with your system.
 
-Please, visit the `Anaconda <https://www.continuum.io/downloads>`_ website 
-and follow the instructions. You may need to
-choose between 2 versions of Python (2.X or 3.5). Since **DREAMTools** is 
-compatible with Python 2.7 and 3.5, the version should not matter.
+You will need to choose between 2 versions of Python (2.X or 3.5). Since **DREAMTools** is 
+compatible with Python 2.7 and 3.5, the version should not matter. **Note, however, that 
+for Windows' users, we would recommend to use Python 2.7** (see :ref:`installation` for explanations).
 
-Whether you use Anaconda or not, Python should provide an utility called **pip**
-that should now be available within a Terminal. 
+Please visit the :ref:`installation` section for detailled instructions and installation 
+scripts to install **DREAMTools**.
 
-Before installing **DREAMTools**, please install **cython** as follows::
-
-    pip install cython
-
-You may also use::
-
-    conda install cython
-
-An finally, install **DREAMTools** itself::
-
-    pip install dreamtools
 
 Installation from source
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The previous method (using **pip**) installs the latest release of
-**DREAMTools**. If you prefer to use the source code, you can also get the latest version as follows::
+The previous methods (using **pip** with and without Anaconda) install the latest 
+release of **DREAMTools**. If you prefer to use the source code, you can also get
+ the github repository and install **DREAMTools** as follows (dependencies such 
+as numpy or scipy will need to be compiled if not found)::
+
 
    git clone git@github.com:dreamtools/dreamtools.git
    cd dreamtools
    python setup.py install
 
 
-Note for Python3.X
-~~~~~~~~~~~~~~~~~~~~~~
-
-Please see :ref:`installation`.
-
 
 The **dreamtools** executable
 ------------------------------------------
 
-:Note: Challenges available within DREAMTools provide a mechanism to obtain a template and the gold standard used in the scoring. However, some data have restrictions and require the user to accept conditions of use.  
-:Note about Synapse: In the current version of DREAMTools, you will need to create a login/password on www.synapse.org , which will be used to download some data files. 
-:Restrictions: The first time you run a challenge within DREAMTools, files will be downloaded from Synapse. You may be asked to accept some conditions of use (e.g. D8C1challenge). 
+**DREAMTools** provides functions to obtain the template and gold 
+standard(s) used in a given challenge. Some challenge have restrictions 
+of data access and require the user to accept conditions of use. Such data 
+are stored on http://www.synapse.org. You will need to create a 
+login/password on www.synapse.org website. The first time you run a 
+challenge within DREAMTools, files will be downloaded from Synapse. You 
+may be asked to accept some conditions of use (e.g. D8C1 challenge) 
+directly on the website. 
 
-For users, **DREAMTools** package provides an executable called **dreamtools**, which should be installed automatically. 
+For users, **DREAMTools** package provides an executable called 
+**dreamtools**, which should be installed automatically. 
 
 To obtain some help, type::
 
     dreamtools --help
 
 You should see a list of challenges: D2C1,D2C3, D2C3,... Those are aliases to 
-DREAM challenges. Information about a challenge can be (in general) obtained from the Synapse page of the challenge using the --onweb option::
+DREAM challenges. Information about a challenge can be (in general) obtained
+ from the Synapse page of the challenge using the --onweb option::
 
     dreamtools --challenge D6C3 --onweb
 
@@ -162,12 +164,14 @@ templates for each challenge. For instance::
 
     dreamtools --challenge D6C3 --download-template
 
-Now that you have a template, you can fill its contents with your own data and
-score it (let us assume it is called example.zip)::
+This command prints the location of the template on your system. Copy that file
+in local/temporary place. Now that you have a copy of the template, you can fill 
+its contents with your own data and score it (let us assume it is called D6C3_template.txt)::
 
     dreamtools --challenge D6C3 --submission D6C3_template.txt
 
-This command should print some information and the score of the submission for instance for the example above, we get the following results::
+This command should print some information and the score of the submission 
+for instance for the example above, we get the following results::
 
     {'results': chi2            53.980741
      R-square        34.733565
@@ -200,6 +204,7 @@ Available challenges
 -------------------------
 
 **DREAMTools** includes about 80% of DREAM challenges from DREAM2 to DREAM9.5
+Please visit `F1000 link <http://f1000research.com/articles/4-1030/v1>`_  (Table 1).
 
 
 Gold standards
