@@ -23,7 +23,8 @@ I cannot find the gold standard or template in the source code, why  ?
 To keep DREAMTools package light-weight, we have moved some of the data files 
 on Synapse website. However, data (templates and gold standard) are downloaded 
 on request and stored locally in a common directory. For instance under Linux, 
-the files are stored in /home/user/.config/dreamtools/
+the files are stored in /home/user/.config/dreamtools/. On Windows's platforms,
+the location looks like but may depend on the system:  C:\Users\user\AppData\Local\dreamtools\dreamtools.
 
 Once the DREAMTools package is installed, you can retrieve the location of 
 a template of gold standard using the following methods (e.g., for D5C1 challenge)::

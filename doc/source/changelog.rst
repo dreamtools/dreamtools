@@ -1,6 +1,13 @@
 ChangeLog
 ==============
 
+1.2.3
+---------
+
+* CHANGES: improved documentation
+* NEWS: 2 installer for linux/mac and for windows
+
+
 1.2.2
 ------
 

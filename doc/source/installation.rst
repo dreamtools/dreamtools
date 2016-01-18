@@ -1,5 +1,8 @@
 .. contents::
 
+
+.. _installation:
+
 Installation
 ===============
 
