@@ -81,15 +81,16 @@ See below for more details about the usage of the standalone application.
 Installation
 ---------------
 
-Although there is a dedicated documentation related to the :ref:`installation`  (in doc/source/installation.rst) of **DREAMTools**, we provide here below 
+Although there is a dedicated documentation related to the :ref:`installation`  of ** DREAMTools** (in doc/source/installation.rst), we provide here below 
 a brief summary.
 
 
 Familiar with Python ecosystem ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you are familiar with Python and the **pip** application, these two
-commands should install **DREAMTools** and its dependencies (in a unix or
+If you are familiar with Python and the **pip** application and your system 
+is already configured (compilers, development libraries available)), these 
+two commands should install **DREAMTools** and its dependencies (in unix or
 windows terminal)::
 
     pip install cython
@@ -112,17 +113,41 @@ You will need to choose between 2 versions of Python (2.X or 3.5). Since **DREAM
 compatible with Python 2.7 and 3.5, the version should not matter. **Note, however, that 
 for Windows' users, we would recommend to use Python 2.7** (see :ref:`installation` for explanations).
 
-Please visit the :ref:`installation` (doc/source/installation.rst) section for detailled instructions and installation 
-scripts to install **DREAMTools**.
+
+Here below are 4 steps checked on Unix and Windows platforms. 
+
+**For Mac and Linux users:**
+
+#. Download Anaconda
+#. Open an Anaconda shell (or a unix shell)
+#. Download `conda_install.sh <https://raw.githubusercontent.com/dreamtools/dreamtools/master/conda_install.sh>`_ 
+#. Execute the script (e.g. for Python2)::
+
+    sh conda_install.sh python=2
+
+Similarly for **For Windows**:
+
+#. Download Anaconda2 (Python2) for windows
+#. Open an Anaconda prompt (from the Start->All program->Anaconda2->Anaconda
+   Prompt
+#. Download `conda_install.bat <https://raw.githubusercontent.com/dreamtools/dreamtools/master/conda_install.bat>`_ 
+#. Execute the script::
+
+    conda_install.bat
+
+If there is an issue, please visit the :ref:`installation` page (doc/source/installation.rst) where details about the installation scripts can be found.
 
 
 Installation from source
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The previous methods (using **pip** with and without Anaconda) install the latest 
-release of **DREAMTools**. If you prefer to use the source code, you can also get
- the github repository and install **DREAMTools** as follows (dependencies such 
-as numpy or scipy will need to be compiled if not found)::
+The command::
+
+    pip install dreamtools
+    
+install the latest release of **DREAMTools**. If you prefer to use the source code, you can also get the github repository and install **DREAMTools** as 
+follows (dependencies such as numpy or scipy will need to be compiled if 
+not found)::
 
 
    git clone git@github.com:dreamtools/dreamtools.git
@@ -152,7 +177,7 @@ To obtain some help, type::
 
 You should see a list of challenges: D2C1,D2C3, D2C3,... Those are aliases to 
 DREAM challenges. Information about a challenge can be (in general) obtained
- from the Synapse page of the challenge using the --onweb option::
+from the Synapse page of the challenge using the --onweb option::
 
     dreamtools --challenge D6C3 --onweb
 
@@ -187,7 +212,7 @@ Note that some challenges (like the D8C1 challenge) have sub-challenges. For ins
 
     dreamtools --challenge D8C1 --download-template --sub-challenge SC1A
 
-.. seealso:: In D8C1, you will also need to accept the conditions of use 
+.. note:: In D8C1, you will also need to accept the conditions of use 
     of the data on a Synapse page, which should pop up.
 
 The sub-challenge names can be obtained using --info option (see here above). Similarly to the simpler case shown above, you can now score that submission as follows::  
