@@ -81,7 +81,8 @@ See below for more details about the usage of the standalone application.
 Installation
 ---------------
 
-Although there is a dedicated documentation related to the :ref:`installation` of **DREAMTools**, we provide here below a brief summary.
+Although there is a dedicated documentation related to the :ref:`installation`  (in doc/source/installation.rst) of **DREAMTools**, we provide here below 
+a brief summary.
 
 
 Familiar with Python ecosystem ?
@@ -111,7 +112,7 @@ You will need to choose between 2 versions of Python (2.X or 3.5). Since **DREAM
 compatible with Python 2.7 and 3.5, the version should not matter. **Note, however, that 
 for Windows' users, we would recommend to use Python 2.7** (see :ref:`installation` for explanations).
 
-Please visit the :ref:`installation` section for detailled instructions and installation 
+Please visit the :ref:`installation` (doc/source/installation.rst) section for detailled instructions and installation 
 scripts to install **DREAMTools**.
 
 
