@@ -23,13 +23,12 @@ except ImportError:
 #else:
 ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"])
 
-
 #ext_modules = []
 
 
 _MAJOR               = 1
 _MINOR               = 2
-_MICRO               = 3
+_MICRO               = 4
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 

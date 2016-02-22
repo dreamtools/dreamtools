@@ -81,8 +81,7 @@ See below for more details about the usage of the standalone application.
 Installation
 ---------------
 
-Although there is a dedicated documentation related to the :ref:`installation`  of ** DREAMTools** (in doc/source/installation.rst), we provide here below 
-a brief summary.
+Although there is a dedicated documentation related to the :ref:`installation`  of **DREAMTools** (in doc/source/installation.rst), we provide here below a brief summary.
 
 
 Familiar with Python ecosystem ?
