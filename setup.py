@@ -28,7 +28,7 @@ ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"])
 
 _MAJOR               = 1
 _MINOR               = 2
-_MICRO               = 4
+_MICRO               = 5
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 
@@ -65,6 +65,11 @@ metainfo = {
 with open('README.rst') as f:
     readme = f.read()
 
+packages = find_packages()
+# exclude test (somehow prevent conda recipes to work properly since test is
+# considered as an independent package)
+packages = [this for this in packages if this.startswith('test') is False]
+
 
 setup(
     name             = 'dreamtools',
@@ -83,7 +88,7 @@ setup(
     classifiers      = metainfo['classifiers'],
 
     zip_safe=False,
-    packages = find_packages(),
+    packages = packages,
     # package installation
 
     include_package_data = True,
@@ -96,10 +101,9 @@ setup(
         },
 
     install_requires = ['cython', 'numpy', 'matplotlib', 'pandas', 
-        'easydev>=0.9.10', 'fitter', 'synapseclient', 'tabulate', 'scipy',
+        'easydev>=0.9.11', 'fitter', 'synapseclient', 'tabulate', 'scipy',
         'biokit','xlrd', 'numexpr', 'scikit-learn'],
 
-    #ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"]),
     ext_modules = ext_modules,
 
     entry_points = {

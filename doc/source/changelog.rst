@@ -2,6 +2,11 @@ ChangeLog
 ==============
 
 
+1.2.5
+--------
+
+* More cleanup for conda (removing tests from the distribution)
+
 1.2.4
 ---------
 

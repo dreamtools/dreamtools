@@ -35,7 +35,6 @@ recursive-include dreamtools/dream5/D5C1/data *
 recursive-include dreamtools/dream6/D6C4/goldstandard *
 recursive-include dreamtools/dream6/D6C4/templates *
 recursive-include dreamtools/dream6/D6C4/data *
-recursive-include dreamtools/dream6/D6C4/codeanddata *
 recursive-include dreamtools/dream6/D6C3/goldstandard *
 recursive-include dreamtools/dream6/D6C3/templates *
 recursive-include dreamtools/dream6/D6C3/data *
@@ -56,8 +55,6 @@ recursive-include dreamtools/dream8dot5/D8dot5C1/goldstandard *
 recursive-include dreamtools/dream8dot5/D8dot5C1/templates *
 recursive-include dreamtools/dream9/D9C1/goldstandard *
 recursive-include dreamtools/dream9/D9C1/templates *
-recursive-include dreamtools/dream9/D9C2/templates *
-recursive-include dreamtools/dream9/D9C3/templates *
 
 recursive-include dreamtools/dream8/D8C1/data *.csv *.json *dat
 recursive-exclude dreamtools/dream6/D6C4/codeanddata *
