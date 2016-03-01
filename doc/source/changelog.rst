@@ -2,6 +2,13 @@ ChangeLog
 ==============
 
 
+1.2.6
+-------
+
+* CHANGES: since dreamtools is now in bioconda, we removed the installation
+scripts conda_install.bat and conda_install.sh. Doc updates.
+
+
 1.2.5
 --------
 
