@@ -23,7 +23,8 @@ DREAMTools
                       test coverage is about 80%.
 :Contributions: Please join https://github.com/dreamtools/dreamtools and share your notebooks https://github.com/dreamtools/dreamtools/notebooks
 
-:Online documentation: `On pypi website <http://pythonhosted.org/dreamtools/>`_
+:Online documentation: `On read the doc <dreamtools.readthedocs.org>`_ 
+
 :Issues and bug reports: `On github <https://github.com/dreamtools/dreamtools/issues>`_
 :How to cite: Cokelaer T, Bansal M, Bare C et al. DREAMTools: a Python 
     package for scoring collaborative challenges [version 1; referees: 
