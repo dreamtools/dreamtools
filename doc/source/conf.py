@@ -39,7 +39,7 @@ version = pkg_resources.require(pkg_name)[0].version
 release = version
 author = "Thomas Cokelaer and the DREAMTools developers"
 title = "DREAMTools"
-copyright = author + ", 2014"
+copyright = author + ", 2015-2016"
 project = "DREAMTools"
 
 
@@ -97,7 +97,7 @@ copyright = copyright
 # built documents.
 #
 # The short X.Y version.
-version = version
+version = 'Current version: ' + str(version) 
 # The full version, including alpha/beta/rc tags.
 release = release
 
@@ -145,6 +145,11 @@ modindex_common_prefix = ["dreamtools."]
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
 html_theme = 'standard'
+on_rtd = os.environ.get("READTHEDOCS", None) == True
+if not on_rtd:
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -203,7 +208,7 @@ html_sidebars = {
 
 # If false, no module index is generated.
 html_use_modindex = True
-
+html_domain_indices = True
 # If false, no index is generated.
 html_use_index = True
 
@@ -211,11 +216,11 @@ html_use_index = True
 html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-#html_show_sourcelink = True
-#html_copy_source = False
+html_show_sourcelink = True
+html_copy_source = True
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
-#html_show_sphinx = True
+html_show_sphinx = True
 
 # If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
 #html_show_copyright = True
