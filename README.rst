@@ -124,6 +124,7 @@ Here below are 4 steps checked on Unix and Windows platforms.
 
     sh conda_install.sh python=2
 
+
 Similarly for **For Windows**:
 
 #. Download Anaconda2 (Python2) for windows
