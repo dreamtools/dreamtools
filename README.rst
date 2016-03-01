@@ -96,6 +96,9 @@ windows terminal)::
     pip install cython
     pip install dreamtools
 
+If you do not have dependencies installed yet (e.g pandas, numpy, scipy), this
+make take a while (e.g., 10-15 minutes). If you are in a hurry, see the Anaconda
+solution here below.
 
 If you are new to Python
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -105,23 +108,21 @@ If you are not familiar with Python, or have issues with the previous method
 use the `Anaconda <https://www.continuum.io/downloads>`_ solution.
 
 Anaconda is a free Python distribution. It includes most popular Python packages
-for science and data analysis. Anaconda will install some of the software
-required by **DREAMTools**. Anaconda has also some dedicated channels. One of
-them called **bioconda** complements the default packages provided by the
-default channel with a set of packages dedicated to life science.
+for science and data analysis and has dedicated channels. One such channel is
+called **bioconda** and complements the default channel (conda) with a set of 
+packages dedicated to life science.
 
-One such channel is the **bioconda** channel where we have included
-**DREAMTools**. The installation works in two steps. First, add the bioconda
-channel to your environment::
+We have included **DREAMTools** in **bioconda**. So, once Anaconda is installed, 
+you first need to add **bioconda** channel to your environment (and R)::
 
     conda config --add channels r
     conda config --add channels bioconda
 
-This should be done only once. Then, install **DREAMTools**::
+This should be done only once. Then, install **DREAMTools** itself::
 
     conda install dreamtools
 
-This will install **DREAMTools** in the default conda environment. If you wish
+This command should install **DREAMTools** in your default conda environment. If you wish
 to try **DREAMTools** in another environment (e.g different python version), you
 would need to create a new one and then install **DREAMTools** in that
 environment::

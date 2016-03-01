@@ -6,137 +6,78 @@
 Installation
 ===============
 
-You know Python, you know what you're doing:
------------------------------------------------
+Familiar with Python ecosystem ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**DREAMTools** releases are posted on Pypi repository. It your system is already configured (you have **pip** and all libraries for development), these commands should install dreamtools and its dependencies (e.g., numpy, scipy, pandas...)::
+If you are familiar with Python and the **pip** application and your system
+is already configured (compilers, development libraries available)), these
+two commands should install **DREAMTools** and its dependencies (in unix or
+windows terminal)::
 
     pip install cython
     pip install dreamtools
 
-If you have issues, please fill a report with the error message,  python version, platform (https://github.com/dreamtools/dreamtools/issues).
+If you do not have dependencies installed yet (e.g pandas, numpy, scipy), this
+make take a while (e.g., 10-15 minutes). If you are in a hurry, see the Anaconda
+solution here below.
 
-Please see also the section here below about  "Choosing between Python2.7 or Python3.5", especially for Windows' users under Python3.
+If you are new to Python
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+If you are not familiar with Python, or have issues with the previous method
+(e.g., compilation failure), or do not have root access, we would recommend to
+use the `Anaconda <https://www.continuum.io/downloads>`_ solution.
 
-You are a Python's beginner or use Anaconda:
----------------------------------------------------
+Anaconda is a free Python distribution. It includes most popular Python packages
+for science and data analysis and has dedicated channels. One such channel is
+called **bioconda** and complements the default channel (conda) with a set of 
+packages dedicated to life science.
 
-For all platforms, we would recommend to use the Anaconda solution. Please visit https://www.continuum.io/downloads
-Choose Python 2 or 3 but install only one version of Anaconda (from that version you can create environments for any Python version). For Window users, please choose Python2.
+We have included **DREAMTools** in **bioconda**. So, once Anaconda is installed, 
+you first need to add **bioconda** channel to your environment (and R)::
 
-Under Linux and Mac
-^^^^^^^^^^^^^^^^^^^^^^
+    conda config --add channels r
+    conda config --add channels bioconda
 
-Once Anaconda is available, you can install DREAMTools within a new **conda** environment.
+This should be done only once. Then, install **DREAMTools** itself::
 
-There are 3 steps to follow:
+    conda install dreamtools
 
-#. create a specific environment and activate it
-#. install dependencies
-#. install DREAMTools
-
-Here below are the instructions for a Python2.7 environment.
-
-Open a shell and then type::
-
-    conda create -n dreamtools_py2 python=2.7
-
-Then, activate the environment (you would need to type that command each time you open a new anaconda prompt)::
-
-    source activate dreamtools_py2
-
-Install some dependencies::
-
-    conda install matplotlib numpy scipy cython matplotlib pandas scikit-learn numexpr ipython
-
-Note that for python2, you should also install gevent::
-
-    conda install gevent
-
-Finally, install **DREAMTools** itself::
-
-    pip install dreamtools
-
-Type this command to check that the standalone application is available::
-
-    dreamtools --help
-
-We also provide a script called `conda_install.sh <https://github.com/dreamtools/dreamtools/blob/master/conda_install.sh>`_ in the source code that does the installation for you. The script creates a conda environment called **dreamtools_py2** (or **dreamtools_py3**) and installs the **dreamtools** package from Pypi (latest official release). For Mac or Linux users save the following file in your home directory: `conda_install.sh <https://raw.githubusercontent.com/dreamtools/dreamtools/master/conda_install.sh>`_.
-
-You can then call it (for Python2 users)::
-
-    sh conda_install.sh --python 2
-
-or (for Python3 users)::
-
-    sh conda_install.sh --python 3
-
-
-Under windows
-^^^^^^^^^^^^^^^
-
-**Tested under Windows 8 (64 bit) with Anaconda for Python2.7**
-
-#. Install a compiler for windows that is compatible with Python2.7 provided in Anaconda2: http://www.microsoft.com/en-us/download/details.aspx?id=44266
-
-
-#. Download the following script: `conda_install.bat <https://raw.githubusercontent.com/dreamtools/dreamtools/master/conda_install.bat>`_.
-
-#. Start a new Anaconda shell: Start -> All Program -> Anaconda2 -> Anaconda Prompt
-
-#. Execute the script::
-
-   conda_install.bat
-
-The instructions are equivalent to the Linux/Mac case::
-
-    conda create --name dreamtools_py2 python=2.7
-    activate dreamtools_py2
-    conda install numpy scipy cython matplotlib pandas scikit-learn gevent
-    conda install numpexpr ipython
-    pip install dreamtools
-    pip install -U --no-deps
-    activate dreamtools_py2
-
-Each time you open a new shell, you will need to activate the conda
+This command should install **DREAMTools** in your default conda environment. If
+you wish
+to try **DREAMTools** in another environment (e.g different python version), you
+would need to create a new one and then install **DREAMTools** in that
 environment::
 
-    activate dreamtools_py2
+    conda create --name test_dreamtools --python 3.5
+    source activate test_dreamtools
+    conda install dreamtools
+
+
+If there is an issue, please visit the :ref:`installation` page
+(doc/source/installation.rst) where details about the installation scripts can
+be found.
 
 
 
-Choosing between Python2.7 or Python3.5
+Note for Windows
 =======================================
 
-**DREAMTools** is compatible with Python2 and Python3. More specifically, it is tested (under Travis) for Python 2.7, 3.3, 3.4 and 3.5 under a Linux distribution (Ubuntu).
-
-If you know Python, you can choose either Python2 or Python3.
-
-Otherwise, if you decided to go for Anaconda (highly recommended), then 
-you can choose Python2 or Python3 except for Window's user who should 
-use Python2.
-
-In addition, you will need to install a compiler that is compatible with what
+If you decide to compile the source yourself under windows, you will 
+have to install a compiler that is compatible with what
 was used by Anaconda to compile the libraries such as numpy. This should not
 be a worry under Linux or Mac platforms. However, under Windows, pre-compiled 
 packages (e.g., Cython) used a specific version of 
 a compiler (http://docs.continuum.io/anaconda/faq#how-did-you-compile-cpython).
-It appears to be Visual Studio version 2008 for Python 2.7 and is provided by Microsoft (http://www.microsoft.com/en-us/download/details.aspx?id=44266) for free. For python3, there is no specific compiled provided (Jan 2016).  If you still want to go for Python3, you should get Visual C version 2010 (http://stackoverflow.com/questions/29909330/microsoft-visual-c-compiler-for-python-3-4).
+
+It appears to be Visual Studio version 2008 for Python 2.7 and is provided by Microsoft (http://www.microsoft.com/en-us/download/details.aspx?id=44266) for free. However, for python3, there is no specific compiled provided (Jan 2016). If you still want to go for Python3, you should get Visual C version 2010 (http://stackoverflow.com/questions/29909330/microsoft-visual-c-compiler-for-python-3-4).
 
 
-Note for Python3.X
-==========================
+Note for Python2.X and Python3.X
+==================================
 
-**DREAMTools** is compatible with Python2 and Python3. However, **DREAMTools** depends on a package (synapseclient) that is currently not available for Python3 on Pypi website (pip won't provide a Python3-compatible package). As a temporary
-solution, we forked this package and provide a compatible version.  You will need to install it manually as follows::
-
-    pip install git+https://git@github.com/cokelaer/synapsePythonClient.git@v1.4.0_py3_dreamtools#egg=synapsePythonClient
-
-
-
-
-
-
-
+**DREAMTools** is compatible with Python2.7, Python3.4, Python3.5. The
+**bioconda** channel provide these 3 versions. If you still want to use
+Python2.6 or 3.3, **DREAMTools** may work as well but you would need to compile
+the dependencies yourself.
 
