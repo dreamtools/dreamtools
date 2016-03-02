@@ -153,27 +153,17 @@ not found)::
 
 
 
-Available challenges
--------------------------
+Available challenges, templates and gold standards
+--------------------------------------------------------
 
 **DREAMTools** includes about 80% of DREAM challenges from DREAM2 to DREAM9.5
 Please visit `F1000 link <http://f1000research.com/articles/4-1030/v1>`_  (Table 1).
 
-
-Gold standards
------------------
-
-All gold standards are retrieved automatically. You can obtain the location of a gold standard file as
-follows::
+All gold standards and templates are retrieved automatically. Once downloaded, you will get
+the location of the file. For instance::
 
     dreamtools --challenge D6C3 --download-goldstandard
-
-Contributions
----------------
-
-You can contribute by editing the docs on `dreamtools.readthedocs.org`_ or
-you think you encounter a bug, please fill an issue on https://github.com/dreamtools/dreamtools .
-If you wish to contribute, you can either fill a issue, or fork the repository.
+    dreamtools --challenge D6C3 --download-template
 
 
 See `online documentation on <dreamtools.rtd.org for details>`_.

@@ -207,18 +207,14 @@ Again, you should get an output with the results::
      meanAUROC: 0.803628919403
 
 
-Available challenges
-=============================
+Available challenges, templates and gold standards
+===================================================
 
 **DREAMTools** includes about 80% of DREAM challenges from DREAM2 to DREAM9.5
 Please visit `F1000 link <http://f1000research.com/articles/4-1030/v1>`_  (Table 1).
 
 
-Gold standards
-=============================
-
-All gold standards are retrieved automatically. You can obtain the location of a gold standard file as
-follows::
+All gold standards and templates are retrieved automatically. You can obtain the location of a gold standard file as follows::
 
     dreamtools --challenge D6C3 --download-goldstandard
 
