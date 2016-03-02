@@ -131,10 +131,7 @@ environment::
     conda install dreamtools
 
 
-If there is an issue, please visit the :ref:`installation` page (doc/source/installation.rst) where details about the installation scripts can be found.
-
-
-See `online documentation on RTD <http://dreamtools.rtd.org>`_ for details.
+If there is an issue or wish to install from source, please visit the `online documentation on RTD <http://dreamtools.readthedocs.org/en/latest/#installation>`_ for details.
 
 
 
@@ -151,5 +148,5 @@ the location of the file. For instance::
     dreamtools --challenge D6C3 --download-template
 
 
-See `online documentation on RTD <http://dreamtools.rtd.org for details>`_ for details.
+See `online documentation on RTD <http://dreamtools.readthedocs.org/>`_ for details.
 
