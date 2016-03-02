@@ -5,8 +5,12 @@ ChangeLog
 1.2.6
 -------
 
-* CHANGES: since dreamtools is now in bioconda, we removed the installation
-scripts conda_install.bat and conda_install.sh. Doc updates.
+:2 March 2016:
+
+* CHANGES: 
+    - since dreamtools is now in bioconda, we removed the installation
+      scripts conda_install.bat and conda_install.sh. 
+    - Doc updates.
 
 
 1.2.5
@@ -73,24 +77,11 @@ first official release synchronized with submission to F1000
 * adding onweb option in the executable.
 * settings now uses CustomConfig class from easydev rather than a local
   implementation.
-
-0.10.3 to 0.10.5
------------------
-
 * fixing the distribution (MANIFEST)
 * adding a docker example
 * fixing Login to be interactive not jsut an error
-
-
-0.10.1 and 0.10.2
--------------------------
-
-Fix MANIFEST to add missing cython file and README.rst
-
-0.10.0
---------
-
-All challenges from DREAM2 to DREAM8 are included except for D6C2, D7C2 and
+* Fix MANIFEST to add missing cython file and README.rst
+* All challenges from DREAM2 to DREAM8 are included except for D6C2, D7C2 and
 D8C3. D6C2 and D7C2 may be included soon and D8C3 is available on an external
 site. D8.5 and D9.5 and D9C1 also available.
 

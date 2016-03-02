@@ -49,14 +49,10 @@ to try **DREAMTools** in another environment (e.g different python version), you
 would need to create a new one and then install **DREAMTools** in that
 environment::
 
-    conda create --name test_dreamtools --python 3.5
+    conda create --name test_dreamtools python=3.5
     source activate test_dreamtools
     conda install dreamtools
 
-
-If there is an issue, please visit the :ref:`installation` page
-(doc/source/installation.rst) where details about the installation scripts can
-be found.
 
 
 Installation from source
