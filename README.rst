@@ -134,22 +134,7 @@ environment::
 If there is an issue, please visit the :ref:`installation` page (doc/source/installation.rst) where details about the installation scripts can be found.
 
 
-Installation from source
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The command::
-
-    pip install dreamtools
-
-install the latest release of **DREAMTools**. If you prefer to use the source code, you can also get the github repository and install **DREAMTools** as
-follows (dependencies such as numpy or scipy will need to be compiled if
-not found)::
-
-
-   git clone git@github.com:dreamtools/dreamtools.git
-   cd dreamtools
-   python setup.py install
-
+See `online documentation on RTD <http://dreamtools.rtd.org>`_ for details.
 
 
 
@@ -166,5 +151,5 @@ the location of the file. For instance::
     dreamtools --challenge D6C3 --download-template
 
 
-See `online documentation on <dreamtools.rtd.org for details>`_.
+See `online documentation on RTD <http://dreamtools.rtd.org for details>`_ for details.
 
