@@ -80,13 +80,13 @@ See below for more details about the usage of the standalone application.
 
 
 Installation
-=======================
+-------------------
 
 Although there is a dedicated documentation related to the :ref:`installation`  of **DREAMTools** (in doc/source/installation.rst), we provide here below a brief summary.
 
 
 Familiar with Python ecosystem ?
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you are familiar with Python and the **pip** application and your system
 is already configured (compilers, development libraries available)), these
@@ -101,7 +101,7 @@ make take a while (e.g., 10-15 minutes). If you are in a hurry, see the Anaconda
 solution here below.
 
 If you are new to Python
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you are not familiar with Python, or have issues with the previous method
 (e.g., compilation failure), or do not have root access, we would recommend to
@@ -138,7 +138,7 @@ If there is an issue, please visit the :ref:`installation` page (doc/source/inst
 
 
 The **dreamtools** executable
-------------------------------------------
+====================================
 
 **DREAMTools** provides functions to obtain the template and gold
 standard(s) used in a given challenge. Some challenge have restrictions
@@ -208,47 +208,27 @@ Again, you should get an output with the results::
 
 
 Available challenges
--------------------------
+=============================
 
 **DREAMTools** includes about 80% of DREAM challenges from DREAM2 to DREAM9.5
 Please visit `F1000 link <http://f1000research.com/articles/4-1030/v1>`_  (Table 1).
 
 
 Gold standards
------------------
+=============================
 
 All gold standards are retrieved automatically. You can obtain the location of a gold standard file as
 follows::
 
     dreamtools --challenge D6C3 --download-goldstandard
 
-Issues
------------
+.. toctree::
+    :maxdepth: 2
 
-Please fill bug report in https://github.com/dreamtools/dreamtools/issues
-
-
-Contributions
----------------
-
-You can contribute by editing the docs on `dreamtools.readthedocs.org`_ or
-you think you encounter a bug, please fill an issue on https://github.com/dreamtools/dreamtools .
-If you wish to contribute, you can either fill a issue, or fork the repository.
-
-For developers
-----------------
-
-Please see the `developers section <dreamtools.readthedocs.org/en/latest/developers.html>`_.
-
-Credits
------------
-
-Please see the `developers section <dreamtools.readthedocs.org/en/latest/credits.html>`_.
-
-
-More documentation ?
-------------------------
-
-Please see the doc directory, which is processed and posted on
-`pypi website <http://pythonhosted.org/dreamtools/>`_ with each release.
-
+    installation.rst
+    userguide.rst
+    developers.rst
+    references.rst
+    credits.rst
+    changelog
+    faqs

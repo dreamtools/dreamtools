@@ -74,9 +74,8 @@ A standalone application can be used from a terminal. The executable is called *
 
     dreamtools --challenge D6C3 --submission path_to_a_file
 
-See below for more details about the usage of the standalone application.
-
-
+See `online documentation on <dreamtools.rtd.org for details>`_ for more details
+and examples. The source code also provides a set of IPython/Jupyter notebooks.
 
 
 Installation
@@ -153,75 +152,6 @@ not found)::
 
 
 
-The **dreamtools** executable
-------------------------------------------
-
-**DREAMTools** provides functions to obtain the template and gold
-standard(s) used in a given challenge. Some challenge have restrictions
-of data access and require the user to accept conditions of use. Such data
-are stored on http://www.synapse.org. You will need to create a
-login/password on www.synapse.org website. The first time you run a
-challenge within DREAMTools, files will be downloaded from Synapse. You
-may be asked to accept some conditions of use (e.g. D8C1 challenge)
-directly on the website.
-
-For users, **DREAMTools** package provides an executable called
-**dreamtools**, which should be installed automatically.
-
-To obtain some help, type::
-
-    dreamtools --help
-
-You should see a list of challenges: D2C1,D2C3, D2C3,... Those are aliases to
-DREAM challenges. Information about a challenge can be (in general) obtained
-from the Synapse page of the challenge using the --onweb option::
-
-    dreamtools --challenge D6C3 --onweb
-
-Brief information can also be printed in the terminal as follows::
-
-    dreamtools --challenge D6C3 --info
-
-Next, you may want to score one of your submission. We provide access to
-templates for each challenge. For instance::
-
-    dreamtools --challenge D6C3 --download-template
-
-This command prints the location of the template on your system. Copy that file
-in local/temporary place. Now that you have a copy of the template, you can fill
-its contents with your own data and score it (let us assume it is called D6C3_template.txt)::
-
-    dreamtools --challenge D6C3 --submission D6C3_template.txt
-
-This command should print some information and the score of the submission
-for instance for the example above, we get the following results::
-
-    {'results': chi2            53.980741
-     R-square        34.733565
-     Spearman(Sp)     0.646917
-     Pearson(Cp)      0.647516
-     dtype: float64}
-
-All outputs will contain a json-like output. The synapse page of the challenge
-should give information about the scoring methodology.
-
-Note that some challenges (like the D8C1 challenge) have sub-challenges. For instance in D8C1, there are 4 sub-challenges names (e.g., SC1A). So, you would need to be more specific and to provide the name of a sub-challenge. For instance::
-
-    dreamtools --challenge D8C1 --download-template --sub-challenge SC1A
-
-.. note:: In D8C1, you will also need to accept the conditions of use
-    of the data on a Synapse page, which should pop up.
-
-The sub-challenge names can be obtained using --info option (see here above). Similarly to the simpler case shown above, you can now score that submission as follows::
-
-    dreamtools --challenge D8C1 --sub-challenge SC1A \
-        --submission D8C1_example.zip
-
-Again, you should get an output with the results::
-
-     Solution for alphabeta-Network.zip in challenge d8c1 (sub-challenge sc1a) is :
-     meanAUROC: 0.803628919403
-
 
 Available challenges
 -------------------------
@@ -238,12 +168,6 @@ follows::
 
     dreamtools --challenge D6C3 --download-goldstandard
 
-Issues
------------
-
-Please fill bug report in https://github.com/dreamtools/dreamtools/issues
-
-
 Contributions
 ---------------
 
@@ -251,20 +175,6 @@ You can contribute by editing the docs on `dreamtools.readthedocs.org`_ or
 you think you encounter a bug, please fill an issue on https://github.com/dreamtools/dreamtools .
 If you wish to contribute, you can either fill a issue, or fork the repository.
 
-For developers
-----------------
 
-Please see the `developers section <dreamtools.readthedocs.org/en/latest/developers.html>`_.
-
-Credits
------------
-
-Please see the `developers section <dreamtools.readthedocs.org/en/latest/credits.html>`_.
-
-
-More documentation ?
-------------------------
-
-Please see the doc directory, which is processed and posted on
-`pypi website <http://pythonhosted.org/dreamtools/>`_ with each release.
+See `online documentation on <dreamtools.rtd.org for details>`_.
 

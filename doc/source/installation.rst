@@ -7,7 +7,7 @@ Installation
 ===============
 
 Familiar with Python ecosystem ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
 
 If you are familiar with Python and the **pip** application and your system
 is already configured (compilers, development libraries available)), these
@@ -22,7 +22,7 @@ make take a while (e.g., 10-15 minutes). If you are in a hurry, see the Anaconda
 solution here below.
 
 If you are new to Python
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
 
 If you are not familiar with Python, or have issues with the previous method
 (e.g., compilation failure), or do not have root access, we would recommend to
@@ -60,7 +60,7 @@ be found.
 
 
 Installation from source
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
 
 The command::
 
@@ -80,7 +80,7 @@ not found)::
 
 
 Note for Windows
-=======================================
+-----------------------------------
 
 If you decide to compile the source yourself under windows, you will 
 have to install a compiler that is compatible with what
@@ -93,7 +93,7 @@ It appears to be Visual Studio version 2008 for Python 2.7 and is provided by Mi
 
 
 Note for Python2.X and Python3.X
-==================================
+-----------------------------------
 
 **DREAMTools** is compatible with Python2.7, Python3.4, Python3.5. The
 **bioconda** channel provide these 3 versions. If you still want to use

@@ -29,6 +29,19 @@ a file called **.synapseConfig** in your home directory and add this content.
 The **dreamtools** executable
 --------------------------------
 
+**DREAMTools** provides functions to obtain the template and gold
+standard(s) used in a given challenge. Some challenge have restrictions
+of data access and require the user to accept conditions of use. Such data
+are stored on http://www.synapse.org. You will need to create a
+login/password on www.synapse.org website. The first time you run a
+challenge within DREAMTools, files will be downloaded from Synapse. You
+may be asked to accept some conditions of use (e.g. D8C1 challenge)
+directly on the website.
+
+For users, **DREAMTools** package provides an executable called
+**dreamtools**, which should be installed automatically.
+
+
 In a shell, type ::
 
     dreamtools --help
