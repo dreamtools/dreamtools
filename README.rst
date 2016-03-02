@@ -81,7 +81,7 @@ and examples. The source code also provides a set of IPython/Jupyter notebooks.
 Installation
 ---------------
 
-Although there is a dedicated documentation related to the :ref:`installation`  of **DREAMTools** (in doc/source/installation.rst), we provide here below a brief summary.
+There is a dedicated page on  `online documentation on RTD <http://dreamtools.readthedocs.org/en/latest/#installation>`_ but here is a quick installation guide.
 
 
 Familiar with Python ecosystem ?
