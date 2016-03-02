@@ -39,10 +39,10 @@ DREAMTools
 .. contents::
 
 Overview
-----------------
+==============
 
 Motivation
-~~~~~~~~~~~~
+-------------
 
 **DREAMTools** aims at sharing code used in the scoring of `DREAM <http://dreamchallenges.org>`_ challenges that pose fundamental questions about system biology and translational medicine.
 
@@ -58,7 +58,7 @@ may be provided (e.g., in D8C1 challenge).
 Note that many scoring functions requires data hosted on `Synapse <www.synapse.org>`_ . We therefore strongly encourage you to **register to Synapse**. Depending on the challenge, you may be requested to accept terms of agreements to use the data.
 
 Usage
-~~~~~~~~~
+------------
 **DREAMTools** can be used by developers as a Python package::
 
     >>> from dreamtools import D6C3
@@ -80,13 +80,13 @@ See below for more details about the usage of the standalone application.
 
 
 Installation
----------------
+=======================
 
 Although there is a dedicated documentation related to the :ref:`installation`  of **DREAMTools** (in doc/source/installation.rst), we provide here below a brief summary.
 
 
 Familiar with Python ecosystem ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
 
 If you are familiar with Python and the **pip** application and your system
 is already configured (compilers, development libraries available)), these
@@ -101,7 +101,7 @@ make take a while (e.g., 10-15 minutes). If you are in a hurry, see the Anaconda
 solution here below.
 
 If you are new to Python
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 If you are not familiar with Python, or have issues with the previous method
 (e.g., compilation failure), or do not have root access, we would recommend to
@@ -135,23 +135,6 @@ environment::
 If there is an issue, please visit the :ref:`installation` page (doc/source/installation.rst) where details about the installation scripts can be found.
 
 
-Installation from source
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The command::
-
-    pip install dreamtools
-
-install the latest release of **DREAMTools**. If you prefer to use the source code, you can also get the github repository and install **DREAMTools** as
-follows (dependencies such as numpy or scipy will need to be compiled if
-not found)::
-
-
-   git clone git@github.com:dreamtools/dreamtools.git
-   cd dreamtools
-   python setup.py install
-
-  
 
 
 The **dreamtools** executable
