@@ -71,8 +71,7 @@ If you are not familiar with compilation and Python, you may use `conda <https:/
     conda config --add channels bioconda
     conda install dreamtools
 
-See `Installation section on RTD <http://dreamtools.readthedocs.org/en/latest/#installation>`_ 
-for details.
+See `Installation section on RTD <http://dreamtools.readthedocs.org/en/latest/installation.html#installation>`_ for details.
 
 Usage
 ~~~~~~~~~
