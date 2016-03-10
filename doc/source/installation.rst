@@ -87,6 +87,16 @@ a compiler (http://docs.continuum.io/anaconda/faq#how-did-you-compile-cpython).
 
 It appears to be Visual Studio version 2008 for Python 2.7 and is provided by Microsoft (http://www.microsoft.com/en-us/download/details.aspx?id=44266) for free. However, for python3, there is no specific compiled provided (Jan 2016). If you still want to go for Python3, you should get Visual C version 2010 (http://stackoverflow.com/questions/29909330/microsoft-visual-c-compiler-for-python-3-4).
 
+From Anaconda documentation, Cython was compiled under windows with (March 2016):
+
+#. Visual Studio 2008 for Python 2.6 and 2.7
+#. VS 2010 for Python 3.3 and 3.4
+#. VS 2015 for Python 3.5
+
+Even though you do not have Microsoft Visual Studio, you can get the Visual Redistributable Packages that install run-time components that are required to tun C++ applications built using Visual Studio. 
+
+For VS2015, see http://www.microsoft.com/en-us/download/details.aspx?id=44266
+
 
 Note for Python2.X and Python3.X
 -----------------------------------

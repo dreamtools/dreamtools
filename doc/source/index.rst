@@ -106,7 +106,7 @@ Please visit `F1000 link <http://f1000research.com/articles/4-1030/v1>`_  (Table
 
 All gold standards and templates are retrieved automatically. You can obtain the location of a gold standard file as follows::
 
-    dreamtools --challenge D6C3 --download-goldstandard
+    dreamtools --challenge D6C3 --download-gold-standard
 
 
 Full documentation

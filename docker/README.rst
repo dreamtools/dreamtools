@@ -1,6 +1,9 @@
 Docker example
 ===================
 
+Docker will not be supported. We now provide a bioconda pre-compiled verison.
+
+
 In principle, you should be able to install **DREAMTools** without problems
 using **pip** tool. However, we provide here a docker image http://www.docker.io
 that may be use to try **DREAMTools**. This provides a FEDORA/Linux docker.
