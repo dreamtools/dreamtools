@@ -65,7 +65,7 @@ dependencies::
     pip install cython
     pip install dreamtools
 
-If you are not familiar with compilation and Python, you may use `conda https://www.continuum.io/downloads`_::
+If you are not familiar with compilation and Python, you may use `conda <https://www.continuum.io/downloads>`_::
 
     conda config --add channels r
     conda config --add channels bioconda
