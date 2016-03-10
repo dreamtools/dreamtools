@@ -59,11 +59,13 @@ Note that many scoring functions requires data hosted on `Synapse <www.synapse.o
 Installation
 -----------------
 
-::
+The first method requires the **pip** tools to be installed and compilation of
+dependencies::
 
+    pip install cython
     pip install dreamtools
 
-or with conda::
+If you are not familiar with compilation and Python, you may use `conda https://www.continuum.io/downloads`_::
 
     conda config --add channels r
     conda config --add channels bioconda
