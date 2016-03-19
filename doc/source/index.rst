@@ -2,6 +2,8 @@
 DREAMTools
 ############################################################################
 
+|version|, |today|
+
 .. image:: https://badge.fury.io/py/dreamtools.svg
     :target: https://pypi.python.org/pypi/dreamtools
 
