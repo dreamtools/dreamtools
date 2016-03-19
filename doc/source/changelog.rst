@@ -2,15 +2,24 @@ ChangeLog
 ==============
 
 
-1.2.6
--------
+1.3.0 16/03/2016
+---------------------
 
-:2 March 2016:
+* stable version synchronised with F1000 v2 paper.
+* add a new notebook example (D9C1)
+* all Challenge constructor have now the following parameters: verbose, download
+  and **kargs so that if another parameter is added, no code will need to be
+  changed. 
+* documentation added for D7C4 to install Perl dependencies
+
+1.2.6 02/03/2016
+-------------------------
 
 * CHANGES: 
     - since dreamtools is now in bioconda, we removed the installation
       scripts conda_install.bat and conda_install.sh. 
     - Doc updates.
+    - conda recipes in ./conda removed (now in bioconda-recipes project)
 
 
 1.2.5

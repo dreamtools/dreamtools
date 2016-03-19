@@ -35,9 +35,10 @@ class D2C5(Challenge, D3D4ROC, DREAM2):
         s.score(filename, subname) 
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
+
         """.. rubric:: constructor"""
-        super(D2C5, self).__init__('D2C5')
+        super(D2C5, self).__init__('D2C5', verbose, download, **kargs)
         self._init()
 
         # although there is no sub challenges per se,

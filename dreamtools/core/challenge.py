@@ -25,6 +25,9 @@ __all__ = ['LocalData', 'Challenge']
 
 
 class LocalData(object):
+    """Used by :class:`Challenge`
+
+    """
     def __init__(self):
         # dynamically find the path of the module.
         filename = os.path.abspath(sys.modules[self.__module__].__file__)
@@ -36,6 +39,7 @@ class LocalData(object):
         return filename
 
     def getpath_template(self, filename):
+        """Return full path of the template location named *filename*"""
         filename = self._pj([self.classpath, 'templates', filename])
         assert os.path.exists(filename), 'file %s does not exists' % filename
         return filename
@@ -69,7 +73,7 @@ class Challenge(LocalData):
         s.client = client
 
     """
-    def __init__(self, challenge_name, verbose=False):
+    def __init__(self, challenge_name, verbose=False, download=True, **kargs):
         """.. rubric:: constructor
 
         :param str challenge_name: Must be formatted as DXCY
@@ -106,7 +110,14 @@ class Challenge(LocalData):
 
         self.client = None
 
+        # If the standalone application has --info or --onweb or the user
+        # specifically set download to False, then self._standalone is set to
+        # True
+        # This flag allows to skip the downloading from Synapse 
         self._standalone = '--info' in sys.argv or '--onweb' in sys.argv
+        if download is False: 
+            self._standalone = True
+
 
     def _init(self):
         pass
@@ -167,7 +178,6 @@ class Challenge(LocalData):
         pathname += os.sep + 'scoring.py'
         py_mod = imp.load_source('scoring', pathname)
         class_inst = getattr(py_mod, self.alias)()
-
 
         return class_inst
 
@@ -275,3 +285,14 @@ class Challenge(LocalData):
                 self.download_template(subname)
                 self.download_goldstandard(subname)
         print(self)
+
+    def onweb(self):
+        url = "https://www.synapse.org/#!Synapse:%s"
+        url = url % self.synapseId
+        print("Opening %s" % url)
+        import webbrowser
+        webbrowser.open_new(url)
+
+    def __repr__(self):
+        txt = "dreamtools.Challenge %s" % self.alias
+        return txt

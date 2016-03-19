@@ -24,11 +24,11 @@ class D5C4(Challenge, D3D4ROC):
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D5C4, self).__init__('D5C4')
+        super(D5C4, self).__init__('D5C4', verbose, download, **kargs)
         self._init()
         self.sub_challenges = []
 

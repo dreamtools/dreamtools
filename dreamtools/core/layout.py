@@ -72,11 +72,11 @@ class %(alias)s(Challenge):
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True):
         """.. rubric:: constructor
 
         """
-        super(%(alias)s, self).__init__('%(alias)s')
+        super(%(alias)s, self).__init__('%(alias)s', verbose, download)
         self._init()
         self.sub_challenges = []
 

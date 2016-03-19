@@ -18,11 +18,11 @@ class D9dot5C2(Challenge):
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D9dot5C2, self).__init__('D9dot5C2')
+        super(D9dot5C2, self).__init__('D9dot5C2', verbose, download, **kargs)
         self._init()
         self.sub_challenges = []
 

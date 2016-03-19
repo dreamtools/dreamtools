@@ -18,7 +18,10 @@ import zipfile
 
 
 class ZIP(object):
-    """Simple utility to load a ZIP file"""
+    """Simple utility to load a ZIP file
+
+    .. note:: could be moved to easydev package
+    """
 
     def __init__(self):
         pass

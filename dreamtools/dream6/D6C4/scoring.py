@@ -25,9 +25,9 @@ class D6C4(Challenge):
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor"""
-        super(D6C4, self).__init__('D6C4')
+        super(D6C4, self).__init__('D6C4', verbose, download, **kargs)
         self._init()
         self.sub_challenges = []
 

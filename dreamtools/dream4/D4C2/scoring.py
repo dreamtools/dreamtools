@@ -25,11 +25,11 @@ class D4C2(Challenge, D3D4ROC):
 
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D4C2, self).__init__('D4C2')
+        super(D4C2, self).__init__('D4C2', verbose, download, **kargs)
         self._init()
         self.sub_challenges = ['10', '100', '100_multifactorial']
 

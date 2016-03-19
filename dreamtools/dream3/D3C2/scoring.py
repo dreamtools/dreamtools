@@ -24,11 +24,11 @@ class D3C2(Challenge):
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D3C2, self).__init__('D3C2')
+        super(D3C2, self).__init__('D3C2', verbose, download, **kargs)
         self.sub_challenges = ['phospho', 'cytokine']
         self._init()
 

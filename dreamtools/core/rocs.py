@@ -16,8 +16,8 @@
 ##############################################################################
 """Provides tools related to Receiver Operating Characteristic (ROC).
 
-Those code were directly translation of Perl or matlab
-codes but we should be using scikit-learn in the future."""
+Those codes were directly translated from Perl or matlab
+codes. We should be using scikit-learn in the future."""
 import numpy as np
 
 

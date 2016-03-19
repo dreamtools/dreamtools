@@ -30,11 +30,11 @@ class D3C4(Challenge, D3D4ROC):
         as in D4C2
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D3C4, self).__init__('D3C4')
+        super(D3C4, self).__init__('D3C4', verbose, download, **kargs)
         self._init()
 
         self.sub_challenges = ['10', '100', '50']

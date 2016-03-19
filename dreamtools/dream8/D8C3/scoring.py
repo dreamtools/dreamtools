@@ -16,11 +16,11 @@ class D8C3(Challenge):
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
-    def __init__(self):
+    def __init__(self, verose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D8C3, self).__init__('D8C3')
+        super(D8C3, self).__init__('D8C3', verbose, download, **kargs)
         self.sub_challenges = []
 
         msg = "Note that this challenge is not yet part of DREAMTools.\n"

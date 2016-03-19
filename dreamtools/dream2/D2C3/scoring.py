@@ -43,9 +43,9 @@ class D2C3(Challenge, D3D4ROC, DREAM2):
     templates so we use the template names as sub-challenge names
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor"""
-        super(D2C3, self).__init__('D2C3')
+        super(D2C3, self).__init__('D2C3', verbose, download, **kargs)
 
         # although there is no sub challenges per se,
         # 12 different GS were used to score 12 types

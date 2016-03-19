@@ -21,9 +21,8 @@ class D3C1(Challenge):
         filename = s.download_template()
         s.score(filename)
     """
-
-    def __init__(self):
-        Challenge.__init__(self, "D3C1")
+    def __init__(self, verbose=True, download=True, **kargs):
+        Challenge.__init__(self, "D3C1", verbose, download, **kargs)
         # read data required for the scoring.
         self._init()
 

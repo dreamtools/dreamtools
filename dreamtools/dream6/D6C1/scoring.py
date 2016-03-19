@@ -20,11 +20,11 @@ class D6C1(Challenge):
         recall and precision from the GS and submission.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D6C1, self).__init__('D6C1')
+        super(D6C1, self).__init__('D6C1', verbose, download, **kargs)
         self._init()
         self.sub_challenges = []
 

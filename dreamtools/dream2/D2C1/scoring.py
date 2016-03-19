@@ -27,8 +27,9 @@ from dreamtools.core.rocs import D3D4ROC, DREAM2
 
 
 class D2C1(Challenge, D3D4ROC, DREAM2):
-    def __init__(self):
-        super(D2C1, self).__init__('D2C1')
+    def __init__(self, verbose=True, download=True, **kargs):
+
+        super(D2C1, self).__init__('D2C1', verbose, download, **kargs)
 
         filename = [self.classpath, "data", "BCL6_targets_and_decoys.xls"]
         filename = self._pj(filename)

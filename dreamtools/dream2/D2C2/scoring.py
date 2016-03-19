@@ -38,9 +38,10 @@ class D2C2(Challenge, D3D4ROC, DREAM2):
         s.score(filename)
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
+
         """.. rubric:: constructor"""
-        super(D2C2, self).__init__('D2C2')
+        super(D2C2, self).__init__('D2C2', verbose, download, **kargs)
 
     def download_template(self):
         """Returns a valid template"""

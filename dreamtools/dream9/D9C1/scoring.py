@@ -56,11 +56,11 @@ class D9C1(Challenge):
 
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D9C1, self).__init__('D9C1')
+        super(D9C1, self).__init__('D9C1', verbose, download, **kargs)
         self._init()
         self.sub_challenges = ['sc1', 'sc3', 'sc2']
 

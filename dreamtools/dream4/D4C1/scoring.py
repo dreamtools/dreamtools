@@ -28,11 +28,11 @@ class D4C1(Challenge):
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D4C1, self).__init__('D4C1')
+        super(D4C1, self).__init__('D4C1', verbose, download ,**kargs)
 
         self._indices_sh3 = [0, 1, 2, 4]  # gold standard for 3 was not ready
         self._indices_kinases = [5, 6, 7]

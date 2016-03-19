@@ -22,11 +22,11 @@ class D9C3(Challenge):
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D9C3, self).__init__('D9C3')
+        super(D9C3, self).__init__('D9C3', verbose, download, **kargs)
         #self._init()
         self.sub_challenges = ['sc1', 'sc2', 'sc3']
         print("GS is not released. Challenge not available.")

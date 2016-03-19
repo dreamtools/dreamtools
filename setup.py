@@ -27,8 +27,8 @@ ext_modules = cythonize(["dreamtools/dream8/D8C1/*.pyx"])
 
 
 _MAJOR               = 1
-_MINOR               = 2
-_MICRO               = 6
+_MINOR               = 3
+_MICRO               = 0
 version              = '%d.%d.%d' % (_MAJOR, _MINOR, _MICRO)
 release              = '%d.%d' % (_MAJOR, _MINOR)
 

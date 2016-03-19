@@ -18,7 +18,10 @@ DREAMTools
    :target: http://dreamtools.readthedocs.org/en/latest/?badge=latest
    :alt: Documentation Status
 
-:Python version: DREAMTools is supported for Python 2.7, 3.4 and 3.5
+:Python version: DREAMTools is supported for Python 2.7, 3.4 and 3.5.
+    Pre-compiled versions are available for Linux and MAC platforms through Anaconda
+    and the **bioconda** channel.
+
 :Note about coverage: We do not run the entire test suite on Travis, which
                       reports a 40% test coverage. Note however, that the actual
                       test coverage is about 80%.
@@ -47,25 +50,24 @@ Motivation
 
 The main goals of **DREAMTools** are to provide:
 
-#. scoring functions equivalent to those used during past DREAM challenges for **end-users** via a standalone application (called **dreamtools**).
-#. a common place for **developers** involved in the DREAM challenges to share code
+#. Scoring functions equivalent to those used during past DREAM challenges for **end-users** via a standalone application (called **dreamtools**).
+#. A common place for **developers** involved in the DREAM challenges to share code
 
 **DREAMTools** does not provide code related to aggregation,
 leaderboards, or more complex analysis even though such code
 may be provided (e.g., in D8C1 challenge).
 
-Note that many scoring functions requires data hosted on `Synapse <www.synapse.org>`_ . We therefore strongly encourage you to **register to Synapse**. Depending on the challenge, you may be requested to accept terms of agreements to use the data.
+Note that many scoring functions requires data hosted on `Synapse <http://www.synapse.org>`_ . We therefore strongly encourage you to **register to Synapse**. Depending on the challenge, you may be requested to accept terms of agreements to use the data.
 
 Installation
 -----------------
 
-The first method requires the **pip** tools to be installed and compilation of
-dependencies::
+For those familiar with Python, you may use the `pip executable <https://pypi.python.org/pypi/pip>`_ provided with Python. It will install the latest release of **DREAMTools** and the dependencies::
 
     pip install cython
     pip install dreamtools
 
-If you are not familiar with compilation and Python, you may use `conda <https://www.continuum.io/downloads>`_::
+If you are not familiar with compilation and/or Python, you may use `conda <https://www.continuum.io/downloads>`_ since we have pre-compiled packages with a conda channel called **bioconda**::
 
     conda config --add channels r
     conda config --add channels bioconda

@@ -18,12 +18,14 @@ DREAMTools
    :target: http://dreamtools.readthedocs.org/en/latest/?badge=latest
    :alt: Documentation Status
 
-:Python version: DREAMTools is supported for Python 2.7, 3.4 and 3.5
+:Python version: DREAMTools is supported for Python 2.7, 3.4 and 3.5.
+    Pre-compiled versions are available for Linux and MAC platforms through Anaconda
+    and the **bioconda** channel.
+
 :Note about coverage: We do not run the entire test suite on Travis, which
                       reports a 40% test coverage. Note however, that the actual
                       test coverage is about 80%.
-:Contributions: Please join https://github.com/dreamtools/dreamtools and share your notebooks https://github.com/dreamtools/dreamtools/notebooks
-
+:Contributions: Please join https://github.com/dreamtools/dreamtools
 :Online documentation: `On readthedocs <http://dreamtools.readthedocs.org/>`_
 :Issues and bug reports: `On github <https://github.com/dreamtools/dreamtools/issues>`_
 :How to cite: Cokelaer T, Bansal M, Bare C et al. DREAMTools: a Python
@@ -48,23 +50,25 @@ Motivation
 
 The main goals of **DREAMTools** are to provide:
 
-#. scoring functions equivalent to those used during past DREAM challenges for **end-users** via a standalone application (called **dreamtools**).
-#. a common place for **developers** involved in the DREAM challenges to share code
+#. Scoring functions equivalent to those used during past DREAM challenges for **end-users** via a standalone application (called **dreamtools**).
+#. A common place for **developers** involved in the DREAM challenges to share code
 
 **DREAMTools** does not provide code related to aggregation,
 leaderboards, or more complex analysis even though such code
 may be provided (e.g., in D8C1 challenge).
 
-Note that many scoring functions requires data hosted on `Synapse <www.synapse.org>`_ . We therefore strongly encourage you to **register to Synapse**. Depending on the challenge, you may be requested to accept terms of agreements to use the data.
+Note that many scoring functions requires data hosted on `Synapse <http://www.synapse.org>`_ . We therefore strongly encourage you to **register to Synapse**. Depending on the challenge, you may be requested to accept terms of agreements to use the data.
 
 Installation
 -----------------
 
-::
+For those familiar with Python, you may use the `pip executable <https://pypi.python.org/pypi/pip>`_ provided with Python. It will installed the
+latest release and the dependencies::
 
+    pip install cython
     pip install dreamtools
 
-or with conda::
+If you are not familiar with compilation and/or Python, you may use `conda <https://www.continuum.io/downloads>`_ since we have pre-compiled packages with a conda channel called **bioconda**::
 
     conda config --add channels r
     conda config --add channels bioconda
@@ -74,7 +78,10 @@ See :ref:`Installation` section for details.
 
 Usage
 ------------
-**DREAMTools** can be used by developers as a Python package::
+
+Every DREAM challenge is different. We will not explain here the scientific goal
+but show how one could score its own prediction. Developers can you **DREAMTools** 
+as a Python package::
 
     >>> from dreamtools import D6C3
     >>> s = D6C3()
@@ -85,11 +92,11 @@ Usage
     Pearson(Cp)      0.647516
     dtype: float64}
 
-A standalone application can be used from a terminal. The executable is called **dreamtools**. Here is an example::
+Besides, a standalone application can be used from a terminal. The executable is called **dreamtools**. Here is an example::
 
     dreamtools --challenge D6C3 --submission path_to_a_file
 
-See below for more details about the usage of the standalone application.
+See :ref:`userguide` for more details about the usage of the standalone application.
 
 
 
@@ -103,10 +110,11 @@ Available challenges, templates and gold standards
 **DREAMTools** includes about 80% of DREAM challenges from DREAM2 to DREAM9.5
 Please visit `F1000 link <http://f1000research.com/articles/4-1030/v1>`_  (Table 1).
 
-
-All gold standards and templates are retrieved automatically. You can obtain the location of a gold standard file as follows::
+All gold standards and templates are retrieved automatically. Once downloaded, you 
+can obtain the location of a gold standard or template as follows::
 
     dreamtools --challenge D6C3 --download-gold-standard
+    dreamtools --challenge D6C3 --download-template
 
 
 Full documentation

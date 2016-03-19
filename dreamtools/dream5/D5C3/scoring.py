@@ -33,11 +33,11 @@ class D5C3(Challenge, D3D4ROC):
     For A series, 5 networks are required. For B, 3  are needed.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D5C3, self).__init__('D5C3')
+        super(D5C3, self).__init__('D5C3', verbose, download, **kargs)
         self._init()
         self.sub_challenges = ['A100', 'A300', 'A999', 'B']
         self.N_pvalues = 100

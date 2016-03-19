@@ -29,11 +29,11 @@ class D3C3(Challenge):
         for small size cases.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D3C3, self).__init__('D3C3')
+        super(D3C3, self).__init__('D3C3', verbose, download, **kargs)
 
         #:SubChallenges: different network size (10, 50, 100)
 

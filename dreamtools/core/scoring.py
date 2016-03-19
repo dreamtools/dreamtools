@@ -133,12 +133,7 @@ def scoring(args=None):
             print(this)
             sys.exit()
         elif options.onweb is True:
-
-            url = "https://www.synapse.org/#!Synapse:%s"
-            url = url % this.synapseId
-            print("Opening %s" % url)
-            import webbrowser
-            webbrowser.open_new(url)
+            this.onweb()
             sys.exit()
 
     # Checks name of the sub-challenges

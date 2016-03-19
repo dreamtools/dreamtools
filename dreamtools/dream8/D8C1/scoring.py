@@ -61,8 +61,8 @@ __all__ = ["HPNScoringNetwork", "HPNScoring", "HPNScoringNetworkInsilico",
 class D8C1(Challenge):
     """Factory for the D8C1 (HPN-Breast challenge)"""
 
-    def __init__(self, version=2):
-        super(D8C1, self).__init__('D8C1')
+    def __init__(self, version=2, verbose=True, download=True, **kargs):
+        super(D8C1, self).__init__('D8C1', verbose, download, **kargs)
 
         self.sub_challenges = ['SC1A', 'SC1B', 'SC2A', 'SC2B']
         self._init()

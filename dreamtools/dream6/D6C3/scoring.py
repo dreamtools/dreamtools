@@ -32,11 +32,11 @@ class D6C3(Challenge):
     coefficient) and took -0.25 log ( product of p-values) as the final score.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D6C3, self).__init__('D6C3')
+        super(D6C3, self).__init__('D6C3', verbose, download, **kargs)
         self.sub_challenges = []
 
     def score(self, filename):

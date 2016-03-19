@@ -71,13 +71,14 @@ class D7C1(Challenge):
     For admin only: put the submissions in ./submissions/ directory and call the :meth:
     """
 
-    def __init__(self, path='submissions'):
+    def __init__(self, verbose=True, download=True, path='submissions', 
+        **kargs):
         """.. rubric:: constructor
 
         :param path: path to a directory containing submissions
         :return:
         """
-        Challenge.__init__(self, challenge_name='D7C1')
+        Challenge.__init__(self, 'D7C1', verbose, download, **kargs)
         self.sub_challenges = ['parameter', 'topology', 'timecourse']
 
         self.path = path

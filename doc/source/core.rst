@@ -4,6 +4,13 @@ CORE modules
 .. contents::
 
 
+Challenge
+----------------
+
+.. automodule:: dreamtools.core.challenge
+    :members:
+    :undoc-members:
+
 
 Rocs
 -----------

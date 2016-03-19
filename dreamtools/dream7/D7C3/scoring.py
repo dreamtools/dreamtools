@@ -10,7 +10,6 @@ import math
 class D7C3(Challenge):
     """A class dedicated to D7C3 challenge
 
-
     ::
 
         from dreamtools import D7C3
@@ -21,11 +20,11 @@ class D7C3(Challenge):
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D7C3, self).__init__('D7C3')
+        super(D7C3, self).__init__('D7C3', verbose, download, **kargs)
         self.sub_challenges = []
 
     def score(self, filename, subname=None, goldstandard=None):

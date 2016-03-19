@@ -29,9 +29,9 @@ class D8C2(Challenge):
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor"""
-        super(D8C2, self).__init__('D8C2')
+        super(D8C2, self).__init__('D8C2', verbose, download, **kargs)
         self.sub_challenges = ['sc1', 'sc2']
 
     def score(self, filename, subname):

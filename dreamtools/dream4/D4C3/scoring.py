@@ -31,7 +31,8 @@ class D4C3(Challenge):
         to 0.0827 and may be changed by the user.
 
     """
-    def __init__(self, edge_count=None, cost_per_link=0.0827):
+    def __init__(self, verbose=True, download=True, edge_count=None,
+                 cost_per_link=0.0827, **kargs):
         """.. rubric:: constructor
 
         :param int edge_count: if not provided, a prompt will ask for its 
@@ -39,7 +40,7 @@ class D4C3(Challenge):
         :param float cost_per_link: a cost
 
         """
-        super(D4C3, self).__init__('D4C3')
+        super(D4C3, self).__init__('D4C3', verbose, download, **kargs)
 
         # cost_per_link Was determined empirically from all the teams' submissions
         # as r = min(prediction_score / edge_count).

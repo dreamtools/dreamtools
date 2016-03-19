@@ -5,7 +5,6 @@ Original code for challenge B translted from  Mukesh Bansal
 Sub challenge A is currently a wrapping of a perl code provided by Jim Costello
 
 """
-
 import os
 import math
 import random
@@ -14,8 +13,8 @@ from dreamtools.core.challenge import Challenge
 from easydev import shellcmd
 import pandas as pd
 
-
 import numpy as np
+
 
 class D7C4(Challenge):
     """A class dedicated to D7C4 challenge
@@ -52,38 +51,38 @@ class D7C4(Challenge):
           of all drugs by the corresponding weight.  Divide the sum of these
           weighted scores by the sum of the weights
 
-
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
-        This challenge uses PERL script that requires the
+        This challenge uses PERL script that requires specific packages.
 
-        It can be installed using a tool such as cpanm
+        First, you need cpanm tools (http://search.cpan.org/dist/App-cpanminus/)
 
-        Project URL : http://search.cpan.org/dist/App-cpanminus/
+        Under Fedora 23:
 
-        Download the perl package available in  ./misc
+            sudo dnf install perl-App-cpanminus
 
-        This should work out of the box under Fedora::
+        Then, install the dependencies that will be required
 
             sudo cpanm install Math::Libm
             sudo cpanm install Algorithm::Pair::Best2
             sudo cpanm install Digest::SHA1
             sudo cpanm install Tk
             sudo cpanm install Games::Go::AGATourn
-            #sudo cpanm install Games::Go::goPair
 
-        Then, untar file in ./misc
-        cd to the directory and type:;
+        finally install the Games-go-GoPair.tar.gz package stored in dreamtools
+        github repositotry in dreamtools/dreamt7/D7C4/misc::
 
+            cd dreamtools/dream7/D7C4/misc
+            tar xvfz Games-Go-GoPair-1.001.tar.gz
+            cd Games-Go-GoPair-1.001
             perl Makefile.PL
             make
             sudo make install
 
-
         """
-        super(D7C4, self).__init__('D7C4')
+        super(D7C4, self).__init__('D7C4', verbose, download, **kargs)
         self.sub_challenges = ['A', 'B']
 
     def _check_subname(self, subname):
@@ -124,7 +123,14 @@ class D7C4(Challenge):
         cmd = cmd % (script, filename, datadir , fh.name)
 
         shellcmd(cmd, verbose=True, ignore_errors=True)
-        df = pd.read_csv(fh.name, sep='\t', header=None)
+        try:
+            df = pd.read_csv(fh.name, sep='\t', header=None)
+        except:
+            print("Something wrong in the Scoring while executing \n  %s. " % cmd)
+            print("\n The D7C4 challenge requires a Perl package to be installed")
+            print("See D7C4 documentation e.g., on dreamtools.readthedocs.org")
+            import sys
+            sys.exit(1)
         df.columns = ['DrugID', 'probabilistic c-index',
         'weighted probabilistic c-index', 'zscores']
         df = df.set_index('DrugID')

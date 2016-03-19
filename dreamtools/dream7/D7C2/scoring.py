@@ -24,11 +24,11 @@ vector of risk predictors when given a set of feature data as input. The
 customPredict()
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor
 
         """
-        super(D7C2, self).__init__('D7C2')
+        super(D7C2, self).__init__('D7C2', verbose, download, **kargs)
         self._init()
         self.sub_challenges = []
 

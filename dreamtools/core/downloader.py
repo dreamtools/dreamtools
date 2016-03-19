@@ -15,9 +15,13 @@
 #
 ##############################################################################
 """Utility to download a synapse project in the dreamtools directory"""
+import warnings
+import sys
+
 from dreamtools.core.sageutils import Login
 from dreamtools.core.challenge import Challenge
 
+from easydev.console import red
 
 __all__ = ['Downloader']
 
@@ -43,7 +47,6 @@ class Downloader(Challenge, Login):
         """
         Challenge.__init__(self, challenge_name=challenge)
         # Login provides the synapse client. See client attribute
-        import warnings
         warnings.filterwarnings("ignore")
         Login.__init__(self, client=client, username=username,
                 password=password)
@@ -59,7 +62,9 @@ class Downloader(Challenge, Login):
         # If not connected, nothing will be possible, so just skip the download
         # step.
         if self.client._connected is False:
-            return 
+            print(red("You do not seem to have a network connection. ") + 
+                red("Downloading required data is not possible"))
+            sys.exit(1)
 
         assert synid.startswith('syn'), \
                 "synid must be a valid synapse identifier e.g., syn123456"
@@ -71,7 +76,6 @@ class Downloader(Challenge, Login):
             print('Original error message from synapseclient:')
             print(err)
             print("DREAMTools warning: this is most probably a file that requires you to accept the conditions of use of the data. We will open the relevant page for you now. Please click 'show; on the RHS of the Conditions of use and Accept the terms of use")
-            import sys
             sys.exit()
 
 

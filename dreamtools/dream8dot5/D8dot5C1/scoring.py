@@ -58,9 +58,9 @@ class D8dot5C1(Challenge):
         s.score(filename) 
 
     """
-    def __init__(self):
+    def __init__(self, verbose=True, download=True, **kargs):
         """.. rubric:: constructor"""
-        super(D8dot5C1, self).__init__('D8dot5C1')
+        super(D8dot5C1, self).__init__('D8dot5C1', verbose, download, **kargs)
         self.sub_challenges = ['sc1', 'sc2']
 
     def score(self, filename, sub_challenge_name):

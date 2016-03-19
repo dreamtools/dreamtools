@@ -19,7 +19,7 @@ called **__init__.py**. Then, all you need to do is to go to *dreamtools/dream8*
 
     dreamtools-layout --challenge-name D8C4
 
-Some sub directories and files are created including the **scoring.py** with a basic class were to code or wrap your scoring function.
+Some sub directories and files are created including the **scoring.py** with a basic class where to code or wrap your scoring function.
 
 
 If data file or templates are too large, we strongly recommend to store them in a project on Synapse. We have created a synapse project called `dreamtools <https://www.synapse.org/#!Synapse:syn4483180>`_
@@ -58,9 +58,9 @@ Basic Structure of the Challenge class
         Data and templates are downloaded from Synapse. You must have a login.
 
         """
-        def __init__(self):
+        def __init__(self, verbose=True, download=True, **kargs):
             """.. rubric:: constructor"""
-            super(D7C4, self).__init__('D7C4')
+            super(D7C4, self).__init__('D7C4', verbose, download, **kargs)
             self._init()
             # if several sub-challenges, name them here
             self.sub_challenges = []
@@ -84,10 +84,16 @@ Basic Structure of the Challenge class
 Storing large files
 ---------------------
 
-In the example above, templates and goldstandard locations are in the directory
-of DREAMTools. Using the methods :meth:`getpath_template` automatically found
-the path of directory and one simply needs to provide the filename. However,
-large files should not be stored in DREAMTools repository but on synapse in
+Templates and gold standards are either stored within the **DREAMTools**
+package or, if there are too large, on the Synapse web site. In the latter
+case, the files will be downloaded on request (only once). You should therefore
+not change those files, which are located in the **DREAMTools** directory 
+(e.g., /home/user/.config/dreamtools). The downloaded files are stored in
+specific directories. For instance, files related to the D9C1 challenge are 
+stored in /home/user/.config/dreamtools/dream9/D9C1.
+
+So, as developers, you should also figure out if a file should be stored in
+Synapse or not. Large files are currently stored in this synapse page
 `dreamtools <https://www.synapse.org/#!Synapse:syn4483180>`_
 
 If your class inherits from :class:`dreamtools.core.challenge.Challenge`,
@@ -98,9 +104,8 @@ local location::
                 'syn2898469')
 
 
-
-All files downloaded from Synapse are then stored in a local directory. For
-instance in /home/user/.config/dreamtools/dream5/D5C2 for the example above.
+In this example, the file *DREAM5_GoldStandard_probes.zip* is stored in this
+directory: /home/user/.config/dreamtools/dream5/D5C2 for the example above.
 
 
 License/header

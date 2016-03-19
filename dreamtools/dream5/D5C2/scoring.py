@@ -53,13 +53,13 @@ class D5C2(Challenge):
     Data and templates are downloaded from Synapse. You must have a login.
 
     """
-    def __init__(self, tmpdir=None, Ntf=66):
+    def __init__(self, verbose=True, download=True, tmpdir=None, Ntf=66, **kargs):
         """.. rubric:: constructor
 
         :param Ntf: not to be used. Used for fast testing and debugging
         :param tmpdir: a local temporary file if provided.
         """
-        super(D5C2, self).__init__('D5C2')
+        super(D5C2, self).__init__('D5C2', verbose, download, **kargs)
         self.Ntf = Ntf
         self.tmpdir = tmpdir # directory where to save the results
 

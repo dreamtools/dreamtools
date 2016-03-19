@@ -10,16 +10,16 @@ Familiar with Python ecosystem ?
 -----------------------------------
 
 If you are familiar with Python and the **pip** application and your system
-is already configured (compilers, development libraries available)), these
+is already configured (compilers, development libraries available), these
 two commands should install **DREAMTools** and its dependencies (in unix or
 windows terminal)::
 
     pip install cython
     pip install dreamtools
 
-If you do not have dependencies installed yet (e.g pandas, numpy, scipy), this
-make take a while (e.g., 10-15 minutes). If you are in a hurry, see the Anaconda
-solution here below.
+If you do not have dependencies installed yet (e.g., pandas, numpy, scipy), this
+may take a while depending on your system (typically 10-15 minutes). If you are 
+in a hurry or do not want to compile libraries, see the Anaconda solution here below.
 
 If you are new to Python
 -----------------------------------
@@ -30,11 +30,12 @@ use the `Anaconda <https://www.continuum.io/downloads>`_ solution.
 
 Anaconda is a free Python distribution. It includes most popular Python packages
 for science and data analysis and has dedicated channels. One such channel is
-called **bioconda** and complements the default channel (conda) with a set of 
-packages dedicated to life science.
+called `bioconda >https://bioconda.github.io/>`_ and complements the default
+channel (conda) with a set of packages dedicated to life science.
 
-We have included **DREAMTools** in **bioconda**. So, once Anaconda is installed, 
-you first need to add **bioconda** channel to your environment (and R)::
+We have included **DREAMTools** in **bioconda** channel. So, once Anaconda is installed,
+you first need to add the **bioconda** channel to your environment (and R
+channel)::
 
     conda config --add channels r
     conda config --add channels bioconda
@@ -44,10 +45,8 @@ This should be done only once. Then, install **DREAMTools** itself::
     conda install dreamtools
 
 This command should install **DREAMTools** in your default conda environment. If
-you wish
-to try **DREAMTools** in another environment (e.g different python version), you
-would need to create a new one and then install **DREAMTools** in that
-environment::
+you wish to try **DREAMTools** in another (independent) environment (e.g., a 
+different python version), you would need to create and activate the environment first::
 
     conda create --name test_dreamtools python=3.5
     source activate test_dreamtools
@@ -58,44 +57,30 @@ environment::
 Installation from source
 -----------------------------------
 
-The command::
-
-    pip install dreamtools
-
-install the latest release of **DREAMTools**. If you prefer to use the
-source code, you can also get     the github repository and install
-**DREAMTools** as
-follows (dependencies such as numpy or scipy will need to be compiled if
-not found)::
-
+The previous methods relies on released versions of **DREAMTools**. If a new
+feature is only available in the source code, then you will need to get the
+source code, which is available in the github repository::
 
    git clone git@github.com:dreamtools/dreamtools.git
    cd dreamtools
    python setup.py install
 
+Dependencies (e.g. Pandas) will need to be compiled or pre-installed (see
+above).
 
 
-Note for Windows
+Note for Windows and Anaconda
 -----------------------------------
 
-If you decide to compile the source yourself under windows, you will 
-have to install a compiler that is compatible with what
-was used by Anaconda to compile the libraries such as numpy. This should not
-be a worry under Linux or Mac platforms. However, under Windows, pre-compiled 
-packages (e.g., Cython) used a specific version of 
-a compiler (http://docs.continuum.io/anaconda/faq#how-did-you-compile-cpython).
+We do not provide any DREAMTools package on **bioconda** for Windows.
 
-It appears to be Visual Studio version 2008 for Python 2.7 and is provided by Microsoft (http://www.microsoft.com/en-us/download/details.aspx?id=44266) for free. However, for python3, there is no specific compiled provided (Jan 2016). If you still want to go for Python3, you should get Visual C version 2010 (http://stackoverflow.com/questions/29909330/microsoft-visual-c-compiler-for-python-3-4).
+However, if you use Anaconda and decide to compile the source yourself under Windows, then you will
+have to install a compiler that is compatible with Anaconda. In other words, you will have to use the same compiled as the one used by Anaconda.
 
-From Anaconda documentation, Cython was compiled under windows with (March 2016):
 
-#. Visual Studio 2008 for Python 2.6 and 2.7
-#. VS 2010 for Python 3.3 and 3.4
-#. VS 2015 for Python 3.5
+For Python 2.7, compilation should work easily. You need to know that pre-compiled  packages (e.g., Cython) used a specific version of a compiler (http://docs.continuum.io/anaconda/faq#how-did-you-compile-cpython), which is Visual Studio version 2008  and is provided by Microsoft (http://www.microsoft.com/en-us/download/details.aspx?id=44266) for free.
 
-Even though you do not have Microsoft Visual Studio, you can get the Visual Redistributable Packages that install run-time components that are required to tun C++ applications built using Visual Studio. 
-
-For VS2015, see http://www.microsoft.com/en-us/download/details.aspx?id=44266
+For Python3.4 and 3.5, this is a bit more difficult. You should get Visual C version 2010 (http://stackoverflow.com/questions/29909330/microsoft-visual-c-compiler-for-python-3-4) or for Python 3.5 another Visual C version 2015. This may change with time but this information was found on Anaconda documentation (March 2016). You may found useful information here as well for VS2015:  http://www.microsoft.com/en-us/download/details.aspx?id=44266
 
 
 Note for Python2.X and Python3.X
